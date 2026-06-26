@@ -1,0 +1,2545 @@
+{
+  "Overview": {
+    "W-Pack": {
+      "contextRoot": {
+        "enumeration": "",
+        "description": "프로젝트의 contextRoot를 설정합니다. 값이 지정되지 않은 경우 root로 동작합니다.",
+        "xpath": "/WebSquare/wpack/contextRoot/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "/",
+        "configDefault": "/"
+      },
+      "srcExtension": {
+        "enumeration": "",
+        "description": "W-Pack 빌드 대상이 될 화면 파일의 확장자를 설정합니다. 값이 지정되지 않은 경우 \"xml\"로 동작합니다.",
+        "xpath": "/WebSquare/wpack/srcExtension/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "xml",
+        "configDefault": "xml"
+      },
+      "destExtension": {
+        "enumeration": "",
+        "description": "W-Pack 빌드 결과물이 될 파일의 확장자를 설정합니다. 값이 지정되지 않은 경우 \"js\"로 동작합니다.",
+        "xpath": "/WebSquare/wpack/destExtension/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "js",
+        "configDefault": "js"
+      },
+      "destRoot": {
+        "enumeration": "",
+        "description": "W-Pack 빌드 결과물이 생성될 폴더이름을 지정합니다. 값이 지정되지 않은 경우 \"_wpack_\"를 사용합니다.",
+        "xpath": "/WebSquare/wpack/destRoot/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "_wpack_",
+        "configDefault": "_wpack_"
+      },
+      "babelDestRoot": {
+        "enumeration": "",
+        "description": "W-Pack 빌드 시 babel을 적용한 결과물이 생성될 폴더이름을 지정합니다.\nbabel 적용 시 오버헤드가 발생하므로 ES6를 지원하지 않는 브라우저만 babel을 적용하도록 하기 위해 만든 속성입니다.\n아래의 loadingMode 속성과 함께 사용합니다.\n",
+        "xpath": "/WebSquare/wpack/babelDestRoot/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "_wpackbabel_"
+      },
+      "loadingMode": {
+        "enumeration": "",
+        "description": "W-Pack 파일을 로드할 때 어떤 경로를 참고할지를 지정하는 속성. \n\"wpack\"(기본값)으로 설정 시 destRoot로 설정한 경로를 사용하며\n\"babel\" 설정 시 babelDestRoot로 설정한 경로를 사용하고\n\"auto\" 설정 시 IE11은 babelDestRoot, 그 외는 destRoot를 사용합니다.",
+        "xpath": "/WebSquare/wpack/loadingMode/@value",
+        "type": "combobox",
+        "option": "babel,wpack,auto",
+        "engineDefault": "wpack"
+      },
+      "common": {
+        "enumeration": "",
+        "description": "W-Pack에서 공통 변수를 자동으로 치환해주는 기능 사용 여부. 기본값은 false입니다. \n이 기능을 사용하면 메모리 사용량을 줄일 수 있습니다.  \n(ex) com.func1(a,b) \u003d\u003e com.func1($p,a,b) ",
+        "xpath": "/WebSquare/wpack/common/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "false ",
+        "configDefault": "false "
+      },
+      "name": {
+        "enumeration": "",
+        "description": "W-Pack에서 공통 변수를 자동으로 치환해주는 기능 사용 시 치환할 대상이 되는 변수 이름을 지정합니다.\n예를들어 공통 변수명이 com, com2, com3인 경우 name\u003d\"com,com2,com3\"으로 설정합니다.",
+        "xpath": "/WebSquare/wpack/common/@name",
+        "type": "string"
+      },
+      "commonPath": {
+        "enumeration": "",
+        "description": "W-Pack에서 공통 변수를 자동으로 치환해주는 기능을 실제로 적용할 js 파일들의 경로를 등록합니다.\n여기에 등록된 js 파일은 불러올 때 위에 설정한 destRoot를 앞에 붙인 상태로 경로를 계산합니다.",
+        "xpath": "/WebSquare/wpack/commonPath",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "path",
+            "description": "js파일의 경로를 등록합니다. 개별 파일명을 등록하거나 디렉토리를 등록합니다. 디렉토리 등록 시 모든 하위 디렉토리가 포함됩니다.\n(예시-개별파일) /com/js/commonGlobal.js\n(예시-폴더전체) /com/js/",
+            "xpath": "/WebSquare/wpack/commonPath/path/@src",
+            "type": "string"
+          }
+        ]
+      },
+      "excludePrefix": {
+        "enumeration": "",
+        "description": "W-Pack의 공통 변수 치환 기능을 적용하지 않을 함수를 별도로 지정할 때 사용합니다. \nexcludePrefix로 시작하는 함수는 공통 변수 치환 대상에서 제외됩니다.  ",
+        "xpath": "/WebSquare/wpack/excludePrefix/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "__"
+      }
+    },
+    "strictMode": {
+      "strictMode": {
+        "enumeration": "",
+        "description": "wframe을 사용하는 경우 자신의 프레임 영역을 벗어나는 자원들을 암시적으로 접근하는 것을 차단하기 위한 설정입니다. \ntrue 설정 시 모든 화면이 눈에 보이지 않는 wframe으로 감싸지게 된다. wframe 내부 화면과 wframe이 없는 화면의 코딩 방식을 통일하기 위해 도입한 설정이다. 즉 wframe 안에 들어가는 page와 일반 화면의 경계를 없애고 모든 화면이 page가 되도록 하는 설정입니다.\nSP3부터는 \"true\"로 설정할 것을 권장합니다.",
+        "xpath": "/WebSquare/strictMode/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true ",
+        "configDefault": "true "
+      },
+      "scope variable": {
+        "enumeration": "",
+        "description": "strict mode에서 사용할 TOP 스코프의 scope variable 이름입니다. 기본값은 mf입니다.",
+        "xpath": "/WebSquare/strictMode/@id",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "mf"
+      },
+      "scriptPrecedence": {
+        "enumeration": "",
+        "description": "initScript, onpageload, postScript의 이벤트 순서를 initScript-\u003eonpageload-\u003epostScript 순서로 실행되도록 설정하는 옵션입니다. SP3부터는 \"true\"로 설정할 것을 권장합니다.",
+        "xpath": "/WebSquare/scriptPrecedence/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true ",
+        "latestVersionRecommended": "true "
+      }
+    },
+    "page(SP3)/SPA(SP2)": {
+      "variable": {
+        "enumeration": "",
+        "description": "SP2 : spa로 페이지 이동 시 자동으로 삭제할 객체를 string형태로 등록합니다.\nSP3 이후 : 페이지에서 사용할 변수명을 정의합니다. 기본값은 scwin입니다.",
+        "xpath": "/WebSquare/spa/variable/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "scwin",
+        "configDefault": "scwin"
+      },
+      "clone": {
+        "enumeration": "",
+        "description": "SP3 : js\u003escript\u003eexternal에 설정된 js 파일의 공통 모듈 중 page scope을 적용할 객체를 지정합니다.",
+        "xpath": "/WebSquare/spa/variable/@clone",
+        "type": "string"
+      },
+      "spa": {
+        "enumeration": "",
+        "description": "페이지 이동 시 브라우저를 갱신하지 않고 body 영역만 새로 그려서 마치 페이지가 실제로 이동된 것처럼 보이게 하는 기능입니다.\n즉, 한번 로딩된 WebSquare 엔진을 재사용하여 시스템 전체가 한 페이지에서 동작하는 것을 뜻합니다.\n기존 WebSquare 페이지 표시 방법에 비해 적은 작업을 진행하므로 엔진이 로딩되고 생성되는 시간을 절약할 수 있습니다.",
+        "xpath": "/WebSquare/spa/@value",
+        "type": "string"
+      }
+    },
+    "welcome-file": {
+      "welcome-file": {
+        "enumeration": "",
+        "description": "w2xPath가 지정되지 않았을 때 기본적으로 표시할 파일의 경로를 지정합니다.",
+        "xpath": "/WebSquare/welcome-file/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "",
+        "since": "",
+        "remark": "textNode에 값 설정"
+      }
+    },
+    "clearMemory": {
+      "clearMemory": {
+        "enumeration": "",
+        "description": "onbeforeunload 이벤트에서 웹스퀘어 컴포넌트를 제거하는 처리를 할지에 대한 여부, iframe 사용 시 true로 사용을 권장합니다.",
+        "xpath": "/WebSquare/clearMemory/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "false "
+      },
+      "userFunction": {
+        "enumeration": "",
+        "description": "clearMemory기능에서 사용자 공통 clearFunction을 설정합니다. clearMemory 처리 전에 발생합니다.",
+        "xpath": "/WebSquare/clearMemory/@userFunction",
+        "type": "string"
+      },
+      "userAfterFunction": {
+        "enumeration": "",
+        "description": "개발자가 글로벌영역에 직접 정의한 변수 및 객체들은 직접 정리하여야 합니다. WebSquare.clearMemory() 가 호출된 이후 userAfterFunction에 정의된 함수가 호출됩니다.",
+        "xpath": "/WebSquare/clearMemory/@userAfterFunction",
+        "type": "string"
+      }
+    },
+    "Process Message": {
+      "processMsgURL": {
+        "enumeration": "",
+        "description": "프로세스 메시지를 표시하는데 사용할 HTML파일의 URL을 지정합니다.",
+        "xpath": "/WebSquare/processMsgURL/@value",
+        "type": "string"
+      },
+      "processMsgHeight": {
+        "enumeration": "",
+        "description": "\u0027진행중\u0027 표시를 나타내는 프로세스 메시지 창의 높이를 설정합니다.",
+        "xpath": "/WebSquare/processMsgHeight/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "81",
+        "configDefault": "81"
+      },
+      "processMsgWidth": {
+        "enumeration": "",
+        "description": "\u0027진행중\u0027 표시를 나타내는 프로세스 메시지 창의 너비를 설정합니다.",
+        "xpath": "/WebSquare/processMsgWidth/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "295",
+        "configDefault": "295"
+      },
+      "useProcessMsgBackground": {
+        "enumeration": "",
+        "description": "프로세스 메시지 창의 모달의 배경색을 사용할지를 설정합니다.",
+        "xpath": "/WebSquare/processMsgBackground/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "processMsgBackground": {
+        "enumeration": "",
+        "description": "useProcessMsgBackground 값이 true라면 설정된 값을 ProcessMessage의 배경색으로 사용합니다.",
+        "xpath": "/WebSquare/processMsgBackground/@background",
+        "type": "string",
+        "option": "",
+        "engineDefault": "#112233",
+        "configDefault": "#112233"
+      },
+      "processMsgType": {
+        "enumeration": "",
+        "description": "메시지 창을 div로 출력할지, iframe형태로 출력할지를 결정합니다. 기본동작은 iframe으로 출력 하게 됩니다.",
+        "xpath": "/WebSquare/processMsgType/@value",
+        "type": "string",
+        "option": "wframe,iframe",
+        "engineDefault": "iframe"
+      },
+      "processMsgFrameURL": {
+        "enumeration": "",
+        "description": "processMsgType\u003d\"wframe\"인 경우 출력하는 화면의 URL을 설정합니다.",
+        "xpath": "/WebSquare/processMsgFrameURL/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "message/processMsg.xml"
+      }
+    },
+    "date": {
+      "maxYear": {
+        "enumeration": "",
+        "description": "가장 큰 년도 값을 설정합니다.",
+        "xpath": "/WebSquare/date/maxYear/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "2099"
+      },
+      "minYear": {
+        "enumeration": "",
+        "description": "가장 작은 년도 값을 설정합니다. ",
+        "xpath": "/WebSquare/date/minYear/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "1901"
+      },
+      "enable": {
+        "enumeration": "",
+        "description": "$p.getCurrentServerDate 호출시 서버날짜를 조회 할지 브라우저 client날짜를 조회할 지 유무. 기본값은 true이다.",
+        "xpath": "/WebSquare/date/serverDate/@enable",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true ",
+        "configDefault": "true "
+      },
+      "autoupdateinterval": {
+        "enumeration": "",
+        "description": "실제 서버 시간을 조회하기 위한 네트워크 요청을 보내는 간격을 설정합니다.\n단위는 초(sec)이며 기본값은 3600(1시간) 입니다.\n단, 서버 시간과 클라이언트 시간의 간격 차이가 비정상임을 인지할 경우 이 설정값을 무시하고 네트워크 요청을 보내 서버 시간을 조회합니다. ",
+        "xpath": "/WebSquare/date/serverDate/@autoupdateinterval",
+        "type": "string",
+        "option": "",
+        "engineDefault": "3600",
+        "configDefault": "3600"
+      }
+    },
+    "pageFaultMsg": {
+      "pageFaultMsg": {
+        "enumeration": "",
+        "description": "w2xPath에 설정되어 있는 xml파일을 읽다가 에러가 발생할 경우 오류메시지를 표시할지 여부를 설정합니다. false로 설정되어 있으면 메시지를 표시하지 않습니다.",
+        "xpath": "/WebSquare/pageFaultMsg/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "cloneTab": {
+      "cloneTab": {
+        "enumeration": "",
+        "description": "ctrl + K 단축키 동작을 차단할지에 대한 여부입니다.\ntrue일 경우 단축키동작 허용, false일 경우 단축키동작 차단이며, 기본적으로는 차단합니다. ctrl + K 단축키 동작은 IE계열 브라우저에서 탭을 복제하는 동작을 합니다.",
+        "xpath": "/WebSquare/cloneTab/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "editor": {
+      "version": {
+        "enumeration": "",
+        "description": "editor에 사용될 버전을 설정합니다. 값을 설정하지 않은 경우, IE계열 브라우저를 제외한 나머지 브라우저에서는 3.6.6.1버전으로 동작합니다. [IE는 브라우저 버전 별로 상이]",
+        "xpath": "/WebSquare/editor/version/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "4.11.3"
+      }
+    },
+    "fusionchart": {
+      "version": {
+        "enumeration": "",
+        "description": "fusionChart에서 사용될 버전을 설정합니다.",
+        "xpath": "/WebSquare/fusionchart/version/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "3.19"
+      }
+    },
+    "encoding": {
+      "byteCheckEncoding": {
+        "enumeration": "",
+        "description": "string의 Byte 길이를 셀 때의 기본 인코딩을 설정합니다. WebSquare.util.getStringByteSize와 WebSquare.util.getStringByByteSize에서 사용됩니다.",
+        "xpath": "/WebSquare/byteCheckEncoding/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "UTF-8",
+        "configDefault": "euc-kr"
+      }
+    },
+    "encodeParameter": {
+      "value": {
+        "enumeration": "",
+        "description": "w2xPath 문자열과 파일 경로를 쉽게 알아볼 수 없도록 경로를 인코딩하는 속성입니다. ",
+        "xpath": "/WebSquare/encodeParameter/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "fallback": {
+        "enumeration": "",
+        "description": "인코딩한 문자열과 기존 문자열을 모두 받을 것인지에 대한 속성입니다.",
+        "xpath": "/WebSquare/encodeParameter/@fallback",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "onlyParam": {
+        "enumeration": "",
+        "description": "w2xPath 나 w2xHome 등 paramter로 넘기는 문자열만 인코딩할 것인지에 대한 속성입니다.",
+        "xpath": "/WebSquare/encodeParameter/@onlyParam",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "key": {
+        "enumeration": "",
+        "description": "인코딩할 때 넣어주는 key 값. key 값이 달라지면 같은 문자열이라도 인코딩해서 나오는 문자열이 달라집니다.",
+        "xpath": "/WebSquare/encodeParameter/@key",
+        "type": "string",
+        "option": "",
+        "engineDefault": "0"
+      }
+    },
+    "language": {
+      "language": {
+        "enumeration": "",
+        "description": "value 값에 따라 웹스퀘어에서 기본적으로 나타나는 메시지의 언어를 설정 할 수 있습니다.",
+        "xpath": "/WebSquare/language/@value",
+        "type": "combobox",
+        "option": "ko,en,ja",
+        "engineDefault": "ko",
+        "configDefault": "ko"
+      },
+      "useLanguagePack": {
+        "enumeration": "",
+        "description": "다국어 지원을 위한 언어팩을 설정합니다.\nuseLanguagePack의 값이 true라면 브라우저의 언어코드(navigator.language || navigator.browserLanguage)를 읽어서 하위노드에 설정된 언어팩을 자동으로 읽어들입니다.\n한국어의 경우 언어코드를 ko-KR을 자동으로 ko로 변경합니다.",
+        "xpath": "/WebSquare/languagePack/@useLanguagePack",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "false "
+      },
+      "multilanguage": {
+        "enumeration": "",
+        "description": "다국어 지원을 위한 언어팩을 설정합니다.",
+        "xpath": "/WebSquare/languagePack",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "lang",
+            "description": "url 태그를 통해서 사용할 다국어의 언어 코드입니다.",
+            "xpath": "/WebSquare/languagePack/url/@lang",
+            "type": "string",
+            "option": "",
+            "engineDefault": "",
+            "configDefault": "ko"
+          },
+          {
+            "enumeration": "file",
+            "description": "import 시킬 다국어 파일의 경로입니다.",
+            "xpath": "/WebSquare/languagePack/url/@value",
+            "type": "string",
+            "option": "",
+            "engineDefault": "",
+            "configDefault": "/langpack/ko.js"
+          }
+        ]
+      }
+    },
+    "pageURLPrefix": {
+      "pageURLPrefix": {
+        "enumeration": "",
+        "description": "함수명 또는 string값을 지정합니다. type이 function인 경우 함수명을, 그 외의 경우에는 string값을 입력합니다. type이 function인 ignoreW2xPath속성에 따라 처리가 달라집니다.",
+        "xpath": "/WebSquare/pageURLPrefix/@value",
+        "type": "string"
+      },
+      "type": {
+        "enumeration": "",
+        "description": "웹스퀘어 화면 xml파일을 읽어올 때 화면 경로에 특정 prefix를 붙이는 기능으로, [function, string] 두 가지 타입이 사용됩니다. function인 경우에는 입력한 함수명이 실제로 정의되어 있어야 합니다.",
+        "xpath": "/WebSquare/pageURLPrefix/@type",
+        "type": "combobox",
+        "option": "function,string"
+      },
+      "ignoreW2xPath": {
+        "enumeration": "",
+        "description": "type이 function인 경우에 사용되는 속성입니다. 이 속성값이 true인 경우에는 함수를 호출할 때 w2xPath값을 인자로 전달하여 호출하며, 그 함수의 return값을 실제 xml 경로로 사용합니다.\n속성값이 false인 경우에는 함수를 인자 없이 호출하며, 실제 xml 경로는 해당 함수의 return값에 w2xPath값을 더한 값이 됩니다.\n즉, 이 속성값이 true인 경우 xPath \u003d func(url), false인 경우 xPath \u003d func() + url 형태가 됩니다.",
+        "xpath": "/WebSquare/pageURLPrefix/@ignoreW2xPath",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "escape": {
+      "escape": {
+        "enumeration": "",
+        "description": "escape속성이 있는 컴포넌트들의 escape설정을 일괄 적용합니다.\nescape적용의 우선순위는 1. 유저의 컴포넌트 escape설정값 \n2.config.xml의 개별 컴포넌트의 escape설정값 3.config.xml의 escape일괄 \n설정값 4.컴포넌트의 escape 기본값(true) 순입니다. ",
+        "xpath": "/WebSquare/escape/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true "
+      }
+    },
+    "requirejs": {
+      "timeout": {
+        "enumeration": "",
+        "description": "requirejs의 timeout 시간을 설정합니다. 단위는 초 (sec) 입니다. \n웹스퀘어 화면 파일을 로딩할 때 네트워크 시간이 설정 시간을 초과하면 timeout 처리됩니다.\n기본값은 20입니다. ",
+        "xpath": "/WebSquare/requirejs/@timeout",
+        "type": "string",
+        "option": "",
+        "engineDefault": "20"
+      }
+    }
+  },
+  "Common": {
+    "Project UDC": {
+      "Project UDC": {
+        "enumeration": "",
+        "description": "공통 모듈로 사용되는 Project UDC를 등록합니다.",
+        "xpath": "/WebSquare/projectCommon",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "name",
+            "description": "Project UDC에 접근할 때 사용하는 변수명",
+            "xpath": "/WebSquare/projectCommon/module/@name",
+            "type": "string"
+          },
+          {
+            "enumeration": "src",
+            "description": "Project UDC의 경로",
+            "xpath": "/WebSquare/projectCommon/module/@src",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "MSA": {
+      "MSA server": {
+        "enumeration": "",
+        "description": "MSA 서비스 단위인 서버 이름과 url을 설정합니다.",
+        "xpath": "/WebSquare/msaServer",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "name",
+            "description": "등록된 MSA server의 이름입니다.",
+            "xpath": "/WebSquare/msaServer/msa/@name",
+            "type": "string"
+          },
+          {
+            "enumeration": "origin",
+            "description": "등록된 MSA server의 origin 경로입니다.\n(ex : https://www.inswave.com:9090)",
+            "xpath": "/WebSquare/msaServer/msa/@origin",
+            "type": "string"
+          },
+          {
+            "enumeration": "w2xHome",
+            "description": "등록된 MSA server의 xml root 경로입니다.\n생략 시 메인 서버의 w2xHome 값으로 설정됩니다.",
+            "xpath": "/WebSquare/msaServer/msa/@w2xHome",
+            "type": "string"
+          },
+          {
+            "enumeration": "baseURI",
+            "description": "등록된 MSA server의 baseURI를 설정합니다.\n생략 시 메인 서버의 baseURI 값으로 설정됩니다.",
+            "xpath": "/WebSquare/msaServer/msa/@baseURI",
+            "type": "string"
+          },
+          {
+            "enumeration": "baseServletURI",
+            "description": "등록된 MSA server의 baseServletURI를 설정합니다.\n일반적으로 아래의 contextRoot와 동일한 값으로 설정합니다.\nMSA server가 메인 서버와 context가 다른 경우 반드시 설정해야 합니다.",
+            "xpath": "/WebSquare/msaServer/msa/@baseServletURI",
+            "type": "string"
+          },
+          {
+            "enumeration": "contextRoot",
+            "description": "등록된 MSA server의 contextRoot를 설정합니다.\nMSA server가 메인 서버와 context가 다른 경우 반드시 설정해야 합니다.\n일반적으로 baseServletURI와 동일하게 설정합니다.",
+            "xpath": "/WebSquare/msaServer/msa/@contextRoot",
+            "type": "string"
+          }
+        ]
+      },
+      "MSA UDC": {
+        "enumeration": "",
+        "description": "공통 모듈로 사용되는 MSA UDC를 등록합니다.",
+        "xpath": "/WebSquare/msaCommon",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "MSA server",
+            "description": "MSA UDC가 위치한 MSA server 이름",
+            "xpath": "/WebSquare/msaCommon/module/@msaServerName",
+            "type": "string"
+          },
+          {
+            "enumeration": "name",
+            "description": "MSA UDC에 접근할 때 사용하는 변수명",
+            "xpath": "/WebSquare/msaCommon/module/@name",
+            "type": "string"
+          },
+          {
+            "enumeration": "src",
+            "description": "MSA UDC의 경로",
+            "xpath": "/WebSquare/msaCommon/module/@src",
+            "type": "string"
+          }
+        ]
+      },
+      "MSA Client LanguagePack": {
+        "enumeration": "",
+        "description": "MSA Client 다국어 json 파일의 경로를 등록합니다.",
+        "xpath": "/WebSquare/msaLanguagePack",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "MSA server",
+            "description": "다국어 파일이 위치한 MSA server 이름",
+            "xpath": "/WebSquare/msaLanguagePack/url/@msaName",
+            "type": "string"
+          },
+          {
+            "enumeration": "lang",
+            "description": "언어 지정 (ex) ko, en)",
+            "xpath": "/WebSquare/msaLanguagePack/url/@lang",
+            "type": "string"
+          },
+          {
+            "enumeration": "value",
+            "description": "MSA Client 다국어 json파일의 경로",
+            "xpath": "/WebSquare/msaLanguagePack/url/@value",
+            "type": "string"
+          }
+        ]
+      },
+      "MSA StyleSheet": {
+        "enumeration": "",
+        "description": "처음 화면 로딩 시 로드할 styleSheet 파일을 MSA Server에서 가져옵니다.\nstyleSheet의 EarlyImportList와 동일한 기능을 제공합니다.",
+        "xpath": "/WebSquare/msaStylesheet",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "MSA server",
+            "description": "styleSheet 파일이 위치한 MSA server 이름",
+            "xpath": "/WebSquare/msaStylesheet/module/@msaServerName",
+            "type": "string"
+          },
+          {
+            "enumeration": "src",
+            "description": "styleSheet 파일 경로",
+            "xpath": "/WebSquare/msaStylesheet/module/@src",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "UDC": {
+      "Global UDC": {
+        "enumeration": "",
+        "description": "프로젝트에서 사용될 전역 udc 컴포넌트를 등록합니다.",
+        "xpath": "/WebSquare/udc/requires",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "name",
+            "description": "Component로 사용될 UDC의 이름 입니다.",
+            "xpath": "/WebSquare/udc/requires/require/@as",
+            "type": "string"
+          },
+          {
+            "enumeration": "src",
+            "description": "Component로 사용될 UDC의 경로 입니다.",
+            "xpath": "/WebSquare/udc/requires/require/@src",
+            "type": "string"
+          },
+          {
+            "enumeration": "type",
+            "description": "Component로 사용될 UDC의 타입 입니다. 기본값(page)",
+            "xpath": "/WebSquare/udc/requires/require/@type",
+            "type": "string",
+            "option": "",
+            "engineDefault": "",
+            "configDefault": "page"
+          }
+        ]
+      }
+    }
+  },
+  "Dev": {
+    "debug": {
+      "debug": {
+        "enumeration": "",
+        "description": "true인 경우 엔진 디버그 모드를 작동합니다.",
+        "xpath": "/WebSquare/debug/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "remoteConsole": {
+        "enumeration": "",
+        "description": "속성값이 true인 경우에 웹스퀘어 로그를 WAS에 저장합니다.\nWebSquare.logger.sendRemoteLog 함수를 통해 로그를 WAS에 저장하는 기능을 제공합니다.",
+        "xpath": "/WebSquare/debug/@remoteConsole",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "false "
+      },
+      "console": {
+        "enumeration": "",
+        "description": "true인 경우 console log창에 로그를 출력합니다.",
+        "xpath": "/WebSquare/debug/@console",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "false ",
+        "configDefault": "true "
+      },
+      "errorConsole": {
+        "enumeration": "",
+        "description": "console\u003d\"false\", errorConsole\u003d\"true\" 인 경우 웹스퀘어 로그는 출력하지 않고 개발자로그만 출력합니다.",
+        "xpath": "/WebSquare/debug/@errorConsole",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "false ",
+        "configDefault": "true "
+      },
+      "skipLog": {
+        "enumeration": "",
+        "description": "skipLog 값이 true인 경우, 웹스퀘어 로그를 출력하지 않습니다.",
+        "xpath": "/WebSquare/debug/@skipLog",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "skipCrossOrigin": {
+        "enumeration": "",
+        "description": "skipCrossOrigin 값이 true인 경우 iframe 접근 권한 관련 로그 메세지를 출력하지 않습니다.",
+        "xpath": "/WebSquare/debug/@skipCrossOrigin",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "debugKey": {
+        "enumeration": "",
+        "description": "엔진 디버그 모드가 작동 중일때 로그를 보고 싶은 컴포넌트를 value로 설정할 수 있습니다.",
+        "xpath": "/WebSquare/debugKey/@value",
+        "type": "string"
+      },
+      "debugMenu": {
+        "enumeration": "",
+        "description": "value 값에 따라 ctrl+오른쪽 클릭시 나타나는 debugMenu를 사용 가능하게 합니다.\nvalue 값을 use로 하면 debugMenu를 사용할 수 있으며, block으로 하면 동작하지 않도록 합니다.",
+        "xpath": "/WebSquare/debugMenu/@value",
+        "type": "combobox",
+        "option": "use,block",
+        "engineDefault": "",
+        "configDefault": "use"
+      },
+      "fiddle": {
+        "enumeration": "",
+        "description": "context 메뉴에서 fiddle항목 출력의 유무를 지정합니다.",
+        "xpath": "/WebSquare/debug/@fiddle",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "scriptLoading": {
+      "merge": {
+        "enumeration": "",
+        "description": "wframe,pageInherit의 내부 스크립트를 각각 개별로 eval할지(false), 또는 구버전 방식인 wframe,pageInhert의 스크립트를 전부 통합하여 한번에 eval할지(true)에 대한 여부를 설정합니다.\n개발 환경에서만 사용해야 합니다.",
+        "xpath": "/WebSquare/scriptLoading/@merge",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "exceptionHandler": {
+      "exceptionHandler": {
+        "enumeration": "",
+        "description": "웹스퀘어의 exception 핸들러 사용 여부를 설정합니다.\nvalue 값을 websquare로 설정할 경우 웹스퀘어의 exception 핸들러를 사용하며, system의 경우에는 브라우져의 기본 설정을 적용합니다.",
+        "xpath": "/WebSquare/exceptionHandler/@value",
+        "type": "combobox",
+        "option": "websquare,system",
+        "engineDefault": "websquare",
+        "configDefault": "websquare"
+      }
+    }
+  },
+  "Js": {
+    "script": {
+      "initScriptSupport": {
+        "enumeration": "",
+        "description": "value 값이 true인 경우 initScript 안쪽의 text 노드의 스크립트를 화면 로딩후, 전역 스크립트 실행 전에 실행합니다. SP2에서는 CDATA블럭을 사용할 수 있습니다. \nSP3의 scriptPrecedence 설정을 true로 사용 시 이벤트 순서는 initScript-\u003eonpageload-\u003epostScript 순서로 실행됩니다. ",
+        "xpath": "/WebSquare/initScript/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "false "
+      },
+      "initScript": {
+        "enumeration": "",
+        "description": "support가 true인 경우에 실행될 스크립트를 입력합니다.",
+        "xpath": "/WebSquare/initScript",
+        "type": "multiline"
+      },
+      "postScriptSupport": {
+        "enumeration": "",
+        "description": "initScript처럼 config.xml에 설정하여 모든 페이지 스크립트의 마지막 부분에 들어가서 실행하도록 설정합니다. SP2에서는 CDATA블럭을 사용할 수 있습니다. \nSP3의 scriptPrecedence 설정을 true로 사용 시 이벤트 순서는 initScript-\u003eonpageload-\u003epostScript 순서로 실행됩니다. ",
+        "xpath": "/WebSquare/postScript/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "postScript": {
+        "enumeration": "",
+        "description": "support가 true인 경우에 실행될 스크립트를 입력합니다.",
+        "xpath": "/WebSquare/postScript",
+        "type": "multiline"
+      },
+      "external": {
+        "enumeration": "",
+        "description": "업무 공통 JavaScript을 추가하는 경우 사용합니다.",
+        "xpath": "/WebSquare/engine",
+        "type": "element",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "",
+        "since": "",
+        "remark": "하위노드가 있는 경우 element type로 설정",
+        "child": [
+          {
+            "enumeration": "module",
+            "description": "설정된 JavaScript파일을 import한다. 업무 공통 JavaScript을 추가하는 경우 사용합니다.",
+            "xpath": "/WebSquare/engine/module/@src",
+            "type": "string"
+          }
+        ]
+      },
+      "jquery": {
+        "enumeration": "",
+        "description": "원하는 버전의 jQuery url를 설정합니다. 기본값은 jquery-1.10.2.min.js를 사용합니다.",
+        "xpath": "/WebSquare/jquerySupport/@src",
+        "type": "string",
+        "option": "",
+        "engineDefault": "externalJS/jquery/jquery-1.10.2.min.js"
+      }
+    }
+  },
+  "UI/UX": {
+    "반응형/적응형": {
+      "media": {
+        "enumeration": "",
+        "description": "레이아웃 컴포넌트 파일과 적응형 컴포넌트에서 사용할 미디어 정보를 입력합니다.",
+        "xpath": "/WebSquare/mediaInfo",
+        "type": "element",
+        "child": [
+          {
+            "enumeration": "name",
+            "description": "미디어 이름을 입력합니다.",
+            "xpath": "/WebSquare/mediaInfo/media/@name",
+            "type": "string"
+          },
+          {
+            "enumeration": "minWidth",
+            "description": "meidaQuery의 minWidth를 입력합니다.",
+            "xpath": "/WebSquare/mediaInfo/media/@minWidth",
+            "type": "string"
+          },
+          {
+            "enumeration": "maxWidth",
+            "description": "meidaQuery의 maxWidth를 입력합니다.",
+            "xpath": "/WebSquare/mediaInfo/media/@maxWidth",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "stylesheet": {
+      "enable": {
+        "enumeration": "",
+        "description": "웹스퀘어 기본 스타일시트 파일 (stylesheet.css)을 사용할지에 대한 여부를 지정합니다.",
+        "xpath": "/WebSquare/stylesheet/@enable",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true ",
+        "configDefault": "true "
+      },
+      "import": {
+        "enumeration": "",
+        "description": "웹스퀘어 기본 스타일시트 파일(stylesheet.css)을 \u003clink\u003e 방식으로 삽입할 지 \u003cstyle\u003e 블럭 내에 inline으로 삽입할지를 결정하는 속성입니다. 기본값은 link이며 이 경우 \u003clink\u003e 방식으로 삽입하며 stylesheet_ext.css 파일을 사용합니다. 그 외에는 stylesheet.css 파일을 사용합니다.",
+        "xpath": "/WebSquare/stylesheet/@import",
+        "type": "combobox",
+        "option": "link",
+        "engineDefault": "",
+        "configDefault": "link",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "Y"
+      },
+      "earlyImportList": {
+        "enumeration": "",
+        "description": "화면이 렌더링되기 전에 미리 로딩할 css들을 정의합니다. css가 늦게 적용되어 화면이 깜빡거리는 현상을 회피하기 위해 만든 설정입니다. 여러 개의 파일을 설정할 경우 \",\"로 구분합니다.",
+        "xpath": "/WebSquare/stylesheet/@earlyImportList",
+        "type": "string"
+      }
+    },
+    "mobile": {
+      "preventTouch": {
+        "enumeration": "",
+        "description": "showModal시 touchMove기능이 동작되지 않도록 설정합니다. 기본값은 false입니다.",
+        "xpath": "/WebSquare/modal/preventTouch/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "hideAddressBar": {
+        "enumeration": "",
+        "description": "모바일에서 주소창을 감추기 위한 설정으로, 이 속성값이 true인 경우 document.body.scrollTop \u003d 1 로 설정합니다.",
+        "xpath": "/WebSquare/mobile/hideAddressBar/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "bindMobileMouseEvent": {
+        "enumeration": "",
+        "description": "모바일에서 블루투스 마우스를 쓸 때 wframe popup이나 tab이 클릭이 제대로 되지 않는 현상을 해결하기 위해 추가한 속성입니다. 블루투스 마우스를 사용해야하는 사이트에서 사용을 권장합니다.",
+        "xpath": "/WebSquare/bindMobileMouseEvent/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "html": {
+      "postDrawMode": {
+        "enumeration": "",
+        "description": "기본값은 \"asynchronous\" 입니다.\n화면을 그린 다음 이벤트를 붙히고 사용자스크립트를 수행하는 과정을 setTimeout을 통해 비동기로 호출할지(\"asynchronous\"), 동기로 호출할지(\"synchronous\")를 설정하는 옵션입니다.",
+        "xpath": "/WebSquare/postDrawMode/@value",
+        "type": "combobox",
+        "option": "synchronous,asynchronous",
+        "engineDefault": "",
+        "configDefault": "synchronous"
+      },
+      "parseHtml": {
+        "enumeration": "",
+        "description": "웹스퀘어 xml 안에 html 태크가 존재할 경우 이를 parsing할지에 대한 여부입니다.\n기본적으로는 parsing하며, 이 값을 false로 설정하면 웹스퀘어 컴포넌트가 아닌 태그는 parsing하지 않고 전부 무시합니다.",
+        "xpath": "/WebSquare/parseHtml/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true "
+      },
+      "emptyTag": {
+        "enumeration": "",
+        "description": "closing Tag가 불필요한 태그를 등록하여 처리합니다.",
+        "xpath": "/WebSquare/emptyTag/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "area,base,basefont,br,col,frame,hr,img,input,link,meta,param"
+      },
+      "visibleHelper": {
+        "enumeration": "",
+        "description": "웹스퀘어 렌더링 시 추가작업이 필요한 경우 targetHandler에 처리할 함수를 지정합니다. 함수의 인자로 html string이 전달됩니다.",
+        "xpath": "/WebSquare/visibleHelper/targetHandler/@value",
+        "type": "string"
+      }
+    },
+    "tooltip": {
+      "hideTooltipDisabledComp": {
+        "enumeration": "",
+        "description": "disabled 상태의 컴포넌트에 대해 tootip이 나오지 않게 합니다.",
+        "xpath": "/WebSquare/hideTooltipDisabledComp/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "itemTable": {
+      "allValue": {
+        "enumeration": "",
+        "description": "itemTable의 \"전체 선택\"에 대한 value 값입니다.(관련 컴포넌트 : selectbox, autoComplete, checkbox)",
+        "xpath": "/WebSquare/allValue/@value",
+        "type": "string",
+        "option": "all",
+        "engineDefault": "all",
+        "configDefault": "all"
+      }
+    }
+  },
+  "Comm": {
+    "submission": {
+      "processMsg": {
+        "enumeration": "",
+        "description": "value의 값을 submission시 나타나는 \u0027진행중\u0027 창에 표시합니다.\n이 설정을 사용하면 submission노드에 processMsg속성을 별도로 지정하지 않은 모든 submission에 영향을 주고 특정 submission에서 \u0027진행중\u0027 창을 나타나지 않도록 할 수 없으므로 설정시 주의하여야 합니다.",
+        "xpath": "/WebSquare/submission/processMsg/@value",
+        "type": "string"
+      },
+      "hideProcessMsg": {
+        "enumeration": "",
+        "description": "submission시 나타나는 processMsg를 숨길 수 있는 기능을 설정합니다.",
+        "xpath": "/WebSquare/submission/hideProcessMsg/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true "
+      },
+      "errorHandler": {
+        "enumeration": "",
+        "description": "submission노드의 errorHandler속성의 기본값을 설정합니다.\n이 설정을 사용하면 submission노드에 errorHandler속성을 별도로 지정하지 않은 모든 submission에 영향을 주기 때문에 설정시 주의하여야 합니다.",
+        "xpath": "/WebSquare/submission/errorHandler/@value",
+        "type": "string"
+      },
+      "showSubmissionTime": {
+        "enumeration": "",
+        "description": "value의 값이 true 일 경우 submission의 시작 시간과 끝난 시간을 \u0027로그보기\u0027 창에 표시합니다.",
+        "xpath": "/WebSquare/submission/showSubmissionTime/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "customHandler": {
+        "enumeration": "",
+        "description": "executeSubmission실행 시에 proworks와 연계된 proworksSOAPHandler를 사용하거나, 사용자가 직접 작성한 handler 형태로 submission이 실행되도록 설정합니다.",
+        "xpath": "/WebSquare/submission/customHandler/@value",
+        "type": "string"
+      },
+      "action": {
+        "enumeration": "",
+        "description": "Instance Data를 submit 할 서버측 URI를 설정합니다.",
+        "xpath": "/WebSquare/submission/action/@value",
+        "type": "string"
+      },
+      "mode": {
+        "enumeration": "",
+        "description": "서버와의 통신 방식을 설정합니다.(asynchronous:비동기식, synchronous:동기식)",
+        "xpath": "/WebSquare/submission/mode/@value",
+        "type": "combobox",
+        "option": "synchronous,asynchronous",
+        "engineDefault": "asynchronous"
+      },
+      "method": {
+        "enumeration": "",
+        "description": "get:파라메타를 url에 붙이는 방식 (HTML과 동일)을 설정합니다. \npost:파라메타를 body 구간에 담는 방식 (HTML과 동일).\nform-data-post:파일 업로드용 요청.",
+        "xpath": "/WebSquare/submission/method/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "POST"
+      },
+      "mediatype": {
+        "enumeration": "",
+        "description": "application/x-www-form-urlencoded : 웹 form 방식(HTML방식).\napplication/json : json 방식.\napplication/xml : XML 방식.\ntext/xml : XML 방식 (두 xml 방식의 차이는 http://stackoverflow.com/questions/4832357 참조)",
+        "xpath": "/WebSquare/submission/mediatype/@value",
+        "type": "string"
+      },
+      "timeout": {
+        "enumeration": "",
+        "description": "submission 요청 후 timeout 시간입니다. 이 시간이 초과해도 응답이 오지 않는 경우 error로 처리합니다.\n서브미션의 timeout 기본값은 0(무한)입니다. (단위는 ms)",
+        "xpath": "/WebSquare/submission/timeout/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "0"
+      },
+      "encoding": {
+        "enumeration": "",
+        "description": "서버 측 encoding 타입을 설정합니다. (euc-kr/utf-16/utf-8)",
+        "xpath": "/WebSquare/submission/encoding/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "UTF-8"
+      },
+      "preSubmitFunction": {
+        "enumeration": "",
+        "description": "submission 시작 전에 공통적으로 호출할 함수의 이름을 설정합니다. preSubmitFunction에 지정된 함수는 submission객체를 첫번째 인자로 받습니다.",
+        "xpath": "/WebSquare/submission/preSubmitFunction/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "presubmit"
+      },
+      "callbackSubmitFunction": {
+        "enumeration": "",
+        "description": "submission이 끝난 후에 공통적으로 호출할 함수의 이름을 설정합니다. callbackSubmitFunction에 지정된 함수는 submission 객체와 submssion의 결과가 담겨 있는 객체를 인자로 받습니다.",
+        "xpath": "/WebSquare/submission/callbackSubmitFunction/@value",
+        "type": "string"
+      },
+      "submitErrorHandler": {
+        "enumeration": "",
+        "description": "submission에서 HTTP 에러(상태값이 300이상이거나 200 미만인 경우)가 발생할 경우 추가 작업을 위하여 공통적으로 호출할 함수의 이름을 설정합니다.",
+        "xpath": "/WebSquare/submission/submitErrorHandler/@value",
+        "type": "string"
+      },
+      "submitErrorHandlerMode": {
+        "enumeration": "",
+        "description": "submission error발생시 submitErrorHandler에 등록된 함수와 등록된 이벤트를 호출하는 순서를 정의 하는 설정입니다.\n\"only\"의 경우 등록된 함수만 호출, \"after\"인 경우 등록된 이벤트 호출 후 함수를 호출, \"before\"의 경우 함수 호출 후 등록된 이벤트를 호출합니다.",
+        "xpath": "/WebSquare/submission/submitErrorHandler/@mode",
+        "type": "combobox",
+        "option": "only,after,before"
+      },
+      "externalHandler": {
+        "enumeration": "",
+        "description": "submission에서 data를 전송하기 전, 암호화(외부 API)된 값으로 변환해서 서버에서 전송할 수 있도록 외부API를 설정합니다.",
+        "xpath": "/WebSquare/submission/externalHandler/@value",
+        "type": "string"
+      },
+      "externalResponseHandler": {
+        "enumeration": "",
+        "description": "submission에서 data를 전송받기 전, 복호화(외부 API)된 값으로 변환해서 서버로부터 값을 전송받을 수 있도록 외부API를 설정합니다.",
+        "xpath": "/WebSquare/submission/externalResponseHandler/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "default"
+      },
+      "requestID": {
+        "enumeration": "",
+        "description": "requestID가 지정되어 있는 경우, requestHeader의 mediatype 값을 설정하는 속성입니다. ",
+        "xpath": "/WebSquare/submission/requestID/@mediatype",
+        "type": "string"
+      },
+      "makeGlobalObject": {
+        "enumeration": "",
+        "description": "submission 객체를 window 전역객체로 노출시킬지에 대한 설정이다. true 설정 시 해당 객체들을 전역 변수로 접근할 수 있다. ",
+        "xpath": "/WebSquare/submission/makeGlobalObject/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true ",
+        "latestVersionRecommended": "",
+        "versionLimit": "SP2 전용"
+      },
+      "requestHeaderFunction": {
+        "enumeration": "",
+        "description": "request Header에 사용자 customHeader를 설정할 수 있도록 사용자 정의 함수를 지정할 수 있는 속성입니다.",
+        "xpath": "/WebSquare/submission/requestHeaderFunction/@value",
+        "type": "string"
+      },
+      "abortTrigger": {
+        "enumeration": "",
+        "description": "Submission 중 사용자가 직접 통신을 중지 시킬수 있는 창을 제공하는 속성입니다.",
+        "xpath": "/WebSquare/submission/abortTrigger/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "useModal": {
+        "enumeration": "",
+        "description": "Submission 중에 popup이 아니라 modal를 사용할 수 있도록 하는 속성입니다.",
+        "xpath": "/WebSquare/submission/useModal/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "customHeader": {
+        "enumeration": "",
+        "description": "customHeader\u003d\"false\"시 submissionId를 설정하지 않도록 하는 속성입니다.",
+        "xpath": "/WebSquare/submission/customHeader/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true "
+      },
+      "responseJSONHandler": {
+        "enumeration": "",
+        "description": "response로 온 데이터를 조작할 수 있게 하는 함수를 지정하는 속성입니다. 함수의 인자로 responseJSON이 들어옵니다.",
+        "xpath": "/WebSquare/submission/responseJSONHandler/@value",
+        "type": "string"
+      }
+    },
+    "ajax": {
+      "externalHandler": {
+        "enumeration": "",
+        "description": "ajax통신 시 외부 API를 정의하는 externalHandler을 설정합니다.",
+        "xpath": "/WebSquare/ajax/externalHandler/@value",
+        "type": "string"
+      }
+    },
+    "workflow": {
+      "processMsg": {
+        "enumeration": "",
+        "description": "workflow실행 시 processMsg속성 값을 설정합니다.",
+        "xpath": "/WebSquare/workflow/processMsg/@value",
+        "type": "string"
+      },
+      "makeGlobalObject": {
+        "enumeration": "",
+        "description": "workflow 객체를 window 전역객체로 노출시킬지에 대한 설정입니다. true 설정 시 해당 객체들을 전역 변수로 접근할 수 있습니다.",
+        "xpath": "/WebSquare/workflow/makeGlobalObject/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      }
+    },
+    "hybrid": {
+      "submissionURL": {
+        "enumeration": "",
+        "description": "submission의 경로(action)을 변경하기 위한 설정으로, 이 값이 설정된 경우 이 값에 submission의 action값을 더한 값이 실제 submission호출 경로가 됩니다.\npageURLPrefix와 유사한 기능으로, hybrid에서 경로 호출 시 앞쪽에 특수한 경로를 추가해서 넣어야하는 경우가 생겨서 만들어진 설정입니다.\n예를 들어, /WebSquare/hybrid/submissionURL/@value \u003d \"/aaa\" , submission.action \u003d \"/temp/aa.jsp\" 인 경우 최종 경로는 \"/aaa/temp/aa.jsp\" 가 됩니다.",
+        "xpath": "/WebSquare/hybrid/submissionURL/@value",
+        "type": "string"
+      }
+    }
+  },
+  "Data": {
+    "dataList": {
+      "removeDummyRowStatus": {
+        "enumeration": "",
+        "description": "row의 상태값이 C에서 E로 바뀐 데이터 (removeRow API로 삭제 한 데이터)까지 관리할지의 여부를 설정합니다.",
+        "xpath": "/WebSquare/dataList/removeDummyRowStatus/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "removeDataMatch": {
+        "enumeration": "",
+        "description": "false인 경우, getModifiedXML, getDeleteXML, getVoidXML, getOnlyDeleteXML API 호출 시 리턴되는 xml의 구조가 remove된 것을 별도의 구조로 합니다. \n과거 엔진이 잘못 동작하여 하위호환을 위해 만든 옵션이므로 true로 설정하고 사용해야 합니다.",
+        "xpath": "/WebSquare/dataList/removedDataMatch/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "decreaseGetRangeXML": {
+        "enumeration": "",
+        "description": "true일 경우 getRangeXML API(ex: grid) 호출 시 getRangeXML(from, to)에서 to-1 값이 아닌 to 값까지 가져오게 됩니다.",
+        "xpath": "/WebSquare/dataList/decreaseGetRangeXML/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "excelErrorHandler": {
+        "enumeration": "",
+        "description": "excel 다운 시 에러 발생 시 실행되는 함수를 지정합니다.",
+        "xpath": "/WebSquare/dataList/excel/download/errorHandler/@value",
+        "type": "string"
+      }
+    },
+    "dataMap": {
+      "jsonArray": {
+        "enumeration": "",
+        "description": "true 설정 시 jsonArray 형태의 dataMap을 지원합니다. 설정할 경우, jsonArray 형태로 dataMap을 set 할 수 있으며 get을 하는 경우에도 jsonArray 형태로 반환하게 됩니다.",
+        "xpath": "/WebSquare/dataMap/jsonArray/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    }
+  },
+  "Resource": {
+    "cache": {
+      "cache": {
+        "enumeration": "",
+        "description": "개발환경에서 캐싱을 비활성화 시키기 위해서 random url을 생성하는 로직을 추가할지 설정합니다. XML 파일을 서버에서 읽어들일 때 이 설정을 참고하여 캐싱 여부를 결정합니다.",
+        "xpath": "/WebSquare/environment/@cache",
+        "type": "combobox",
+        "option": "cache,nocache",
+        "engineDefault": "",
+        "configDefault": "nocache"
+      },
+      "postfix": {
+        "enumeration": "",
+        "description": "캐싱 제어를 위한 URL을 생성하기 위한 속성입니다. month, week, day 또는 일련의 문자열을 설정할 수 있습니다.",
+        "xpath": "/WebSquare/environment/@postfix",
+        "type": "string",
+        "option": "",
+        "engineDefault": "day",
+        "configDefault": "day"
+      },
+      "scriptPostfix": {
+        "enumeration": "",
+        "description": "외부JS의 cache 정책을 config.xml의 environment 설정을 따라가도록 하는 설정입니다.\n외부JS는 성격상 environment를 따라가는 것이 올바른 동작이지만 이전에는 engineCache 설정을 따라가고 있었습니다. \n따라서 SP2에서는 \"environment\"로 설정할 것을 권장합니다. ",
+        "xpath": "/WebSquare/script/@postfix",
+        "type": "string"
+      }
+    },
+    "engineCache": {
+      "enable": {
+        "enumeration": "",
+        "description": "웹스웨어 엔진을 캐싱할 것인지를 설정합니다.",
+        "xpath": "/WebSquare/engineCache/@enable",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "compression": {
+        "enumeration": "",
+        "description": "엔진을 gzip으로 압축하여 사용할 것인지 설정합니다.",
+        "xpath": "/WebSquare/engineCache/@compression",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "postfix": {
+        "enumeration": "",
+        "description": "enable true 설정 시 postfix속성을 참고하여 postfix를 추가합니다.",
+        "xpath": "/WebSquare/engineCache/@postfix",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "month "
+      }
+    },
+    "engineLoadingModule": {
+      "ie": {
+        "enumeration": "",
+        "description": "bootlodaer에서 나머지 엔진을 로딩하는 방법을 설정합니다.\n0 : 기존 방식 (All Download)\n1 : 60K분할 다운로드 + 통합 Eval\n2 : 파일별 다운로드 + 통합 Eavl\n3 : 파일별 다운로드 + 개별 Eval",
+        "xpath": "/WebSquare/engineLoadingMode/@ie",
+        "type": "combobox",
+        "option": "0,1,2,3",
+        "engineDefault": "",
+        "configDefault": "0"
+      },
+      "chrome": {
+        "enumeration": "",
+        "description": "bootlodaer에서 나머지 엔진을 로딩하는 방법을 설정합니다.\n0 : 기존 방식 (All Download)\n1 : 60K분할 다운로드 + 통합 Eval\n2 : 파일별 다운로드 + 통합 Eavl\n3 : 파일별 다운로드 + 개별 Eval",
+        "xpath": "/WebSquare/engineLoadingMode/@chrome",
+        "type": "combobox",
+        "option": "0,1,2,3",
+        "engineDefault": "",
+        "configDefault": "0"
+      },
+      "moz": {
+        "enumeration": "",
+        "description": "bootlodaer에서 나머지 엔진을 로딩하는 방법을 설정합니다.\n0 : 기존 방식 (All Download)\n1 : 60K분할 다운로드 + 통합 Eval\n2 : 파일별 다운로드 + 통합 Eavl\n3 : 파일별 다운로드 + 개별 Eval",
+        "xpath": "/WebSquare/engineLoadingMode/@moz",
+        "type": "combobox",
+        "option": "0,1,2,3",
+        "engineDefault": "",
+        "configDefault": "0"
+      },
+      "safari": {
+        "enumeration": "",
+        "description": "bootlodaer에서 나머지 엔진을 로딩하는 방법을 설정합니다.\n0 : 기존 방식 (All Download)\n1 : 60K분할 다운로드 + 통합 Eval\n2 : 파일별 다운로드 + 통합 Eavl\n3 : 파일별 다운로드 + 개별 Eval",
+        "xpath": "/WebSquare/engineLoadingMode/@safari",
+        "type": "combobox",
+        "option": "0,1,2,3",
+        "engineDefault": "",
+        "configDefault": "0"
+      },
+      "opera": {
+        "enumeration": "",
+        "description": "bootlodaer에서 나머지 엔진을 로딩하는 방법을 설정합니다.\n0 : 기존 방식 (All Download)\n1 : 60K분할 다운로드 + 통합 Eval\n2 : 파일별 다운로드 + 통합 Eavl\n3 : 파일별 다운로드 + 개별 Eval",
+        "xpath": "/WebSquare/engineLoadingMode/@opera",
+        "type": "combobox",
+        "option": "0,1,2,3",
+        "engineDefault": "",
+        "configDefault": "0"
+      },
+      "android": {
+        "enumeration": "",
+        "description": "bootlodaer에서 나머지 엔진을 로딩하는 방법을 설정합니다.\n0 : 기존 방식 (All Download)\n1 : 60K분할 다운로드 + 통합 Eval\n2 : 파일별 다운로드 + 통합 Eavl\n3 : 파일별 다운로드 + 개별 Eval",
+        "xpath": "/WebSquare/engineLoadingMode/@android",
+        "type": "combobox",
+        "option": "0,1,2,3",
+        "engineDefault": "",
+        "configDefault": "0"
+      },
+      "iphone": {
+        "enumeration": "",
+        "description": "bootlodaer에서 나머지 엔진을 로딩하는 방법을 설정합니다.\n0 : 기존 방식 (All Download)\n1 : 60K분할 다운로드 + 통합 Eval\n2 : 파일별 다운로드 + 통합 Eavl\n3 : 파일별 다운로드 + 개별 Eval",
+        "xpath": "/WebSquare/engineLoadingMode/@iphone",
+        "type": "combobox",
+        "option": "0,1,2,3",
+        "engineDefault": "",
+        "configDefault": "0"
+      }
+    },
+    "userAgentPattern": {
+      "xPathParser": {
+        "enumeration": "",
+        "description": "브라우저에서 제공하는 XML 및 XPath 구현을 사용하지 않을 userAgent 패턴을 등록합니다. (Opera 11.60, 11.61 등)",
+        "xpath": "/WebSquare/userAgentPattern/@XPathParser",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "Edge|Trident|MSIE"
+      },
+      "serializer": {
+        "enumeration": "",
+        "description": "브라우저에서 제공하는 XML Serializer를 사용하지 않을 userAgent 패턴을 등록합니다. (Galaxy S2 중 일부 오류가 있는 스마트폰을 위한 userAgent를 등록 하기 위한 값을 등록하였습니다.)",
+        "xpath": "/WebSquare/userAgentPattern/@serializer",
+        "type": "string"
+      },
+      "URIEncoder": {
+        "enumeration": "",
+        "description": "브라우저에서 URIEncoding을 자동처리하는 userAgent 패턴을 등록합니다.",
+        "xpath": "/WebSquare/userAgentPattern/@URIEncoder",
+        "type": "string"
+      }
+    }
+  },
+  "NotRecommended": {
+    "notRecommended": {
+      "warningSync": {
+        "enumeration": "",
+        "description": "submission에 sync를 사용하는경우 경고를 표시할지 여부를 설정합니다. 설정안된 경우 false를 기본값으로 사용하며 true로 설정하는 것을 권장합니다.",
+        "xpath": "/WebSquare/notRecommended/warningSync/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "false",
+        "configDefault": "true "
+      }
+    }
+  },
+  "컴포넌트(config 전용)": {
+    "autoComplete": {
+      "overrideKey": {
+        "enumeration": "",
+        "description": "overrideKey에 특정 키들을 지정하면 해당 키에 대한 처리를 웹스퀘어에서 관여하지 않게 됩니다.\n속성값 입력 방법은 입력을 무시할 키에 대한 keyCode 숫자값을 입력하면 됩니다. 여러 개의 키를 등록하는 경우 \",\" 구분자를 이용하여 keyCode 숫자값을 나열합니다. 만약 모든 키를 등록하는 경우에는 \"all\" 로 설정하면 됩니다.",
+        "xpath": "/WebSquare/autoComplete/overrideKey/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "",
+        "since": "",
+        "remark": "overrideKey는 itemTable 사용 컴포넌트에 대해 추가한 속성."
+      }
+    },
+    "checkcombobox": {
+      "overrideKey": {
+        "enumeration": "",
+        "description": "overrideKey에 특정 키들을 지정하면 해당 키에 대한 처리를 웹스퀘어에서 관여하지 않게 됩니다.\n속성값 입력 방법은 입력을 무시할 키에 대한 keyCode 숫자값을 입력하면 됩니다. 여러 개의 키를 등록하는 경우 \",\" 구분자를 이용하여 keyCode 숫자값을 나열합니다. 만약 모든 키를 등록하는 경우에는 \"all\" 로 설정하면 됩니다.",
+        "xpath": "/WebSquare/checkcombobox/overrideKey/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "",
+        "since": "",
+        "remark": "overrideKey는 itemTable 사용 컴포넌트에 대해 추가한 속성."
+      }
+    },
+    "grid": {
+      "collectGarbage": {
+        "enumeration": "",
+        "description": "IE에서 grid에 가로 스크롤 이벤트가 발생하거나 데이터를 새로 그리는 경우 collectGarbage함수를 호출할지에 대한 여부를 설정합니다. \"both\", \"scroll\", \"draw\", \"none\" 4가지 값이 존재합니다.",
+        "xpath": "/WebSquare/grid/collectGarbage/@value",
+        "type": "combobox",
+        "option": "both,scroll,draw,none",
+        "engineDefault": "",
+        "configDefault": "none"
+      },
+      "column[expression]/NaNFormat": {
+        "enumeration": "",
+        "description": "값 처리중 NaN 발생 시 다른 값으로 바꾸는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"expression\"]/NaNFormat/@value",
+        "type": "string"
+      },
+      "column[calendar]/dateValidCheck": {
+        "enumeration": "",
+        "description": "calander에서 유효성 검사를 하도록 하는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"calendar\"]/dateValidCheck/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "column[calendar]/ioFormat[yearMonth]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonth\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[calendar]/ioFormat[yearMonthDate]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonthDate\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[calendar]/ioFormat[yearMonthDateTime]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonthDateTime\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[calendar]/ioFormat[yearMonthDateTimeSec]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonthDateTimeSec\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[text]/dataType[euro]/customModelFormatter": {
+        "enumeration": "",
+        "description": "dataType이 euro일때 customModelFormatter속성을 적용할 수 있는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"text\"]/dataType[@valueType\u003d\"euro\"]/customModelFormatter/@value",
+        "type": "string"
+      },
+      "column[text]/dataType[euro]/customModelUnformatter": {
+        "enumeration": "",
+        "description": "dataType이 euro일때 customModelUnformatter속성을 적용할 수 있는 속성입니다.",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"text\"]/dataType[@valueType\u003d\"euro\"]/customModelUnformatter/@value",
+        "type": "string"
+      },
+      "column[textarea]/keepCellClass": {
+        "enumeration": "",
+        "description": "gridview의 inputType이 textarea인 경우 cell에 class를 추가하면 textarea tag에도 추가하도록 하는 속성입니다. (비공개)",
+        "xpath": "/WebSquare/grid/column[@inputType\u003d\"textarea\"]/keepCellClass/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "column/editType": {
+        "enumeration": "",
+        "description": "column의 editType을 설정합니다. ",
+        "xpath": "/WebSquare/grid/column/editType/@value",
+        "type": "string"
+      },
+      "column/chooseOptionLabel": {
+        "enumeration": "",
+        "description": "column의 chooseOptionLabel을 표시할지 여부를 설정합니다. ",
+        "xpath": "/WebSquare/grid/column/chooseOptionLabel/@value",
+        "type": "string"
+      },
+      "column/displayFormat": {
+        "enumeration": "",
+        "description": "column의 displayFormat을 설정합니다. ",
+        "xpath": "/WebSquare/grid/column/displayFormat/@value",
+        "type": "string"
+      },
+      "dataType[date]/@displayFormat": {
+        "enumeration": "",
+        "description": "dataType이 date인 column의 displayFormat을 설정합니다. ",
+        "xpath": "/WebSquare/grid/dataType/date/@displayFormat",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "yyyy-MM-dd"
+      },
+      "excel/download/errorHandler": {
+        "enumeration": "",
+        "description": "excel 다운 시 에러 발생 시 실행되는 함수를 지정합니다. errorHandler에 정의된 함수의 인자로 gridView id를 전달 하도록 합니다.",
+        "xpath": "/WebSquare/grid/excel/download/errorHandler/@value",
+        "type": "string"
+      },
+      "getColumnVisible/@useRealColIndex": {
+        "enumeration": "",
+        "description": "getColumnVisible API 사용 시 multiRow일 때도 정상 동작 하도록 하는 속성입니다.",
+        "xpath": "/WebSquare/grid/getColumnVisible/@useRealColIndex",
+        "type": "string"
+      },
+      "header/column/useFilter": {
+        "enumeration": "",
+        "description": "column dataType에 따라 filter를 사용할 것인지 설정하는 속성입니다.",
+        "xpath": "/WebSquare/grid/header/column/useFilter/@value",
+        "type": "string"
+      },
+      "header/column/hideCustomFilter": {
+        "enumeration": "",
+        "description": "checkbox 에 \"사용자필터\" 를 안 보이게 하는 속성입니다.",
+        "xpath": "/WebSquare/grid/header/column/hideCustomFilter/@value",
+        "type": "string"
+      }
+    },
+    "gridView": {
+      "column[expression]/NaNFormat": {
+        "enumeration": "",
+        "description": "값 처리중 NaN 발생 시 다른 값으로 바꾸는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"expression\"]/NaNFormat/@value",
+        "type": "string"
+      },
+      "column[calendar]/dateValidCheck": {
+        "enumeration": "",
+        "description": "calander에서 유효성 검사를 하도록 하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"calendar\"]/dateValidCheck/@value",
+        "type": "string"
+      },
+      "column[calendar]/ioFormat[yearMonth]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonth\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[calendar]/ioFormat[yearMonthDate]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonthDate\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[calendar]/ioFormat[yearMonthDateTime]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonthDateTime\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[calendar]/ioFormat[yearMonthDateTimeSec]/@defaultValue": {
+        "enumeration": "",
+        "description": "열의 기본 값인 defaultValue를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"calendar\"]/ioFormat[@valueType\u003d\"yearMonthDateTimeSec\"]/@defaultValue",
+        "type": "string"
+      },
+      "column[text]/dataType[euro]/customModelFormatter": {
+        "enumeration": "",
+        "description": "dataType이 euro일때 customModelFormatter속성을 적용할 수 있는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"text\"]/dataType[@valueType\u003d\"euro\"]/customModelFormatter/@value",
+        "type": "string"
+      },
+      "column[text]/dataType[euro]/customModelUnformatter": {
+        "enumeration": "",
+        "description": "dataType이 euro일때 customModelUnformatter속성을 적용할 수 있는 속성입니다.",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"text\"]/dataType[@valueType\u003d\"euro\"]/customModelUnformatter/@value",
+        "type": "string"
+      },
+      "column[textarea]/keepCellClass": {
+        "enumeration": "",
+        "description": "gridview의 inputType이 textarea인 경우 cell에 class를 추가하면 textarea tag에도 추가하도록 하는 속성입니다. (비공개)",
+        "xpath": "/WebSquare/gridView/column[@inputType\u003d\"textarea\"]/keepCellClass/@value",
+        "type": "string"
+      },
+      "column/editType": {
+        "enumeration": "",
+        "description": "column의 editType을 설정합니다. ",
+        "xpath": "/WebSquare/gridView/column/editType/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "scriptLoading"
+      },
+      "column/chooseOptionLabel": {
+        "enumeration": "",
+        "description": "column의 chooseOptionLabel을 표시할지 여부를 설정합니다. ",
+        "xpath": "/WebSquare/gridView/column/chooseOptionLabel/@value",
+        "type": "string"
+      },
+      "column/displayFormat": {
+        "enumeration": "",
+        "description": "column의 displayFormat을 설정합니다. ",
+        "xpath": "/WebSquare/gridView/column/displayFormat/@value",
+        "type": "string"
+      },
+      "column/textAlign": {
+        "enumeration": "",
+        "description": "column의 text-align을 설정합니다.",
+        "xpath": "/WebSquare/gridView/column/textAlign/@value",
+        "type": "string"
+      },
+      "dataType[date]/@displayFormat": {
+        "enumeration": "",
+        "description": "displayFormat을 설정합니다. ",
+        "xpath": "/WebSquare/gridView/dataType/date/@displayFormat",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "yyyy-MM-dd"
+      },
+      "excel/download/errorHandler": {
+        "enumeration": "",
+        "description": "excel 다운 시 에러 발생 시 실행되는 함수를 지정합니다. errorHandler에 정의된 함수의 인자로 gridView id를 전달하도록 합니다.",
+        "xpath": "/WebSquare/gridView/excel/download/errorHandler/@value",
+        "type": "string"
+      },
+      "getColumnVisible/@useRealColIndex": {
+        "enumeration": "",
+        "description": "getColumnVisible API 사용 시 multiRow일 때도 정상 동작 하도록 하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/getColumnVisible/@useRealColIndex",
+        "type": "string"
+      },
+      "header/column/useFilter": {
+        "enumeration": "",
+        "description": "column dataType에 따라 filter를 사용할 것인지 설정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/header/column/useFilter/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "header/column/hideCustomFilter": {
+        "enumeration": "",
+        "description": "checkbox 에 \"사용자필터\" 를 안 보이게 하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/header/column/hideCustomFilter/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "colIdToColIndex": {
+        "enumeration": "",
+        "description": "그리드의 editMode 진입시 column id를 column index로 변환해서 계산하도록 하는 속성입니다. ( 하위호환용 )",
+        "xpath": "/WebSquare/gridView/colIdToColIndex/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "mainZIndex": {
+        "enumeration": "",
+        "description": "main div의 zIndex를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/mainZIndex/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "10"
+      },
+      "xScrollZIndex": {
+        "enumeration": "",
+        "description": "xScroll div의 zIndex를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/xScrollZIndex/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "20"
+      },
+      "yScrollZIndex": {
+        "enumeration": "",
+        "description": "yScroll div의 zIndex를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/gridView/yScrollZIndex/@value",
+        "type": "string",
+        "option": "true,false",
+        "engineDefault": "true ",
+        "configDefault": "true "
+      },
+      "useDataDragDropGuideLine": {
+        "enumeration": "",
+        "description": "dragDrop시 가이드라인 사용 여부",
+        "xpath": "/WebSquare/gridView/useDataDragDropGuideLine/@value",
+        "type": "combobox",
+        "option": "",
+        "engineDefault": "15"
+      }
+    },
+    "group": {
+      "adaptive/trimText": {
+        "enumeration": "",
+        "description": "true 설정 시 tableLayout에서 adaptive 적용시 WebSquare Studio에서 ctrl+shift+f(줄바꿈) 실행 후 페이지 로딩시 디자인이 깨지지 않습니다.",
+        "xpath": "/WebSquare/group/adaptive/trimText/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "applyScopeHeaders": {
+        "enumeration": "",
+        "description": "strictmode true 설정 후, 스튜디오에서 헤더 추가를 하면 header attribute에 등록되는 element id와 실제 id가 달라 추가한 속성입니다.\nheader attribute에 scope이 적용됩니다. ex) group1 -\u003e mf_group1",
+        "xpath": "/WebSquare/group/applyScopeHeaders/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "input": {
+      "customModelFormatter[euro]/@value": {
+        "enumeration": "",
+        "description": "dataCollection과 바인딩 시, dataCollection에 값이 저장되기 전에 실행되는 사용자 정의 함수입니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"euro\"]/customModelFormatter/@value",
+        "type": "string"
+      },
+      "customModelUnformatter[euro]/@value": {
+        "enumeration": "",
+        "description": "dataCollection과 바인딩 시, dataCollection에서 값을 읽어올 때 값을 반환하기 전에 실행되는 사용자 정의 함수입니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"euro\"]/customModelUnformatter/@value",
+        "type": "string"
+      },
+      "displayFormat[bigDecimal]/@defaultValue": {
+        "enumeration": "",
+        "description": "엔진 내부에서 dataType 속성에 정의한 type에 따라 동작되며 excel의 서식을 적용하는 방식처럼 value의 format을 적용합니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"bigDecimal\"]/displayFormat/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[date]/@defaultValue": {
+        "enumeration": "",
+        "description": "엔진 내부에서 dataType 속성에 정의한 type에 따라 동작되며 excel의 서식을 적용하는 방식처럼 value의 format을 적용합니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"date\"]/displayFormat/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[euro]/@defaultValue": {
+        "enumeration": "",
+        "description": "엔진 내부에서 dataType 속성에 정의한 type에 따라 동작되며 excel의 서식을 적용하는 방식처럼 value의 format을 적용합니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"euro\"]/displayFormat/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[float]/@defaultValue": {
+        "enumeration": "",
+        "description": "엔진 내부에서 dataType 속성에 정의한 type에 따라 동작되며 excel의 서식을 적용하는 방식처럼 value의 format을 적용합니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"float\"]/displayFormat/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[number]/@defaultValue": {
+        "enumeration": "",
+        "description": "엔진 내부에서 dataType 속성에 정의한 type에 따라 동작되며 excel의 서식을 적용하는 방식처럼 value의 format을 적용합니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"number\"]/displayFormat/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[text]/@defaultValue": {
+        "enumeration": "",
+        "description": "엔진 내부에서 dataType 속성에 정의한 type에 따라 동작되며 excel의 서식을 적용하는 방식처럼 value의 format을 적용합니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"text\"]/displayFormat/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[time]/@defaultValue": {
+        "enumeration": "",
+        "description": "엔진 내부에서 dataType 속성에 정의한 type에 따라 동작되며 excel의 서식을 적용하는 방식처럼 value의 format을 적용합니다.",
+        "xpath": "/WebSquare/input/dataType[@valueType\u003d\"time\"]/displayFormat/@defaultValue",
+        "type": "string"
+      }
+    },
+    "inputCalendar": {
+      "calendarDisplayFormat[year]/@defaultValue": {
+        "enumeration": "",
+        "description": "inputCalendar의 displayFormat 속성과는 별도로 달력에 표시되는 날짜 자체의 displayFormat을 설정하고자 할 때 사용합니다.",
+        "xpath": "/WebSquare/inputCalendar/calendarDisplayFormat[@valueType\u003d\"year\"]/@defaultValue",
+        "type": "string"
+      },
+      "calendarDisplayFormat[yearMonth]/@defaultValue": {
+        "enumeration": "",
+        "description": "inputCalendar의 displayFormat 속성과는 별도로 달력에 표시되는 날짜 자체의 displayFormat을 설정하고자 할 때 사용합니다.",
+        "xpath": "/WebSquare/inputCalendar/calendarDisplayFormat[@valueType\u003d\"yearMonth\"]/@defaultValue",
+        "type": "string"
+      },
+      "calendarDisplayFormat[yearMonthDate]/@defaultValue": {
+        "enumeration": "",
+        "description": "inputCalendar의 displayFormat 속성과는 별도로 달력에 표시되는 날짜 자체의 displayFormat을 설정하고자 할 때 사용합니다.",
+        "xpath": "/WebSquare/inputCalendar/calendarDisplayFormat[@valueType\u003d\"yearMonthDate\"]/@defaultValue",
+        "type": "string"
+      },
+      "calendarDisplayFormat[yearMonthDateHour]/@defaultValue": {
+        "enumeration": "",
+        "description": "inputCalendar의 displayFormat 속성과는 별도로 달력에 표시되는 날짜 자체의 displayFormat을 설정하고자 할 때 사용합니다.",
+        "xpath": "/WebSquare/inputCalendar/calendarDisplayFormat[@valueType\u003d\"yearMonthDateHour\"]/@defaultValue",
+        "type": "string"
+      },
+      "calendarDisplayFormat[yearMonthDateTime]/@defaultValue": {
+        "enumeration": "",
+        "description": "inputCalendar의 displayFormat 속성과는 별도로 달력에 표시되는 날짜 자체의 displayFormat을 설정하고자 할 때 사용합니다.",
+        "xpath": "/WebSquare/inputCalendar/calendarDisplayFormat[@valueType\u003d\"yearMonthDateTime\"]/@defaultValue",
+        "type": "string"
+      },
+      "calendarDisplayFormat[yearMonthDateTimeSec]/@defaultValue": {
+        "enumeration": "",
+        "description": "inputCalendar의 displayFormat 속성과는 별도로 달력에 표시되는 날짜 자체의 displayFormat을 설정하고자 할 때 사용합니다.",
+        "xpath": "/WebSquare/inputCalendar/calendarDisplayFormat[@valueType\u003d\"yearMonthDateTimeSec\"]/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[year]/@defaultValue": {
+        "enumeration": "",
+        "description": "input에 표현될 년월일에 대한 format의 default값을 설정합니다.",
+        "xpath": "/WebSquare/inputCalendar/displayFormat[@valueType\u003d\"year\"]/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[yearMonth]/@defaultValue": {
+        "enumeration": "",
+        "description": "input에 표현될 년월일에 대한 format의 default값을 설정합니다.",
+        "xpath": "/WebSquare/inputCalendar/displayFormat[@valueType\u003d\"yearMonth\"]/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[yearMonthDate]/@defaultValue": {
+        "enumeration": "",
+        "description": "input에 표현될 년월일에 대한 format의 default값을 설정합니다.",
+        "xpath": "/WebSquare/inputCalendar/displayFormat[@valueType\u003d\"yearMonthDate\"]/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[yearMonthDateHour]/@defaultValue": {
+        "enumeration": "",
+        "description": "input에 표현될 년월일에 대한 format의 default값을 설정합니다.",
+        "xpath": "/WebSquare/inputCalendar/displayFormat[@valueType\u003d\"yearMonthDateHour\"]/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[yearMonthDateTimeTime]/@defaultValue": {
+        "enumeration": "",
+        "description": "input에 표현될 년월일에 대한 format의 default값을 설정합니다.",
+        "xpath": "/WebSquare/inputCalendar/displayFormat[@valueType\u003d\"yearMonthDateTime\"]/@defaultValue",
+        "type": "string"
+      },
+      "displayFormat[yearMonthDateTimeSec]/@defaultValue": {
+        "enumeration": "",
+        "description": "input에 표현될 년월일에 대한 format의 default값을 설정합니다.",
+        "xpath": "/WebSquare/inputCalendar/displayFormat[@valueType\u003d\"yearMonthDateTimeSec\"]/@defaultValue",
+        "type": "string"
+      },
+      "ioFormat[year]/@defaultValue": {
+        "enumeration": "",
+        "description": "사용자가 data를 입력하는 순서와 format 매칭시켜주는 기능입니다.(\u0027y\u0027,\u0027M\u0027,\u0027d\u0027,\u0027H\u0027,\u0027m\u0027 문자만 허용)",
+        "xpath": "/WebSquare/inputCalendar/ioFormat[@valueType\u003d\"year\"]/@defaultValue",
+        "type": "string"
+      },
+      "ioFormat[yearMonth]/@defaultValue": {
+        "enumeration": "",
+        "description": "사용자가 data를 입력하는 순서와 format 매칭시켜주는 기능입니다.(\u0027y\u0027,\u0027M\u0027,\u0027d\u0027,\u0027H\u0027,\u0027m\u0027 문자만 허용)",
+        "xpath": "/WebSquare/inputCalendar/ioFormat[@valueType\u003d\"yearMonth\"]/@defaultValue",
+        "type": "string"
+      },
+      "ioFormat[yearMonthDate]/@defaultValue": {
+        "enumeration": "",
+        "description": "사용자가 data를 입력하는 순서와 format 매칭시켜주는 기능입니다.(\u0027y\u0027,\u0027M\u0027,\u0027d\u0027,\u0027H\u0027,\u0027m\u0027 문자만 허용)",
+        "xpath": "/WebSquare/inputCalendar/ioFormat[@valueType\u003d\"yearMonthDate\"]/@defaultValue",
+        "type": "string"
+      },
+      "ioFormat[yearMonthDateHour]/@defaultValue": {
+        "enumeration": "",
+        "description": "사용자가 data를 입력하는 순서와 format 매칭시켜주는 기능입니다.(\u0027y\u0027,\u0027M\u0027,\u0027d\u0027,\u0027H\u0027,\u0027m\u0027 문자만 허용)",
+        "xpath": "/WebSquare/inputCalendar/ioFormat[@valueType\u003d\"yearMonthDateHour\"]/@defaultValue",
+        "type": "string"
+      },
+      "ioFormat[yearMonthDateTime]/@defaultValue": {
+        "enumeration": "",
+        "description": "사용자가 data를 입력하는 순서와 format 매칭시켜주는 기능입니다.(\u0027y\u0027,\u0027M\u0027,\u0027d\u0027,\u0027H\u0027,\u0027m\u0027 문자만 허용)",
+        "xpath": "/WebSquare/inputCalendar/ioFormat[@valueType\u003d\"yearMonthDateTime\"]/@defaultValue",
+        "type": "string"
+      },
+      "ioFormat[yearMonthDateTimeSec]/@defaultValue": {
+        "enumeration": "",
+        "description": "사용자가 data를 입력하는 순서와 format 매칭시켜주는 기능입니다.(\u0027y\u0027,\u0027M\u0027,\u0027d\u0027,\u0027H\u0027,\u0027m\u0027 문자만 허용)",
+        "xpath": "/WebSquare/inputCalendar/ioFormat[@valueType\u003d\"yearMonthDateTimeSec\"]/@defaultValue",
+        "type": "string"
+      },
+      "placeholder[year]/@defaultValue": {
+        "enumeration": "",
+        "description": "HTML5의 placeholder 기능으로 사용자에게 알려줘야 할 문구(hint)등을 명시합니다.",
+        "xpath": "/WebSquare/inputCalendar/placeholder[@valueType\u003d\"year\"]/@defaultValue",
+        "type": "string"
+      },
+      "placeholder[yearMonth]/@defaultValue": {
+        "enumeration": "",
+        "description": "HTML5의 placeholder 기능으로 사용자에게 알려줘야 할 문구(hint)등을 명시합니다.",
+        "xpath": "/WebSquare/inputCalendar/placeholder[@valueType\u003d\"yearMonth\"]/@defaultValue",
+        "type": "string"
+      },
+      "placeholder[yearMonthDate]/@defaultValue": {
+        "enumeration": "",
+        "description": "HTML5의 placeholder 기능으로 사용자에게 알려줘야 할 문구(hint)등을 명시합니다.",
+        "xpath": "/WebSquare/inputCalendar/placeholder[@valueType\u003d\"yearMonthDate\"]/@defaultValue",
+        "type": "string"
+      },
+      "placeholder[yearMonthDateHour]/@defaultValue": {
+        "enumeration": "",
+        "description": "HTML5의 placeholder 기능으로 사용자에게 알려줘야 할 문구(hint)등을 명시합니다.",
+        "xpath": "/WebSquare/inputCalendar/placeholder[@valueType\u003d\"yearMonthDateHour\"]/@defaultValue",
+        "type": "string"
+      },
+      "placeholder[yearMonthDateTime]/@defaultValue": {
+        "enumeration": "",
+        "description": "HTML5의 placeholder 기능으로 사용자에게 알려줘야 할 문구(hint)등을 명시합니다.",
+        "xpath": "/WebSquare/inputCalendar/placeholder[@valueType\u003d\"yearMonthDateTime\"]/@defaultValue",
+        "type": "string"
+      },
+      "placeholder[yearMonthDateTimeSec]/@defaultValue": {
+        "enumeration": "",
+        "description": "HTML5의 placeholder 기능으로 사용자에게 알려줘야 할 문구(hint)등을 명시합니다.",
+        "xpath": "/WebSquare/inputCalendar/placeholder[@valueType\u003d\"yearMonthDateTimeSec\"]/@defaultValue",
+        "type": "string"
+      }
+    },
+    "popup": {
+      "denyConflictPopupId": {
+        "enumeration": "",
+        "description": "동일한 ID의 팝업이 연속해서 열리지 않도록 하는 기능으로, 동일 ID 의 팝업이 있는 경우 이후에 띄워지는 팝업이 열리지 않게 하는 속성입니다.",
+        "xpath": "/WebSquare/popup/denyConflictPopupId/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "false "
+      },
+      "popupCenter": {
+        "enumeration": "",
+        "description": "팝업을 생성할 때 left, top 속성이 지정되어있지 않은 경우 화면의 정가운데에 팝업이 뜨도록 하는 속성입니다.",
+        "xpath": "/WebSquare/popup/popupCenter/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "selectbox": {
+      "mobileRenderType": {
+        "enumeration": "",
+        "description": "모바일에서 렌더링되는 레이아웃 구조를 지정합니다.",
+        "xpath": "/WebSquare/selectbox/renderType/@mobile",
+        "type": "combobox",
+        "option": "component,native,select",
+        "engineDefault": "auto"
+      },
+      "overrideKey": {
+        "enumeration": "",
+        "description": "overrideKey에 특정 키들을 지정하면 해당 키에 대한 처리를 웹스퀘어에서 관여하지 않게 됩니다.\n속성값 입력 방법은 입력을 무시할 키에 대한 keyCode 숫자값을 입력하면 됩니다. 여러 개의 키를 등록하는 경우 \",\" 구분자를 이용하여 keyCode 숫자값을 나열합니다. 만약 모든 키를 등록하는 경우에는 \"all\" 로 설정하면 됩니다.",
+        "xpath": "/WebSquare/selectbox/overrideKey/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "",
+        "since": "",
+        "remark": "overrideKey는 itemTable 사용 컴포넌트에 대해 추가한 속성."
+      }
+    },
+    "tabControl": {
+      "overrideKey": {
+        "enumeration": "",
+        "description": "overrideKey에 특정 키들을 지정하면 해당 키에 대한 처리를 웹스퀘어에서 관여하지 않게 됩니다.\n속성값 입력 방법은 입력을 무시할 키에 대한 keyCode 숫자값을 입력하면 됩니다. 여러 개의 키를 등록하는 경우 \",\" 구분자를 이용하여 keyCode 숫자값을 나열합니다. 만약 모든 키를 등록하는 경우에는 \"all\" 로 설정하면 됩니다.",
+        "xpath": "/WebSquare/tabControl/overrideKey/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "",
+        "since": "",
+        "remark": "overrideKey는 itemTable 사용 컴포넌트에 대해 추가한 속성."
+      }
+    },
+    "windowContainer": {
+      "getWindow/@searchTarget": {
+        "enumeration": "",
+        "description": "getWindow API 사용 시 인자를 무엇을 기준으로 window를 찾을 것인지에 대한 속성입니다. (default: title)",
+        "xpath": "/WebSquare/windowContainer/getWindow/@searchTarget",
+        "type": "string",
+        "option": "",
+        "engineDefault": "title",
+        "configDefault": "windowId"
+      }
+    }
+  },
+  "Deprecated": {
+    "stylesheet": {
+      "stylesheet": {
+        "enumeration": "",
+        "description": "value 값에 해당하는 css 파일을 읽어 적용합니다. 파일은 websquare/skin/에 위치하여야 합니다.\n[(empty), stylesheet.css, stylesheet_ext.css, stylesheet_block.css, stylesheet_ext_block.css] 5개의 값중 하나를 사용한다. \n현재 이 속성을 직접 컨트롤하는 경우는 없으며, import 설정에 따라 나뉩니다.",
+        "xpath": "/WebSquare/stylesheet/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "stylesheet_ext.css",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "Y"
+      },
+      "relativePath": {
+        "enumeration": "",
+        "description": "iframe의 w2xHome을 부모가 아닌 자신으로 설정하여 상대경로가 올바르게 적용되도록 설정합니다.",
+        "xpath": "/WebSquare/stylesheet/@relativePath",
+        "type": "combobox",
+        "option": "true,false "
+      },
+      "removeDefaultClass": {
+        "enumeration": "",
+        "description": "removeDefaultClass태그의 값이 true이면, removeClass API 사용 시 컴포넌트의 class속성에 직접 정의된 class를 삭제할 수 있습니다.",
+        "xpath": "/WebSquare/style/removeDefaultClass/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      }
+    },
+    "docType": {
+      "docType": {
+        "enumeration": "",
+        "description": "value 값에 따라 웹스퀘어 DocType 모드를 설정합니다.",
+        "xpath": "/WebSquare/docType/@value",
+        "type": "combobox",
+        "option": "quirk,standard",
+        "engineDefault": "quirk",
+        "configDefault": "standard"
+      }
+    },
+    "mode": {
+      "mode": {
+        "enumeration": "",
+        "description": "production로 설정되면 _alert를 실행시키지 않습니다.",
+        "xpath": "/WebSquare/environment/@mode",
+        "type": "combobox",
+        "option": "development,production",
+        "engineDefault": "",
+        "configDefault": "production"
+      }
+    },
+    "debug": {
+      "fixErrorLineNumber": {
+        "enumeration": "",
+        "description": "IE 구형 버전에서 script 오류 발생시 위치 표시가 안되는 문제 보완용으로 추가하였습니다.(deprecated)",
+        "xpath": "/WebSquare/debug/@fixErrorLineNumber",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "선행처리": {
+      "systemPreProcessor": {
+        "enumeration": "",
+        "description": "웹스퀘어의 모든 화면이 로딩되기 전에 실행되는 스크립트로 웹스퀘어 엔진이 로딩 직전에 실행됩니다.",
+        "xpath": "/WebSquare/preProcessor/systemPreProcessor/@value",
+        "type": "string"
+      },
+      "businessPreProcessor": {
+        "enumeration": "",
+        "description": "웹스퀘어의 모든 화면이 로딩되기 전에 실행되는 스크립트로 화면 렌더링이 되기 직전에 실행됩니다.",
+        "xpath": "/WebSquare/preProcessor/businessPreProcessor/@value",
+        "type": "string"
+      }
+    },
+    "컴포넌트": {
+      "웹스퀘어 컴포넌트": {
+        "enumeration": "",
+        "description": "웹스퀘어 컴포넌트를 추가로 정의하는 경우 사용합니다. 하위노드에 설정된 JavaScript파일을 추가 uiplugin으로 사용합니다. 특정 사이트를 위한 UI Component가 필요한 경우 사용합니다.(deprecated)",
+        "xpath": "/WebSquare/uiplugin",
+        "type": "element",
+        "option": "",
+        "engineDefault": "",
+        "configDefault": "",
+        "latestVersionRecommended": "",
+        "versionLimit": "",
+        "necessary": "",
+        "since": "",
+        "remark": "사용 여부 확인 후 삭제 필요",
+        "child": [
+          {
+            "enumeration": "id",
+            "description": "xml파일에서 사용되는 tag 이름입니다.",
+            "xpath": "/WebSquare/uiplugin/module/@id",
+            "type": "string"
+          },
+          {
+            "enumeration": "namespace",
+            "description": "xml파일에서 사용되는 namespace입니다.",
+            "xpath": "/WebSquare/uiplugin/module/@namespace",
+            "type": "string"
+          },
+          {
+            "enumeration": "className",
+            "description": "UI Plugin이 구현되어 있는 객체 이름입니다.",
+            "xpath": "/WebSquare/uiplugin/module/@className",
+            "type": "string"
+          },
+          {
+            "enumeration": "value",
+            "description": "JavaScript 파일 위치입니다.",
+            "xpath": "/WebSquare/uiplugin/module/@src",
+            "type": "string"
+          }
+        ]
+      },
+      "(wframe) version": {
+        "enumeration": "",
+        "description": "websquare version에 따라 자동으로 해당 속성 값(wframe version)이 설정됩니다.\n기본적으로는 strictMode일 경우 sp3방식, mode가 \"sync\"인 경우 sp2 방식, 그 외의 경우는 sp1 방식으로 판단합니다. ",
+        "xpath": "/WebSquare/wframe/version/@value",
+        "type": "combobox",
+        "option": "3,2,1"
+      },
+      "(treeview) useClickEventToggleButton": {
+        "enumeration": "",
+        "description": "ontoggleclick 발생 시 같이 onclick이 일어나지 않도록 하는 하위호환성 유지용 옵션입니다.",
+        "xpath": "/WebSquare/treeview/useClickEventToggleButton/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "UDC": {
+      "SP1 UDC 스펙 지원": {
+        "enumeration": "",
+        "description": "초창기 버전의 udc 스펙을 사용해서 udc파일들을 작성한 경우 true로 설정합니다.\nudc파일에서 \u003chead\u003e 밑에 \u003cw2:type\u003eUDC\u003c/w2:type\u003e 노드가 없는 것이 초창기 버전의 udc 스펙입니다. 즉, 현재는 사용하지 않는 옵션 입니다.",
+        "xpath": "/WebSquare/supportW2Udc/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "데이터 변환": {
+      "xml2jsonFunction": {
+        "enumeration": "",
+        "description": "입력된 XML을 JSON으로 변환하여 String으로 반환하는 함수를 설정합니다.",
+        "xpath": "/WebSquare/json/xml2jsonFunction/@value",
+        "type": "string"
+      },
+      "json2xmlFunction": {
+        "enumeration": "",
+        "description": "JSON 형태의 데이터를 웹스퀘어에서 정의된 XML형태로 변환하여 반환하는 함수를 설정합니다.",
+        "xpath": "/WebSquare/json/json2xmlFunction/@value",
+        "type": "string"
+      },
+      "removeXmlNameSpace": {
+        "enumeration": "",
+        "description": "네임스페이스 없이 XML Document를 XML String으로 반환하는 기능이 동작되도록 설정합니다.",
+        "xpath": "/WebSquare/removeXmlNameSpace/@value",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "Instance": {
+      "copyChildrenNodes": {
+        "enumeration": "",
+        "description": "copyChildrenNodes 태그의 refresh 값이 true라면 WebSquare.ModelUtil.copyChildrenNodes를 실행하고나서 모델을 refresh 합니다.",
+        "xpath": "/WebSquare/ModelUtil/copyChildrenNodes/@refresh",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "false "
+      },
+      "removeInstanceNode": {
+        "enumeration": "",
+        "description": "removeInstanceNode태그의 값이 true라면, WebSquare.ModelUtil.removeInstanceNode를 실행하고 나서 모델을 refresh합니다.",
+        "xpath": "/WebSquare/ModelUtil/removeInstanceNode/@refresh",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "forcedValueSetting": {
+        "enumeration": "",
+        "description": "value 값에 따라 XML 모델 인스턴스에 값을 넣으려고 할 때에 대상 인스턴스가 없을 경우 해당 instance를 만들지를 설정합니다.\nvalue의 값이 true라면 새로운 인스턴스를 만들고, false일 경우에는 값을 넣지 않습니다.",
+        "xpath": "/WebSquare/forcedValueSetting/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      }
+    },
+    "checkUpdate": {
+      "enable": {
+        "enumeration": "",
+        "description": "enable true로 설정시 XML파일이 갱신을 자동으로 확인하는 기능(head노드의 \u003cw2:buildDate\u003e2008-12-22 15:51:20\u003c/w2:buildDate\u003e 노드 사용)을 활성화합니다.",
+        "xpath": "/WebSquare/checkUpdate/@enable",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "mode": {
+        "enumeration": "",
+        "description": "client로 설정되면 XML을 직접 client로 가져와서 파싱한 다음 업데이트 여부를 판단합니다.\nserver로 설정되면 서버 URL에 XML path를 보내서 버전정보를 반환받아 업데이트 여부를 판단합니다.",
+        "xpath": "/WebSquare/checkUpdate/@mode",
+        "type": "combobox",
+        "option": "client,server",
+        "engineDefault": "client"
+      },
+      "interval": {
+        "enumeration": "",
+        "description": "확인 간격(ms)입니다.",
+        "xpath": "/WebSquare/checkUpdate/@interval",
+        "type": "string"
+      }
+    },
+    "imageCache": {
+      "enable": {
+        "enumeration": "",
+        "description": "이미지들을 JSP/Servlet을 이용하여 캐싱할 것인지를 설정합니다. true로 설정 한 경우 Caching을 위한 JSP/Servlet에서 이미지 파일에 접근이 가능하여야 합니다.",
+        "xpath": "/WebSquare/imageCache/@enable",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "version": {
+        "enumeration": "",
+        "description": "캐싱 제어를 위한 URL을 생성하기 위한 속성입니다. month, week, day 또는 일련의 문자열을 설정할 수 있습니다.",
+        "xpath": "/WebSquare/imageCache/@version",
+        "type": "string"
+      },
+      "serverUrl": {
+        "enumeration": "",
+        "description": "이미지 캐싱을 지원하는 서버 Url로 설정되지 않으면 기본값으로 resource.wq?url\u003d 를 사용합니다. JSP를 사용하는 경우에는 engine/servlet/image.jsp?url\u003d 를 설정해야 합니다.",
+        "xpath": "/WebSquare/imageCache/@serverUrl",
+        "type": "string"
+      },
+      "hostUrl": {
+        "enumeration": "",
+        "description": "이미지를 관리하는 서버가 있다면 포트값을 포함한 url을 지정합니다.",
+        "xpath": "/WebSquare/imageCache/@hostUrl",
+        "type": "string"
+      }
+    },
+    "localStorage": {
+      "defer": {
+        "enumeration": "",
+        "description": "localStorage를 window.onload 이후시점에 생성할지(true) 이전시점에 설정할지(false)에 대한 설정합니다. defer의 기본값은 false입니다.\nIE9에서 팝업창을 메인으로 사용하는 구조 (껍데기 화면을 띄우고, 팝업창을 띄운다음 껍데기 화면을 닫는 구조) 팝업 위에 팝업을 띄우는 경우 localStorage를 onload이전에 생성할 경우 부모창과 자식창의 localStorage가 서로 독립적으로 생성되는 버그가 발생하여 추가한 옵션입니다.\n2014년 AIA 프로젝트 당시에 해당 버그가 발생하여 이 속성이 추가되었습니다.",
+        "xpath": "/WebSquare/localStorage/@defer",
+        "type": "combobox",
+        "option": "true,false"
+      }
+    },
+    "SPA": {
+      "onpageunload": {
+        "enumeration": "",
+        "description": "spa로 페이지 이동 시 호출할 함수의 변수명을 string으로 등록합니다. 주로 페이지를 이동한 뒤에 남은 리소스들을 처리하는 함수가 등록됩니다.",
+        "xpath": "/WebSquare/spa/onpageunload/@value",
+        "type": "string"
+      },
+      "scriptCache": {
+        "enumeration": "",
+        "description": "spa로 페이지 이동 시 외부 모듈을 다시 load하고 실행할지에 대한 여부를 설정합니다. true일 경우 한번 로딩된 외부 모듈은 다시 로딩하지 않으며 실행 또한 하지 않습니다.",
+        "xpath": "/WebSquare/spa/scriptCache/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true ",
+        "configDefault": "true "
+      },
+      "autoReload": {
+        "enumeration": "",
+        "description": "spa로 페이지 이동 시 화면에 메모리 릭이 발생하는 웹스퀘어 컴포넌트(fusionchart, editor)가 있을 경우 해당 컴포넌트 개수가 count 설정값보다 많아질 경우 자동으로 브라우저를 갱신하도록 하는 기능을 설정합니다.",
+        "xpath": "/WebSquare/spa/autoReload/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true "
+      },
+      "count": {
+        "enumeration": "",
+        "description": "화면에 그려진 editor, fusionchart의 총 허용 개수입니다.",
+        "xpath": "/WebSquare/spa/autoReload/@count",
+        "type": "string",
+        "option": "",
+        "engineDefault": "NaN",
+        "configDefault": "50"
+      },
+      "editorCount": {
+        "enumeration": "",
+        "description": "count 설정을 editor 컴포넌트 개별로 설정할 수 있는 기능입니다.",
+        "xpath": "/WebSquare/spa/autoReload/@editor",
+        "type": "string"
+      },
+      "fusionchartCount": {
+        "enumeration": "",
+        "description": "count 설정을 fusionchart 컴포넌트 개별로 설정할 수 있는 기능입니다.",
+        "xpath": "/WebSquare/spa/autoReload/@fusionchart",
+        "type": "string"
+      },
+      "userFunction": {
+        "enumeration": "",
+        "description": "화면 이동할 때 경로를 변경할 수 있는 사용자 함수를 설정합니다. 인자로 기존 경로가 들어옵니다.",
+        "xpath": "/WebSquare/spa/autoReload/@userFunction",
+        "type": "string"
+      }
+    },
+    "errorPage": {
+      "errorPage": {
+        "enumeration": "",
+        "description": "errorPage에 대한 처리를 할 것인지에 대한 속성입니다.",
+        "xpath": "/WebSquare/errorPage/@value",
+        "type": "combobox",
+        "option": "true, false"
+      },
+      "E0": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 0이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E0/@value",
+        "type": "string"
+      },
+      "E400": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 400이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E400/@value",
+        "type": "string"
+      },
+      "E401": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 401이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E401/@value",
+        "type": "string"
+      },
+      "E402": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 402이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E402/@value",
+        "type": "string"
+      },
+      "E403": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 403이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E403/@value",
+        "type": "string"
+      },
+      "E404": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 404이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E404/@value",
+        "type": "string"
+      },
+      "E405": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 405이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E405/@value",
+        "type": "string"
+      },
+      "E500": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 500이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E500/@value",
+        "type": "string"
+      },
+      "E501": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 501이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E501/@value",
+        "type": "string"
+      },
+      "E502": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 502이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E502/@value",
+        "type": "string"
+      },
+      "E503": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 503이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E503/@value",
+        "type": "string"
+      },
+      "E504": {
+        "enumeration": "",
+        "description": "HTTP ERROR가 504이 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/E504/@value",
+        "type": "string"
+      },
+      "Else": {
+        "enumeration": "",
+        "description": "설정하지 않은 HTTP ERROR 코드가 리턴되었을 때의 errorPage를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorPage/Else/@value",
+        "type": "string"
+      }
+    },
+    "url": {
+      "DocumentRoot": {
+        "enumeration": "",
+        "description": "w2xDocument 경로를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/DocumentRoot/@value",
+        "type": "string"
+      },
+      "logMsgMobileURL": {
+        "enumeration": "",
+        "description": "logMsgMobile.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/logMsgMobileURL/@value",
+        "type": "string"
+      },
+      "logMsgUrL": {
+        "enumeration": "",
+        "description": "logMsg.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/logMsgURL/@value",
+        "type": "string"
+      },
+      "debugMsgURL": {
+        "enumeration": "",
+        "description": "debugMsg.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/debugMsgURL/@value",
+        "type": "string"
+      },
+      "errorMsgURL": {
+        "enumeration": "",
+        "description": "errorMsg.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/errorMsgURL/@value",
+        "type": "string"
+      },
+      "viewSourceURL": {
+        "enumeration": "",
+        "description": "viewSource.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/viewSourceURL/@value",
+        "type": "string"
+      },
+      "viewCollectionURL": {
+        "enumeration": "",
+        "description": "viewCollection.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/viewCollectionURL/@value",
+        "type": "string"
+      },
+      "viewInstanceURL": {
+        "enumeration": "",
+        "description": "viewInstance.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/viewInstanceURL/@value",
+        "type": "string"
+      },
+      "fiddleURL": {
+        "enumeration": "",
+        "description": "fiddle.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/fiddleURL/@value",
+        "type": "string"
+      },
+      "printRangeURL": {
+        "enumeration": "",
+        "description": "printRange.html 대신 호출할 페이지를 지정하는 속성입니다.",
+        "xpath": "/WebSquare/printRangeURL/@value",
+        "type": "string"
+      },
+      "redirectUrl": {
+        "enumeration": "",
+        "description": "redirect할 url을 지정하는 속성입니다.",
+        "xpath": "/WebSquare/redirectUrl/@value",
+        "type": "string"
+      }
+    },
+    "etc": {
+      "processMsgTitle": {
+        "enumeration": "",
+        "description": "processMessage의 title을 지정하는 속성입니다. 웹접근성 관련 속성입니다.",
+        "xpath": "/WebSquare/processMsgTitle/@value",
+        "type": "string",
+        "option": "",
+        "engineDefault": "process Message"
+      },
+      "parseChild": {
+        "enumeration": "",
+        "description": "하위 컴포넌트 또는 순수 html 태그를 포함하는 xml을 인자로 전달할 경우 dynamicCreate로 동적 생성 가능하도록 속성입니다.",
+        "xpath": "/WebSquare/dynamicCreate/parseChild/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "scriptEncoding": {
+        "enumeration": "",
+        "description": "js의 인코딩 설정입니다. 기본값은 UTF-8입니다.",
+        "xpath": "/WebSquare/script/@encoding",
+        "type": "string"
+      },
+      "showLogPopup": {
+        "enumeration": "",
+        "description": "내부 테스트용 파일 설정입니다. 테스트가 끝난 후에 로그팝업이 뜨지 않도록하는 속성입니다.",
+        "xpath": "/WebSquare/wUnit/showLogPopup/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true "
+      },
+      "license": {
+        "enumeration": "",
+        "description": "라이센스를 사용하려면 value의 값을 true로 설정해야 합니다. 외부 배포 엔진에서 false로 설정하면 정상 동작하지 않습니다.",
+        "xpath": "/WebSquare/license/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "true ",
+        "latestVersionRecommended": "true ",
+        "versionLimit": "",
+        "necessary": "Y"
+      },
+      "requestHeaderFunction": {
+        "enumeration": "",
+        "description": "xml요청시 사용자 정의 request header를 설정할 수 있습니다. config 설정 후 전역에 함수 등록 후 사용합니다.",
+        "xpath": "/WebSquare/environment/requestHeaderFunction/@value",
+        "type": "string"
+      },
+      "preserveWhiteSpace": {
+        "enumeration": "",
+        "description": "IE에서 xml를 파싱할 때 preserveWhiteSpace 옵션을 켤지 여부를 설정합니다.",
+        "xpath": "/WebSquare/preserveWhiteSpace/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "",
+        "configDefault": "false "
+      },
+      "codebase": {
+        "enumeration": "",
+        "description": "InternetExplorer 6, 7에서 HTTP동시 연결 개수와 페이지 설정을 변경하기 위한 activeX의 codebase를 설정합니다.\n설정하지 않으면 engine/cab/WebSquareConfig.cab 를 기본값으로 사용합니다.\n버전이 변경되거나 배포 위치가 변경된 경우 codebase속성에 URL을 추가하면 됩니다.",
+        "xpath": "/WebSquare/maxConnectionActiveX/@codebase",
+        "type": "string",
+        "option": "",
+        "engineDefault": "engine/cab/WebSquareConfig.cab"
+      },
+      "globalExposure": {
+        "enumeration": "",
+        "description": "false로 설정 시, 전역으로 websquare 객체를 생성하지 않도록 하는 기능입니다.",
+        "xpath": "/WebSquare/globalExposure/@value",
+        "type": "combobox",
+        "option": "true,false",
+        "engineDefault": "true "
+      },
+      "layerForceClose": {
+        "enumeration": "",
+        "description": "MouseWheelEvent 발생시, layer들을 hide되도록 설정합니다. 기본값은 false입니다. ",
+        "xpath": "/WebSquare/body/layerForceClose/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "blurAll": {
+        "enumeration": "",
+        "description": "input 컴포넌트에 포커스가 있는 상태에서 휠 이벤트 발생하고 input컴포넌트가 화면에서 안보이게 될 때 blur 되도록 설정합니다. 기본값은 false 입니다.",
+        "xpath": "/WebSquare/body/blurAll/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "nextTabFunction": {
+        "enumeration": "",
+        "description": "input에서 autoFocus 기능 사용 시 nextTabId가 지정되어 있지 않은 경우 config.xml에 설정된 nextTabFunction 함수가 지정되었는지를 체크하여 지정된 경우에는 그 함수를 호출합니다.",
+        "xpath": "/WebSquare/nextTabFunction/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "loadErrorHandler": {
+        "enumeration": "",
+        "description": "w2xPath경로가 잘못된 경우, 실행할 사용자 지정 함수를 설정할 수 있는 속성입니다.",
+        "xpath": "/WebSquare/loadErrorHandler/@value",
+        "type": "string"
+      },
+      "useAppConfig": {
+        "enumeration": "",
+        "description": "head태그에서 config를 설정할 수 있도록 하는 속성입니다. (내부 테스트용 속성)",
+        "xpath": "/WebSquare/useAppConfig/@value",
+        "type": "combobox",
+        "option": "true, false"
+      },
+      "domainFrameURL": {
+        "enumeration": "",
+        "description": "domainFrame.html 대신 호출할 URL를 설정할 수 있도록 하는 속성입니다.",
+        "xpath": "/WebSquare/domainFrameURL/@value",
+        "type": "string"
+      },
+      "imageURLPrefix": {
+        "enumeration": "",
+        "description": "별도의 이미지서버가 존재하는 경우 이미지 처리용 prefix를 설정하는 속성입니다.",
+        "xpath": "/WebSquare/imageURLPrefix/@value",
+        "type": "string"
+      },
+      "clearMemoryCloseChildPopup": {
+        "enumeration": "",
+        "description": "popup을 iframe으로 사용하는 경우 메모리릭 문제가 발생하여 clearMemory\u003d\"true\"인 경우 부모 창이 닫히면 popup도 자동으로 닫히는 처리가 SP2에 추가되었습니다. 이 때 의도하지 않게 popup이 browser별도로 실행되는 경우에도 자동으로 닫히게 되었는데, 하위호환을 고려하여 popup이 browser인 경우에는 config.xml의 특정 설정을 통해 부모창이 닫히더라도 자식 창이 닫히지 않는 설정을 추가했습니다.",
+        "xpath": "/WebSquare/clearMemory/@closeChildPopup",
+        "type": "combobox",
+        "option": "true, false"
+      },
+      "serverTimeURL": {
+        "enumeration": "",
+        "description": "serverTime 관련 API호출 시 URL을 지정할 수 있는 속성입니다.",
+        "xpath": "/WebSquare/serverTimeURL/@value",
+        "type": "string"
+      },
+      "modal": {
+        "enumeration": "",
+        "description": "showModal시 touchMove기능이 동작되지 않도록 설정합니다. 기본값은 false입니다.",
+        "xpath": "/WebSquare/modal/@preventTouch",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "forcedValueSetting": {
+        "enumeration": "",
+        "description": "value 값에 따라 XML 모델 인스턴스에 값을 넣으려고 할 때 대상 인스턴스가 없을 경우 해당 instance 생성 여부를 지정합니다.\nvalue의 값이 true라면 새로운 인스턴스를 만들고, false일 경우에는 값을 넣지 않습니다.",
+        "xpath": "/WebSquare/forcedValueSetting/@value",
+        "type": "combobox",
+        "option": "true,false"
+      },
+      "parseHtml": {
+        "enumeration": "",
+        "description": "xml 내에 script태그를 파싱해서 실행한다.",
+        "xpath": "/WebSquare/parseHtml/@script",
+        "type": "string"
+      },
+      "postDrawMode": {
+        "enumeration": "",
+        "description": "화면을 그린 다음 이벤트를 붙히고 사용자스크립트를 수행하는 과정을 setTimeout을 통해 비동기로 호출할지(\"asynchronous\"), 동기로 호출할지(\"synchronous\")를 설정하는 옵션입니다.",
+        "xpath": "/WebSquare/postDrawMode/@value",
+        "type": "combobox",
+        "option": "asynchronous,synchronous",
+        "engineDefault": "asynchronous"
+      }
+    }
+  }
+}

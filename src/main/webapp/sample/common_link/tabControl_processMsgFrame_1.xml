@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+        	<w2:dataCollection baseNode="map" />
+        	<w2:workflowCollection />
+        	<xf:submission id="sm_getData" action="/data/tabControl_P_processMsgFrame_1.json" method="post" mediatype="application/json" ref=""
+        		target="data:json,dlt_reqData" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="process 메시지 입니다." ev:submit="" ev:submitdone="scwin.sm_getData_submitdone"
+        		ev:submiterror="scwin.sm_getData_submiterror" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+
+};
+
+
+
+scwin.getProcessMsgPosition = function () {      
+    let processMsgElement = document.querySelector('[id*=target1_contents_content1_body_mf_target1_contents_content1_body_wq_processMsgComp]');
+    let wf_body_bottom_tbx_return = document.querySelector('[id*=wf_body_bottom_tbx_return]');
+
+    if (processMsgElement) {
+        // 요소의 크기 및 위치 정보 가져오기
+        let rect = processMsgElement.getBoundingClientRect();       
+        
+        if (wf_body_bottom_tbx_return) {
+            wf_body_bottom_tbx_return.value = "left : " +rect.left;
+            wf_body_bottom_tbx_return.value += ", top : " +rect.top;
+        }
+    } else {
+        if (wf_body_bottom_tbx_return) {
+            wf_body_bottom_tbx_return.value+= "processMsgElement not found.";            
+        }
+    } 	
+}
+
+
+
+scwin.btn_smReq_onclick = async function (e) {
+    await $p.executeSubmission("sm_getData"); 
+
+    scwin.getProcessMsgPosition();
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:button style="width:100px;height:50px;" id="btn_smReq" label="통신요청" ev:onclick="scwin.btn_smReq_onclick"></w2:button>
+    </body>
+</html>

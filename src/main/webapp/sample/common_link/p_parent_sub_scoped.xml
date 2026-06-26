@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.btn_parent_sub_onclick = function () {
+    try {
+        var parentScope = $p.parent();
+        var midRtn = (parentScope && parentScope.scwin && typeof parentScope.scwin.getMidPageInfo === "function")
+            ? parentScope.scwin.getMidPageInfo()
+            : "N/A";
+        $p.main().wf_body_bottom.getObj("scwin").setReturnValue("wf_sub_scoped $p.parent() → scwin.getMidPageInfo() : " + midRtn);
+    } catch (e) {
+        try {
+            $p.main().wf_body_bottom.getObj("scwin").setReturnValue("wf_sub_scoped $p.parent() 예외 : " + (e && e.message ? e.message : e));
+        } catch (ee) {}
+    }
+};
+]]></script>
+    </head>
+    <body>
+        <xf:group style="padding:5px;">
+            <w2:textbox id="sub_label" style="width:100%; font-size:12px;" label="wf_sub_scoped (scope='true' WFrame)" escape="false"></w2:textbox>
+            <xf:group style="margin-top:5px;">
+                <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_parent_sub_onclick" id="btn_parent_sub"
+                    label="$p.parent() 호출 (wf_mid Scope 기대)" style="">
+                </w2:button>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

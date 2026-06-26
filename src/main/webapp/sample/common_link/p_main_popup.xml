@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.getPopupMainInfo = function () {
+    return "팝업 최상위 scwin.getPopupMainInfo() 호출 성공";
+};
+
+scwin.onpageload = function () {
+    try {
+        var mainScope = $p.main();
+        var mainType = (typeof mainScope);
+        var isWindow = (mainScope === window);
+        var hasScwin = (mainScope && typeof mainScope.scwin !== "undefined");
+        var sameScwin = (hasScwin && mainScope.scwin === scwin);
+        var rtn = hasScwin && typeof mainScope.scwin.getPopupMainInfo === "function"
+            ? mainScope.scwin.getPopupMainInfo()
+            : "N/A";
+
+        popup_result.setValue(
+            "(팝업) $p.main() 타입 : " + mainType +
+            " / === window : " + isWindow +
+            " / .scwin 존재 : " + hasScwin +
+            " / .scwin === 현재 scwin : " + sameScwin +
+            " / .scwin.getPopupMainInfo() : " + rtn
+        );
+    } catch (e) {
+        popup_result.setValue("(팝업) onpageload 예외 : " + (e && e.message ? e.message : e));
+    }
+};
+
+scwin.btn_closeSelf_onclick = function () {
+    try {
+        $p.closePopup();
+    } catch (e) {}
+    // browserPopup 은 별도 Window 이므로 window.close() 로 닫음
+    try {
+        window.close();
+    } catch (e) {}
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:10px;">
+            <w2:textbox id="popup_result" label="팝업 $p.main() 결과" style="width:100%; font-size:12px;"></w2:textbox>
+            <xf:group style="margin-top:10px;">
+                <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_closeSelf_onclick" id="btn_closeSelf"
+                    label="닫기" style="">
+                </w2:button>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

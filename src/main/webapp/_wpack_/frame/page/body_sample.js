@@ -1,0 +1,7 @@
+/*amd /frame/page/body_sample.xml 1296 3bae88a7473e981da28bd4c2c42759bdb83bc8df897d70a69ca8588eb312fc85 */
+define({declaration:{A:{version:'1.0',encoding:'UTF-8'}},E:[{T:1,N:'html',A:{xmlns:'http://www.w3.org/1999/xhtml','xmlns:ev':'http://www.w3.org/2001/xml-events','xmlns:w2':'http://www.inswave.com/websquare','xmlns:xf':'http://www.w3.org/2002/xforms'},E:[{T:1,N:'head',A:{},E:[{T:1,N:'w2:historyInfo',E:[{T:1,N:'w2:history',A:{}},{T:1,N:'w2:history',A:{}}]},{T:1,N:'w2:type',E:[{T:3,text:'COMPONENT'}]},{T:1,N:'w2:buildDate'},{T:1,N:'w2:MSA'},{T:1,N:'xf:model',E:[{T:1,N:'w2:dataCollection',A:{baseNode:'map'}},{T:1,N:'w2:workflowCollection'}]},{T:1,N:'w2:layoutInfo'},{T:1,N:'w2:publicInfo',A:{method:''}},{T:1,N:'script',A:{lazy:'false',type:'text/javascript'},E:[{T:4,cdata:function(scopeObj){with(scopeObj){let objParent = $p.parent(); // 테스트 샘플 객체
+
+scwin.btn_createTarget_onclick = function (e) {
+  objParent.scwin.comp_init();
+};
+}}}]}]},{T:1,N:'body',A:{'ev:onpageload':'scwin.onpageload',style:''},E:[{T:1,N:'w2:button',A:{'ev:onclick':'scwin.btn_createTarget_onclick',style:'',id:'btn_createTarget',label:'Target 재생성',class:'tc_btn_basic'}},{T:1,N:'xf:group',A:{style:'',id:'grp_sample'},E:[{T:1,N:'w2:textbox',A:{style:'',id:'',label:'■ 테스트 샘플',class:'tc_tbx_label_1',escape:'false'}},{T:1,N:'xf:group',A:{style:'',id:'grp_comp',class:'tc_group_basic'}}]}]}]}]})

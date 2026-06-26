@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    // popupID 파라미터로 전달된 dataObject.name 확인
+    var paramNames = ["rowObj", "tmpData", "exam_param"];
+    var results = [];
+
+    for (var i = 0; i < paramNames.length; i++) {
+        var val = $p.getParameter(paramNames[i]);
+        if (val !== "" && val !== null && val !== undefined) {
+            var typeStr = typeof val;
+            var valStr = (typeStr === "object") ? JSON.stringify(val) : String(val);
+            results.push("getParameter('" + paramNames[i] + "') : " + valStr + " (typeof: " + typeStr + ")");
+        }
+    }
+
+    if (results.length > 0) {
+        getParameter_result.setValue(results.join("\n"));
+    } else {
+        getParameter_result.setValue("전달된 dataObject 파라미터 없음");
+    }
+};
+
+scwin.btn_closeSelf_onclick = function() {
+    $p.closePopup();
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:10px;">
+            <w2:textbox id="getParameter_result" label="getParameter 결과" style="width:100%; font-size:12px;"></w2:textbox>
+            <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_closeSelf_onclick" id="btn_closeSelf"
+                label="닫기" style="margin-top:10px; width:80px;">
+            </w2:button>
+        </xf:group>
+    </body>
+</html>

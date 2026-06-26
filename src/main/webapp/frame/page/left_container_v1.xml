@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="[공통] 메인 좌측 메뉴" meta_author="InswaveSystems" meta_type="서브">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+        	<w2:dataCollection baseNode="map">
+        		<w2:aliasDataList studioSrc="/test_mainContainer.xml" scope="../dlt_sampleList" id="adl_sampleList"></w2:aliasDataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection />
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[let selRowLabel = "";
+
+scwin.onpageload = function () {
+
+};
+
+
+
+// 트리 항목 선택 처리
+scwin.setSelectTree = function (tabId) {   
+    if (tabId != null && tabId != "") {
+        const modTabId = tabId.replace(/^tacMain_/, '');    
+        trv_1.findNodeByValue(modTabId, true);
+        selRowLabel = modTabId;
+    }
+    else {
+        trv_1.deselectNode();
+    }
+}
+
+
+
+// 부모 컴포넌트 찾기
+scwin.findComponent = function (tree_lb) {
+    arrList = adl_sampleList.getMatchedData("label", tree_lb);
+    
+    return arrList;
+}
+
+
+
+// 트리 항목 클릭 처리
+scwin.trv_1_onlabelclick = function (value, node, index) {
+    obj_main = $p.main();    
+    obj_main.scwin.gVar["sel_tree_label"] = node.label;
+    obj_main.scwin.gVar["sel_tree_depth"] = node.depth;
+
+    arrList = scwin.findComponent(node.label);
+    strComp = arrList[0][2];
+    
+    obj_main.scwin.gVar["sel_tree_comp"] = strComp;
+
+    // 메인의 탭 생성 함수 호출    
+    obj_main.scwin.createTab();
+    
+    scwin.setSelectTree(node.label);
+};
+
+
+
+
+// 검색 처리
+scwin.ico_search_onclick = function (e) {
+    adl_sampleList.clearFilter();
+    let keyword = ibx_keyword.getValue()
+
+    const filters = [
+        { colIndex: "depth", key: 1, exactMatch: true, condition: "and" },        
+        { colIndex: "label", key: keyword, exactMatch: false, condition: "or" },
+    ];
+
+    filters.forEach(filterOptions => {
+        filterOptions.type = "row";
+        adl_sampleList.setColumnFilter(filterOptions);
+    });
+    trv_1.deselectNode();
+    scwin.setSelectTree(selRowLabel);
+};
+
+
+
+// 새로고침 처리
+scwin.ico_refresh_onclick = function (e) {
+    adl_sampleList.clearFilter();
+    ibx_keyword.setValue(""); 
+
+    scwin.setSelectTree(selRowLabel);
+};
+
+
+
+// 엔터키 검색 처리
+scwin.ibx_keyword_onkeydown = function (e) {
+    if (e.keyCode == 13) {
+        scwin.ico_search_onclick();
+    }
+};]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group style="" id="grp_search" class="tc_sample_search">
+    		<xf:input id="ibx_keyword" style="" ev:onkeydown="scwin.ibx_keyword_onkeydown" class="tc_search_keyword"></xf:input>
+    		<xf:image src="/cm/images/base/ico_search.svg" style="" id="ico_search"
+    			ev:onclick="scwin.ico_search_onclick" class="tc_search_button">
+    		</xf:image>
+    		<xf:image src="/cm/images/base/ico_refresh.svg" style=""
+    			id="ico_refresh" ev:onclick="scwin.ico_refresh_onclick" class="tc_refresh_button">
+    		</xf:image>
+    	</xf:group>
+    	<w2:treeview checkAllChildNodes="true" class="tc_tree_view" dataType="listed" hierarchy="true" id="trv_1" lineShow="" showCheckbox="true"
+    		showTreeDepth="" style="" toggleEvent="onclick" useDrag="true" ev:onlabelclick="scwin.trv_1_onlabelclick">
+    		<w2:itemset nodeset="data:adl_sampleList">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="label"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref=""></w2:folder>
+    			<w2:checkbox ref=""></w2:checkbox>
+    			<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=""></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    </body>
+</html>

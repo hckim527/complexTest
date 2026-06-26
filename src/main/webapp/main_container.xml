@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList baseNode="list" repeatNode="map" id="dlt_sampleList" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="depth" name="depth" dataType="number"></w2:column>
+        				<w2:column id="label" name="label" dataType="text"></w2:column>
+        				<w2:column id="component" name="componrnt" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection />
+        	<xf:submission id="sm_getSampleList" action="/data/test_sample_list.json" method="post" mediatype="application/json" ref=""
+        		target="data:json,dlt_sampleList" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="" ev:submit="" ev:submitdone="scwin.sm_getSampleList_submitdone"
+        		ev:submiterror="scwin.sm_getSampleList_submiterror" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[scwin.gVar = {
+    "sel_tree_label" : "",
+    "sel_tree_depth" : -1,
+    "sel_tree_comp" : ""
+}
+
+let obj_main = $p.main();    
+let obj_left = obj_main.wfTree.getObj("scwin");
+
+
+
+// 테스트 샘플 목록 불러오기
+scwin.onpageload = function() {
+    $p.executeSubmission("sm_getSampleList");    
+};
+
+
+
+scwin.sm_getSampleList_submitdone = function (e) {
+    console.log("샘플 데이터 조회 성공:", "PASS PASS PASS PASS");
+    return;
+};
+
+
+
+scwin.sm_getSampleList_submiterror = function (e) {
+    console.log("샘플 데이터 조회 에러:", "FAIL FAIL FAIL FAIL "); 
+    return;
+};
+
+
+
+// // 탭 모두 닫기
+// scwin.btn_tab_allclose_onclick = async function () {    
+//     tac_main.deleteAllTabs();
+//     obj_left.setSelectTree(null);
+// };
+
+
+
+// // 탭 생성
+// scwin.createTab = async function() {   
+//     tab_lb = scwin.gVar["sel_tree_label"];
+//     tab_dt = scwin.gVar["sel_tree_depth"];
+//     tab_cp = scwin.gVar["sel_tree_comp"]
+
+//     // xml 파일인 경우만 Tab 생성
+//     if(tab_dt == 2) {       
+//         await tac_main.addTab(
+//             "tacMain_" + tab_lb,
+//             {
+//                 "label": tab_lb,
+//                 "openAction": "select"
+//             },
+//             {                
+//                 "src": "/sample/"+tab_cp+"/"+ tab_lb,
+//                 "wframe": true,
+//             }
+//         );
+
+//         // 생성된 탭 선택 처리
+//         await tac_main.setSelectedTabIndex("tacMain_" + tab_lb);
+//     }    
+// }
+
+
+scwin.createWindow = async function() {
+    let tab_lb = scwin.gVar["sel_tree_label"];
+    let tab_dt = scwin.gVar["sel_tree_depth"];
+    let tab_cp = scwin.gVar["sel_tree_comp"]
+
+    // xml 파일인 경우만 windowContainer 생성
+    if(tab_dt == 2) {   
+
+        var option = {
+            title : tab_lb, 
+            src : "/sample/"+tab_cp+"/"+ tab_lb, 
+            windowTitle : tab_lb, 
+            windowId : tab_lb, 
+            openAction : "selectWindow",
+        }
+        mBody_wc1.createWindow(option);
+    }
+}
+
+
+
+// // 왼쪽 메뉴 show, hide 처리
+// scwin.ico_toggleMenu_onclick = function (e) {
+//     mLeft.toggleClass("col_left");
+// };
+
+
+
+// // 탭 변경 시 트리 선택 처리
+// scwin.tac_main_onchange = function (tabId, index, userTabId) {
+//     obj_left.setSelectTree(tac_main.getSelectedTabID());
+// };
+
+
+
+// // 탭이 모두 닫힌 경우 트리 처리
+// scwin.tac_main_ontabclose = function (tabId, index, userTabId) {
+//     if (tac_main.getSelectedTabID() == null)
+//         obj_left.setSelectTree(null);
+// };]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group meta_snippetCategory="01_화면분할" meta_snippetName="1_05 좌측 고정 2단 분할_width값 200px" meta_snippetKeyComponent="true"
+    		style="" id="gMain" class="tc_main">
+    		<xf:group adaptiveThreshold="" style="" id="mLeft" class="tc_left">
+    			<xf:group style="" id="">
+    				<w2:textbox id="" label="테스트 샘플 목록" style="" class="tc_tbx_label_1"></w2:textbox>
+    			</xf:group>
+    			<w2:wframe src="/frame/page/left_container.xml" style="" id="wfTree"></w2:wframe>
+    		</xf:group>
+    		<xf:group style="" id="mBody" class="tc_body">
+    			<w2:windowContainer id="mBody_wc1" style="width:100%; height:100%; position:relative;" windowMaxNum="1000">
+    				<w2:windowToolbar>
+    					<w2:controlIconLayer>
+    						<w2:controlIcon></w2:controlIcon>
+    						<w2:controlIcon></w2:controlIcon>
+    						<w2:controlIcon></w2:controlIcon>
+    						<w2:controlIcon></w2:controlIcon>
+    						<w2:controlIcon></w2:controlIcon>
+    					</w2:controlIconLayer>
+    					<w2:nameLayer></w2:nameLayer>
+    					<w2:selectedNameLayer></w2:selectedNameLayer>
+    				</w2:windowToolbar>
+    			</w2:windowContainer>
+    		</xf:group>
+    	</xf:group>
+    </body>
+</html>

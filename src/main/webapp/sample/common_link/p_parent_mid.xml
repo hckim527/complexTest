@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// wf_mid 내부 전용 함수 (scope='true' 자식에서 parent 로 호출되는지 식별용)
+scwin.getMidPageInfo = function () {
+    return "wf_mid scwin.getMidPageInfo() 호출 성공";
+};
+
+scwin.btn_parent_mid_onclick = function () {
+    try {
+        var parentScope = $p.parent();
+        if (parentScope && parentScope.ibx_top) {
+            parentScope.ibx_top.setValue("Example");
+        }
+        var rtn = (parentScope && parentScope.scwin && typeof parentScope.scwin.getMainPageInfo === "function")
+            ? parentScope.scwin.getMainPageInfo()
+            : "N/A";
+        $p.parent().wf_body_bottom.getObj("scwin").setReturnValue("wf_mid $p.parent() → scwin.getMainPageInfo() : " + rtn);
+    } catch (e) {
+        try {
+            $p.parent().wf_body_bottom.getObj("scwin").setReturnValue("wf_mid $p.parent() 예외 : " + (e && e.message ? e.message : e));
+        } catch (ee) {}
+    }
+};
+
+]]></script>
+    </head>
+    <body>
+        <xf:group style="padding:5px;">
+            <w2:textbox id="mid_label" style="width:100%; font-size:12px;" label="wf_mid (scope 미설정 WFrame)" escape="false"></w2:textbox>
+            <xf:group style="margin-top:5px;">
+                <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_parent_mid_onclick" id="btn_parent_mid"
+                    label="$p.parent() 호출 (메인 Scope 기대)" style="">
+                </w2:button>
+            </xf:group>
+            <w2:wframe id="wf_sub_scoped" src="/sample/common_link/p_parent_sub_scoped.xml" scope="true" style="width:100%; height:90px; border:1px dashed #888; margin-top:5px;"></w2:wframe>
+        </xf:group>
+    </body>
+</html>

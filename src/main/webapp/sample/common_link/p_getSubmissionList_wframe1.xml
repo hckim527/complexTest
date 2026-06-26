@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+            <xf:submission id="sbm_wf1_1" action="/data/p_createSubmission_userList.json" method="post" mediatype="application/json">
+            </xf:submission>
+            <xf:submission id="sbm_wf1_2" action="/data/p_createSubmission_userList.json" method="get" mediatype="application/json">
+            </xf:submission>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.btn_wf1_getList_onclick = function () {
+    // WFrame(wf1) 내부에서 호출 - 현재 Scope(wf1) 내 Submission 만 반환
+    var subIds = $p.getSubmissionList({"returnType" : "id"});
+    var mainScope = $p.main();
+    mainScope.wf_body_bottom.getObj("scwin").setReturnValue(
+        "── 시나리오 5 : wf1 내부 $p.getSubmissionList({returnType:'id'}) ──"
+    );
+    mainScope.wf_body_bottom.getObj("scwin").setReturnValue(
+        "wf1 Scope Submission ID 목록 : [" + subIds.join(", ") + "] / 길이 : " + subIds.length
+    );
+};
+]]></script>
+    </head>
+    <body>
+        <xf:group style="padding:5px;">
+            <w2:textbox id="wf1_label" style="width:100%; font-size:12px;" label="wf1 (WFrame 내부 - sbm_wf1_1, sbm_wf1_2 정의)" escape="false"></w2:textbox>
+            <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_wf1_getList_onclick" id="btn_wf1_getList" label="wf1 내부에서 getSubmissionList (현재 Scope)" style=""></w2:button>
+        </xf:group>
+    </body>
+</html>

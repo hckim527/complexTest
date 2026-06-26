@@ -1,0 +1,9 @@
+/*amd /sample/common_link/session_removeSession_popup.xml 1870 c0164c73bc9b0eb663a9edec5e12fd17ab7a381b1e6273225428a9381b5d972d */
+define({declaration:{A:{version:'1.0',encoding:'UTF-8'}},E:[{T:1,N:'html',A:{xmlns:'http://www.w3.org/1999/xhtml','xmlns:ev':'http://www.w3.org/2001/xml-events','xmlns:w2':'http://www.inswave.com/websquare','xmlns:xf':'http://www.w3.org/2002/xforms'},E:[{T:1,N:'head',E:[{T:1,N:'w2:type',E:[{T:3,text:'DEFAULT'}]},{T:1,N:'w2:buildDate'},{T:1,N:'xf:model',E:[{T:1,N:'w2:dataCollection',A:{baseNode:'map'}}]},{T:1,N:'script',A:{type:'text/javascript',lazy:'false'},E:[{T:4,cdata:function(scopeObj){with(scopeObj){scwin.onpageload = function () {
+  document.getElementById("popup_status").innerText = "팝업 onpageload\n" + "key1='" + WebSquare.session.getAttribute("key1") + "'\n" + "key2='" + WebSquare.session.getAttribute("key2") + "'\n" + "key3='" + WebSquare.session.getAttribute("key3") + "'";
+};
+scwin.btn_removeSession_onclick = function () {
+  WebSquare.session.removeSession();
+  document.getElementById("popup_status").innerText = "팝업에서 removeSession() 호출 후\n" + "key1=" + WebSquare.session.getAttribute("key1") + "\n" + "key2=" + WebSquare.session.getAttribute("key2") + "\n" + "key3=" + WebSquare.session.getAttribute("key3") + "\n\n" + "→ 팝업을 닫고 메인 윈도우의 [메인 세션 확인] 버튼을 클릭하세요.";
+};
+}}}]}]},{T:1,N:'body',A:{'ev:onpageload':'scwin.onpageload'},E:[{T:1,N:'xf:group',A:{style:'padding:16px;font-family:\'Malgun Gothic\',sans-serif;',id:'grp_popup'},E:[{T:1,N:'w2:textbox',A:{class:'',id:'',label:'[팝업] removeSession 테스트',style:'font-weight:bold;font-size:14px;margin-bottom:8px;'}},{T:1,N:'pre',A:{id:'popup_status',style:'background:#f5f5f5;border:1px solid #ccc;padding:8px;font-size:12px;white-space:pre-wrap;'}},{T:1,N:'w2:button',A:{class:'tc_btn_basic','ev:onclick':'scwin.btn_removeSession_onclick',id:'btn_removeSession',label:'removeSession 실행',style:'margin-top:8px;'}}]}]}]}]})

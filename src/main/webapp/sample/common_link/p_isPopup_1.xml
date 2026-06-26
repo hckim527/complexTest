@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    // 팝업 자신의 페이지 스코프에서 호출
+    var isPopup1 = $p.isPopup();
+    var isPopup2 = $p.isPopup(true);
+    var isPopup3 = $p.isPopup(false);
+    isPopup_result.setValue(
+        "(팝업 페이지) $p.isPopup() : " + isPopup1 +
+        " / $p.isPopup(true) : " + isPopup2 +
+        " / $p.isPopup(false) : " + isPopup3
+    );
+};
+
+scwin.wf_inner_onwframeload = function() {
+    // 팝업 내부 WFrame 로드 완료 시 자동 실행
+    var inner = wf_inner.getObj("$p");
+    var r1 = inner.isPopup();      // 현재(WFrame) 만 확인 → false
+    var r2 = inner.isPopup(true);  // 상위(팝업) 까지 확인 → true
+    var r3 = inner.isPopup(false); // 명시 false → false
+
+    inner_result.setValue(
+        "(팝업 내부 WFrame) isPopup() : " + r1 +
+        " / isPopup(true) : " + r2 +
+        " / isPopup(false) : " + r3
+    );
+};
+
+scwin.btn_closeSelf_onclick = function() {
+    $p.closePopup();
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:10px;">
+            <w2:textbox id="isPopup_result" label="팝업 페이지 isPopup 결과" style="width:100%; font-size:12px;"></w2:textbox>
+            <w2:wframe id="wf_inner" src="/sample/common_link/util_createPopup_1.xml" style="width:100%; height:80px; border:1px solid #ccc; margin-top:10px;" ev:onwframeload="scwin.wf_inner_onwframeload"></w2:wframe>
+            <w2:textbox id="inner_result" label="팝업 내부 WFrame isPopup 결과" style="width:100%; font-size:12px; margin-top:10px;"></w2:textbox>
+            <xf:group style="margin-top:10px;">
+                <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_closeSelf_onclick" id="btn_closeSelf"
+                    label="닫기" style="">
+                </w2:button>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>
