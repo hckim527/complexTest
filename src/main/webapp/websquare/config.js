@@ -3,8 +3,10 @@ export default {
     "dataPrefix": {
       "@value": "true"
     },
+    "exposeOriginalId": {
+      "@value": "true"
+    },
     "wpack": {
-      "@use": "true",
       "contextRoot": {
         "@value": "/"
       },
@@ -39,7 +41,7 @@ export default {
     },
     "debug": {
       "@errorConsole": "true",
-      "@remoteConsole": "true",
+      "@remoteConsole": "false",
       "@value": "true"
     },
     "debugKey": {
@@ -95,29 +97,10 @@ export default {
       "@value": "false"
     },
     "stylesheet": {
-      "@earlyImportList": "/cm/css/base.css,/cm/css/contents.css,/css/tc.css",
+      "@earlyImportList": "",
       "@enable": "true",
       "@import": "link",
       "@value": "stylesheet_ext.css"
-    },
-    "mediaInfo": {
-      "media": [
-        {
-          "@maxWidth": "",
-          "@minWidth": "1025",
-          "@name": "desktop"
-        },
-        {
-          "@maxWidth": "1024",
-          "@minWidth": "768",
-          "@name": "tablet"
-        },
-        {
-          "@maxWidth": "767",
-          "@minWidth": "320",
-          "@name": "mobile"
-        }
-      ]
     },
     "style": {
       "removeDefaultClass": {
@@ -236,6 +219,9 @@ export default {
       },
       "saveRemovedDataDeletedInsertedRow": {
         "@value": "false"
+      },
+      "setCellAllDataSkipFilter": {
+        "@value": "true"
       }
     },
     "grid": {
@@ -326,7 +312,7 @@ export default {
         {
           "@inputType": "select",
           "chooseOptionLabel": {
-            "@value": "-선택-"
+            "@value": ""
           }
         },
         {
@@ -439,6 +425,12 @@ export default {
       "useDataDragDropGuideLine": {
         "@value": "true"
       },
+      "editFormatGetCellDisplayData": {
+        "@value": "true"
+      },
+      "checkboxRadioOnCellClick": {
+        "@value": "true"
+      },
       "column": [
         {
           "@inputType": "text",
@@ -449,7 +441,7 @@ export default {
         {
           "@inputType": "select",
           "chooseOptionLabel": {
-            "@value": "-선택-"
+            "@value": ""
           },
           "eventPriority": {
             "@value": "oneditend"
@@ -526,6 +518,9 @@ export default {
       },
       "editFormatPartialMask": {
         "@value": "true"
+      },
+      "editFormatGetDisplayValue": {
+        "@value": "true"
       }
     },
     "calendar": {
@@ -542,9 +537,6 @@ export default {
       },
       "dataListAutoRefresh": {
         "@value": "true"
-      },
-      "appearance": {
-        "@value": ""
       }
     },
     "selectbox_native": {
@@ -563,6 +555,14 @@ export default {
     },
     "trigger": {
       "preventMultipleClick": {
+        "@value": "true"
+      },
+      "allowLabelChangeOnDisabled": {
+        "@value": "true"
+      }
+    },
+    "button": {
+      "allowLabelChangeOnDisabled": {
         "@value": "true"
       }
     },
@@ -611,12 +611,17 @@ export default {
     },
     "editor": {
       "version": {
-        "@value": "4.22.1"
+        "@value": "5.44"
       }
     },
     "fusionchart": {
       "version": {
-        "@value": "3.19"
+        "@value": "3.23"
+      }
+    },
+    "chart": {
+      "version": {
+        "@value": "6.1.0"
       }
     },
     "scheduleCalendar": {
@@ -624,60 +629,29 @@ export default {
         "@value": "6.1.11"
       }
     },
+    "autoComplete": {
+      "blurEventControl": {
+        "@value": "true"
+      }
+    },
     "languagePack": {
-      "@useLanguagePack": "true",
+      "@useLanguagePack": "false",
       "url": [
         {
           "@lang": "ko",
-          "@value": "/lang/ko.js"
+          "@value": "/langpack/ko.js"
         },
         {
           "@lang": "en",
-          "@value": "/lang/en.js"
-        }
-      ]
-    },
-    "projectCommon": {
-      "module": [
-        {
-          "@name": "$c.data",
-          "@src": "/cm/gcc/data.xml"
+          "@value": "/langpack/en.js"
         },
         {
-          "@name": "$c.date",
-          "@src": "/cm/gcc/date.xml"
+          "@lang": "ch",
+          "@value": "/langpack/ch.js"
         },
         {
-          "@name": "$c.ext",
-          "@src": "/cm/gcc/ext.xml"
-        },
-        {
-          "@name": "$c.win",
-          "@src": "/cm/gcc/win.xml"
-        },
-        {
-          "@name": "$c.util",
-          "@src": "/cm/gcc/util.xml"
-        },
-        {
-          "@name": "$c.str",
-          "@src": "/cm/gcc/str.xml"
-        },
-        {
-          "@name": "$c.sbm",
-          "@src": "/cm/gcc/sbm.xml"
-        },
-        {
-          "@name": "$c.num",
-          "@src": "/cm/gcc/num.xml"
-        },
-        {
-          "@name": "$c.hkey",
-          "@src": "/cm/gcc/hkey.xml"
-        },
-        {
-          "@name": "$c.gcm",
-          "@src": "/cm/gcc/common.xml"
+          "@lang": "ja",
+          "@value": "/langpack/ja.js"
         }
       ]
     },
@@ -693,12 +667,8 @@ export default {
     "disableDuplicateIdAlert": {
       "@value": "false"
     },
-    "msaServer": {
-      "msa": {
-        "@baseURI": "/",
-        "@name": "msa_server",
-        "@origin": "http://192.168.100.250:8080"
-      }
+    "scriptCrossOrigin": {
+      "@value": "use-credentials"
     }
   }
 }
