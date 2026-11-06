@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_memberList" saveRemovedData="true" ev:oncelldatachange="">
+					<w2:columnInfo>
+						<w2:column id="id" name="아이디" dataType="text"></w2:column>
+						<w2:column id="name" name="성명" dataType="text"></w2:column>
+						<w2:column id="tel" name="연락처" dataType="text"></w2:column>
+						<w2:column id="region" name="지역" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<id><![CDATA[P0001]]></id>
+							<name><![CDATA[홍길동]]></name>
+							<tel><![CDATA[010-2323-4323]]></tel>
+							<region><![CDATA[서울]]></region>
+						</w2:row>
+						<w2:row>
+							<id><![CDATA[P0002]]></id>
+							<name><![CDATA[허균]]></name>
+							<tel><![CDATA[010-2444-2312]]></tel>
+							<region><![CDATA[인천]]></region>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    console.log("onpageload " + $p.getParameter("w2xPath") + " Frame");
+};
+scwin.onpageunload = function() {};
+scwin.ibx_openPopup_onclick = function(e) {
+    requires("uiplugin.popup");
+    var options = {
+        id: "popup1",
+        type: "iframePopup",
+        width: "700px",
+        height: "600px",
+        top: "130px",
+        left: "400px",
+        popupName: "openPopup1",
+        modal: true,
+        scrollbars: "true",
+        resizable: "true",
+        menubar: true,
+        frameMode: "iframe",
+        alwaysOnTop: false,
+        useControl: true
+    };
+    $p.openPopup("popup_onpageunload_WPFF-258_(WSQ-3580)_iframe.xml", options);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ibx_openPopup').click()");
+    WebSquare.wUnit.addCommand("pause", "2500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#textbox_status').text() == 'onpageload : '+$p.id+'popup1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group style="height:180px;padding:10px;" id="">
+			<xf:group style="height:100px;" id="" class="">
+				<w2:textbox style="height: 23px;font-size:20px;margin-top:5px;margin-left:5px;font-weight: bold"
+					label="[WPFF-258]iframePopup onpageunload test" id="">
+				</w2:textbox>
+				<w2:textbox id="textbox_status" style="height: 30px;font-size:20px;margin-top:5px;margin-top:20px;"
+					label="팝업 상태에 따라 label 바뀜">
+				</w2:textbox>
+			</xf:group>
+			<xf:group>
+				<xf:trigger type="button" style="width: 200px;height: 40px;margin-top:5px;margin-left:5px;" id="ibx_openPopup" ev:onclick="scwin.ibx_openPopup_onclick">
+					<xf:label><![CDATA[iframe 팝업 오픈]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+ 

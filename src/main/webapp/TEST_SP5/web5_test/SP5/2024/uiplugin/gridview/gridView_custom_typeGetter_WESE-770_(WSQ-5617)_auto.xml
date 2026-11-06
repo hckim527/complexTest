@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="106">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" ev:oncelldatachange="scwin.dataList1_oncelldatachange">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[0]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[ 
+
+            scwin.getType = function ( info ) {
+				
+                var rowIndex = info.rowIndex;
+                var colIndex = info.colIndex;
+                var returnInfo;
+                
+		 
+
+
+				if (dataList1.getCellData(rowIndex, "col2") == 1) {
+					returnInfo = {
+		                id : "dynamic_radioaaa_" + rowIndex + "_" + colIndex,
+						inputType : "radio",
+						options:{
+							cellGroupName :"radioAPP",
+							selectedIndex :"-1"
+						}
+					};
+					
+                } else if(dataList1.getCellData(rowIndex, "col2") == 2) {
+					returnInfo = {
+		               id : "dynamic_radio1bbb_" + rowIndex + "_" + colIndex,
+						inputType : "radio",
+						options:{
+							cellGroupName :"radiobbb",
+							selectedIndex : "-1"
+						}
+					};
+					
+					
+                }else if(dataList1.getCellData(rowIndex, "col2") == 3) {
+					returnInfo = {
+		               id : "dynamic_radio1cc_" + rowIndex + "_" + colIndex,
+						inputType : "radio",
+						options:{
+							cellGroupName :"radiocc",
+							selectedIndex : "-1"
+						}
+					};
+					
+					
+                }
+                else {
+
+					returnInfo = {
+		               id : "dynamic_text" + rowIndex + "_" + colIndex,
+						inputType : "text",
+						options:{
+						 
+						}
+					};
+					
+
+				}
+                
+				
+                return returnInfo;
+                
+			};
+ 
+        
+	scwin.grd_onviewchange = function(info) {
+		//grd.refreshRow(info.rowIndex);
+		
+	};
+	        
+	scwin.onpageload = function() {
+		var jsonData = [{ "col2":"1"},{"col2":"1"},{ "col2":"2"},{ "col2":"2"},{ "col2":"2"},{ "col2":"2"},{"col2":"3"},{ "col2":"3"},{ "col2":"4"}];
+	    dataList1.setJSON( jsonData );
+	  
+	    
+		 
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+scwin.dataList1_oncelldatachange = function(info) {
+console.log('oncelldatachange',info);
+};
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('grd_cell_0_0').children[0].checked;
+	}
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('grd_cell_2_0').children[0].checked;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd_cell_0_0').children[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd_cell_2_0').children[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd_cell_6_0').children[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox id=""
+    		label="to - be : 각 라디오 그룹 중에서 택 1 가능했으면 하는 요건 &lt;br/&gt; 현재 radiogroup을 주면 택 1이 아닌 모두 다 선택이 됨 &lt;br/&gt;ex ) col2=1 인 &amp;nbsp;col1 두개 중에 한개 선택 &lt;br/&gt; col2=2 인 col1 4개중에 한개 선택 "
+    		style="width:442px;height:71px;" escape="false">
+    	</w2:textbox>
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="grd" setEmptyStringSortableOnSort="true"
+    		style="width:500px;height:250px;" fixedColumnWithHidden="true" useShiftKey="true" ev:onviewchange="scwin.grd_onviewchange"
+    		sortable="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="custom" width="70" typeGetter="scwin.getType"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" colMerge="true"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+    	<w2:gridView dataList="data:dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="grd1"
+    		setEmptyStringSortableOnSort="true" style="width:500px;height:239px;" fixedColumnWithHidden="true" useShiftKey="true"
+    		ev:onviewchange="scwin.grd_onviewchange" sortable="true">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column width="70" inputType="text" style="" id="column3" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="column2" value="name2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="column1" value="name3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column width="70" inputType="text" style="" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="col2" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="col3" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+
+
+    </body>
+</html>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] gridView.setColumnDisableEdit falseBeforeEditor" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성" meta_date="20260706" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.tData = {
+    "description" : "[FAIL] gridView setColumnDisableEdit(col,false) 를 대상 autoComplete 컬럼 편집기 최초 생성 전 호출 시 false 미반영(list-only 유지) 결함 재현"
+}
+
+scwin.strNameSpace = 'xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"';
+
+// 대상 autoComplete 컬럼 : col1 (인덱스 0)
+scwin.TARGET_COL = 0;
+
+scwin.onpageload = async function () {
+    await scwin.comp_init();
+};
+
+// 그리드 (재)생성 : 편집기(cellInfo.autoComplete 위젯) 상태를 초기화한다.
+//  - 그리드 인스턴스를 새로 만들면 해당 컬럼의 셀 편집기는 아직 한 번도 생성되지 않은 상태가 된다.
+//  - DataList(dlt_item/dlt_bind)는 그리드와 무관하므로 최초 1회만 생성하고 재사용한다.
+scwin.comp_init = async function () {
+    if (typeof grid1 !== 'undefined') { grid1.remove(); }
+
+    // itemSet 바인딩용 DataList (autoComplete 아이템 : col1=라벨(지역명), col2=값(코드))
+    if (typeof dlt_item === 'undefined') {
+        let strItem = '';
+        strItem += '<w2:dataList ' + scwin.strNameSpace + ' id="dlt_item" baseNode="list" repeatNode="map">';
+        strItem += '<w2:columnInfo>';
+        strItem += '<w2:column id="col1" name="col1" dataType="text"></w2:column>';
+        strItem += '<w2:column id="col2" name="col2" dataType="text"></w2:column>';
+        strItem += '</w2:columnInfo>';
+        strItem += '<w2:data use="true"></w2:data>';
+        strItem += '</w2:dataList>';
+        $p.data.create(strItem);
+        dlt_item.setJSON([
+            { "col1": "서울", "col2": "01" },
+            { "col1": "부산", "col2": "02" },
+            { "col1": "대구", "col2": "03" },
+            { "col1": "광주", "col2": "04" }
+        ], false);
+    }
+
+    // 본문 DataList (col1 = autoComplete 컬럼(코드 저장/라벨 표시), col2 = text)
+    if (typeof dlt_bind === 'undefined') {
+        let strBind = '';
+        strBind += '<w2:dataList ' + scwin.strNameSpace + ' id="dlt_bind" baseNode="list" repeatNode="map">';
+        strBind += '<w2:columnInfo>';
+        strBind += '<w2:column id="col1" name="col1" dataType="text"></w2:column>';
+        strBind += '<w2:column id="col2" name="col2" dataType="text"></w2:column>';
+        strBind += '</w2:columnInfo>';
+        strBind += '<w2:data use="true"></w2:data>';
+        strBind += '</w2:dataList>';
+        $p.data.create(strBind);
+    }
+    dlt_bind.setJSON([
+        { "col1": "01", "col2": "메모A" },
+        { "col1": "02", "col2": "메모B" },
+        { "col1": "03", "col2": "메모C" }
+    ], false);
+
+    // 그리드 : col1 = inputType=autoComplete(itemSet 바인딩), col2 = text. editable=true 로 셀 편집 허용.
+    let itemset = '<w2:choices><w2:itemset nodeset="data:dlt_item"><w2:label ref="col1"></w2:label><w2:value ref="col2"></w2:value></w2:itemset></w2:choices>';
+    let strGrid = '';
+    strGrid += '<w2:gridView ' + scwin.strNameSpace + ' checkAllType="false" editable="true" dataList="data:dlt_bind" id="grid1" style="width:520px;height:170px;">';
+    strGrid += '<w2:caption id="cap1" value="col1 = autoComplete(지역 아이템 리스트) / col2 = text"></w2:caption>';
+    strGrid += '<w2:header id="header1">';
+    strGrid += '<w2:row id="hrow1">';
+    strGrid += '<w2:column width="260" inputType="text" id="hcol1" value="col1 (autoComplete)"></w2:column>';
+    strGrid += '<w2:column width="*" inputType="text" id="hcol2" value="col2 (text)"></w2:column>';
+    strGrid += '</w2:row>';
+    strGrid += '</w2:header>';
+    strGrid += '<w2:gBody id="gBody1">';
+    strGrid += '<w2:row id="brow1">';
+    strGrid += '<w2:column width="260" inputType="autoComplete" id="col1" dataList="col1">' + itemset + '</w2:column>';
+    strGrid += '<w2:column width="*" inputType="text" id="col2" dataList="col2"></w2:column>';
+    strGrid += '</w2:row>';
+    strGrid += '</w2:gBody>';
+    strGrid += '</w2:gridView>';
+
+    scwin.grid1 = await $p.dynamicCreate("grid1", "gridView", strGrid, grp_comp);
+};
+
+scwin.btn_fail_onclick = async function () {            
+    scwin.grid1.setColumnDisableEdit(0, false);
+};
+
+scwin.btn_true_onclick = async function (e) {
+    scwin.grid1.setColumnDisableEdit(0, true);	
+};
+
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="grp_main" style="padding:16px;">
+			<w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ [FAIL] 초기 로딩 후 setColumnDisabledEdit(col, false) 수행 시 true 로 동작하는 현상" style="font-weight:bold;"></w2:textbox>
+			<w2:textbox escape="false" id="" label="기대 vs 실제 : setColumnDisableEdit(col, false) 는 항상 텍스트 편집을 활성화해야 한다(기대). 그러나 초기 로딩 후 setColumnDisabledEdit(col, false) 수행 시 편집이 불가하다." style="margin-top:6px;"></w2:textbox>
+
+			<xf:group id="grp_comp" style="margin:14px 0;"></xf:group>
+
+			<xf:group id="" style="display:flex; gap:8px; margin:8px 0;">
+				<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_fail_onclick" id="btn_fail" label="setColumnDisableEdit(0,false)"></w2:button>
+				<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_true_onclick" id="button1" label="setColumnDisableEdit(0,true)"
+					style="">
+				</w2:button>
+			</xf:group>
+
+			<xf:group class="" id="grp_bottom" style="margin-top:10px;">
+				<w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 220px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

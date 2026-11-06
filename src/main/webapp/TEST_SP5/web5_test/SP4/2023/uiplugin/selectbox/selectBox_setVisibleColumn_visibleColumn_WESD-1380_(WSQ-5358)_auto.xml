@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_programName="공통메시지">
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dlt_location" repeatNode="map" saveRemovedData="true" style="">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="COMCOD" name="name1"></w2:column>
+						<w2:column dataType="text" id="COMNAM" name="name2"></w2:column>
+						<w2:column dataType="text" id="VISIBLE" name="name3"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<COMCOD><![CDATA[KRPUS]]></COMCOD>
+							<COMNAM><![CDATA[BUSAN, KOREA]]></COMNAM>
+							<VISIBLE><![CDATA[true]]></VISIBLE>
+						</w2:row>
+						<w2:row>
+							<COMCOD><![CDATA[KRCHO]]></COMCOD>
+							<COMNAM><![CDATA[CHEONAN, KOREA]]></COMNAM>
+							<VISIBLE><![CDATA[false]]></VISIBLE>
+						</w2:row>
+						<w2:row>
+							<COMCOD><![CDATA[KRKAN]]></COMCOD>
+							<COMNAM><![CDATA[GWANGYANG, KOREA]]></COMNAM>
+							<VISIBLE><![CDATA[false]]></VISIBLE>
+						</w2:row>
+						<w2:row>
+							<COMCOD><![CDATA[KRINC]]></COMCOD>
+							<COMNAM><![CDATA[INCHEON, KOREA]]></COMNAM>
+							<VISIBLE><![CDATA[true]]></VISIBLE>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dma_master">
+					<w2:keyInfo>
+						<w2:key id="location" name="name1" dataType="text"></w2:key>
+						<w2:key id="terminal" name="name2" dataType="text"></w2:key>
+						<w2:key id="description" name="name3" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+
+	/**
+	 * 페이지 로딩 이벤트
+	 */
+	scwin.onpageload = function() {
+		//지역은 부산, 인천만 표시
+		for(var i=0; i<dlt_location.getRowCount(); i++){
+			var location = dlt_location.getCellData(i, "COMCOD");
+
+			if(location == "KRPUS" || location == "KRINC"){
+				dlt_location.setCellData(i, "VISIBLE", "true");
+			} else {
+				dlt_location.setCellData(i, "VISIBLE", "false");
+			}
+		}
+		
+		sbx_location.setVisibleColumn("VISIBLE", "false");
+	};
+
+	
+	scwin.btn_apply_onclick = function(e) {
+
+		// dma_master.set("location", "KRPUS");
+		// dma_master.set("terminal", "test");
+		// dma_master.set("description", "test desc");
+
+		dma_master.set("location", "KRCHO");
+		dma_master.set("terminal", "test");
+		dma_master.set("description", "test desc");
+	};
+	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#wq_uuid_8').val() == 'KRCHO';
+	}
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('sbx_location_label').innerText == 'CHEONAN, KOREA';
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_apply').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+	]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="sub_contents" id="" style="width: 500px;">
+			<xf:select1 allOption="" appearance="minimal" chooseOption="true" chooseOptionLabel="" class="" direction="auto"
+				disabled="false" disabledClass="w2selectbox_disabled" id="sbx_location" ref="data:dma_master.location" renderType="" style="width:300px;height:30px;"
+				submenuSize="auto" visibleColumn="" visibleColumnFalseValue="" visibleRowNum="6">
+				<xf:choices>
+					<xf:itemset nodeset="data:dlt_location">
+						<xf:label ref="COMNAM"></xf:label>
+						<xf:value ref="COMCOD"></xf:value>
+					</xf:itemset>
+				</xf:choices>
+			</xf:select1>
+			<xf:group class="" id="grp_group1" style="">
+				<xf:input class="" disabled="" ev:onclick="" id="" placeholder="" readOnly="true"
+					ref="data:dma_master.location" style="width:300px">
+				</xf:input>
+				<xf:input class="" disabled="" ev:onclick="" id="" placeholder="" readOnly="true"
+					ref="data:dma_master.terminal" style="width:300px;">
+				</xf:input>
+				<xf:input class="" disabled="" ev:onclick="" id="" placeholder="" readOnly="true"
+					ref="data:dma_master.description" style="width:300px;">
+				</xf:input>
+			</xf:group>
+			<xf:trigger class="" ev:onclick="scwin.btn_apply_onclick" id="btn_apply" style="" type="button">
+				<xf:label><![CDATA[적용]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>

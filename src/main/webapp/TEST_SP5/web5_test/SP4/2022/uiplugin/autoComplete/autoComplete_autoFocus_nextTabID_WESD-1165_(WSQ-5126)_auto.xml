@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	scwin.autoComplete1_onchange = function(info) {
+		var newValue = info.newValue;
+
+		if(newValue == "001"){
+			console.log("Hanoi");
+			autoComplete1.setNextTabID("input1");
+			var nextTabID = autoComplete1.getNextTabID();
+			console.log("nextTab ::  "+nextTabID  );
+		} else if(newValue == "002"){
+			console.log("Danang");
+			autoComplete1.setNextTabID("mf_input2");
+			var nextTabID = autoComplete1.getNextTabID();
+			console.log("nextTab ::  "+nextTabID  );
+		}
+	};
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#autoComplete1', 'key-combo', {
+			combo: 'TAB'
+		});
+	}
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#mf_input1').hasClass('w2input_focus');
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_itemTable_1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete editType="select" id="autoComplete1" useKeywordHighlight="false" style="height: 30px;margin: 50px;width: 200px;"
+    		submenuSize="auto" search="start" allOption="" chooseOption="true" chooseOptionLabel="Select a city" ref="" mandatory="true"
+    		placeholder="Select a city." autoFocus="true" caseSensitive="false" ev:onchange="scwin.autoComplete1_onchange">
+    		<w2:choices>
+    			<w2:item>
+    				<w2:label><![CDATA[Hanoi]]></w2:label>
+    				<w2:value><![CDATA[001]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Danang]]></w2:label>
+    				<w2:value><![CDATA[002]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Taipei]]></w2:label>
+    				<w2:value><![CDATA[003]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Bangkok]]></w2:label>
+    				<w2:value><![CDATA[004]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Hawaii]]></w2:label>
+    				<w2:value><![CDATA[005]]></w2:value>
+    			</w2:item>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<xf:input adjustMaxLength="false" id="input1" style="height: 30px;margin: 50px;margin-left: 0px;margin-right:0px;width: 200px;text-align: center;font-size:20px;" placeholder='id="input1"'></xf:input>
+    	<xf:input adjustMaxLength="false" id="input2" placeholder='id="input2"' style="height: 30px;margin: 50px;text-align: center;width: 200px;font-size:20px;"></xf:input>
+    </body>
+</html>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="[gridView] gridView inputType이 custom인 typeGetter 속성 샘플">
+		<w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+                        <w2:column id="s_checkbox" length="1" dataType="number" />
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="bondBsnsClCd" length="3" dataType="text" />
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+		</xf:model>
+		<w2:layoutInfo></w2:layoutInfo>
+		<w2:publicInfo method=""></w2:publicInfo>
+
+        <script type="javascript" lazy="false"><![CDATA[ 
+
+    scwin.getType = function ( info ) {
+				
+        var rowIdx = info.rowIndex;
+        var colIdx = info.colIndex;
+        var status = grd_result_file.getRowStatus(rowIdx);
+        var strId = "random_" + status + "_" + rowIdx + "_" + colIdx;
+        var result = {};
+        
+        switch (status) {
+            case "C":
+                result.id = strId;
+                result.inputType = "textImage";
+                result.options = {viewType: "icon", imageSrc: "grd_custom_txtImg_imgClickFunc_WAEA-237_(WSQ-5982).svg", imageWidth:"26", imageHeight: "26", imageClickFunction: "scwin.ff_CustSearchPop("+info.rowIndex+")"};
+                grd_result_file.setCellClass(rowIdx, colIdx, "req");
+                grd_result_file.setReadOnly("cell", rowIdx, colIdx, true);
+                break;
+            default:
+                //debugger;    
+                result.id = strId;
+                result.inputType = "textImage";
+                result.options = {};
+                //grd_result.setCellClass(rowIdx, colIdx, "req");
+                grd_result_file.setReadOnly("cell", rowIdx, colIdx, true);
+                break;
+        }
+        
+        return result;
+                
+	};
+ 
+    scwin.ff_CustSearchPop = async function(nRow) {
+        
+        console.log("scwin.ff_CustSearchPop event...." + nRow);
+	window.checkLog = "scwin.ff_CustSearchPop event...." + nRow;
+        /*
+        var pv_msk_ym = scwin.fv_nowYm;
+        var strParm = "pv_msk_ym=" + $c.mip.quote(pv_msk_ym) + " pv_gubun=" + $c.mip.quote(1);
+        var rtn = await $c.sysu.utlf_dialogToCenter("BS_APA::BSAPASTP9020P.xml", strParm, 700, 500, true);
+
+        if ($c.mip.length(rtn) > 1) {
+            var arrRtn = $c.mip.split(rtn, "|", "webStyle");
+            $c.mip.fireEvent(ds_result, false);
+
+            //ds_result_file.SetColumn(nRow, "invAcntNum"		, arrRtn[0]);	//청구계정번호
+            ds_result_file.setCellData(nRow, "custAcntNum", arrRtn[1]); //고객계정번호
+            ds_result_file.setCellData(nRow, "custNm", arrRtn[2]); //고객명
+            ds_result_file.setCellData(nRow, "arrMonthCnt", arrRtn[3]); //연체개월
+            ds_result_file.setCellData(nRow, "arrMthAgeCnt", arrRtn[4]); //연체월령
+            ds_result_file.setCellData(nRow, "totNrecvlAmt", arrRtn[5]); //총미수금
+            ds_result_file.setCellData(nRow, "relOrgId", arrRtn[6]); //관계조직		
+            //ds_result_file.SetColumn(nRow, "invAcntTitleNm"	, arrRtn[7]);	//청구계정제목명
+
+            $c.mip.fireEvent(ds_result, true);
+        }
+        */
+    };
+
+	scwin.grd_onviewchange = function(info) {
+		//grd.refreshRow(info.rowIndex);
+		
+	};
+	        
+	scwin.onpageload = function() {
+		window.checkLog = "";	
+		//var jsonData = [{"col1":"2", "col2":"1"},{"col1":"1","col2":"2"},{"col1":"2","col2":"a3"}];
+	    //dataList1.setJSON( jsonData );
+	    //dataList1.insertRow(0);
+	    //dataList1.insertRow();
+	    
+		//var jsonData2 = [{"col1":"a1","col2":"a1"},{"col1":"a2","col2":"a2"},{"col1":"a3","col2":"a3"}];
+	    //dataList2.setJSON( jsonData2 );
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+scwin.trigger1_onclick = function (e) {
+    var nRow = dataList1.insertRow();
+
+    //행추가시 기본셋팅
+    dataList1.setCellData(nRow, "s_checkbox", "1");
+    dataList1.setCellData(nRow, "bondBsnsClCd", "301");
+
+};
+
+scwin.imageClickFunction = async function(){
+    console.log("imageClickFunction event....")
+};
+
+scwin.onTextImageClick = function(){
+    console.log("onTextImageClick event....")
+};
+
+	scwin.checkVal1 = function() {
+		return window.checkLog == "";
+	}
+	scwin.initCheckVal = function() {
+		window.checkLog = "";
+	}	
+	scwin.checkVal2 = function() {
+		return window.checkLog == "scwin.ff_CustSearchPop event....0";
+	}		
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.initCheckVal()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd_result_file_cell_0_1').querySelectorAll('img')[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()","true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()	
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[추가]]></xf:label>
+    	</xf:trigger>
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="grd_result_file" setEmptyStringSortableOnSort="true"
+    		style="position: absolute;width: 500px;height: 600px;" fixedColumnWithHidden="true" useShiftKey="true"
+    		ev:onviewchange="scwin.grd_onviewchange" sortable="true" readOnly="false">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column2" style="" inputType="text" width="70" value="name1"></w2:column>
+                    <w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" displayMode="label" width="20" inputType="checkbox" id="s_checkbox" checkboxLabel="선택" />
+                    <w2:column blockSelect="false" id="col1" style="" inputType="custom" width="70" typeGetter="scwin.getType" readOnly="true"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" readOnly="true"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" readOnly="true"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

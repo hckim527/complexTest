@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:w2="http://www.inswave.com/websquare"
+      xmlns:xf="http://www.w3.org/2002/xforms">
+<head meta_author="신상훈" meta_type="main" meta_screenName="WAEA-1031 GridView Print Document PoC">
+    <w2:type>COMPONENT</w2:type>
+    <w2:buildDate></w2:buildDate>
+    <w2:MSA></w2:MSA>
+    <xf:model>
+        <w2:dataCollection baseNode="map">
+            <w2:dataMap id="dma_option" baseNode="map">
+                <w2:keyInfo>
+                    <w2:key id="rowCount" name="행 수" dataType="number"></w2:key>
+                    <w2:key id="breakRows" name="페이지 분할 행 수" dataType="number"></w2:key>
+                    <w2:key id="groupSize" name="그룹 크기" dataType="number"></w2:key>
+                </w2:keyInfo>
+            </w2:dataMap>
+            <w2:dataList id="dlt_status" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="CODE" name="코드" dataType="text"></w2:column>
+                    <w2:column id="LABEL" name="라벨" dataType="text"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+            <w2:dataList id="dlt_main" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="GROUP_CODE" name="그룹" dataType="text"></w2:column>
+                    <w2:column id="ITEM_NAME" name="항목명" dataType="text"></w2:column>
+                    <w2:column id="STATUS" name="상태" dataType="text"></w2:column>
+                    <w2:column id="TRADE_DATE" name="거래일" dataType="date"></w2:column>
+                    <w2:column id="AMOUNT" name="금액" dataType="number"></w2:column>
+                    <w2:column id="NOTE" name="비고" dataType="text"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+        </w2:dataCollection>
+    </xf:model>
+    <script lazy="false" type="text/javascript"><![CDATA[
+scwin.lastModel = null;
+scwin.lastPrintResult = null;
+scwin.themeEnabled = true;
+scwin.statusPrintStyles = {
+    R: { color: "#1d4ed8", backgroundColor: "#dbeafe", fontWeight: "700" },
+    P: { color: "#92400e", backgroundColor: "#fef3c7", fontWeight: "700" },
+    C: { color: "#166534", backgroundColor: "#dcfce7", fontWeight: "700" }
+};
+scwin.highAmountPrintStyle = { color: "#b91c1c", backgroundColor: "#fee2e2", fontWeight: "700" };
+
+scwin.log = function(message) {
+    var current = txa_log.getValue() || "";
+    var now = new Date();
+    var time = [now.getHours(), now.getMinutes(), now.getSeconds()].map(function(value) {
+        return String(value).padStart(2, "0");
+    }).join(":");
+    txa_log.setValue(current + (current ? "\n" : "") + "[" + time + "] " + message);
+};
+
+scwin.getPositiveInteger = function(component, fallback) {
+    var value = parseInt(component.getValue(), 10);
+    return isNaN(value) || value < 1 ? fallback : value;
+};
+
+scwin.noteFormatter = function(data) {
+    return "<strong class='note-value'>" + data + "</strong>";
+};
+
+scwin.getPrintTheme = function() {
+    return {
+        fontFamily: "'Malgun Gothic', Arial, sans-serif",
+        fontSize: "10px",
+        textColor: "#172033",
+        borderColor: "#64748b",
+        headerBackground: "#1e3a5f",
+        headerColor: "#ffffff",
+        footerBackground: "#dbeafe",
+        footerColor: "#172033",
+        zebraBackground: "#f8fafc",
+        cellPadding: "4px 6px",
+        titleColor: "#1e3a5f",
+        titleFontSize: "20px"
+    };
+};
+
+scwin.printCellStyle = function(context) {
+    if (context.columnId === "STATUS") {
+        return scwin.statusPrintStyles[context.rawValue] || null;
+    }
+    if (context.columnId === "AMOUNT" && Number(context.rawValue) >= 1000000) {
+        return scwin.highAmountPrintStyle;
+    }
+    return null;
+};
+
+scwin.makeRows = function(rowCount, groupSize) {
+    var rows = [];
+    var statuses = ["R", "P", "C"];
+    for (var i = 0; i < rowCount; i++) {
+        var groupIndex = Math.floor(i / groupSize);
+        var groupCode = "GROUP-" + String(groupIndex + 1).padStart(3, "0");
+        rows.push({
+            GROUP_CODE: groupCode,
+            ITEM_NAME: "거래 항목 " + String(i + 1).padStart(5, "0"),
+            STATUS: statuses[i % statuses.length],
+            TRADE_DATE: "202607" + String((i % 28) + 1).padStart(2, "0"),
+            AMOUNT: (i + 1) * 1250,
+            NOTE: i === 0 ? "<template><img src=x onerror='window.__WAEA1031_XSS=true'></template>" : "메모 " + (i + 1)
+        });
+    }
+    return rows;
+};
+
+scwin.applyViewGroupMerge = function() {
+    grd_main.mergeClear();
+    var rowCount = grd_main.getDataLength();
+    if (rowCount === 0) {
+        return;
+    }
+    var start = 0;
+    var currentGroup = grd_main["getCellData"](0, "GROUP_CODE");
+    for (var rowIndex = 1; rowIndex <= rowCount; rowIndex++) {
+        var nextGroup = rowIndex < rowCount ? grd_main["getCellData"](rowIndex, "GROUP_CODE") : null;
+        if (rowIndex === rowCount || nextGroup !== currentGroup) {
+            grd_main.mergeCell({
+                rowIndex: start,
+                colIndex: 0,
+                rowSpan: rowIndex - start,
+                colSpan: 1
+            });
+            start = rowIndex;
+            currentGroup = nextGroup;
+        }
+    }
+};
+
+scwin.generateData = function() {
+    var rowCount = scwin.getPositiveInteger(ibx_row_count, 1000);
+    var groupSize = scwin.getPositiveInteger(ibx_group_size, 50);
+    var startedAt = performance.now();
+    dlt_main.clearFilter();
+    dlt_main.setJSON(scwin.makeRows(rowCount, groupSize));
+    scwin.applyViewGroupMerge();
+    scwin.log(rowCount + "행 생성 완료 / " + Math.round(performance.now() - startedAt) + "ms / Grid DOM 행=" + document.querySelectorAll("#" + grd_main.id + " tbody tr").length);
+};
+
+scwin.getPrintOptions = function(target) {
+    return {
+        title: "WAEA-1031 GridView 전량 인쇄 PoC",
+        target: target || "window",
+        paper: {
+            size: "A4",
+            orientation: "landscape",
+            margin: "10mm"
+        },
+        include: {
+            rowNumber: true,
+            footer: true
+        },
+        footerMode: "everyPage",
+        pageBreak: {
+            everyRows: scwin.getPositiveInteger(ibx_break_rows, 25),
+            groupColumn: "GROUP_CODE"
+        },
+        printTheme: scwin.themeEnabled ? scwin.getPrintTheme() : {},
+        cellStyle: scwin.themeEnabled ? scwin.printCellStyle : null,
+        chunkSize: 200,
+        maxCellCount: 500000,
+        onProgress: function(progress) {
+            if (progress.completed === progress.total || progress.completed % 1000 === 0) {
+                tbx_progress.setValue(progress.phase + " " + progress.percent + "%");
+            }
+        }
+    };
+};
+
+scwin.btn_generate_onclick = function() {
+    scwin.generateData();
+};
+
+scwin.btn_10000_onclick = function() {
+    ibx_row_count.setValue("10000");
+    scwin.generateData();
+};
+
+scwin.btn_filter_onclick = function() {
+    dlt_main.setColumnFilter({
+        type: "row",
+        colIndex: "STATUS",
+        key: "P",
+        condition: "and",
+        exactMatch: true,
+        clearFilter: "all"
+    });
+    scwin.applyViewGroupMerge();
+    scwin.log("STATUS=P 필터 적용 / 현재 GridView 논리 행=" + grd_main.getDataLength());
+};
+
+scwin.btn_clear_filter_onclick = function() {
+    dlt_main.clearFilter();
+    scwin.applyViewGroupMerge();
+    scwin.log("필터 해제 / 현재 GridView 논리 행=" + grd_main.getDataLength());
+};
+
+scwin.btn_sort_onclick = function() {
+    dlt_main.sort("ITEM_NAME", 1);
+    scwin.applyViewGroupMerge();
+    scwin.log("ITEM_NAME 내림차순 정렬 적용");
+};
+
+scwin.btn_toggle_note_onclick = function() {
+    var visible = grd_main.getColumnVisible("NOTE") !== false;
+    grd_main.setColumnVisible("NOTE", !visible);
+    scwin.log("NOTE 컬럼 visible=" + (!visible));
+};
+
+scwin.btn_toggle_theme_onclick = function() {
+    scwin.themeEnabled = !scwin.themeEnabled;
+    scwin.log("인쇄 테마/동적 강조 enabled=" + scwin.themeEnabled);
+};
+
+scwin.btn_model_onclick = async function() {
+    try {
+        var startedAt = performance.now();
+        var grid = $p.getComponentById("grd_main");
+        scwin.lastModel = await grid["getPrintDocumentModel"](scwin.getPrintOptions("iframe"));
+        var firstCell = scwin.lastModel.bodyRows[0][1];
+        var styledCellCount = 0;
+        scwin.lastModel.bodyRows.forEach(function(row) {
+            row.forEach(function(cell) {
+                if (cell.style) {
+                    styledCellCount++;
+                }
+            });
+        });
+        scwin.log("모델 생성 성공 / rows=" + scwin.lastModel.stats.rowCount + ", cols=" + scwin.lastModel.stats.columnCount + ", breaks=" + scwin.lastModel.pageBreakRows.length + ", build=" + Math.round(scwin.lastModel.stats.buildTime) + "ms, total=" + Math.round(performance.now() - startedAt) + "ms");
+        scwin.log("첫 데이터 셀=" + firstCell.value + " / 헤더 행=" + scwin.lastModel.headerRows.length + " / 푸터 행=" + scwin.lastModel.footerRows.length + " / 강조 셀=" + styledCellCount + " / 헤더 배경=" + scwin.lastModel.theme.headerBackground);
+    } catch (e) {
+        scwin.log("모델 생성 실패 / " + e.code + " / " + e.message);
+    }
+};
+
+scwin.btn_iframe_onclick = async function() {
+    try {
+        if (scwin.lastPrintResult) {
+            scwin.lastPrintResult.close();
+        }
+        var grid = $p.getComponentById("grd_main");
+        scwin.lastPrintResult = await grid["printDocument"](scwin.getPrintOptions("iframe"));
+        var printDocument = scwin.lastPrintResult.document;
+        scwin.log("iframe 문서 생성 성공 / DOM rows=" + printDocument.querySelectorAll("tbody tr").length + ", pageBreak=" + printDocument.querySelectorAll("tr[data-page-break='true']").length + ", 강조 셀=" + printDocument.querySelectorAll("tbody td[style*='background-color']").length + ", 셀 하위 요소=" + printDocument.querySelectorAll("tbody td > *").length + ", img=" + printDocument.images.length + ", headerTheme=" + printDocument.documentElement.style.getPropertyValue("--wq-print-header-background") + ", total=" + Math.round(scwin.lastPrintResult.stats.totalTime) + "ms");
+    } catch (e) {
+        scwin.log("iframe 문서 생성 실패 / " + e.code + " / " + e.message);
+    }
+};
+
+scwin.btn_preview_onclick = async function() {
+    try {
+        var grid = $p.getComponentById("grd_main");
+        scwin.lastPrintResult = await grid["printDocument"](scwin.getPrintOptions("window"));
+        scwin.log("새 창 미리보기 준비 완료 / rows=" + scwin.lastPrintResult.model.stats.rowCount + ", total=" + Math.round(scwin.lastPrintResult.stats.totalTime) + "ms");
+    } catch (e) {
+        scwin.log("미리보기 실패 / " + e.code + " / " + e.message);
+    }
+};
+
+scwin.onpageload = function() {
+    dma_option.set("rowCount", "1000");
+    dma_option.set("breakRows", "25");
+    dma_option.set("groupSize", "50");
+    dlt_status.setJSON([
+        { CODE: "R", LABEL: "접수" },
+        { CODE: "P", LABEL: "처리중" },
+        { CODE: "C", LABEL: "완료" }
+    ]);
+    grd_main.setColumnNodeSet("STATUS", "data:dlt_status", "LABEL", "CODE");
+    scwin.generateData();
+    scwin.log("WAEA-1031 PoC 준비 완료");
+};
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_root" style="padding:16px;">
+        <w2:textbox id="" label="WAEA-1031 GridView 전량 인쇄 문서 PoC" style="display:block;font-size:20px;font-weight:bold;margin-bottom:12px;"></w2:textbox>
+        <xf:group id="grp_options" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+            <w2:textbox id="" label="행 수" style="width:40px;"></w2:textbox>
+            <xf:input id="ibx_row_count" ref="data:dma_option.rowCount" style="width:80px;"></xf:input>
+            <w2:textbox id="" label="분할 간격" style="width:64px;"></w2:textbox>
+            <xf:input id="ibx_break_rows" ref="data:dma_option.breakRows" style="width:60px;"></xf:input>
+            <w2:textbox id="" label="그룹 크기" style="width:64px;"></w2:textbox>
+            <xf:input id="ibx_group_size" ref="data:dma_option.groupSize" style="width:60px;"></xf:input>
+            <xf:trigger id="btn_generate" type="button" ev:onclick="scwin.btn_generate_onclick" style="width:90px;">
+                <xf:label><![CDATA[데이터 생성]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_10000" type="button" ev:onclick="scwin.btn_10000_onclick" style="width:90px;">
+                <xf:label><![CDATA[1만 행 생성]]></xf:label>
+            </xf:trigger>
+            <w2:textbox id="tbx_progress" label="ready" style="width:100px;color:#2255aa;"></w2:textbox>
+        </xf:group>
+        <xf:group id="grp_actions" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+            <xf:trigger id="btn_filter" type="button" ev:onclick="scwin.btn_filter_onclick" style="width:100px;">
+                <xf:label><![CDATA[처리중 필터]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_clear_filter" type="button" ev:onclick="scwin.btn_clear_filter_onclick" style="width:90px;">
+                <xf:label><![CDATA[필터 해제]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_sort" type="button" ev:onclick="scwin.btn_sort_onclick" style="width:100px;">
+                <xf:label><![CDATA[항목명 역순]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_toggle_note" type="button" ev:onclick="scwin.btn_toggle_note_onclick" style="width:100px;">
+                <xf:label><![CDATA[비고 숨김/표시]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_toggle_theme" type="button" ev:onclick="scwin.btn_toggle_theme_onclick" style="width:140px;">
+                <xf:label><![CDATA[테마/강조 켜기·끄기]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_model" type="button" ev:onclick="scwin.btn_model_onclick" style="width:100px;">
+                <xf:label><![CDATA[모델 검증]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_iframe" type="button" ev:onclick="scwin.btn_iframe_onclick" style="width:110px;">
+                <xf:label><![CDATA[iframe 문서 검증]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_preview" type="button" ev:onclick="scwin.btn_preview_onclick" style="width:120px;">
+                <xf:label><![CDATA[인쇄 미리보기]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <w2:gridView id="grd_main" dataList="data:dlt_main" style="width:100%;height:360px;" rowNumVisible="true" sortable="true" captionTitle="WAEA-1031 거래 내역">
+            <w2:caption id="" value="WAEA-1031 거래 내역"></w2:caption>
+            <w2:header id="">
+                <w2:row id="">
+                    <w2:column id="hd_group" inputType="text" value="그룹" width="100" rowSpan="2"></w2:column>
+                    <w2:column id="hd_item" inputType="text" value="항목명" width="170" rowSpan="2"></w2:column>
+                    <w2:column id="hd_trade" inputType="text" value="거래 정보" width="230" colSpan="2"></w2:column>
+                    <w2:column id="hd_value" inputType="text" value="금액 정보" width="300" colSpan="2"></w2:column>
+                </w2:row>
+                <w2:row id="">
+                    <w2:column id="hd_status" inputType="text" value="상태" width="100"></w2:column>
+                    <w2:column id="hd_date" inputType="text" value="거래일" width="130"></w2:column>
+                    <w2:column id="hd_amount" inputType="text" value="금액" width="130"></w2:column>
+                    <w2:column id="hd_note" inputType="text" value="비고" width="170"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="">
+                <w2:row id="">
+                    <w2:column id="GROUP_CODE" inputType="text" value="" width="100" textAlign="center"></w2:column>
+                    <w2:column id="ITEM_NAME" inputType="text" value="" width="170" textAlign="left"></w2:column>
+                    <w2:column id="STATUS" inputType="select" value="" width="100" displayMode="label" textAlign="center"></w2:column>
+                    <w2:column id="TRADE_DATE" inputType="text" value="" width="130" dataType="date" displayFormat="yyyy-MM-dd" textAlign="center"></w2:column>
+                    <w2:column id="AMOUNT" inputType="text" value="" width="130" displayFormat="#,###" textAlign="right"></w2:column>
+                    <w2:column id="NOTE" inputType="text" value="" width="170" customFormatter="scwin.noteFormatter" textAlign="left"></w2:column>
+                </w2:row>
+            </w2:gBody>
+            <w2:footer id="">
+                <w2:row id="">
+                    <w2:column id="ft_label" inputType="text" value="총합계" colSpan="4" textAlign="right"></w2:column>
+                    <w2:column id="ft_amount" inputType="expression" value="" expression="sum('AMOUNT')" displayFormat="#,###" textAlign="right"></w2:column>
+                    <w2:column id="ft_count" inputType="expression" value="" expression="count('ITEM_NAME')" displayFormat="#,###" textAlign="right"></w2:column>
+                </w2:row>
+            </w2:footer>
+        </w2:gridView>
+        <w2:textarea id="txa_log" style="width:100%;height:180px;margin-top:10px;"></w2:textarea>
+    </xf:group>
+</body>
+</html>

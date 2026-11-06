@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>COMPONENT</w2:type>
+    	<w2:buildDate />
+    	<w2:MSA />
+    	<xf:model>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" id="autoItemSet" repeatNode="map" saveRemovedData="true" style="">
+    				<w2:columnInfo>
+    					<w2:column dataType="text" id="code" name="name1"></w2:column>
+    					<w2:column dataType="text" id="name" name="name2"></w2:column>
+    					<w2:column dataType="text" id="etc" name="etc"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection />
+    	</xf:model>
+    	<w2:layoutInfo />
+    	<w2:publicInfo method="" />
+    	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    document.title = "AutoComplete";
+
+    var arr = ["test1","t1","","test2","t2","","test3-f가나다라마바사가나다라마바사","t3","false","aaa1","a1","","aaa2","a2","","bbb1","b1","","bbb2","b2",""];
+    autoItemSet.setData(arr);
+};
+
+	scwin.subfunc = function(searchStr, keyCode){
+		console.log(searchStr);
+		$p.executeSubmission( "submission1", searchStr);
+	};   
+
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#acb_samp_input', 'key-combo', {
+			combo: 'ENTER'
+		});
+	}
+
+	scwin.isWithinPercent = function(a, b, c) {
+	  const percentage = c; // 백분율 설정
+	  const lowerBound = b - (b * (percentage / 100)); // 하한 계산
+	  const upperBound = b + (b * (percentage / 100)); // 상한 계산
+debugger;
+	  return a >= lowerBound && a <= upperBound;
+	}	
+		
+	scwin.checkVal = function() {
+		let check_val = WebSquare.wUnit.getJq('#acb_samp_div_input').width()
+		return scwin.isWithinPercent(check_val, 142, 2);
+	}	
+	
+	scwin.unitTest = function(){
+		//init
+		WebSquare.wUnit.start();
+
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('acb_samp_arrow').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('acb_samp_itemTable_option3').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('acb_samp_input').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+
+	
+]]></script>
+    	<style type="text/css"><![CDATA[ 
+    	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="" class="sub_contents">
+    		<xf:group class="page_header" id="" style="" tagname="header">
+    			<xf:group class="page_header_inner" id="">
+    				<w2:textbox class="pgt_tit" id="" label="AutoComplete" style="" tagname=""></w2:textbox>
+    			</xf:group>
+    		</xf:group>
+    		<xf:group id="" tagname="section" style="">
+    			<w2:textbox id="" label="입력 서식 레이블" style="" tagname="label" for="mf_acb_samp_input"></w2:textbox>
+
+
+    			<w2:autoComplete allOption="" chooseOption="" editType="select" id="acb_samp" ref="" renderType="component" search="start"
+    				style="width: 158px;height: 32px;" submenuSize="auto" useKeywordHighlight="false" useLocale="false" accessibility="true"
+    				direction="auto" caseSensitive="false" interactionMode="true" noResult="noEnd">
+    				<w2:choices>
+    					<w2:itemset nodeset="data:autoItemSet">
+    						<w2:label ref="code"></w2:label>
+    						<w2:value ref="name"></w2:value>
+    					</w2:itemset>
+    				</w2:choices>
+    			</w2:autoComplete>
+
+    			<xf:input id="" style="position: relative;width: 144px;height: 21px;"></xf:input>
+
+    			<xf:input id="" style="position: relative;width: 144px;height: 21px;"></xf:input>
+    		</xf:group>
+    	</xf:group>
+
+    </body>
+</html>

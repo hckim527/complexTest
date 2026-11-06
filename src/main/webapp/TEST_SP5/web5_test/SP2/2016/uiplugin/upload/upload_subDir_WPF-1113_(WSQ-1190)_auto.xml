@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. Property 또는 Souce 탭에서 upload 컴포넌트(upload1) 의 subDir 을 확인한다.
+    //1. In the Property or Source tab, check the subDir of the upload component (upload1).
+    //Verify 1. subDir="subDirTEST"
+    //Test step 2. 브라우저에서 getSubDir 버튼을 클릭한다.
+    //2. Click the getSubDir button in your browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. subDirTEST 값이 팝업창으로 생성된다. 
+    //2. The subDirTEST value is popped up.
+    WebSquare.wUnit.addCommand("assert", "log", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 22-Feb-2018
+    window.log = false;
+    window.console.log = function(l) {
+        log = true;
+    }
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:upload id="upload1" style="position: absolute ;left: 121px;top: 91px;width: 154px;height: 29px;"
+    		imageStyle="position:absolute;vertical-align:middle;word-wrap:break-word"
+    		inputStyle="position:absolute;vertical-align:middle;word-wrap:break-word" type="image" disabled="" accept=".jpg,.png,.xml,.txt"
+    		subDir="subDirTEST">
+    		<script ev:event="ondone(retXml)" type="javascript"><![CDATA[ 
+                alert(WebSquare.xml.indent(retXml));
+            ]]></script>
+    	</w2:upload>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left:306px;top:89px;width:143px;height:30px;">
+    		<xf:label><![CDATA[submit]]></xf:label>
+    		<script ev:event="onclick" type="javascript"><![CDATA[
+                upload1.submit();
+             ]]></script>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="position: absolute ;left:307px;top:127px;width:144px;height:30px;" type="button">
+    		<xf:label><![CDATA[reset]]></xf:label>
+    		<script ev:event="onclick" type="javascript"><![CDATA[
+                upload1.reset();
+             ]]></script>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3" style="position: absolute;width:156px;height:28px;left:121px;top:127px;">
+    		<xf:label><![CDATA[getSubDir]]></xf:label>
+    		<script ev:event="onclick" type="javascript"><![CDATA[
+                //alert(upload1.getSubDir());
+                console.log(upload1.getSubDir());
+             ]]></script>
+    	</xf:trigger>
+    </body>
+</html>
+ 

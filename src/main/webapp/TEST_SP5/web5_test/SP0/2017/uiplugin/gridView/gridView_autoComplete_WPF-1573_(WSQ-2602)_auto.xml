@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" ev:onbeforerowpositionchange="scwin.dataList1_onbeforerowpositionchange" ev:onrowpositionchange="scwin.dataList1_onrowpositionchange">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="itemset1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="val" name="name1" dataType="text"></w2:column>
+            			<w2:column id="label" name="name2" dataType="text"></w2:column>
+            			<w2:column id="gubun" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList id="itemsetLink1" bind="itemset1">
+            		<w2:condition type="filter"><![CDATA[gubun == ref('data:dataList1.col1')]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭 또는 Property 탭에서 acp_autoComplete1 의 ref 부분을 확인한다.
+    //1. Check the ref section of acp_autoComplete1 in the Source tab or Property tab.
+    //Verify step 1. ref = 'data: dataList1.col2'
+    //Test step 2. 브라우저에서 name1 또는 nmae2 컬럼의 데이터를 임의로 선택한다. (예 : 'b')
+    //2. Select arbitrarily the data in the name1 or nmae2 column in the browser. (E.g. 'b')
+    //Verify step 2. Name2 and AutoComplete of selected data are kept as 'b-2'.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_1_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('acp_autoComplete1_label').innerText == 'b-2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. AutoComplete 에서 'b-2' -> 'b-1' 로 변경한다.
+    //3. In AutoComplete, change it to 'b-2' -> 'b-1'.
+    //Verify step 3. The selected name2 column in gridView is also changed to 'b-2' -> 'b-1'. (No matter how you change AutoComplete in previous versions)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('acp_autoComplete1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('acp_autoComplete1_itemTable_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_1_1').innerText == 'b-1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.t1 = [{
+            "col1": "a",
+            "col2": "a-2",
+            "rowStatus": "C"
+        },
+        {
+            "col1": "b",
+            "col2": "b-2",
+            "rowStatus": "C"
+        },
+        {
+            "col1": "a",
+            "col2": "a-2",
+            "rowStatus": "C"
+        }
+    ];
+    window.t2 = [{
+            "val": "a-1",
+            "label": "a-1",
+            "gubun": "a"
+        },
+        {
+            "val": "a-2",
+            "label": "a-2",
+            "gubun": "a"
+        },
+        {
+            "val": "a-3",
+            "label": "a-3",
+            "gubun": "a"
+        },
+        {
+            "val": "b-1",
+            "label": "b-1",
+            "gubun": "b"
+        },
+        {
+            "val": "b-2",
+            "label": "b-2",
+            "gubun": "b"
+        }
+    ];
+    itemset1.setJSON(t2);
+    dataList1.setJSON(t1);
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 03-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" fixedColumnWithHidden="true" id="gridView2" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		scrollByColumn="false" scrollByColumnAdaptive="false" style="position: relative;width: 500px;height: 150px;" summaryAuto="false"
+    		useShiftKey="true" ev:onrowindexchange="scwin.gridView2_onrowindexchange">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px" value="name1"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:20px" value="name2"
+    					width="70">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column allOption="" blockSelect="false" chooseOption="" chooseOptionLabel="" displayMode="label" id="col2"
+    					inputType="select" style="height:20px" width="70">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:itemsetLink1">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="val"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:autoComplete visibleRowNum="5" chooseOption="" id="acp_autoComplete1" style="position: relative;width: 148px;height: 21px;"
+    		search="start" interactionMode="" displayMode="label" useKeywordHighlight="false" submenuSize="auto" editType="select" allOption=""
+    		ref="data:dataList1.col2" noResult="useData" selectedData="false" chooseOptionLabel="">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:itemsetLink1">
+    				<w2:label ref="label"></w2:label>
+    				<w2:value ref="val"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+
+    </body>
+</html>
+ 

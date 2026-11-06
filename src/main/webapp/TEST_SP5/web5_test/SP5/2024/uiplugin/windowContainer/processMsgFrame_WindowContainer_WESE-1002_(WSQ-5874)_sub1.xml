@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript"><![CDATA[ 	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+	var i = 0;
+	scwin.fn_addTab = function(){
+		var tabOpt = { 
+				label : "임시화면" + i, 
+				closable : true 
+		}; 
+		var contOpt = { 
+			frameMode : "wframe" ,
+			src : "processMsgFrame_WindowContainer_WESE-1002_(WSQ-5874)_sub2.xml"
+		};
+
+		tabControl1.addTab('tab0' + i, tabOpt, contOpt);
+		var idx = tabControl1.getTabCount();
+		tabControl1.setSelectedTabIndex(idx-1);
+		i++;
+	}
+
+
+	// 버튼 클릭 시 tab 추가(로딩바 설정)
+	scwin.trigger2_onclick = function(e) {debugger;
+		var ii = tabControl1.getFrame(tabControl1.getSelectedTabIndex()).id;
+
+        WebSquare.layer.showProcessMessage("Tab_test..", {scope:ii}); // 로딩바 생성
+        $p.setTimeout(function(){
+            scwin.fn_addTab(); // 탭 생성
+            WebSquare.layer.hideProcessMessage({scope:ii});
+        }, {delay:3000, key:""}); //timeout
+    };
+	
+	// onbeforetabclose : tab이 close되기 전 발생
+	scwin.tabControl1_onbeforetabclose = function(tabID,idx) {
+		tabControl1.getWindow(idx).$w.clearPage(); //원하는 객체가 포함된 scope에 접근하여, 브라우저 초기화
+	};
+		]]></script>
+    </head>
+    <body>
+    	 <w2:tabControl confirmTrueAction="exist" spaInitCount="3" class="" useTabKeyOnly="true" tabScroll="true" id="tabControl1" 
+    	 closable="true" style="position: absolute ;left:37px;top:119px;width: 600px;height: 344px;padding: 20px;" 
+    	 useConfirmMessage="false" confirmFalseAction="new" alwaysDraw="true" spa="false" windowMaxNum="10" ev:onbeforetabclose="scwin.tabControl1_onbeforetabclose" processMsgFrame="false" focusOnStart="false">
+         
+    		<w2:tabs label="Wframe" id="tab1" style="width:70px;height:30px;" disabled="false"></w2:tabs>
+    		<w2:content id="content1" style="height:283px;" alwaysDraw="false" processMsgFrame="true" frameMode="wframe" scope="true"></w2:content>
+    	</w2:tabControl>
+    	<xf:trigger type="button" id="trigger2" style="position: absolute ;left:56px;top:28px;width: 164px;height: 38px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[addTab(b.xml)]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

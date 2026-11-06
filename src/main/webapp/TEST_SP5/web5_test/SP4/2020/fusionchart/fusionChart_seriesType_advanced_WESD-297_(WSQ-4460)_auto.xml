@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[test1]]></col1>
+            				<col2><![CDATA[10]]></col2>
+
+            				<col3><![CDATA[test1]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[test2]]></col1>
+            				<col2><![CDATA[20]]></col2>
+
+            				<col3><![CDATA[test1]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    for (var a in [{
+            a: 1
+        }, {
+            b: 2
+        }]) {
+        console.log(a);
+        localStorage.setItem("log", a);
+    }
+    // 출력 결과 :
+    // 0
+    // 1
+    // unique
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == '1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    // fusionChart의 seriesType이 advanced일 경우 unique 출력
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" style="width:123px;height:33px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[for in 검사]]></xf:label>
+    	</xf:trigger>
+    	<w2:fusionchart accessibility="false" drawType="javascript" runflashAt="IE6,IE7,IE8" seriesType="advanced" chartType="Column2D"
+    		style="width: 500px;height: 300px;" id="" ref="data:dataList2" labelNode="col1" valueNode="col2" seriesNode="col3"
+    		seriesColumns="[['col2']]">
+    	</w2:fusionchart>
+    </body>
+</html>
+ 

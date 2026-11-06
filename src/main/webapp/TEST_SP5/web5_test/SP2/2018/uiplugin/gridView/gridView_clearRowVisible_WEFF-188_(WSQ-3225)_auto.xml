@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var totRow = 200;
+    var totCol = grid1.getTotalCol();
+    var arr = [];
+    for (var i = 0; i < totRow; i++) {
+        for (var j = 0; j < totCol; j++) {
+            if (j != 0) {
+                arr.push("index_" + i + "_" + j);
+            } else {
+                arr.push("");
+            }
+        }
+    }
+    grid1.setData(arr);
+    grid1.setCellChecked(0, "chk", true);
+    grid1.setCellChecked(4, "chk", true);
+    grid1.setCellChecked(5, "chk", true);
+    grid1.setCellChecked(6, "chk", true);
+    grid1.setCellChecked(7, "chk", true);
+    grid1.setCellChecked(9, "chk", true);
+    grid1.setCellChecked(10, "chk", true);
+    grid1.setCellChecked(12, "chk", true);
+    grid1.setCellChecked(13, "chk", true);
+};
+scwin.onpageunload = function() {};
+scwin.select11_onviewchange = function(info) {
+    var value = info.value;
+    grid1.clearRowVisible();
+    if (value == "1") {
+        //				grid1.clearRowVisible();
+    } else if (value == "2") {
+        for (var i = 0; i < grid1.getTotalRow(); i++) {
+            var chk = grid1.getCellChecked(i, 0);
+            if (!chk) {
+                grid1.setRowVisible(i, false);
+            }
+        }
+    } else if (value == "3") {
+        for (var i = 0; i < grid1.getTotalRow(); i++) {
+            var chk = grid1.getCellChecked(i, 0);
+            if (chk) {
+                grid1.setRowVisible(i, false);
+            }
+        }
+    }
+};
+scwin.compareValue = function(id1, id2) {
+    if (WebSquare.wUnit.getDomById($p.id + id1).textContent == WebSquare.wUnit.getDomById($p.id + id2).textContent) {
+        return false;
+    }
+    return true;
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 상단의 radio버튼을 순서대로 전체 > 선택 > 미선택 > 선택 > 전체 를 클릭한다.
+    //1. After running the sample, click the radio button at the top and select All> Select> Unselect> Select> All.
+    //Verify step 1. Duplicate columns are not visible.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.compareValue($p.id+'grid1_cell_3_1', 'grid1_cell_4_1')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.compareValue($p.id+'grid1_cell_8_1', 'grid1_cell_9_1')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.compareValue($p.id+'grid1_cell_11_1', 'grid1_cell_12_1')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 22-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:select1 appearance="full" id="select11" style="width:366px;height:21px;" selectedIndex="-1" cols="3" rows="" ev:onviewchange="scwin.select11_onviewchange">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[전체]]></xf:label>
+    				<xf:value><![CDATA[1]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[선택]]></xf:label>
+    				<xf:value><![CDATA[2]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[미선택]]></xf:label>
+    				<xf:value><![CDATA[3]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select1>
+    	<w2:grid baseNode="vector" repeatNode="data/INFO" id="grid1" style="width: 700px;height: 800px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column21" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column19" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column17" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column15" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column13" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="chk" style="height:20px" inputType="checkbox" width="70" displayMode="label" trueValue="" falseValue=""></w2:column>
+    				<w2:column blockSelect="false" id="column20" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column18" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column16" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column14" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column12" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column10" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column8" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column6" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column4" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column2" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    </body>
+</html>
+ 

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance></xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {		
+			gp_generator.insertChild()
+			gp_generator.insertChild()
+			gp_generator.insertChild()
+};		
+scwin.ge_searchbox_onchange = function() {
+	localStorage.setItem("log", 'searchBox_onchange');			
+    console.log("searchBox_onchange");
+};
+
+scwin.schBox_onchange = function() {
+     console.log("schBox_onchange");
+};
+
+
+	scwin.checkVal = function() {
+		return localStorage.getItem('log') == 'searchBox_onchange';
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gp_generator_0_ge_searchbox___input').click()");
+		WebSquare.wUnit.addCommand("pause", "400");			
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gp_generator_0_ge_searchbox___input').focus()");
+		WebSquare.wUnit.addCommand("pause", "400");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gp_generator_0_ge_searchbox___input').value = '1'");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gp_generator_1_ge_searchbox___input').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gp_generator_1_ge_searchbox___input').focus()");
+		WebSquare.wUnit.addCommand("pause", "400");			
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	localStorage.removeItem("log");
+	
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:textbox id="" label="" style="width: 150px;height: 23px;"></w2:textbox>
+		<w2:textbox id="" label="generator-searchBox" style="width: 150px;height: 23px;"></w2:textbox>
+		<xf:group id="" style="" tagname="ul">
+			<w2:generator id="gp_generator" style="">
+				<w2:searchbox id="ge_searchbox" style="width: 150px;height: 21px;" ev:onchange="scwin.ge_searchbox_onchange"></w2:searchbox>
+			</w2:generator>
+		</xf:group>
+		<w2:textbox id="" label="searchBox" style="width: 150px;height: 23px;"></w2:textbox>
+		<w2:searchbox id="schBox" style="width: 150px;height: 21px;" ev:onchange="scwin.schBox_onchange"></w2:searchbox>
+	</body>
+</html>

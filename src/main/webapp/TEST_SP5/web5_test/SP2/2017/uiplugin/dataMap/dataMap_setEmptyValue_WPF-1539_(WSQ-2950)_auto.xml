@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map"></w2:dataList>
+				<w2:dataMap baseNode="map" id="dataMap1" firstSet="true">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text" defaultValue="default1"></w2:key>
+						<w2:key id="key2" name="name2" dataType="text" defaultValue="default2"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataMap>
+				<w2:dataMap baseNode="map" id="dataMap2" firstSet="true">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataMap1.setEmptyValue();
+    dataMap2.setEmptyValue();
+};
+scwin.trigger2_onclick = function(e) {
+    dataMap1.set("key1", "test");
+    dataMap1.set("key2", "test");
+    dataMap2.set("key1", "test");
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 'input들의 값을 변경'버튼을 클릭 후 'setEmpty'버튼을 클릭한다.
+    //1. After running the sample file, click the 'Change the values of inputs' button and click the 'setEmpty' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    // verify step 1. test값이 입력되어지고 defaultValue가 있는 경우에는 default1, default2값이 셋팅되고 defaultValue가 없는 경우에는 빈값 으로 셋팅되어진다.
+    //1. If test value is input and defaultValue is set, default1 and default2 values are set. If defaultValue is not set, it is set to blank value.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input1').getValue() == 'test'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input2').getValue() == 'test'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_11').getValue() == 'test'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 'input들의 값을 변경'버튼을 클릭 후 'setEmpty'버튼을 클릭한다.
+    //1. After running the sample file, click the 'Change the values of inputs' button and click the 'setEmpty' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    // verify step 1. test값이 입력되어지고 defaultValue가 있는 경우에는 default1, default2값이 셋팅되고 defaultValue가 없는 경우에는 빈값 으로 셋팅되어진다.
+    //1. If test value is input and defaultValue is set, default1 and default2 values are set. If defaultValue is not set, it is set to blank value.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input1').getValue() == 'default1'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input2').getValue() == 'default2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_11').getValue() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 19-Jan-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:input id="input1" style="position: absolute;width:254px;height:84px;left:154px;top:81px;" ref="data:dataMap1.key1"></xf:input>
+		<xf:input id="input2" style="position: absolute;width:256px;height:73px;left:159px;top:348px;" ref="data:dataMap1.key2"></xf:input>
+		<xf:trigger type="button" id="trigger1" style="position: absolute;width:276px;height:91px;left:570px;top:138px;font-size:14pt;"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[setEmpty]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="position: absolute;width:279px;height:85px;left:569px;top:47px;font-size:14pt;" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[input들의 값을 변경]]></xf:label>
+		</xf:trigger>
+		<xf:input id="" style="position: absolute;width:261px;height:82px;left:572px;top:342px;" ref="data:dataMap2.key1"></xf:input>
+		<w2:textbox label="defaultValue가 있는 경우" id=""
+			style="position: absolute;width:230px;height:29px;left:152px;top:51px;font-size:14pt;">
+		</w2:textbox>
+		<w2:textbox label="defaultValue가 없는 경우" id=""
+			style="position: absolute;width:246px;height:37px;left:574px;top:308px;font-size:14pt;">
+		</w2:textbox>
+		<w2:textbox label="defaultValue가 있는 경우" id=""
+			style="position: absolute;width:247px;height:36px;left:158px;top:313px;font-size:14pt;">
+		</w2:textbox>
+	</body>
+</html>
+ 

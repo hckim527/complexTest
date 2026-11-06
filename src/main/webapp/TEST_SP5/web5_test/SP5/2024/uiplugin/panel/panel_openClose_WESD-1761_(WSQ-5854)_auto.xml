@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_author="InswaveSystems" meta_type="메인" meta_screenName="[Accordion] 각 패널이 독립적으로 열리고 닫히도록 설정하기">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성" meta_date="20230209" meta_user="InswaveSystems"></w2:history>
+			<w2:history meta_no="02" meta_desc="콘텐츠 구성 및 화면명, 화면 설명 변경\nAccordion의 'collapsible' 속성을 'true'로 추가 적용" meta_date="20240621" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+
+};
+
+scwin.panel2_onclick = function(panel,isOpen) {
+/*
+console.log('=================================');
+console.log('onclick : ',panel, isOpen);
+var aaa = document.getElementById('mf_panel2_panel_panel3_panelContent_panelContent3');
+console.log('[pannel content class]', aaa.className);
+console.log('[panel content offsetHeight]',aaa.offsetHeight);*/
+};
+
+scwin.panel2_onpanelload = function(panelId, userId) {
+	if (userId == "panel3") {
+		console.log('=================================');
+		console.log('onpanelload : ',panelId, userId);
+		var aaa = document.getElementById('mf_panel2_panel_panel3_panelContent_panelContent3');
+		console.log('[pannel content class]', aaa.className);
+		console.log('[panel content offsetHeight]',aaa.offsetHeight);	
+		
+		window.ck_log1 = userId;
+	}
+};
+
+scwin.panel2_onpanelunload = function(panelId, userId) {
+	if (userId == "panel3") {
+		console.log('=================================');
+		console.log('onpanelunload : ',panelId, userId);
+		var aaa = document.getElementById('mf_panel2_panel_panel3_panelContent_panelContent3');
+		console.log('[pannel content class]', aaa.className);
+		console.log('[panel content offsetHeight]',aaa.offsetHeight);
+
+		window.ck_log2 = userId;
+	}
+};
+
+scwin.txt01_onclick = function(){
+	panel2.openPanel("panel3");
+}
+
+scwin.txt02_onclick = function(){
+	panel2.closePanel("panel3");
+}
+
+	scwin.checkVal1 = function() {
+		return window.ck_log1 == 'panel3';
+	}
+	scwin.checkVal2 = function() {
+		return window.ck_log2 == 'panel3';
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('panel2_panel_panel3_panelTitle_panelTitle3').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('panel2_panel_panel3_panelTitle_panelTitle3').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="sub_contents P00221" id="" style="">
+			<xf:group class="ws_example_grp_desc" id="" style="">
+				<w2:textbox escape="false" id=""
+					label="Accordion의 'independentPanel' 속성을 'true'로 설정하여 각 패널이 독립적으로 열리고 닫히도록 구현한 예제입니다."
+					style="margin-bottom: 10px;"></w2:textbox>
+			</xf:group>
+			<xf:group class="example_div_tb_style_wrap" id="">
+				
+				<xf:group class="example_div_tr_style" id="" style="">
+					<w2:textbox class="example_div_th_style" escape="false" id="txt01" label='openPanel panel3' style="" ev:onclick="scwin.txt01_onclick"></w2:textbox>
+					<w2:textbox class="example_div_th_style" escape="false" id="txt02" label='closePanel panel3' style="" ev:onclick="scwin.txt02_onclick"></w2:textbox>
+					<xf:group class="example_div_td_style" id="" style="">
+						<w2:accordion class="acd" id="panel2" independentPanel="false" style="" collapsible="true" ev:onclick="scwin.panel2_onclick" ev:onpanelload="scwin.panel2_onpanelload" ev:onpanelunload="scwin.panel2_onpanelunload">
+							<w2:panels class="" id="panel1" style="">
+								<w2:panelTitle id="panelTitle1" label="Panel 2-1" style=""></w2:panelTitle>
+								<w2:panelContent id="panelContent1" style="">
+									<w2:textbox id="" label="Panel 2-1 콘텐츠 영역입니다." style="" tagname="span"></w2:textbox>
+								</w2:panelContent>
+							</w2:panels>
+							<w2:panels class="" id="panel2" style="">
+								<w2:panelTitle id="panelTitle2" label="Panel 2-2" style=""></w2:panelTitle>
+								<w2:panelContent id="panelContent2" style="">
+									<w2:textbox id="" label="Panel 2-2 콘텐츠 영역입니다." style="" tagname="span"></w2:textbox>
+								</w2:panelContent>
+							</w2:panels>
+							<w2:panels class="" id="panel3" style="">
+								<w2:panelTitle id="panelTitle3" label="Panel 2-3" style=""></w2:panelTitle>
+								<w2:panelContent id="panelContent3" style="">
+									<w2:textbox id="" label="Panel 2-3 콘텐츠 영역입니다." style="" tagname="span"></w2:textbox>
+									<xf:group id="" style="position: relative;width: 200px;height: 500px;">
+										
+									</xf:group><xf:input id="input1" style="position: relative;width: 144px;height: 21px;"></xf:input>
+								</w2:panelContent>
+							</w2:panels>
+						</w2:accordion>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

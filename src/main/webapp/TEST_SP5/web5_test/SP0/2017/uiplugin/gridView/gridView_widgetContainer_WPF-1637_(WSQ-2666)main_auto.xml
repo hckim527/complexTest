@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        window.evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+	if(WebSquare.wUnit.getDomById(id) === null)
+		window.el = WebSquare.wUnit.getDomById('widgetContainer1_widget0_content_wq_uuid_11_tooltip');
+	else
+		window.el = WebSquare.wUnit.getDomById(id);
+
+    scwin.fireOver(el);
+}
+scwin.getTooltip = function() {	
+    return WebSquare.wUnit.getDomById($p.id + "widgetContainer1_widget0_content_wq_uuid_19_tooltip").innerText == "(0, 2)[20020922]";
+}
+
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "1000");
+	WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('widgetContainer1_widget0_title_btnMaximize').click()");
+    WebSquare.wUnit.addCommand("pause", "1500");	
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('widgetContainer1_widget0_content_wq_uuid_19_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 1. row, col, label 값이 tooltipFormatter를 통해 정상적으로 보여진다.(이전에는 label 값만 보여짐)
+    //The row, col, and label values are normally displayed through the tooltipFormatter.(Previously only the label value is shown)
+    WebSquare.wUnit.addCommand("assert", "scwin.getTooltip()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    widgetContainer1.addWidgets([{
+            title: "widget0",
+            src: "gridView_widgetContainer_WPF-1637_(WSQ-2666)child.xml",
+            scope: true,
+            x: 0,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1,
+            buttonFormatter: "scwin.btnFormatter"
+        },
+        {
+            title: "widget1",
+            src: "gridView_widgetContainer_WPF-1637_(WSQ-2666)child.xml",
+            scope: true,
+            x: 1,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1,
+            buttonFormatter: "scwin.btnFormatter"
+        },
+        {
+            title: "widget10",
+            src: "gridView_widgetContainer_WPF-1637_(WSQ-2666)child.xml",
+            scope: true,
+            x: 2,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        }
+    ]);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 30-Jan-2018
+    //End unitTest
+}
+]]></script>
+        
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:widgetContainer cols="8" ev:onclickcustombtn="scwin.onclickcustombtn" ev:onwidgetmove="scwin.onwidgetmove"
+    		ev:onwidgetresize="scwin.onwidgetresize" horizontalMargin="5" id="widgetContainer1" mode="switch"
+    		style="position: relative ;width:100%;height:800px;" unitHeightPixel="200" verticalMargin="5" widgetResize="true">
+    	</w2:widgetContainer>
+    </body>
+</html> 

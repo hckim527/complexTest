@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+            xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data/>
+            </xf:instance>
+            <w2:dataCollection>
+
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+
+						<w2:column dataType="text" id="han_nm" name="" />
+					
+					</w2:columnInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1.setDisabled(true);
+    //alert(gridView1.getDisabled());
+};
+scwin.trigger2_onclick = function(e) {
+    gridView1.setDisabled(false);
+    //alert(gridView1.getDisabled());
+};
+scwin.checkVal = function() {
+    return gridView1.setDisabled(true);
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 0. gridview속성에 disabledScrollHidden="true"속성을 추가한다.
+    //0. Add the disabledScrollHidden = "true" attribute to the gridview property.
+    //Verify step 0. The disabledScrollHidden = "true" attribute is added.
+    //Test step 1. 샘플파일 실행 후 "gridView Disable"버튼을 클릭한다.
+    //1. After running the sample file, click the "gridView Disable" button.
+    //Verify step 1. The vertical scroll bar is hidden.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("set", "scwin.checkVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_scrollY_div').css('overflow') == 'hidden'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 'gridView Enable'버튼을 클릭한다.
+    //2. Click the 'gridView Enable' button.
+    //Verify step 2. The vertical scroll bar is displayed (previously no function)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_scrollY_div').css('overflow-y') == 'scroll'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    setTimeout(function() {
+        //
+        gridView1.setFocusedCell(0, 0);
+    }, 100);
+    gridView1.setSize("height", 138);
+    //scwin.test = function(){
+    //    ngmf.layerAlert("onscrollend[" + this.id + "]");
+    // gridView1.setOverflowYHidden();
+    //    console.log(111);
+    //}
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 26-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView id="gridView1" style="height:135px;width:200px;" class="grid_01" dataList="dataList1" wheelRows="1" wheelStop="true"
+    		rowNumVisible="true" ev:onscrollend="test" disabledScrollHidden="true">
+    		<w2:header>
+    			<w2:row>
+
+    				<w2:column id="hanNm" dataType="text" width="58" value="상담사"></w2:column>
+
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody>
+    			<w2:row>
+
+    				<w2:column id="han_nm" dataType="text" width="58" textAlign="center"></w2:column>
+
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width:122px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[gridView Disable]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;width:111px;height:23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[gridView Enable]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

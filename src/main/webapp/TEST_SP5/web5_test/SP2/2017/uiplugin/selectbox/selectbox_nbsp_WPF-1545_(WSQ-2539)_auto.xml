@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dc_c01" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkVal = function() {
+    return selectBox1.getText().replaceAll('&nbsp;', '') == '고구마';
+}
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    //WebSquare.wUnit.addCommand('set', 'selectBox1.click();' );
+    //WebSquare.wUnit.addCommand('pause', '500');
+    //replaceAll을 이용해 치환하면 이전엔진결함도 success되어져서 자동화 보류
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.test_data = [{
+        "col1": "&nbsp;고구마",
+        "col2": "0002"
+    }, {
+        "col1": "nbsp;고구마",
+        "col2": "0003"
+    }, {
+        "col1": "&nbsp&nbsp&nbsp고구마",
+        "col2": "0004"
+    }, {
+        "col1": "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고구마",
+        "col2": "0005"
+    }, {
+        "col1": "&nbsp;고구마&nbsp",
+        "col2": "0005"
+    }];
+    dc_c01.setJSON(test_data);
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:select1 disabledClass="w2selectbox_disabled"
+    		appearance="minimal" direction="auto" chooseOption="" id="selectBox1"
+    		style="position: absolute;width:148px;height:33px;left:287px;top:70px;"
+    		displayMode="label" selectedData="true" optionOrder="false"
+    		allOption="" disabled="false" submenuSize="auto" escape="">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dc_c01">
+    				<xf:label ref="col1"></xf:label>
+    				<xf:value ref="col2"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:select1>
+    </body>
+</html>
+ 

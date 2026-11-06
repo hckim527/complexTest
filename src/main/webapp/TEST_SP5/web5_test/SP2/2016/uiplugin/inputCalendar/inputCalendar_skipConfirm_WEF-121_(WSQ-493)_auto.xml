@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.getCurrentData = function(split) {
+    var mm = WebSquare.wUnit.getObjById("Calendar1_calendar_selectbox_month_label").innerText.split("월")[0];
+    var yyyy = WebSquare.wUnit.getObjById("Calendar1_calendar_selectbox_year_label").innerText.split("년")[0];
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    today = yyyy + split + mm;
+    return today;
+}
+scwin.checkVal1 = function() {
+    return scwin.getCurrentData('-') == WebSquare.wUnit.getDomById('Calendar1_input').value;
+}
+scwin.checkVal2 = function() {
+    return scwin.getCurrentData('') == WebSquare.wUnit.getDomById('Calendar11_input').value;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Calendar1_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+	
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Calendar1_calendar_selectbox_month_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Calendar1_calendar_selectbox_month_itemTable_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_header_btn_ok')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+	
+    //skipConfirm 적용 후
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Calendar11_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Calendar11_calendar_selectbox_month_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Calendar11_calendar_selectbox_month_itemTable_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+	
+    //Verify 2. 기존버전과 다르게 확인버튼이 숨김처리되어 있으며, 마지막 데이터 (월) 을 선택하면 자동으로 확인처리되어서 선택된 데이터가 입력된다.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2calendar_header_btn_ok').length == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+	
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="Calendar1" renderDiv="true"
+    		style="position: absolute;width: 150px;height: 23px;left:274px;top:120px;" rightAlign="false" focusOnDateSelect="false"
+    		footerDiv="false" calendarValueType="yearMonth">
+    	</w2:inputCalendar>
+    	<w2:textbox label="calendarValueType : yearMonth" id="textbox1"
+    		style="position: absolute;width:263px;height:23px;left:10px;top:125px;">
+    	</w2:textbox>
+    	<w2:inputCalendar calendarValueType="yearMonthDateHour" focusOnDateSelect="false" footerDiv="false" id="Calendar2" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:274px;top:190px;" weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:textbox id="textbox2" label="calendarValueType : yearMonthDateHour"
+    		style="position: absolute;width:262px;height:23px;left:10px;top:195px;">
+    	</w2:textbox>
+    	<w2:inputCalendar calendarValueType="yearMonthDateTime" focusOnDateSelect="false" footerDiv="false" id="Calendar3" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:274px;top:260px;" weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:textbox id="textbox3" label="calendarValueType : yearMonthDateTime"
+    		style="position: absolute;width:263px;height:23px;left:10px;top:265px;">
+    	</w2:textbox>
+    	<w2:inputCalendar calendarValueType="yearMonthDateTimeSec" focusOnDateSelect="false" footerDiv="false" id="Calendar4"
+    		renderDiv="true" renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:274px;top:330px;"
+    		weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:textbox id="textbox4" label="calendarValueType : yearMonthDateTimeSec"
+    		style="position: absolute;width:263px;height:23px;left:10px;top:335px;">
+    	</w2:textbox>
+    	<w2:inputCalendar calendarValueType="yearMonth" focusOnDateSelect="false" footerDiv="false" id="Calendar11" renderDiv="true"
+    		renderType="component" rightAlign="false" 
+    		style="position: absolute;width: 150px;height: 23px;left:854px;top:120px;" weekStartsOn="0" skipConfirm="true">
+    	</w2:inputCalendar>
+    	<w2:textbox id="textbox11" label="calendarValueType : yearMonth"
+    		style="position: absolute;width:263px;height:23px;left:590px;top:125px;">
+    	</w2:textbox>
+    	<w2:inputCalendar calendarValueType="yearMonthDateHour" focusOnDateSelect="false" footerDiv="false" id="Calendar22" renderDiv="true"
+    		renderType="component" rightAlign="false" 
+    		style="position: absolute;width: 150px;height: 23px;left:854px;top:190px;" weekStartsOn="0" skipConfirm="true">
+    	</w2:inputCalendar>
+    	<w2:textbox id="textbox22" label="calendarValueType : yearMonthDateHour"
+    		style="position: absolute;width:262px;height:23px;left:590px;top:195px;">
+    	</w2:textbox>
+    	<w2:inputCalendar calendarValueType="yearMonthDateTime" focusOnDateSelect="false" footerDiv="false" id="Calendar33" renderDiv="true"
+    		renderType="component" rightAlign="false" 
+    		style="position: absolute;width: 150px;height: 23px;left:854px;top:260px;" weekStartsOn="0" skipConfirm="true">
+    	</w2:inputCalendar>
+    	<w2:textbox id="textbox33" label="calendarValueType : yearMonthDateTime"
+    		style="position: absolute;width:263px;height:23px;left:590px;top:265px;">
+    	</w2:textbox>
+    	<w2:inputCalendar calendarValueType="yearMonthDateTimeSec" focusOnDateSelect="false" footerDiv="false" id="Calendar44"
+    		renderDiv="true" renderType="component" rightAlign="false" 
+    		style="position: absolute;width: 150px;height: 23px;left:854px;top:330px;" weekStartsOn="0" skipConfirm="true">
+    	</w2:inputCalendar>
+    	<w2:textbox id="textbox44" label="calendarValueType : yearMonthDateTimeSec"
+    		style="position: absolute;width:263px;height:23px;left:590px;top:335px;">
+    	</w2:textbox>
+    	<w2:textbox escape="true" id="Main1" label="skipConfirm 적용 전"
+    		style="position: relative;width:508px;height:50px;font-size:30px;margin-top:5px;margin-left:55px;">
+    	</w2:textbox>
+    	<w2:textbox escape="true" id="Main2" label="skipConfirm 적용 후"
+    		style="position: relative;width:508px;height:50px;font-size:30px;margin-top:-50px;margin-left:655px;">
+    	</w2:textbox>
+    </body>
+</html>
+ 

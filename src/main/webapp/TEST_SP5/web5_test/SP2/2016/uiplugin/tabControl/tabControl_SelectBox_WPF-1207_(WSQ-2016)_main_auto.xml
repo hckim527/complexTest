@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:config>
+	      	<WebSquare>
+				<debug value="true" remoteConsole="false" console="true"/>
+			</WebSquare>
+	 	</w2:config>
+
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var tabOpt = {
+        label: "tab1",
+        closable: "true"
+    };
+    var contOpt = {
+        //wframe : false,
+        src: "tabControl_SelectBox_WPF-1207_(WSQ-2016)_sub.xml"
+    };
+    tabcon.addTab("add1", tabOpt, contOpt);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 3. 콘솔탭을 선택후 tab1 버튼을 클릭한다.
+    //3. Select the Console tab and click the tab1 button.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 3. tabControl에 tabCon1.xml 이 생성된다.
+    //3. tabCon1.xml is created in the tabControl.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#tabcon_tab_add1').text() == 'tab1'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('tabcon_container').children.length == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. selectBox 를 임의로(예 : 1 -> 2) 선택한다. 
+    //4. Select the selectBox randomly (for example, 1 -> 2).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#tabcon_contents_add1_body').contents().find('td#wq_uuid_1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#tabcon_contents_add1_body').contents().find('td#wq_uuid_1_itemTable_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. selectBox 데이터가 2로 변경된다.
+    //4. The selectBox data is changed to 2.
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_1_label').text() == 2", "true");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. 상단에 닫기버튼을 클릭한 후 콘솔탭을 확인한다.
+    //5. Click the Close button at the top and check the Console tab.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabcon_tab_add1_close').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.logger.showLog()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. tabCon1.xml 이 닫힌다. (그전에는 콘솔로그에 에러가 발생되었음.)
+    //5. tabCon1.xml is closed. (There was an error in the console log before that.)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('tabcon_tabhost').innerText == 'tab1'", "false");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('tabcon_container').children.length == 0", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.logger.getErrorLog() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 08-Mar-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:tabControl confirmTrueAction="exist" useTabKeyOnly="true"
+    		id='tabcon'
+    		style="position: absolute ;left: 23px;top: 63px;width: 393px;height: 197px;"
+    		useConfirmMessage="false" confirmFalseAction="new"
+    		alwaysDraw="false">
+    	</w2:tabControl>
+    	<xf:trigger ev:onclick="scwin.trigger1_onclick" id="trigger1"
+    		style="width: 80px;height: 23px;float:left;clear:none;"
+    		type="button">
+    		<xf:label><![CDATA[tab1]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

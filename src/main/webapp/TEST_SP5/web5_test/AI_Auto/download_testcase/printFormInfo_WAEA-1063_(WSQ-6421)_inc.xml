@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2006/xforms">
+    <head>
+        <xf:model/>
+        <!-- width 는 숫자로 읽을 수 없는 값(제외되어야 함), orientation 은 목록에 없는 속성(문자열 통과) -->
+        <w2:printFormInfo type="Continuous" width="abc" height="1440" lpi="8" cpi="12" dpi="180"
+            marginLeft="0" marginTop="0" marginRight="0" marginBottom="0" orientation="landscape"/>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        scwin.onpageload = function () {
+            var top = $p.top();
+            if (!top || !top.scwin || typeof top.scwin.log !== "function") {
+                return;
+            }
+            top.scwin.log("[includeFrame 자식] printFormInfo_WAEA-1063_(WSQ-6421)_inc.xml onpageload");
+            // includeFrame 은 부모와 scope($p)를 공유하므로 자식 화면에서 $p 로 호출하면 부모 규격이 나온다.
+            top.scwin.log("  자식 화면에서 $p.getPrintFormInfo().type = " + $p.getPrintFormInfo("type") + " (부모 것이 나오는 것이 정상)");
+        };
+        ]]>
+        </script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:6px;">
+            <w2:textbox label="includeFrame 자식 화면 (printFormInfo type=Continuous, width=abc, orientation=landscape)"></w2:textbox>
+        </xf:group>
+    </body>
+</html>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="comm_cd_val" name="comm_cd_val" dataType="text"></w2:column>
+            			<w2:column id="comm_cd_val_nm" name="comm_cd_val_nm" dataType="text"></w2:column>
+            		</w2:columnInfo>
+
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col2><![CDATA[11]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col2><![CDATA[22]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col2><![CDATA[33]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col2><![CDATA[44]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList3" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col2><![CDATA[11]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[b]]></col1>
+            				<col2><![CDATA[22]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[c]]></col1>
+            				<col2><![CDATA[33]]></col2>
+            			</w2:row>
+            			
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.autoComplete1_onviewchange = function(info) {
+    focusFlag = true;
+};
+scwin.autoComplete2_onviewchange = function(info) {
+    //			console.log("========== onviewchange ============");
+    //alert("========== onviewchange ============");
+    log = true;
+};
+scwin.autoComplete2_onchange = function() {
+    //			console.log("========== onchange ============");
+    //alert("========== onchange ============");
+    log1 = true;
+};
+scwin.autoComplete2_onafteredit = function() {
+    //			console.log("========== onafteredit ============");
+    //alert("========== onafteredit ============");
+    log2 = true;
+};
+scwin.checkVal1 = function() {
+    return log;
+}
+scwin.checkVal2 = function() {
+    return log1;
+}
+scwin.checkVal3 = function() {
+    return log2;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 4. 브라우저에서 autoComplete 에 '경기' 를 입력한다. 
+    //4. In the browser, enter 'Competition' in autoComplete.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2').focus()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_input').value = '경기'");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_input').value = ''");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_button').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2').focus()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. 입력된 데이터가 초기화 되면서 onchange / onviewchange / onafteredit 이벤트가 발생된다.
+    //4. The onchange / onviewchange / onafteredit event is generated when the input data is initialized.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. '경기도1' 을 선택한다. 
+    //5. Select 'Gyeonggi-do 1'.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_itemTable_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. 동일하게 onchange / onviewchange / onafteredit 이벤트가 발생된다.
+    //5. The same onchange / onviewchange / onafteredit event is raised.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. 이번에는 '서울' 을 입력한다.
+    //6. Enter 'Seoul' this time.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2').focus()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_input').value = '서울'");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_input').value = ''");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_button').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2').focus()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 6. 동일하게 onchange / onviewchange / onafteredit 이벤트가 발생된다. (그전에는 onviewchange 이벤트만 발생되었음.)
+    //6. The same onchange / onviewchange / onafteredit event is raised. (Previously only the onviewchange event was fired.)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.focusFlag = false;
+    window.param = [{
+            "comm_cd_val_nm": "서울",
+            "comm_cd_val": "02"
+        },
+        {
+            "comm_cd_val_nm": "경기도",
+            "comm_cd_val": "032"
+        },
+        {
+            "comm_cd_val_nm": "서울1",
+            "comm_cd_val": "0321"
+        },
+        {
+            "comm_cd_val_nm": "경기도1",
+            "comm_cd_val": "0321"
+        },
+        {
+            "comm_cd_val_nm": "서울2",
+            "comm_cd_val": "0322"
+        },
+        {
+            "comm_cd_val_nm": "경기도2",
+            "comm_cd_val": "0322"
+        }
+    ];
+    window.param2 = [{
+            "comm_cd_val_nm": "서울",
+            "comm_cd_val": "02"
+        },
+        {
+            "comm_cd_val_nm": "경기도",
+            "comm_cd_val": "032"
+        },
+        {
+            "comm_cd_val_nm": "강원도",
+            "comm_cd_val": "0321"
+        },
+        {
+            "comm_cd_val_nm": "전라도",
+            "comm_cd_val": "0321"
+        },
+        {
+            "comm_cd_val_nm": "제주도",
+            "comm_cd_val": "0322"
+        },
+        {
+            "comm_cd_val_nm": "충청도",
+            "comm_cd_val": "0322"
+        }
+    ];
+    dataList1.setJSON(param);
+    window.log = log1 = log2 = false;
+}
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group class="" id="num11" style="width:459px;height:31px;">
+    		<w2:autoComplete allOption="" chooseOption="" displayMode="label" editType="select"
+    			ev:onviewchange="scwin.autoComplete2_onviewchange" id="autoComplete2" interactionMode="" search="start"
+    			style="width: 148px;height: 21px;" submenuSize="auto" useKeywordHighlight="false" visibleRowNum="5" nextTabID="num22"
+    			ev:onchange="scwin.autoComplete2_onchange" ev:onafteredit="scwin.autoComplete2_onafteredit" emptyItem="" noResult="clear">
+    			<w2:choices>
+    				<w2:itemset nodeset="data:dataList1">
+    					<w2:label ref="comm_cd_val_nm"></w2:label>
+    					<w2:value ref="comm_cd_val"></w2:value>
+    				</w2:itemset>
+    			</w2:choices>
+    		</w2:autoComplete>
+    	</xf:group>
+    </body>
+</html>
+ 

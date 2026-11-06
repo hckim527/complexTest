@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataMap baseNode="map" id="dataMap1">
+        			<w2:keyInfo>
+        				<w2:key id="key1" name="name1" dataType="text"></w2:key>
+        				<w2:key id="key2" name="name2" dataType="text"></w2:key>
+        				<w2:key id="key3" name="name3" dataType="text"></w2:key>
+        			</w2:keyInfo>
+        		</w2:dataMap>
+        		<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1" dataType="text"></w2:column>
+        				<w2:column id="col2" name="name2" dataType="text"></w2:column>
+        				<w2:column id="col3" name="name3" dataType="text"></w2:column>
+        				<w2:column id="col4" name="name4" dataType="text"></w2:column>
+        				<w2:column id="col5" name="name5" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1"
+        		ref="" target=""
+        		action="submission_ref_WPFF-220_(WSQ-3503).json" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace=""
+        		errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="" ev:submiterror=""
+        		aboutTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "col1": "a1",
+        "col2": "a2"
+    }];
+    dataList1.setJSON(jsonData);
+    dataList1.setCellData(0, "col1", "b1");
+    dataMap1.set("key1", "test1");
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    var submissionObj = $w.getSubmission("submission1");
+    submissionObj.ref = "data:json, [{'id':'dataList1', 'action':'modified', 'key':'DB_CONNECT'} , " +
+        " {'id':'dataMap1', 'key':'param'} " +
+        "]";
+    scwin.$w.executeSubmission("submission1");
+};
+scwin.__checkErr = function() {
+    var log = WebSquare.logger.getLog();
+    return log.indexOf("Unexpected string") == -1;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 submission execute 버튼을 클릭한다.
+    //1. Click the submission execute button in the browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 웹스퀘어메뉴 (Ctrl + 마우스오른쪽) 로그보기를 선택한다. 
+    //2. Select the Web Square menu (Ctrl + Right Mouse) to view the log.
+    //Verify 2. 로그창이 활성화되는데, 에러로그가 발생되지 않는다. (그전버전에서는 그림1처럼 결함로그가 발생됨)
+    //2. The log window is activated, but no error log is generated. (In previous versions, a defect log was generated as shown in Figure 1)
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkErr()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy park
+    //Create date 12-june-2018
+    //End unitTest	
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 66px;top: 70px;width: 176px;height: 52px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

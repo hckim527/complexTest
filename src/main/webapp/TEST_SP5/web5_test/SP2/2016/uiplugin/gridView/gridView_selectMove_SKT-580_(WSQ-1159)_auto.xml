@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/SWING/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/SWING/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dsl_master" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="chk" name="chk" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col2><![CDATA[1]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[2]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[3]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[4]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[5]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[6]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[7]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[8]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dsl_detail" baseNode="list" saveRemovedData="true" repeatNode="map"></w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.grd_master_onviewchange = function(info) {
+    // onviewchange가 일어난 컬럼ID
+    var colID = dsl_master.getColumnID(info.colIndex);
+    // 체크박스 선택시 처리로직
+    if (colID == "chk" && info.newValue != 1) {
+        var fRow = dsl_master.getMatchedIndex("chk", "1");
+        if (fRow.length > 0) {
+            grd_master.setFocusedCell(fRow[0], "chk");
+        }
+    }
+    scwin.searchFunc();
+};
+scwin.searchFunc = function() {
+    console.log("onrowindexchange wframe 세팅 및 조회");
+    ngmf.setSrc("wfm_cont", "DEV", "skt580UI-2182W");
+};
+scwin.grd_master_onrowindexchange = function(row, oldRow) {
+    // 현재 그리드에 포커싱된 컬럼ID 가져오기
+    var focusColId = grd_master.getFocusedColumnID();
+    // 체크박스 선택시 onrowindexchange 이벤트에서는 조회 안함
+    if (focusColId != "chk") {
+        scwin.searchFunc();
+    }
+};
+scwin._callLoadCompleted = function(wfmObj) {
+    try {
+        loopCnt++;
+        var Obj = wfmObj.getObj("scwin");
+        if (Obj && Obj.form_onLoadCompleted) Obj.form_onLoadCompleted();
+        else if (loopCnt < 10) {
+            //form_onLoadCompleted 찾을때 까지 10번 루프.... 불안함....
+            $W._N.clearTimer("__" + wfmObj.getID() + "_callLoadCompleted__");
+            $W._N.setTimer(_callLoadCompleted, {
+                key: "__" + wfmObj.getID() + "_callLoadCompleted__",
+                caller: this,
+                delay: setTime,
+                args: [wfmObj]
+            });
+        };
+    } catch (e) {
+        console.log("[ngmf.setSrc._callLoadCompleted] Exception :: ", e);
+    }
+}
+scwin.rgb2hex = function(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}
+scwin._checkRgb = function(id, hexa) {
+    var rgb = WebSquare.wUnit.getJq(id).css("background-color");
+    var color;
+    if (rgb.indexOf("rgb") != -1) {
+        color = scwin.rgb2hex(rgb);
+        return color == hexa;
+    }
+    return rgb == hexa;
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq('#grd_master_cell_1_0').is(':focus');
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플파일 실행 후 chk항목의 2,3,4,5번항목값을 체크한다.
+    //1. After executing the sample file, check the value of item 2, 3, 4, 5 of chk item.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_1_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_2_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_3_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_4_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 1. Items 2, 3, 4 and 5 are checked.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_1_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_2_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_3_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_4_0').childNodes[0].checked", "true");
+    //Test step 2. 4번항목값을 마우스로 클릭하여 체크를 해제한다.
+    //2. Click the 4th item value with the mouse to clear the check.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_3_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. The focus moves to the second item value at the same time as it is released.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //----------------------------------------------------------------------
+    //----- 화면에서 사용되는 공통함수들 copy ----------------------------------------
+    //----------------------------------------------------------------------
+    if (typeof ngmf == 'undefined' || ngmf == null) {
+        /**
+         * @type ngmf
+         * @class ngmf
+         */
+        ngmf = {};
+        ngmf.promise = {};
+        ngmv = {};
+    }
+    /**
+     * 입력된 문자열을 이용해 현재위치에서 해당 Object를 검색하여 Return 하는 Basic API 입니다.
+     * @date 2015-10-12
+     * @memberOf ngmf
+     * @param {String} strCompId : 검색하고자 하는 ObjectID.
+     * @return {Object} strObjectID에 해당하는 Object Variable 변수.
+     * @author 이동규
+     * @example ngmf.object(Button.id);
+     */
+    ngmf.object = function(strCompId) {
+        try {
+            return WebSquare.wUnit.getObjById(strCompId);
+        } catch (e) {
+            console.log("[ngmf.object] Exception :: " + e.message);
+        }
+    };
+    /**
+     * wframe 컴포넌트의 src를 선언하는 함수입니다.
+     * @date 2015.01.07
+     * @memberOf ngmf
+     * @param {String / Object} wframeId :: I :: N ::  :: wframe 컴포넌트 명.
+     * @param {String} strPrefix         :: I :: Y ::  :: strPrefix Open File Path(Directory)
+     * @param {String} strFormID         :: I :: Y ::  :: strFormID Open Form file Name 
+     * @author 이동규
+     * @useMobile use
+     * @example
+    		ngmf.setSrc("wfm_main", "EDU", "subWframe");
+      		ngmf.setSrc("wfm_main", "EDU", "subWframeLong", 800); //form_onloadComplete 호출 지연시
+    		ngmf.setSrc("wfm_main", "", ""); //초기화시
+     * @update 2016.02.23 성일호 wFrame 초기화기능 추가[UI-0666]
+     * @update 2016.04.15 이동규 time 파라메터 추가 및 초기값 200 설정.
+     * 							 화면 초기화 blank 로직 부분 removeFrame() 으로 수정.
+     * @update 2016.04.18 성일호 setSrc 연속호출(main-sub_wframe-sub_sub_wframe) 구조에서 clearTimer 현상 해소[UI-1525]
+     * @update 2016.04.26 성일호 form_onLoadCompleted 찾을때 까지 10번까지 확인로직 추가
+     * @update 2016.05.02 성일호 Wframe.setMode 적용 및 불필요 로직 삭제, time 파라미터  삭제
+     * @exampleAsIs
+     */
+    ngmf.setSrc = function(wframeId, strPrefix, strFormID, time) {
+        window.retVal = false;
+        try {
+            window.setTime = time || 200;
+            window.loopCnt = 0;
+            //항목추출시 제외
+            //if (GLV && GLV.G_CCATEMP == "Y") return false;
+            if (typeof wframeId !== "undefined") {
+                window.src = "";
+                window.comp = ngmf.object(wframeId);
+                if (!comp) {
+                    return false;
+                }
+                if (!strFormID) {
+                    //wFrame 초기화
+                    if (!strPrefix) {
+                        //comp.setSrc("../../lib/comm/blank.xml");
+                        comp.finalize();
+                        comp.options.src = "";
+                        return true;
+                    } else src = strPrefix;
+                } else {
+                    if (!strPrefix) {
+                        strPrefix = ngmf.getSvcId(strFormID);
+                    }
+                    src = "../../" + strPrefix + "/xml/" + strFormID + ".xml";
+                }
+                if (src && comp.getPluginName() == "wframe") {
+                    if (typeof comp.setMode == "function") {
+                        //mode=sync  추가
+                        comp.setMode("sync");
+                        retVal = comp.setSrc(src);
+                        if (retVal) {
+                            window.Obj = comp.getObj("scwin");
+                            if (Obj && Obj.form_onLoadCompleted) Obj.form_onLoadCompleted();
+                        }
+                    } else {
+                        retVal = comp.setSrc(src);
+                        if (retVal) {
+                            $W._N.clearTimer("__" + comp.getID() + "_callLoadCompleted__");
+                            $W._N.setTimer(_callLoadCompleted, {
+                                key: "__" + comp.getID() + "_callLoadCompleted__",
+                                caller: this,
+                                delay: setTime,
+                                args: [comp]
+                            });
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.log("[ngmf.setSrc] Exception :: ", e);
+        }
+        return retVal;
+    };
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 27-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group class="cont_wrap" id="" style="">
+    		<xf:group class="grpbox" id="" style="">
+    			<xf:group class="stit_01" id="">
+    				<w2:textbox id="" label="타이틀입력" style="" tagname="h3"></w2:textbox>
+    			</xf:group>
+    			<xf:group class="sub_cont" id="">
+    				<w2:textbox id="" label="- 체크한 여러 컬럼 중 한 행을 체크해제 하면 선택된 행들 중 첫번째 행으로 포커스가 가면서 자식 wframe 영역 조회됨" style="" tagname=""></w2:textbox>
+    			</xf:group>
+    			<xf:group class="sub_cont" id="" style="">
+    				<w2:gridView dataList="dsl_master" applyAllColumnStyle="false" scrollByColumn="false" id="grd_master"
+    					style="height: 150px;" fixedColumnWithHidden="true" useShiftKey="true" class="grid_01"
+    					ev:onrowindexchange="scwin.grd_master_onrowindexchange" ev:oncellclick="" ev:onviewchange="scwin.grd_master_onviewchange"
+    					autoFit="allColumn" focusMode="row" fixedColumn="1">
+    					<w2:header id="header1" style="">
+    						<w2:row id="row1" style="">
+    							<w2:column blockSelect="false" id="column9" style="" inputType="text" width="70" value="chk"></w2:column>
+    							<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="name2"></w2:column>
+    							<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name3"></w2:column>
+    							<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name4"></w2:column>
+    							<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name5"></w2:column>
+    						</w2:row>
+    					</w2:header>
+    					<w2:gBody id="gBody1" style="">
+    						<w2:row id="row2" style="">
+    							<w2:column blockSelect="false" id="chk" style="" inputType="checkbox" width="70"></w2:column>
+    							<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70"></w2:column>
+    							<w2:column blockSelect="false" id="col3" style="" inputType="text" width="70"></w2:column>
+    							<w2:column blockSelect="false" id="col4" style="" inputType="text" width="70"></w2:column>
+    							<w2:column blockSelect="false" id="col5" style="" width="70" inputType="text"></w2:column>
+    						</w2:row>
+    					</w2:gBody>
+    				</w2:gridView>
+    			</xf:group>
+    			<xf:group class="sub_cont" id="" style="">
+    				<w2:wframe id="wfm_cont" style="height: 300px;" scope="true" mode="sync"></w2:wframe>
+    			</xf:group>
+    		</xf:group>
+    	</xf:group>
+    	
+    </body>
+</html>
+ 

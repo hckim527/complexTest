@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_close = function(arg) {
+    window.al = "test ==>" + arg;
+    console.log("test ==>" + arg);
+    return true;
+}
+scwin.trigger1_onclick = function(e) {
+    //windowContainer1_subWindow0_close
+    windowContainer1.createWindow("test1", null, "", "test1", "id1", "newWindow", "scwin.fn_close");
+};
+scwin.trigger2_onclick = function(e) {
+    ///temp/jsonToXml.xml
+    windowContainer1.createWindow("test2", null, "", "test2", "id1", "newWindow", "scwin.fn_close");
+};
+scwin.__isShowConsole = function(val) {
+    return window.al == val;
+}
+scwin.__isShow = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    return (el) ? true : false;
+}
+scwin.__triggerClick = function(id) {
+    return WebSquare.wUnit.getDomById($p.id + id).click();
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행하고 'open1'버튼과 'open2'버튼을 클릭한다.
+    //1. Run the sample file and click the 'open1' and 'open2' buttons.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 1. test1화면과 test2화면이 보여진다.
+    //1. The test1 screen and the test2 screen are displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShow('windowContainer1_subWindow0')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShow('windowContainer1_subWindow1')", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 2. F12를 실행하여 console화면이 열려있는 상태에서 test1화면과 test2화면의 창을 닫는다.
+    //2. Run F12 to close the test1 and test2 windows with the console window open.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 2. test1화면을 닫을때는 console창에 'test==>test1'이 보여지고 test2화면을 닫을때는 console창에 'test==>test2'이 보여진다.
+    //2. When closing the test1 screen, 'test ==> test1' is displayed in the console window and 'test ==> test2' is displayed in the console window when closing the test2 screen.
+    //WebSquare.wUnit.addCommand("set", "windowContainer1_subWindow0_close.click()");
+    //mobile
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('windowContainer1').closeWindow();");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowConsole('test ==>test1')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "windowContainer1_subWindow1_close.click()");
+    //mobile
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('windowContainer1').closeWindow();");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowConsole('test ==>test2')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //windowContainer1.createWindow( "test" , null , "/temp/jsonToXml.xml" , "test" , "id1" , "existWindow" , "fn_close" );
+    window.al = undefined;
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 08-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:windowContainer id="windowContainer1" windowAutoResize="false"
+    		style="position: absolute ;left: 63px;top: 57px;width:440px;height:275px;" sequentialArrangeRowNum="2" tooltipDisplay="true"
+    		stopToggleOnLast="false" windowTooltipDisplay="true" useControlIconTitle="false" useFixButton="false" horizontalArrangeNum="2"
+    		verticalArrangeNum="2" windowMaxNum="5" tooltipGroupClass="false" class="" hideTitleOnMaximize="false" spaInitCount="0"
+    		useStatusMsg="true" useCloseButton="false" windowMaximizeAll="false" fixArrangeFullScreen="false" sequentialArrangeColNum="2"
+    		toolbarPosition="bottom">
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 521px;top: 56px;width: 65px;height: 27px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[open1]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2"
+    		style="position: absolute ;left:521px;top:92px;width: 65px;height: 27px;" type="button">
+    		<xf:label><![CDATA[open2]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

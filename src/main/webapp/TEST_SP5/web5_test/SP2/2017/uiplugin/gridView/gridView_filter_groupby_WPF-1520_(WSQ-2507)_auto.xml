@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="category1" name="category1" dataType="number"></w2:column>
+						<w2:column id="category2" name="category2" dataType="number"></w2:column>
+						<w2:column id="category3" name="category3" dataType="number"></w2:column>
+						<w2:column id="category4" name="category4" dataType="number"></w2:column>
+						<w2:column id="category5" name="category5" dataType="number"></w2:column>
+						<w2:column id="category6" name="category6" dataType="number"></w2:column>
+						<w2:column id="category7" name="category7" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+            "category1": "1",
+            "category2": "shin"
+        },
+        {
+            "category1": "2",
+            "category2": "shin"
+        },
+        {
+            "category1": "3",
+            "category2": "kim"
+        },
+        {
+            "category1": "2",
+            "category2": "kim"
+        },
+        {
+            "category1": "1",
+            "category2": "kim"
+        },
+        {
+            "category1": "3",
+            "category2": "kim"
+        },
+        {
+            "category1": "2",
+            "category2": "kim"
+        },
+        {
+            "category1": "1",
+            "category2": "shin"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+    //			dataList1.insertRow( );		
+};
+scwin.grid1_ongroupby = function(options) {
+    return false;
+};
+scwin.trigger4_onclick = function(e) {
+    scwin.init();
+};
+scwin.trigger5_onclick = function(e) {
+    var options = {
+        type: "1",
+        fileName: "test.xlsx"
+    };
+    grid1.advancedExcelDownload(options);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 category2의 필터 라벨을 클릭한다. 	
+    //1. Run the sample file and click on the filter label in category2.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_header_category2_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 필터항목(사용자필터,전체선택,kim,shin)이 보여진다.
+    //1. Filter items (user filter, all selection, kim, shin) are shown.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_customFilter_scrollView').getStyle('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. '전체선택'라벨을 2번 클릭한다.(선택박스나 오른쪽 여백부분아님)
+    //2. Double-click the 'Select All' label (not the selection box or right margin)
+    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_text w2grid_customFilter_list_listColumn_text')[1].click()");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_text w2grid_customFilter_list_listColumn_text')[1].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 전체해제후 다시 전체선택이 되어진다. (이전에는 전체해제후 다시 전체선택이 되어지지 않음)
+    //2. After releasing the whole, the whole selection is made again. (Previously, the entire selection is not made again after the whole release)
+    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_customFilter_list_listColumn_checkbox')[1].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_customFilter_list_listColumn_checkbox')[2].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_customFilter_list_listColumn_checkbox')[3].checked", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 06-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="dataList1" baseNode="vector"
+			repeatNode="data/INFO" id="grid1" rowNumVisible="true"
+			rowStatusVisible="true"
+			style="position: relative ;width: 300px;height: 300px;border: 1px solid black;"
+			useFilterList="true" columnMove="false"
+			ev:ongroupby="scwin.grid1_ongroupby" class="" groupbyFilterBox="true"
+			groupbyZoneMessage="이곳으로 드레그 하세요..."
+			groupbyFilterBoxLocation="bottom" groupbyZone="true" autoFit="" editModeEvent="onclick">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column id="header_category1"
+						style="height:20px;" inputType="text" width="100" value="category1"
+						useFilter="true">
+					</w2:column>
+					<w2:column id="header_category2"
+						style="height:20px;" inputType="text" width="100" value="category2"
+						useFilter="true">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="category1" style="height:20px"
+						inputType="text" width="100">
+					</w2:column>
+					<w2:column id="category2" style="height:20px"
+						inputType="text" width="100" editType="">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="footer_category1" style="height:20px"
+						inputType="text" width="100">
+					</w2:column>
+					<w2:column id="footer_category2" style="height:20px"
+						inputType="text" width="100">
+					</w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger4"
+			style="position: relative;width: 80px;height: 23px;"
+			ev:onclick="scwin.trigger4_onclick">
+			<xf:label><![CDATA[]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

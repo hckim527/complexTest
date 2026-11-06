@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" id="ds_gridView" repeatNode="map" saveRemovedData="true" style="">
+            		<w2:columnInfo>
+            			<w2:column dataType="text" id="col1" name="name1"></w2:column>
+            			<w2:column dataType="text" id="col2" name="name2"></w2:column>
+            			<w2:column dataType="text" id="col3" name="name3"></w2:column>
+            			<w2:column dataType="text" id="col4" name="name4"></w2:column>
+            			<w2:column dataType="text" id="col5" name="name5"></w2:column>
+            			<w2:column dataType="text" id="col6" name="name6"></w2:column>
+            			<w2:column dataType="text" id="col7" name="name7"></w2:column>
+            			<w2:column dataType="text" id="cust" name="name8"></w2:column>
+            			<w2:column dataType="text" id="col11" name="name9"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[가]]></col2>
+            				<cust></cust>
+            				<col11><![CDATA[checkbox]]></col11>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[나]]></col2>
+            				<cust></cust>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[가]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[가]]></col2>
+            				<cust></cust>
+            				<col11><![CDATA[textarea]]></col11>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[나]]></col2>
+            				<cust></cust>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[가]]></col2>
+            				<col11><![CDATA[textarea]]></col11>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[나]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[나]]></col2>
+            				<cust></cust>
+            				<col11><![CDATA[calendar]]></col11>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[가]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[가]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[scwin.onpageload = function() {
+	scwin.grd_gridView1Custom();
+};
+
+scwin.grd_gridView1Custom = function() {
+	let tcnt = ds_gridView.getRowCount();
+	for (let rowIdx = 0; rowIdx < tcnt; rowIdx++) {
+		let data = ds_gridView.getCellData(rowIdx, "col11");
+		if (data == "") {
+			scwin.gridViewSetCellInputType(grd_gridView1, rowIdx, "cust", "text");
+		} else {
+			scwin.gridViewSetCellInputType(grd_gridView1, rowIdx, "cust", data);
+		}
+	}
+}
+
+scwin.gridViewSetCellInputType = function(gridComp, rowIdx, colId, inputType, options, itemSet) {
+	if (gridComp.options.setCellInputTypeCustom !== true) {
+		alert("setCellInputType적용하려면 그리드 setCellInputTypeCustom 속성이 true여야 합니다.");
+		return;
+	}
+	let colIdx = gridComp.getColumnIndex(colId);
+	let colInputType = gridComp.getColumnType(colIdx);
+	if (colInputType != "custom") {
+		alert("setCellInputType적용하려면 그리드 컬럼 InputType이 custom 이어야 합니다.");
+		return;
+	}
+	let _inputType = ["text", "link", "checkbox", "button", "image", "radio", "select", 
+		"calendar", "expression", "textarea", "textImage", "checkcombobox", "autoComplete", "secret", "spinner"];
+	if (_inputType.indexOf(inputType) < 0) {
+		alert("setCellInputType 적용불가 inputType입니다. => " + inputType);
+		return;
+	}
+	let info = {
+		inputType : inputType,
+		options : {
+			displayFormat : "",
+			dataType : "",
+			calendarValueType : "",
+			editType : "",
+			validateOnInput : false,
+			dateValidCheck : true,
+			viewType : ""
+		}
+	}
+	//기본설정
+	if (inputType == "calendar") {
+		info.options.viewType = "icon";
+		info.options.editType = "select";
+		info.options.validateOnInput = true;
+		info.options.dateValidCheck = false;
+		/*
+		info.options.validCheck = false;
+		info.options.displaymessage = false;
+		info.options.dateValidSet = false;
+		info.options.dateValidSetCustom = false;
+		*/
+		info.options.dataType = "date";
+		info.options.calendarValueType = "yearMonthDate";
+		info.options.displayFormat = "yyyy-MM-dd";
+	} else if (inputType == "checkbox") {
+		info.options.checkboxLabel = "checkbox";
+		info.options.defalutValue = "1";
+		info.options.trueValue = "1";
+		info.options.falseValue = "";
+	} else if (inputType == "radio") {
+		info.options.radioLabel = "radio";
+	} else if (inputType == "select") {
+		info.options.viewType = "icon";
+		info.options.textAlign = "center";
+		info.options.displayMode = "label";
+	} else if (inputType == "textImage") {
+		info.options.viewType = "icon";
+	} else if (inputType == "checkcombobox") {
+		info.options.viewType = "icon";
+	} else if (inputType == "autoComplete") {
+		info.options.viewType = "icon";
+	}
+	if (inputType == "select" || inputType == "checkcombobox" || inputType == "autoComplete") {
+		if (itemSet != null) {
+			info.itemSet = {
+				nodeset : itemSet.nodeset,
+				label   : itemSet.label,
+				value   : itemSet.value
+			}
+		}
+	}
+	//사용자 설정값 추가
+	if (options != null) {
+		for (let key in options) {
+			info.options[key] = options[key];
+		}
+	}
+	gridComp.setCellInputType(rowIdx, colIdx, info);
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView checkAllType="false" dataList="data:ds_gridView" defaultCellHeight="20" id="grd_gridView1"
+    		setCellInputTypeCustom="true" sortable="true" style="width:682px;height:167px;" useFilterList="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column displayMode="label" id="column7" inputType="text" sortable="true" useFilter="true" value="name1"
+    					width="111">
+    				</w2:column>
+    				<w2:column displayMode="label" id="column6" inputType="text" sortable="true" useFilter="true" value="name2"
+    					width="118">
+    				</w2:column>
+    				<w2:column displayMode="label" id="column1" inputType="text" value="name7" width="183"></w2:column>
+    				<w2:column displayMode="label" id="column8" inputType="text" style="" value="" width="208"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column displayMode="label" id="col1" inputType="text" width="111"></w2:column>
+    				<w2:column displayMode="label" id="col2" inputType="text" width="118"></w2:column>
+    				<w2:column displayMode="label" id="cust" inputType="custom" width="183"></w2:column>
+    				<w2:column allOption="" chooseOption="" displayMode="label" id="col11" inputType="select" ref="" style="" value=""
+    					viewType="icon" width="208">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[text]]></w2:label>
+    							<w2:value><![CDATA[text]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[link]]></w2:label>
+    							<w2:value><![CDATA[link]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[checkbox]]></w2:label>
+    							<w2:value><![CDATA[checkbox]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[button]]></w2:label>
+    							<w2:value><![CDATA[button]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[image]]></w2:label>
+    							<w2:value><![CDATA[image]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[radio]]></w2:label>
+    							<w2:value><![CDATA[radio]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[select]]></w2:label>
+    							<w2:value><![CDATA[select]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[calendar]]></w2:label>
+    							<w2:value><![CDATA[calendar]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[expression]]></w2:label>
+    							<w2:value><![CDATA[expression]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[textarea]]></w2:label>
+    							<w2:value><![CDATA[textarea]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[textImage]]></w2:label>
+    							<w2:value><![CDATA[textImage]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[checkcombobox]]></w2:label>
+    							<w2:value><![CDATA[checkcombobox]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[autoComplete]]></w2:label>
+    							<w2:value><![CDATA[autoComplete]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[secret]]></w2:label>
+    							<w2:value><![CDATA[secret]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[spinner]]></w2:label>
+    							<w2:value><![CDATA[spinner]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

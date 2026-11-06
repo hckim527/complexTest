@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+	
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"/>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"/>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"/>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"/>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"/>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"/>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"/>
+				
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:data>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            		</w2:data>
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var data1 = [];
+    var data2 = [];
+    for (var i = 0; i < 10; i++) {
+        for (var j = 0; j < 4; j++) {
+            data1.push(i);
+            data2.push(i * 4 + j);
+        }
+    }
+    dataList2.setData(data2);
+    dataList1.setData(data1);
+};
+scwin.onpageunload = function() {};
+scwin.__simulate = function(id, options) {
+    WebSquare.wUnit.getJq(id).simulate("key-sequence", options);
+}
+scwin.setSimulate1 = function() {
+    scwin.__simulate('#input1', {
+        sequence: '111111',
+        delay: 100
+    });
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 1. calendar필드에 날짜가 입력되고 마우스커서가 깜빡거린다.
+    //1. The date is entered in the calendar field and the mouse cursor blinks.
+    WebSquare.wUnit.addCommand("assert", "document.activeElement.getAttribute('id') == $p.id+'selectbox2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.common = {};
+    common.nextTabFunction = function(compId) {
+        window.dest = common.findNextFocusedComp(compId);
+        while (dest != undefined) {
+            if (dest.getDisabled() !== true && dest.getReadOnly() !== true) {
+                dest.focus();
+                break;
+            }
+            dest = common.findNextFocusedComp(dest.id);
+        }
+    }
+    common.findNextFocusedComp = function(compId) {
+        window.dest = "";
+        window.source = WebSquare.wUnit.getObjById(compId);
+        window.idPrefix = source.scope_id == null ? "" : source.scope_id + "_"
+        switch (source.getOriginalID()) {
+            case "input1":
+                dest = "input2";
+                break;
+            case "input2":
+                dest = "selectbox2";
+                break;
+            case "inputCalendar1":
+                dest = "inputCalendar2";
+                break;
+        }
+        return WebSquare.util.getComponentById(dest, source.scope_id);
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+        <w2:config>
+            <WebSquare>
+                <nextTabFunction value="common.nextTabFunction"/>
+            </WebSquare>
+        </w2:config>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group tagname="table" id="table2" style="width:600px;" class="w2tb">
+    		<w2:attributes>
+    			<w2:summary></w2:summary>
+    		</w2:attributes>
+    		<xf:group tagname="caption"></xf:group>
+    		<xf:group tagname="colgroup">
+    			<xf:group style="width:25.00%;" tagname="col"></xf:group>
+    			<xf:group style="width:25.00%" tagname="col"></xf:group>
+    			<xf:group style="width:25.00%;" tagname="col"></xf:group>
+    			<xf:group style="width:25.00%" tagname="col"></xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr" style="">
+    			<xf:group style="" class="w2tb_th" tagname="th">
+    				input1
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:input adjustMaxLength="false" id="input1" style="width:135px;height:21px;" nextTabID="" maxlength="" autoFocus="true" maxByteLength="6"></xf:input>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_th" tagname="th">input2&amp;nbsp;(disabled)<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes></xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:input adjustMaxLength="false" id="input2" style="width:135px;height: 21px;" nextTabID="" disabled="true" autoFocus="true" maxByteLength="6" validateOnInput="true"></xf:input>
+    			</xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr" style="">
+    			<xf:group style="" class="w2tb_th" tagname="th">
+    				selectbox1
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" chooseOption="" allOption="" submenuSize="auto"
+    					direction="auto" id="selectbox2" style="width:135px;height: 21px;" disabled="false" ref="" nextTabID="" keyMoveListSync="true">
+    					<xf:choices>
+    						<xf:itemset nodeset="data:dataList2">
+    							<xf:label ref="col1"></xf:label>
+    							<xf:value ref="col2"></xf:value>
+    						</xf:itemset>
+    					</xf:choices>
+    				</xf:select1>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_th" tagname="th">
+    				selectbox2
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" chooseOption="" allOption="" submenuSize="auto"
+    					direction="auto" id="selectbox3" style="width:135px;height: 21px;" disabled="false" ref="" nextTabID="" keyMoveListSync="true">
+    					<xf:choices>
+    						<xf:itemset nodeset="data:dataList2">
+    							<xf:label ref="col1"></xf:label>
+    							<xf:value ref="col2"></xf:value>
+    						</xf:itemset>
+    					</xf:choices>
+    				</xf:select1>
+    			</xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr" style="">
+    			<xf:group style="" class="w2tb_th" tagname="th">
+    				button
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:trigger type="button" id="trigger3" style="width: 120px;height: 21px;" nextTabID="">
+    					<xf:label><![CDATA[button]]></xf:label>
+    				</xf:trigger>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_th" tagname="th">
+    				inputCalendar1
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<w2:inputCalendar rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar1"
+    					renderDiv="true" style="width:130px;height: 23px;" focusOnDateSelect="false" footerDiv="false" nextTabID="" autoFocus="true">
+    				</w2:inputCalendar>
+    			</xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr" style="">
+    			<xf:group style="" class="w2tb_th" tagname="th">
+    				inputCalendar2
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<w2:inputCalendar rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar2"
+    					renderDiv="true" style="width:130px;height: 23px;" focusOnDateSelect="false" footerDiv="false" nextTabID="input3" autoFocus="true">
+    				</w2:inputCalendar>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_th" tagname="th">input4(number)<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes></xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:input adjustMaxLength="false" id="input3" style="width:135px;height: 21px;" nextTabID="gridView1" maxlength="" autoFocus="true" maxByteLength="6" dataType="number" validateOnInput="true"></xf:input>
+    			</xf:group>
+    		</xf:group>
+    	</xf:group>
+    	<w2:textbox label="focus test" id="textbox1" style="width:201px;height:49px;font-size:18pt;color:#FF485E;"></w2:textbox>
+    	<w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+    		style="width:406px;height:129px;" nextTabID="trigger1">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column9" removeBorderStyle="false" style="" inputType="text" width="70" value="name1"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" removeBorderStyle="false" style="" inputType="text" width="70" value="name2"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5" removeBorderStyle="false" style="" inputType="text" width="70" value="name3"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="" width="70" inputType="text" value="name4"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label" maxLength="" maxByteLength="6">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" inputType="select" width="70" value=""
+    					displayMode="label" allOption="" chooseOption="" ref="" maxLength="" keyMoveListSync="true">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" inputType="calendar" width="70" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label" maxByteLength="6">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="width:100px;height:32px;" nextTabID="input4">
+    		<xf:label><![CDATA[button]]></xf:label>
+    	</xf:trigger>
+    	<table id="table3" summary="" style="width: ;"></table>
+    	<table id="table4" summary="" style="width: ;"></table>
+    	<xf:group tagname="table" id="table5" style="width:600px;" class="w2tb">
+    		<w2:attributes>
+    			<w2:summary></w2:summary>
+    		</w2:attributes>
+    		<xf:group tagname="caption"></xf:group>
+    		<xf:group tagname="colgroup">
+    			<xf:group style="width:33.33%;" tagname="col"></xf:group>
+    			<xf:group style="width:33.33%;" tagname="col"></xf:group>
+    			<xf:group style="width:33.33%;" tagname="col"></xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr" style="">
+    			<xf:group style="" class="w2tb_th" tagname="th">input<w2:attributes>
+    					<w2:scope>col</w2:scope>
+    				</w2:attributes></xf:group>
+    			<xf:group style="" class="w2tb_th" tagname="th">selectbox<w2:attributes>
+    					<w2:scope>col</w2:scope>
+    				</w2:attributes></xf:group>
+    			<xf:group style="" class="w2tb_th" tagname="th">inputCalendar<w2:attributes>
+    					<w2:scope>col</w2:scope>
+    				</w2:attributes></xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr">
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:input adjustMaxLength="false" id="input4" style="width: 144px;height: 21px;" nextTabID="input5" maxlength="" autoFocus="true" maxByteLength="6"></xf:input>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" chooseOption="" allOption="" submenuSize="auto"
+    					direction="auto" id="selectbox4" style="width: 148px;height: 21px;" disabled="false" ref="" nextTabID="selectbox6" keyMoveListSync="true">
+    					<xf:choices>
+    						<xf:itemset nodeset="data:dataList2">
+    							<xf:label ref="col1"></xf:label>
+    							<xf:value ref="col2"></xf:value>
+    						</xf:itemset>
+    					</xf:choices>
+    				</xf:select1>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<w2:inputCalendar rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar3"
+    					renderDiv="true" style="width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false" nextTabID="inputCalendar4" autoFocus="true" validateOnInput="true">
+    				</w2:inputCalendar>
+    			</xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr">
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:input adjustMaxLength="false" id="input5" style="width: 144px;height: 21px;" nextTabID="selectbox4" maxlength="" autoFocus="true" maxByteLength="6"></xf:input>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" chooseOption="" allOption="" submenuSize="auto"
+    					direction="auto" id="selectbox6" style="width: 148px;height: 21px;" disabled="false" ref="" nextTabID="inputCalendar3" keyMoveListSync="true">
+    					<xf:choices>
+    						<xf:itemset nodeset="data:dataList2">
+    							<xf:label ref="col1"></xf:label>
+    							<xf:value ref="col2"></xf:value>
+    						</xf:itemset>
+    					</xf:choices>
+    				</xf:select1>
+    			</xf:group>
+    			<xf:group style="" class="w2tb_td" tagname="td">
+    				<w2:inputCalendar rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar4"
+    					renderDiv="true" style="width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false" nextTabID="trigger2" autoFocus="true" validateOnInput="true">
+    				</w2:inputCalendar>
+    			</xf:group>
+    		</xf:group>
+    	</xf:group>
+    	<xf:trigger type="button" id="trigger2" style="width:100px;height:32px;" nextTabID="">
+    		<xf:label><![CDATA[button]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

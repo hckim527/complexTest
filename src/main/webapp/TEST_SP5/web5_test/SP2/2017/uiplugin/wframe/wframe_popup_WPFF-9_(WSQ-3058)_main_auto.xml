@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    requires("uiplugin.popup"); //팝업을 사용하기 위해 반드시 포함되어야 한다.
+    //dataList1.getRowJSON와 같은 API 호출 시 반환 객체.
+    var rowJSON = {
+        "addr": "서울시",
+        "name": "손예진",
+        "rowStatus": "R"
+    };
+    //popup에 넘길 data객체.
+    var dataObj = {
+        type: "json", // 데이터 타입. "xml","string","json","array"
+        data: rowJSON, // 전달 데이터 객체.
+        name: "rowObj" // 변수명. popup에서 $w.getParameter( "rowObj" )로 깨내올 수 있다.
+    };
+    var options = {
+        id: "popup1",
+        type: "window",
+        width: "230px",
+        height: "250px",
+        top: "130px",
+        left: "200px",
+        popupName: "openPopup1",
+        modal: true,
+        useIFrame: true,
+        frameMode: 'wframe',
+        resizable: true,
+        status: true,
+        menubar: false,
+        scrollbars: false,
+        title: false,
+        useModalStack: true,
+        alwaysOnTop: true,
+        dataObject: dataObj
+    };
+    $w.openPopup("wframe_popup_WPFF-9_(WSQ-3058)_sub.xml", options);
+};
+scwin.__checkErrLog = function() {
+    return WebSquare.logger.getErrorLog();
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. main샘플 실행 후 '팝업open'버튼을 클릭한다.
+    //1. After running the main sample, click the 'Open popup' button.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. onpageload 알림창이 보여진다.(이전 sp2엔진은 이벤트 2번발생되어 보여짐)
+    // 1. The onpageload notification window is displayed (the previous sp2 engine is shown with event # 2)
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'onpageload'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 알림창의 '확인'버튼을 클릭하고 실행된 화면에서 로그보기를 확인한다.
+    //2. Click the 'OK' button in the notification window and check the log view from the screen that was executed.
+    WebSquare.wUnit.addCommand("set", "WebSquare.logger.showLog()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 정상로그가 보여진다.(이전 sp2엔진은 로그오류 발생)
+    //2. Normal log is displayed (Previous sp2 engine log error occurred.)
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkErrLog() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "localStorage.removeItem('log')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 06-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[팝업 OPEN]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

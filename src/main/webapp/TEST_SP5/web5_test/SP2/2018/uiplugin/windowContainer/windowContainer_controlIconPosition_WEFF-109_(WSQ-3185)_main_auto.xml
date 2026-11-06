@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) { //debugger;
+    wc.createWindow("title" + title, null, "windowContainer_controlIconPosition_WEFF-109_(WSQ-3185)_sub.xml", 'test', i, '', '');
+    windowContainer1.createWindow("title" + title, null, "windowContainer_controlIconPosition_WEFF-109_(WSQ-3185)_sub.xml", 'test', i, '', '');
+    /*wc.createWindow( "title" + title ,
+     null ,
+     "windowContainer_controlIconPosition_WEFF-109_(WSQ-3185)_sub.xml",
+     'test',
+     i,
+     '',
+     '',
+     '',
+     true,
+     "all");*/
+    winc = Number(winc) + 1;
+    title = Number(title) + 1;
+    i++;
+};
+scwin.trigger2_onclick = function(e) {
+    multi.changeAction("test2.do?param=1");
+};
+scwin.onwindowchange = function(e) {
+    log = arguments[1];
+    //console.log("onwindowchange##### oldWindowId = " + arguments[0] + ", newWindowId = " + arguments[1]);
+};
+scwin.onclosewindow = function(e) {
+    console.log("onclosewindow##### e.src = " + e.src + ", e,title = " + e.title);
+};
+scwin.onwindowtabclick = function(e) {
+    console.log("onwindowtabclick##### oldWindowId = " + arguments[0] + ", newWindowId = " + arguments[1]);
+}
+scwin.checkVal1 = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'wc_controlIcon')).getPropertyValue('right') == '0px';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. windowContainer하단에 있는 button을 3번 click한다.
+    //2. Click the button three times under the windowContainer.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 상단에 3개의 window창이 생성되어 보여진다.
+    //2. Three window windows are created and displayed at the top.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wc_name').offsetTop == 0", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. windowContainer 상단의 메뉴에서 멀티창을 클릭한다.
+    //3. In the menu at the top of the windowContainer, click Multi-pane.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wc_sequential').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 멀티창으로 변경되어 보여진다.
+    //3. It will be changed to multi window.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wc_subWindow0').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wc_subWindow1').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wc_subWindow2').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wc_subWindow0').style.top == '138px'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wc_subWindow1').style.top == '0px'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wc_subWindow2').style.top == '0px'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. 각각의 window창을 클릭하여 상단의 네임 레이어에 포커스가 이동되지는 확인한다.
+    // 4. Click on each window to make sure that the focus is moved to the top layer.
+    //Verify 4. 네임 레이어에 포커스가 이동되어 보여진다.
+    //4. The focus is moved to the name layer.
+    //Title3
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wc_subWindow2_header_title').click()");
+    WebSquare.wUnit.addCommand("assert", "log == 3", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Title2
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wc_subWindow1_header_title').click()");
+    WebSquare.wUnit.addCommand("assert", "log == 2", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Title1
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wc_subWindow0_header_title').click()");
+    WebSquare.wUnit.addCommand("assert", "log == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.winc = "1";
+    window.title = "1";
+    window.i = 1;
+    tsClose = function(e) {
+        //	debugger;
+        //	alert('gkgk');
+    };
+    window.log;
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<!--closeType="noneFixedWindow"   useFixButton="true"-->
+		<w2:windowContainer sequentialArrangeColNum="2" sequentialArrangeRowNum="2" fixArrangeFullScreen="false" useNameContainer="true"
+			controlIconPosition="allright" windowAutoResize="false" verticalArrangeNum="0" windowMaxNum="5" useCloseButton="true"
+			windowMaximizeAll="false" toolbarPosition="top" id="wc" useStatusMsg="true" class="" hideTitleOnMaximize="false" spaInitCount="0"
+			stopToggleOnLast="false" horizontalArrangeNum="2" useCustomMsg="false" useControlIconTitle="false" tooltipDisplay="true"
+			tooltipGroupClass="false" windowTooltipDisplay="true" closeType="noneFixedWindow" useFixButton="true"
+			style="position: relative;width: 500px;height: 300px;left:402px;top:77px;margin-top:-40px;" ev:onwindowchange="scwin.onwindowchange"
+			ev:onclosewindow="scwin.onclosewindow" ev:onbeforecloseall="scwin.onbeforecloseall" ev:onwindowkeyup="scwin.onwindowkeyup"
+			ev:onwindowtabclick="scwin.onwindowtabclick">
+			<w2:windowToolbar>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+		<xf:trigger type="button" style="position: relative;width:280px;height:87px;left:406px;top:151px;margin-top:-40px;" id="trigger1"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[]]>
+			</xf:label>
+		</xf:trigger>
+		<w2:windowContainer class="" closeType="noneFixedWindow" controlIconPosition="" ev:onbeforecloseall="scwin.onbeforecloseall"
+			ev:onclosewindow="scwin.onclosewindow" ev:onwindowchange="scwin.onwindowchange" ev:onwindowkeyup="scwin.onwindowkeyup"
+			ev:onwindowtabclick="scwin.onwindowtabclick" fixArrangeFullScreen="false" hideTitleOnMaximize="false" horizontalArrangeNum="2"
+			id="windowContainer1" sequentialArrangeColNum="2" sequentialArrangeRowNum="2" spaInitCount="0" stopToggleOnLast="false"
+			style="position: relative;width: 500px;height: 300px;left:399px;top:223px;margin-top:-40px;" toolbarPosition="top" tooltipDisplay="true"
+			tooltipGroupClass="false" useCloseButton="true" useControlIconTitle="false" useCustomMsg="false" useFixButton="true"
+			useNameContainer="" useStatusMsg="true" verticalArrangeNum="0" windowAutoResize="false" windowMaxNum="5" windowMaximizeAll="false"
+			windowTooltipDisplay="true">
+			<w2:windowToolbar>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+	</body>
+</html>
+ 

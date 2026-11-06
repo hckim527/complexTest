@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>COMPONENT</w2:type>
+    	<w2:buildDate />
+    	<w2:MSA />
+    	<xf:model>
+    		<w2:dataCollection baseNode="map" />
+    		<w2:workflowCollection />
+    	</xf:model>
+    	<w2:layoutInfo />
+    	<w2:publicInfo method="" />
+    	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+scwin.trigger1_onclick = function (e) {
+    tac_test.setTabHTML("tabs1", "TEST_" + WebSquare.date.getCurrentServerDate("HH:mm:ss.SSS"));
+	window.checkDate = WebSquare.date.getCurrentServerDate("HH:mm");
+};
+
+scwin.mpd_test_onprogress = function (data) {
+    scwin.log("onprogress", data);
+};
+
+	scwin.checkVal = function() {
+		const checkVal = WebSquare.wUnit.getDomById('tac_test_tab_tabs1_tabHTML').innerText;
+		return checkVal.indexOf(window.checkDate) != -1;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+
+
+]]></script>
+    	<style type="text/css"><![CDATA[.w2multiupload_html5_transparent {background-color: deepskyblue;}]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:trigger ev:onclick="scwin.trigger1_onclick" style="width:136px;height:54px;" id="trigger1" type="button" class="btn_cm">
+                    <xf:label><![CDATA[타이틀 변경]]></xf:label>
+                </xf:trigger>
+        <br/><br/><br/><br/><br/>
+    	<w2:tabControl id="tac_test" alwaysDraw="false" style="width:773px;height:361px;">
+    		<w2:tabs disabled="false" style="width:141px;height:30px;" id="tabs1" label="타이틀111"></w2:tabs>
+    		<w2:content alwaysDraw="false" style="height:331px;" id="content1">
+
+            </w2:content>
+    	</w2:tabControl>
+    </body>
+</html>

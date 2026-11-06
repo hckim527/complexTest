@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).textContent == value) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 gridView column에 각각 '3333333.33'값을 입력하고 enterkey를 실행한다.
+    //1. After executing the sample, enter the value '3333333.33' in the gridview column and execute enterkey.
+    //Verify step 1. The value '3333333.33' is entered normally for each item.
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grid1_cell_0_0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grid1__column2').setValue('3333333.33')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_dataLayer').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'grid1_cell_0_0', '3,333,333.33')", "true");
+    //
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grid1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grid1__dynamic_text_0_1').setValue('3333333.33')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_dataLayer').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'grid1_cell_0_1', '3,333,333.33')", "true");
+    //
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grid1_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grid1__dynamic_text_0_2').setValue('3333333.33')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_dataLayer').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'grid1_cell_0_2', '3,333,333.33')", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    grid1.setRef({
+        ref: "vector",
+        baseNode: "vector",
+        repeatNode: "data"
+    });
+    grid1.insertRow();
+    //		grid1.setCellInputType( 0, 0, { inputType : "text",options : {dataType:"float",maxlength:"7.2",displayFormat:"#,###.##",applyFormat:"all"} });
+    grid1.setCellInputType(0, 1, {
+        inputType: "text",
+        options: {
+            dataType: "float",
+            maxlength: "7.2",
+            displayFormat: "#,###.#0",
+            applyFormat: "all"
+        }
+    });
+    grid1.setCellInputType(0, 2, {
+        inputType: "text",
+        options: {
+            dataType: "float",
+            applyFormat: "all"
+        }
+    });
+    grid1.setCellMaxLength(0, 2, "7.2");
+    grid1.setCellDisplayFormat(0, 2, "#,###.#0");
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 23-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid ref="vector" baseNode="vector" repeatNode="data" id="grid1" style="width:553px;height:150px;" fixedColumnWithHidden="true" useShiftKey="true" setCellInputTypeCustom="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="120" inputType="text" displayMode="label" value="property"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="120" inputType="text" displayMode="label" value="setCellInputType"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="120" displayMode="label" value="api"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column2" style="" width="120" inputType="text" dataType="float" maxlength="7.2" displayFormat="#,###.#0" applyFormat="all" value="" displayMode="label" defaultValue=""></w2:column>
+    				<w2:column blockSelect="false" id="column4" style="" width="120" inputType="custom" value="" displayMode="label" defaultValue=""></w2:column>
+    				<w2:column blockSelect="false" id="column6" style="height:20px" inputType="custom" width="70" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	<xf:input id="" style="width: 144px;height: 21px;" dataType="float" maxlength="7.2" displayFormat="#,###.#0" applyFormat="all"></xf:input>
+    </body>
+</html>
+ 

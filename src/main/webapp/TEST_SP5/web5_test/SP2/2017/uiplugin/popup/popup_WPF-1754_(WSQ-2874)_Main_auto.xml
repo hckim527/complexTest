@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:config>
+	      	<WebSquare>
+				<popup>
+					<denyConflictPopupId value="true"/>
+				</popup>
+			</WebSquare>
+	 	</w2:config>
+
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_openPopup = function() {
+    WebSquare.util.openPopup("./popup_WPF-1754_(WSQ-2874)_Sample.xml", { //get방식으로 팝업의 아이디를 넘김니다.
+        id: "pop1",
+        type: "litewindow",
+        width: 500,
+        height: 500,
+        top: 50,
+        left: 50,
+        popupName: "test",
+        modal: true,
+        useIFrame: false,
+        resizable: false,
+        status: false,
+        menubar: false,
+        scrollbars: scroll,
+        title: false
+    });
+}
+scwin.trigger1_onclick = function(e) {
+    scwin.fn_openPopup();
+    scwin.fn_openPopup();
+};
+scwin.clickTrigger = function() {
+    if (WebSquare.wUnit.getJq("#_modal").css("display") == "none") {
+        WebSquare.wUnit.getDomById('trigger1').click();
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 0. config.xml에 속성을 추가한다.
+    //Add an attribute to config.xml.
+    //Verify 0. <popup><denyConflictPopupId value="true"/></popup>
+    //Test step 1. 샘플파일 실행 후 openPopup를 클릭한다.
+    //After running the sample file, click openPopup.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 팝업창(test)이 보여진다.
+    // A pop-up window (test) is displayed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pop1').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 팝업창을 닫고 다시 openPopup를 클릭한다.
+    //Close the pop-up window and click openPopup again.
+    WebSquare.wUnit.addCommand("set", "pop1_close.click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.clickTrigger()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 다시 팝업창(test)이 보여진다.(이전에는 팝업창이 다시 보여지지 않음)
+    //A pop-up window (test) is displayed again.(Previously the pop-up window is not visible again)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pop1').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    imports("uiplugin.popup");
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 29-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+    	
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;height:50px;width:120px;left:75px;top: 83px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[openPopup]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

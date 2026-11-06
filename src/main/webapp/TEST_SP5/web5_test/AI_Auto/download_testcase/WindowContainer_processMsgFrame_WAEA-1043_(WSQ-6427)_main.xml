@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+<head meta_author="Inswave Systems" meta_screenName="processMsgFrame 재현 메인" meta_desc="WindowContainer processMsgFrame + 멀티데이타리스트 엑셀다운로드 재현용 메인 화면">
+    <w2:type>COMPONENT</w2:type>
+    <w2:buildDate />
+    <xf:model>
+        <w2:dataCollection baseNode="map">
+        </w2:dataCollection>
+        <w2:workflowCollection>
+        </w2:workflowCollection>
+    </xf:model>
+    <w2:layoutInfo />
+    <w2:publicInfo method="" />
+    <script type="text/javascript" lazy="false"><![CDATA[
+/*
+ * [재현 시나리오]
+ * 1. 창 열기 클릭 → WindowContainer 안에 창 생성 (고객 조건: frameMode "pageFrame")
+ * 2. 창 안에서 "dataList 다운로드" 클릭
+ *    현상 1: processMsg가 창 내부가 아닌 전체 화면(top)에 DIM으로 표시됨
+ *    현상 2: 다운로드 완료 후에도 processMsg가 사라지지 않음
+ * ※ frameMode "wframe"으로 생성해도 동일 재현 확인됨 (2026-07-23)
+ */
+scwin.onpageload = function () {
+};
+
+/* 현재 화면과 같은 폴더 경로를 반환 (AI 개발가이드 pageFrame_createWindow_WindowContainer 샘플과 동일 패턴) */
+scwin.getfolderPath = function () {
+    var currentPath = window.location.href;
+    var folderPath;
+    if (currentPath.includes("mainContainer")) {
+        const cmtFrame = $p.getComponentById($p.getFrameId());
+        currentPath = cmtFrame.getSrc();
+        folderPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    } else {
+        folderPath = currentPath.split('w2xPath=')[1].substring(0, currentPath.split('w2xPath=')[1].lastIndexOf('/'));
+    }
+    return folderPath;
+};
+
+scwin.btn_openWindow_onclick = function () {
+    var tmpSrc = scwin.getfolderPath() + "/WindowContainer_processMsgFrame_WAEA-1043_(WSQ-6427)_content.xml";
+    wdc_main.createWindow({
+        "title" : "대량데이타 조회",
+        "src" : tmpSrc,
+        "windowId" : "win_sample",
+        "frameMode" : "pageFrame"
+    });
+};
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group class="sub_contents" id="grp_main" style="padding:10px;">
+        <xf:group id="" class="btnbox" style="margin-bottom:10px;">
+            <xf:trigger type="button" id="btn_openWindow" class="btn_cm" style="" ev:onclick="scwin.btn_openWindow_onclick">
+                <xf:label><![CDATA[창 열기]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <w2:windowContainer id="wdc_main" style="width:100%; height:700px; position:absolute;"
+            frameMode="wframe" processMsgFrame="true" toolbarPosition="bottom">
+        </w2:windowContainer>
+    </xf:group>
+</body>
+</html>

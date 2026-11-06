@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.userExp = function(col1, col2, targetColValue) { //debugger;
+    var value = "";
+    if (targetColValue == "A") {
+        value = col1 - col2;
+    } else if (targetColValue == "B") {
+        value = col2 - col1;
+    }
+    return value;
+};
+scwin.__checkErrlog = function() {
+    return WebSquare.logger.getErrorLog();
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 gridView의 (3,4)필드의 값을 확인한다.
+    //1. After executing the sample, check the value of (3, 4) field of gridView.
+    //Verify 1. -33 값이 보여짐(이전에는 값이 보이지 않음)
+    //1. -33 value is displayed (previously no value is shown)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_body_tbody tr')[6].childNodes[3].innerText == '-33'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. ctrl+마우스 우클릭 > 로그보기를 확인한다.
+    //2. Check ctrl + right-click> View log.
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkErrlog() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    grid1.setData([
+        '11', '22', 'A', '',
+        '11', '22', 'A', '',
+        '11', '22', 'A', '',
+        '11', '22', 'B', '',
+        '11', '22', 'B', ''
+    ]);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 22-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid baseNode="vector" repeatNode="data/INFO" id="grid1" style="width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:subTotal id="subTotal1" style="" targetColumnID="col3">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column12" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column10" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px" width="70" inputType="expression" displayMode="label" expression="scwin.userExp(sum('col1'),sum('col2'),targetColValue())"></w2:column>
+    			</w2:row>
+    		</w2:subTotal>
+    	</w2:grid>
+    </body>
+</html>
+ 

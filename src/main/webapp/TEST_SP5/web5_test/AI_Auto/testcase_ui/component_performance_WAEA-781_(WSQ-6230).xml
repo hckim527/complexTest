@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataMap id="dataMap_cfg">
+                <w2:keyInfo>
+                    <w2:key id="rowCount" name="rowCount" dataType="text"></w2:key>
+                    <w2:key id="reportPrefix" name="reportPrefix" dataType="text"></w2:key>
+                </w2:keyInfo>
+            </w2:dataMap>
+            <w2:dataList id="dataList_grid" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="ID" name="ID" dataType="text"></w2:column>
+                    <w2:column id="NAME" name="Name" dataType="text"></w2:column>
+                    <w2:column id="VALUE" name="Value" dataType="number"></w2:column>
+                    <w2:column id="STATUS" name="Status" dataType="text"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+            <w2:dataList id="dataList_tree" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="value" name="value" dataType="text"></w2:column>
+                    <w2:column id="label" name="label" dataType="text"></w2:column>
+                    <w2:column id="depth" name="depth" dataType="text"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+            <w2:dataList id="dataList_chart" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="label" name="label" dataType="text"></w2:column>
+                    <w2:column id="value" name="value" dataType="number"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.log = function(msg) {
+        var cur = txa_log.getValue();
+        var ts = new Date().toLocaleTimeString();
+        var line = "[" + ts + "] " + msg;
+        txa_log.setValue(cur ? cur + "\n" + line : line);
+    };
+
+    scwin.onpageload = function() {
+        dataMap_cfg.set("rowCount", "1000");
+        dataMap_cfg.set("reportPrefix", "component.");
+        scwin.log("페이지 로드 완료. 상단 '성능수집 ON' → 각 탭의 데이터 로드 → 'Report 조회' 순서로 테스트하세요.");
+        scwin.log("현재 _performance.use = " + String(WebSquare._performance.use) + ", _on = " + String(WebSquare._performance._on));
+    };
+
+    /* ===== 수집 제어 (반드시 util.setPerformanceUse 사용 — 직접 use 대입 금지) ===== */
+    scwin.btn_perfOn_onclick = function() {
+        WebSquare.util.setPerformanceUse(true);
+        scwin.log("_performance ON — _on=" + String(WebSquare._performance._on) + ", maxEntries=" + WebSquare._performance.maxEntries + ", autoClean=" + String(WebSquare._performance.autoClean));
+    };
+    scwin.btn_perfOff_onclick = function() {
+        WebSquare.util.setPerformanceUse(false);
+        scwin.log("_performance OFF — _on=" + String(WebSquare._performance._on));
+    };
+    scwin.btn_clearBuffer_onclick = function() {
+        WebSquare._performance.clearBuffer();
+        scwin.log("clearBuffer() 호출 후 누적 measure entries = " + performance.getEntriesByType("measure").length);
+    };
+    scwin.btn_clearLog_onclick = function() {
+        txa_log.setValue("");
+    };
+
+    /* ===== gridView ===== */
+    scwin.btn_grid_load_onclick = function() {
+        var n = parseInt(dataMap_cfg.get("rowCount") || "1000", 10);
+        var arr = [];
+        for (var i = 0; i < n; i++) {
+            arr.push({ ID: "ID_" + i, NAME: "Name_" + i, VALUE: i * 10, STATUS: (i % 2 === 0 ? "Y" : "N") });
+        }
+        dataList_grid.setJSON(arr);
+        scwin.log("[gridView] dataList setJSON — " + n + "행");
+    };
+    scwin.btn_grid_direct_onclick = function() {
+        var grd = grd_main;
+        var n = parseInt(dataMap_cfg.get("rowCount") || "100", 10);
+        var flat = [];
+        for (var i = 0; i < n; i++) {
+            flat.push("ID_" + i, "Name_" + i, i * 5, (i % 3 === 0 ? "A" : "B"));
+        }
+        grd.dataList.setData(flat, false, ["ID","NAME","VALUE","STATUS"]);
+        scwin.log("[gridView] mappingController.setData(직접) — " + n + "행");
+    };
+    scwin.btn_grid_clear_onclick = function() {
+        dataList_grid.setJSON([]);
+        scwin.log("[gridView] 데이터 초기화");
+    };
+
+    /* ===== treeview ===== */
+    scwin.btn_tree_load_onclick = function() {
+        var arr = [];
+        var idx = 0;
+        for (var a = 0; a < 5; a++) {
+            arr.push({ value: "v_" + idx, label: "root_" + a, depth: "1" });
+            idx++;
+            for (var b = 0; b < 4; b++) {
+                arr.push({ value: "v_" + idx, label: "child_" + a + "_" + b, depth: "2" });
+                idx++;
+            }
+        }
+        dataList_tree.setJSON(arr);
+        scwin.log("[treeview] dataList setJSON — " + arr.length + " 노드");
+    };
+
+    /* ===== fusionchart ===== */
+    scwin.btn_chart_load_onclick = function() {
+        if (typeof chart_fc === "undefined") {
+            scwin.log("[fusionchart] chart_fc 컴포넌트 미확인 — 초기화 대기 필요");
+            return;
+        }
+        var data = { data: [] };
+        for (var i = 0; i < 10; i++) {
+            data.data.push({ label: "Cat" + i, value: Math.floor(Math.random() * 100) });
+        }
+        chart_fc.setJSONData(data);
+        scwin.log("[fusionchart] setJSONData — " + data.data.length + "건");
+    };
+
+    /* ===== fw차트 ===== */
+    scwin.btn_fw_bullet_onclick = function() {
+        if (typeof chart_bullet === "undefined") {
+            scwin.log("[fwBullet] 컴포넌트 미확인");
+            return;
+        }
+        chart_bullet.setJSONData({
+            chart: { caption: "Revenue", lowerLimit: "0", upperLimit: "100" },
+            colorRange: { color: [{ minValue: "0", maxValue: "50", code: "f54336" }, { minValue: "50", maxValue: "100", code: "4caf50" }] },
+            value: "70"
+        });
+        scwin.log("[fwBullet] setJSONData");
+    };
+    scwin.btn_fw_gauge_onclick = function() {
+        if (typeof chart_gauge === "undefined") {
+            scwin.log("[fwGauge] 컴포넌트 미확인");
+            return;
+        }
+        chart_gauge.setJSONData({
+            chart: { caption: "Pressure", lowerLimit: "0", upperLimit: "100" },
+            colorRange: { color: [{ minValue: "0", maxValue: "100", code: "4caf50" }] },
+            dials: { dial: [{ value: "65" }] }
+        });
+        scwin.log("[fwGauge] setJSONData");
+    };
+
+    /* ===== Report / Raw ===== */
+    scwin.btn_report_onclick = function() {
+        var rep = WebSquare._performance.getReport();
+        scwin.log("── _performance.getReport() ──");
+        scwin.log("  bootstrap keys: " + Object.keys(rep.bootstrap).length);
+        scwin.log("  wframe entries: " + rep.wframe.length);
+        scwin.log("  components:");
+        for (var type in rep.components) {
+            var arr = rep.components[type];
+            var total = 0;
+            for (var k = 0; k < arr.length; k++) total += arr[k].duration;
+            scwin.log("    " + type + " : " + arr.length + "건, 총 " + total.toFixed(1) + "ms");
+            for (var k = 0; k < Math.min(3, arr.length); k++) {
+                scwin.log("      - " + arr[k].name + " : " + arr[k].duration.toFixed(2) + "ms");
+            }
+        }
+        scwin.log("  dataCollection entries: " + rep.dataCollection.length);
+    };
+    scwin.btn_raw_onclick = function() {
+        var prefix = dataMap_cfg.get("reportPrefix") || "component.";
+        var arr = performance.getEntriesByType("measure").filter(function(e) {
+            return e.name.indexOf("wq." + prefix) === 0;
+        });
+        scwin.log("── wq." + prefix + "* measures — " + arr.length + "건 ──");
+        for (var i = 0; i < Math.min(arr.length, 40); i++) {
+            scwin.log("  " + arr[i].name + " : " + arr[i].duration.toFixed(2) + "ms");
+        }
+    };
+
+    /* ===== tabControl ===== */
+    scwin.tab_main_onchange = async function(info) {
+        scwin.log("[tabControl] onchange " + info.oldIndex + " → " + info.newIndex);
+    };
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_main" style="width:1040px; padding:10px;">
+        <!-- 상단 수집 제어 -->
+        <xf:group style="margin-bottom:8px; padding:6px; border:1px solid #888; background:#f5f5f5;">
+            <xf:trigger type="button" id="btn_perfOn" ev:onclick="scwin.btn_perfOn_onclick" style="width:110px; height:28px;">
+                <xf:label><![CDATA[성능수집 ON]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_perfOff" ev:onclick="scwin.btn_perfOff_onclick" style="width:110px; height:28px;">
+                <xf:label><![CDATA[성능수집 OFF]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clearBuffer" ev:onclick="scwin.btn_clearBuffer_onclick" style="width:110px; height:28px;">
+                <xf:label><![CDATA[clearBuffer()]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_report" ev:onclick="scwin.btn_report_onclick" style="width:110px; height:28px;">
+                <xf:label><![CDATA[Report 조회]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_raw" ev:onclick="scwin.btn_raw_onclick" style="width:160px; height:28px;">
+                <xf:label><![CDATA[raw measure entries]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clearLog" ev:onclick="scwin.btn_clearLog_onclick" style="width:80px; height:28px;">
+                <xf:label><![CDATA[로그삭제]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <!-- 행수 입력 -->
+        <xf:group style="margin-bottom:8px;">
+            <w2:span><![CDATA[gridView 로드 행수: ]]></w2:span>
+            <xf:input id="ipt_rowCount" ref="data:dataMap_cfg.rowCount" style="width:80px; height:25px;"></xf:input>
+        </xf:group>
+
+        <!-- tabControl 로 컴포넌트 분리 (→ tabControl switch mark 도 자연 검증) -->
+        <w2:tabControl id="tab_main" ev:onchange="scwin.tab_main_onchange" alwaysDraw="true" confirmTrueAction="exist" confirmFalseAction="new" style="width:1020px; height:500px;">
+            <w2:tabs id="tab_grid" label="gridView + dataList" style="width:180px; height:30px;"></w2:tabs>
+            <w2:tabs id="tab_tree" label="treeview" style="width:120px; height:30px;"></w2:tabs>
+            <w2:tabs id="tab_chart" label="fusionchart" style="width:120px; height:30px;"></w2:tabs>
+            <w2:tabs id="tab_fw" label="fw차트" style="width:120px; height:30px;"></w2:tabs>
+
+            <!-- Tab 1: gridView -->
+            <w2:content id="cnt_grid" style="padding:8px;">
+                <xf:group style="margin-bottom:8px;">
+                    <xf:trigger type="button" id="btn_grid_load" ev:onclick="scwin.btn_grid_load_onclick" style="width:180px; height:28px;">
+                        <xf:label><![CDATA[dataList.setJSON 로드]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger type="button" id="btn_grid_direct" ev:onclick="scwin.btn_grid_direct_onclick" style="width:200px; height:28px;">
+                        <xf:label><![CDATA[gridView.setData 직접]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger type="button" id="btn_grid_clear" ev:onclick="scwin.btn_grid_clear_onclick" style="width:120px; height:28px;">
+                        <xf:label><![CDATA[데이터 초기화]]></xf:label>
+                    </xf:trigger>
+                </xf:group>
+                <w2:gridView id="grd_main" dataList="data:dataList_grid" style="width:990px; height:380px;">
+                    <w2:header>
+                        <w2:row>
+                            <w2:column id="hd_ID" value="ID" width="230"></w2:column>
+                            <w2:column id="hd_NAME" value="Name" width="260"></w2:column>
+                            <w2:column id="hd_VALUE" value="Value" width="200"></w2:column>
+                            <w2:column id="hd_STATUS" value="Status" width="280"></w2:column>
+                        </w2:row>
+                    </w2:header>
+                    <w2:gBody>
+                        <w2:row>
+                            <w2:column id="ID" width="230"></w2:column>
+                            <w2:column id="NAME" width="260"></w2:column>
+                            <w2:column id="VALUE" width="200" displayMode="label"></w2:column>
+                            <w2:column id="STATUS" width="280"></w2:column>
+                        </w2:row>
+                    </w2:gBody>
+                </w2:gridView>
+            </w2:content>
+
+            <!-- Tab 2: treeview -->
+            <w2:content id="cnt_tree" style="padding:8px;">
+                <xf:group style="margin-bottom:8px;">
+                    <xf:trigger type="button" id="btn_tree_load" ev:onclick="scwin.btn_tree_load_onclick" style="width:200px; height:28px;">
+                        <xf:label><![CDATA[treeview 25노드 로드]]></xf:label>
+                    </xf:trigger>
+                </xf:group>
+                <w2:treeview id="tree_main" dataType="listed" modelBinding="false" style="width:990px; height:380px; border:1px solid #ccc;">
+                    <w2:itemset nodeset="data:dataList_tree">
+                        <w2:label ref="label"></w2:label>
+                        <w2:value ref="value"></w2:value>
+                        <w2:depth ref="depth"></w2:depth>
+                    </w2:itemset>
+                </w2:treeview>
+            </w2:content>
+
+            <!-- Tab 3: fusionchart -->
+            <w2:content id="cnt_chart" style="padding:8px;">
+                <xf:group style="margin-bottom:8px;">
+                    <xf:trigger type="button" id="btn_chart_load" ev:onclick="scwin.btn_chart_load_onclick" style="width:200px; height:28px;">
+                        <xf:label><![CDATA[fusionchart 데이터 로드]]></xf:label>
+                    </xf:trigger>
+                </xf:group>
+                <w2:fusionchart id="chart_fc" chartType="Column2D" style="width:990px; height:380px;"></w2:fusionchart>
+            </w2:content>
+
+            <!-- Tab 4: fw차트 -->
+            <w2:content id="cnt_fw" style="padding:8px;">
+                <xf:group style="margin-bottom:8px;">
+                    <xf:trigger type="button" id="btn_fw_bullet" ev:onclick="scwin.btn_fw_bullet_onclick" style="width:180px; height:28px;">
+                        <xf:label><![CDATA[fwBullet 로드]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger type="button" id="btn_fw_gauge" ev:onclick="scwin.btn_fw_gauge_onclick" style="width:180px; height:28px;">
+                        <xf:label><![CDATA[fwGauge 로드]]></xf:label>
+                    </xf:trigger>
+                </xf:group>
+                <xf:group style="display:flex; gap:10px;">
+                    <w2:fwBulletChart id="chart_bullet" chartType="hbullet" style="width:490px; height:200px;"></w2:fwBulletChart>
+                    <w2:fwGaugeChart id="chart_gauge" chartType="angulargauge" style="width:490px; height:200px;"></w2:fwGaugeChart>
+                </xf:group>
+            </w2:content>
+        </w2:tabControl>
+
+        <!-- 로그 -->
+        <w2:textarea id="txa_log" style="width:1020px; height:260px; font-family:monospace; font-size:12px; background:#1e1e1e; color:#0f0;" readOnly="true"/>
+    </xf:group>
+</body>
+</html>

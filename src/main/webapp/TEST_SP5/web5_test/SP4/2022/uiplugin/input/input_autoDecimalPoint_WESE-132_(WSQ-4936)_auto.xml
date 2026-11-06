@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+                <w2:dataMap baseNode="map" id="dataMap1">
+                    <w2:keyInfo>
+                        <w2:key id="key1" name="name1" dataType="text"></w2:key>
+                        <w2:key id="key2" name="name2" dataType="text"></w2:key>
+                        <w2:key id="key3" name="name3" dataType="text"></w2:key>
+                    </w2:keyInfo>
+                    <w2:data use="true">
+                        <key1><![CDATA[12345]]></key1>
+                        <key2><![CDATA[12345]]></key2>
+                        <key3><![CDATA[1234]]></key3>
+                    </w2:data>
+                </w2:dataMap>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+    debugger;
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.input1_oneditfull = function(e) {
+		debugger;
+        var data = this.getValue();
+        console.log("******* oneditfull ********>" + data);
+	};
+	scwin.input1_onkeyup = function(e) {
+        //debugger;
+        var data = this.getValue();
+        //if(this.getMaxByteLength() == data.length){
+            //console.log("======= keyup ===>" + data);
+        //}
+    };
+    scwin.input1_oneditkeyup = function(e) {
+        //debugger;
+        var data = this.getValue();
+        //if(this.getMaxByteLength() == data.length){
+            //console.log("======= editkeyup ===>" + data);
+        //}
+    };
+	
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#input1', 'key-sequence', {
+			sequence: '12345.67'
+		});
+	}
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#input3').hasClass('w2input_focus');
+	}
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').focus()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').value = ''");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand('pause', '500');	
+	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:textbox class="" label="maxLength=5.2 autoDecimalPoint=true nextTabID=input3" style="position: absolute ;left: 119px;top: 27px;width: 518px;height: 20px;" tagname="h3"></w2:textbox>
+    	<xf:input adjustMaxLength="false" id="input1" style="position: absolute ;left: 119px;top: 57px;width: 218px;height: 45px;" validateOnInput="true" dataType="float" autoDecimalPoint="true" ref="data:dataMap1.key1"
+            ev:oneditfull="scwin.input1_oneditfull" maxLength="5.2" autoFocus="true" nextTabID="input3" displayFormat="#,###.#0" applyFormat="all"
+            ev:onkeyup="scwin.input1_onkeyup"
+            ev:oneditkeyup="scwin.input1_oneditkeyup">
+        </xf:input>
+        <w2:textbox class="" label="maxLength=6.2, autoDecimalPoint=false nextTabID=input1" style="position: absolute ;left: 119px;top: 127px;width: 518px;height: 20px;" tagname="h3"></w2:textbox>
+        <xf:input adjustMaxLength="false" id="input2" style="position: absolute ;left: 119px;top: 157px;width: 218px;height: 45px;" validateOnInput="true" dataType="float" autoDecimalPoint="false" ref="data:dataMap1.key2"
+            ev:oneditfull="scwin.input1_oneditfull" maxLength="6.2" autoFocus="true" nextTabID="input1" displayFormat="#,###.#0" applyFormat="all"
+            ev:onkeyup="scwin.input1_onkeyup"
+            ev:oneditkeyup="scwin.input1_oneditkeyup">
+        </xf:input>
+        <w2:textbox class="" label="maxLength=5, autoDecimalPoint=false nextTabID=input2" style="position: absolute ;left: 119px;top: 227px;width: 518px;height: 20px;" tagname="h3"></w2:textbox>
+        <xf:input adjustMaxLength="false" id="input3" style="position: absolute ;left: 119px;top: 257px;width: 218px;height: 45px;" validateOnInput="true" dataType="float" autoDecimalPoint="false" ref="data:dataMap1.key3"
+            ev:oneditfull="scwin.input1_oneditfull" maxLength="5" autoFocus="true" nextTabID="input2" displayFormat="#,###" applyFormat="all"
+            ev:onkeyup="scwin.input1_onkeyup"
+            ev:oneditkeyup="scwin.input1_oneditkeyup">
+        </xf:input>
+    </body>
+</html>

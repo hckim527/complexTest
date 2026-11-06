@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text"></w2:column>
+    					<w2:column id="col3" name="name3" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+        
+		scwin.onpageload = function() {
+			var json = [
+				{
+					col1:'Name1',
+					col2:'Value1',
+					col3:'Option1'
+				},
+				{
+					col1:'Name2',
+					col2:'Value2',
+					col3:'Option2'
+				},
+				{
+					col1:'Name3',
+					col2:'Value3',
+					col3:'Option3'
+				}
+			];
+			dataList1.setJSON( json );
+		};
+		
+		scwin.onpageunload = function() {
+			
+		};
+		
+		// SystemMenu
+		// - ColumnHide : 선택 컬럼 숨기기
+		// - ColumnShowAll : 전체 컬럼 숨기기 해제
+		// - ColumnFix : 선택 컬럼 틀고정
+		// - ColumnUnfixAll : 전체 컬럼 틀고정 취소
+		// - ColumnAdjustWidth : 선택 컬럼 크기 자동 맞추기
+		// - ColumnAdjustAuto : 전체 컬럼 크기 자동 맞추기
+		// - FoldAll : 전체 그룹 접기
+		// - UnfoldAll : 전체 그룹 펼치기
+		// - Group : 전체 그룹 해제
+		// - Ungroup : 선택 컬럼 그룹 해제
+		// - UngroupAll : 선택 컬럼 그룹
+
+		// 컨텍스트 메뉴를 열기 전에 호출되어, 컨텍스트 메뉴를 구성할 수있게 합니다.
+		// result
+		// - false : 컴텍스트 메뉴가 열리지 않습니다.
+		// - hideSystemMenu
+		scwin.gridView1_oncontextopen = function(row,col) {
+			// return false; // 컨텍스트 메뉴를 보여주지 않습니다.
+			// return { hideSystemMenu: false } // 전체 시스템 메뉴를 보여주지 않습니다.
+			return {
+				hideSystemMenu: [ "ColumnHide" ], // 특정 항목의 시스템 메뉴를 보여주지 않습니다.
+				appendMenu: [{
+					label:"특별한 컬럼 숨기기",
+					// 사용자 메뉴의 표시 문자열
+					userMenuId:"userColumnHide",
+					// 사용자 메뉴의 id, 해당 컨텍스트 메뉴가 클릭될때, 입력값으로 전달됨
+					className:""
+					// 사용자 메뉴의 스타일 클래스 이름 
+				}], // 시스템 메뉴 아래에, 사용자 메뉴를 추가합니다.
+			};
+		};
+
+		// 컨텍스트 메뉴가 클릭 된 후 호출됩니다. 시스템 메뉴는 시스템 기능이 완료된 후 호출됩니다.
+		scwin.gridView1_oncontextclick = function(row,col,userMenuId,isSystemMenu,systemMenu) {
+			if(isSystemMenu){
+				console.log(systemMenu + " clicked at (" + col + "," + row + ")!");
+			} else {
+				console.log(userMenuId + " clicked at (" + col + "," + row + ")!");
+			}
+		};
+
+		scwin.trigger2_onclick = function() {
+			var focusedCell = gridView1.getLastFocusedCell();
+            gridView1._setFocusedCell(focusedCell.focusedRowIndex, focusedCell.focusedColIndex);
+            focusedCell.focusedTd.focus();
+		}
+
+
+	scwin.fireClick = function(node){            
+		if( document.createEventObject ) {
+			node.fireEvent('oncontextmenu') ;  
+		} else if( document.createEvent ) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('contextmenu', true, false);
+			node.dispatchEvent(evt);    
+		} else if (typeof node.contextmenu == 'function' ) {
+			node.oncontextmenu();  
+		}
+	}
+	scwin.rightClick = function(id){
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireClick(el);
+	}         
+	scwin.checkVal = function(){
+		let element = WebSquare.wUnit.getDomById('gridView2_contextMenu_list')
+		let check_class = element.querySelector('li').classList.contains('w2list_listRow_over');
+		return check_class;
+	}   
+	scwin.unitTest = function(){
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("set", "scwin.rightClick('gridView2_cell_0_2')");
+		WebSquare.wUnit.addCommand("pause", "1000");
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+		]]></script>
+    	<style><![CDATA[ 
+		
+			/* 추가된 css */
+			.w2grid_contextMenu_accessibility {
+				overflow: hidden;
+				background-color: white;
+				position:absolute; 
+				border: 3px solid #B1C5D5; 
+				z-index: 9999; 
+				padding:0px; 
+				display:block;
+				list-style: none;
+				margin: 0;
+			}
+			.w2grid_contextMenu_accessibility .w2grid_contextMenu_column {
+				color:#066196;
+				font-size:12px;
+				font-weight:normal;
+				white-space:nowrap;
+				list-style: none;
+				text-decoration: none;
+				display: inline-block;
+			}
+		]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+
+		<w2:textbox id="" label="accessibility + useAccessibleContextMenu" style="width: 300px;font-size: 20px;"></w2:textbox>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="width: 500px;height: 150px;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" 
+			contextMenu="true" ev:oncontextopen="scwin.gridView1_oncontextopen" ev:oncontextclick="scwin.gridView1_oncontextclick"
+			accessibility="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+		<w2:textbox id="" label="useAccessibleContextMenu" style="width: 300px;font-size: 20px;"></w2:textbox>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView2" style="width: 500px;height: 150px;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" 
+			contextMenu="true" ev:oncontextopen="scwin.gridView1_oncontextopen" ev:oncontextclick="scwin.gridView1_oncontextclick"
+			accessibility=""
+			useAccessibleContextMenu="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+		<w2:textbox id="" label="X" style="width: 300px;font-size: 20px;"></w2:textbox>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView3" style="width: 500px;height: 150px;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" 
+			contextMenu="true"
+			accessibility="">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+    </body>
+</html>

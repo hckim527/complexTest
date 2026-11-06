@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_type="메인">
+	    <w2:type>DEFAULT</w2:type>
+	    <w2:buildDate />
+	    <xf:model>
+	        <xf:instance>
+	            <data xmlns="" />
+	        </xf:instance>
+	        <w2:dataCollection baseNode="map">
+	            <w2:dataList baseNode="list" repeatNode="map" id="dsMainList" saveRemovedData="true" ev:onrowpositionchange="scwin.dsMainList_onrowpositionchange">
+	                <w2:columnInfo>
+	                    <w2:column id="id" name="id" dataType="text"></w2:column>
+	                    <w2:column id="no" name="번호" dataType="number" length="" encYN="false"></w2:column>
+	                </w2:columnInfo>
+	            </w2:dataList>
+
+	            <w2:dataList baseNode="list" repeatNode="map" style="" id="dsSubList" saveRemovedData="true"
+	                ev:ondataload="scwin.dsTsaBzpjPrplsBgtItemiList_ondataload"
+	                ev:onbeforecelldatachange="scwin.dsTsaBzpjPrplsBgtItemiList_onbeforecelldatachange"
+	                ev:oncelldatachange="scwin.dsTsaBzpjPrplsBgtItemiList_oncelldatachange" getMatchedFromAllData="true"
+	                ev:onaftercolumnfilterchange="scwin.dsTsaBzpjPrplsBgtItemiList_onaftercolumnfilterchange"
+	                ev:onbeforecolumnfilterchange="scwin.dsTsaBzpjPrplsBgtItemiList_onbeforecolumnfilterchange">
+	                <w2:columnInfo>
+	                    <w2:column id="id" name="id" dataType="text"></w2:column>
+	                    <w2:column id="no" name="번호" dataType="number"></w2:column>
+	                    <w2:column id="chk" name="선택" dataType="text"></w2:column>
+	                    <w2:column id="new" name="신규" dataType="text"></w2:column>
+	                    <w2:column id="amt" name="금액" dataType="number" defaultValue="0" length=""></w2:column>
+	                </w2:columnInfo>
+	                <w2:data use="true"></w2:data>
+	            </w2:dataList>
+
+
+
+	        </w2:dataCollection>
+	        <w2:workflowCollection></w2:workflowCollection>
+	    </xf:model>
+	    <script type="javascript" lazy="false">
+
+	        <![CDATA[scwin.objMainJSON = [
+	{"id": "1", "no": 1},
+	{"id": "2", "no": 2},
+];
+
+scwin.objSubJSON = [
+	{"id": "1", "no": 1, "new": "N", "amt": 200000},
+	{"id": "2", "no": 1, "new": "N", "amt": 200000},
+	{"id": "3", "no": 1, "new": "N", "amt": 200000},
+	{"id": "4", "no": 2, "new": "N", "amt": 200000},
+	{"id": "5", "no": 2, "new": "N", "amt": 200000},
+	{"id": "6", "no": 2, "new": "N", "amt": 200000},
+	{"id": "7", "no": 2, "new": "Y", "amt": 300000},
+		{"id": "8", "no": 2, "new": "Y", "amt": 300000},
+		{"id": "9", "no": 2, "new": "Y", "amt": 300000},
+		{"id": "10", "no": 2, "new": "Y", "amt": 300000},
+		{"id": "11", "no": 2, "new": "Y", "amt": 300000},
+
+];
+
+scwin.onpageload = function() {
+	dsMainList.setJSON(scwin.objMainJSON);
+	dsSubList.setJSON(scwin.objSubJSON);
+};
+
+/**************************************************************************
+ * 함 수 명: scwin.fnGetType
+ * 기 능: 그리드 inputType getter
+ **************************************************************************/
+scwin.fnGetType = function(info) {
+	let objReturnInfo;
+	switch (info.colID) {
+		// 선택
+		case "chk" :
+			let sInputType, bReadOnly;
+			const sNew = dsSubList.getCellData(info.rowIndex, "new");
+
+			// Y 가 아니면
+			if (sNew != "Y") {
+				sInputType = "text";
+				bReadOnly = true;
+			}
+			else {
+				sInputType = "checkbox";
+				bReadOnly = false;
+			}
+
+			console.log(info)
+			objReturnInfo = {
+				id : "dynamic_" + sInputType + "_" + info.rowIndex + "_" + info.colIndex,
+				inputType : sInputType,
+				options : {
+					readOnly: bReadOnly
+				},
+			};
+			break;
+
+		default:
+			break;
+	}
+	return objReturnInfo;
+};
+
+scwin.dsMainList_onrowpositionchange = function(info) {
+	const nRow = dsMainList.getRowPosition();
+
+	//debugger;
+	// 필터
+	dsSubList.clearFilter();
+	console.clear();
+	dsSubList.setColumnFilter({
+		type: "row",
+		colIndex: "no",
+		key: dsMainList.getCellData(nRow, "no"),
+		condition: "and",
+		exactMatch: true,
+	});
+};
+
+scwin.btnRemoveFilter_onclick = function() {
+	grdMain.removeFocusedCell();
+	dsSubList.clearFilter();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload" style="height: 100%">
+	    <w2:anchor class="" clickEventElement="outerDiv" id="btnRemoveFilter" outerDiv="false" style="" ev:onclick="scwin.btnRemoveFilter_onclick">
+	            <xf:label><![CDATA[필터삭제]]></xf:label>
+	        </w2:anchor><w2:gridView class="" dataList="data:dsMainList" editModeEvent="onclick" focusMode="row" id="grdMain" rowNumHeaderValue="No." rowNumVisible="true" rowStatusHeaderValue="상태" scrollByColumn="false" style="height: 200px;" useShiftKey="true" visibleRowNum="3" visibleRowNumFix="true" excludeDeletedRows="true" readOnly="true" syncRowPositionOption="style">
+	            <w2:header id="header1" style="">
+	                <w2:row id="row2" style="">
+	                    <w2:column displayMode="label" fixColumnWidth="true" id="column16" inputType="text" style="" value="번호" width="60">
+	                    </w2:column>
+	                </w2:row>
+	            </w2:header>
+	            <w2:gBody id="gBody4" style="">
+	                <w2:row id="row5" style="">
+	                    <w2:column displayMode="label" fixColumnWidth="true" id="no" inputType="text" style="" value="" width="60" displayFormatter="scwin.fnChgDgrFormatter">
+	                    </w2:column>
+	                </w2:row>
+	            </w2:gBody>
+	        </w2:gridView><w2:gridView class="" dataList="data:dsSubList" editModeEvent="onclick" excludeDeletedRows="true" focusMode="row" id="grdSub" rowNumHeaderValue="No." rowStatusHeaderValue="상태" scrollByColumn="false" style="height: 100%;" useShiftKey="true" visibleRowNum="7" visibleRowNumFix="true" useFilterList="true" useFilterListSync="true" readOnlyPriority="column" rowNumVisible="true">
+	            <w2:header id="header1" style="">
+	                <w2:row id="row2" style="">
+	                    <w2:column displayMode="label" fixColumnWidth="true" id="column16" inputType="checkbox" style="" value="" width="40">
+	                    </w2:column>
+	                    <w2:column width="170" inputType="text" style="" id="column33" value="금액" displayMode="label" class="" fixColumnWidth="true">
+	                    </w2:column>
+	                </w2:row>
+	            </w2:header>
+	            <w2:gBody id="gBody4" style="">
+	                <w2:row id="row5" style="">
+	                    <w2:column displayMode="label" fixColumnWidth="true" id="chk" inputType="custom" style="" value="" width="40" typeGetter="scwin.fnGetType" dataType="text" readOnly="false">
+	                    </w2:column>
+	                    <w2:column width="170" inputType="text" style="" id="amt" value="" displayMode="label" fixColumnWidth="true" textAlign="right" dataType="number" adjustMaxLength="true" maxLength="12" displayFormat="#,###">
+	                    </w2:column>
+	                </w2:row>
+	            </w2:gBody>
+	            <w2:footer id="footer1" style="">
+	                <w2:row id="row6" style="">
+	                    <w2:column colSpan="1" displayMode="label" fixColumnWidth="true" id="column23" inputType="text" rowSpan="" style="" value="합계" width="460">
+	                    </w2:column>
+	                    <w2:column width="170" inputType="expression" style="" id="thfqReqAmtSum" value="" displayMode="label" textAlign="right" expression="sum('thfqReqAmt')" displayFormatter="com.formatComma">
+	                    </w2:column>
+	                </w2:row>
+	            </w2:footer>
+	        </w2:gridView>
+	    
+	</body>
+</html>

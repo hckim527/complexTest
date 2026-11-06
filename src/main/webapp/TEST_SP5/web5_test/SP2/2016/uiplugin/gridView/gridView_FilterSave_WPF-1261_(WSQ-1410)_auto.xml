@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList1.clearFilter();
+};
+scwin.trigger2_onclick = function(e) {
+    scwin.tempFilter = dataList1.getFilterList();
+    //alert("저장완료");
+    log = "저장완료";
+};
+scwin.trigger3_onclick = function(e) {
+    for (var i = 0; i < scwin.tempFilter.length; i++) {
+        dataList1.setColumnFilter(scwin.tempFilter[i]);
+        //alert("불러오기완료");
+        log1 = "불러오기완료";
+    }
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 4. 브라우저에서 임의로 필터를 설정한다. (사용자필터도 같이 설정)
+    //4. Set the filter arbitrarily in the browser. (User filter is set as well)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wq_uuid_5_column1_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listRow w2grid_customFilter_list_listRow')[1].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wq_uuid_5_column1_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. 설정한대로 필터가 적용된다.
+    //4. The filter is applied as set.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_5_body_tbody tr').not('.w2grid_hidedRow').length == 0", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. filter_save 버튼을 클릭한다.
+    //5. Click the filter_save button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. 저장완료 팝업이 생성되면서 현재 설정한 필터가 저장된다.
+    //5. The save completed popup is created and the currently set filter is saved.
+    WebSquare.wUnit.addCommand("assert", "log == '저장완료'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. filter_clear 버튼을 클릭한다.
+    //6. Click the filter_clear button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 6. 필터가 초기화된다.
+    //6. The filter is initialized.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_5_body_tbody tr').not('.w2grid_hidedRow').length == 11", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 7. filter_load 버튼을 클릭한다.
+    //7. Click the filter_load button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 7. 불러오기완료 팝업이 생성되면서 5번에서 저장된 필터가 불러오기된다.
+    //7. When the import completion popup is generated, the saved filter is loaded in step # 5.
+    WebSquare.wUnit.addCommand("assert", "log1 == '불러오기완료'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.data = [];
+    for (var i = 0; i < 20 * 3; i++) {
+        data.push(i);
+    }
+    dataList1.setData(data);
+    scwin.tempFilter = [];
+    var log, log1;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 06-Mar-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload"><xf:group id="" style="height:400px;width:800px;"><xf:group id="" style="height:350px;width:500px;float:left;">
+    	<w2:gridView dataList="dataList1" id="" autoFit="allColumn" applyAllColumnStyle="false" style="position: relative;width:423px;height:265px;" scrollByColumn="false" useShiftKey="true" useFilterList="true" defaultCellHeight="20" fixedColumnWithHidden="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" useFilter="true" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" useFilter="true" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" useFilter="true" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger id="trigger1" style="position: relative;width:153px;height:54px;" ev:onclick="scwin.trigger1_onclick" type="button">
+    		<xf:label><![CDATA[filter_clear]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="position: relative;width:153px;height:54px;" ev:onclick="scwin.trigger2_onclick" type="button">
+    		<xf:label><![CDATA[filter_save]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger3" style="position: relative;width:153px;height:54px;" ev:onclick="scwin.trigger3_onclick" type="button">
+    		<xf:label><![CDATA[filter_load]]></xf:label>
+    	</xf:trigger>
+    	
+    </xf:group>
+	<xf:group id="" style="position: relative;width: 290px;height: 350px;float:right;" class="">
+		<w2:textbox label="테스트 시나리오" id="" style="position: relative;width:150px;height:44px;font-size:14pt;"></w2:textbox>
+		<w2:textbox label="1. 헤더의 삼각형 버튼을 클릭하여 필터링을 건다." id="" style="position: relative;height:50px;font-size:12pt;width:95%;"></w2:textbox>
+		<w2:textbox id="" label="2. filter_save 버튼을 클릭하여 현재 필터 상태를 저장한다."
+			style="position: relative;height:50px;font-size:12pt;width:95%;">
+		</w2:textbox>
+		<w2:textbox id="" label="3. filter_clear 버튼을 클릭하여 필터를 초기화한다. " style="position: relative;height:50px;font-size:12pt;width:95%;">
+		</w2:textbox>
+		<w2:textbox id="" label="4. filter_load 버튼을 클릭하여 이전 상태의 필터로 되돌린다. "
+			style="position: relative;height:50px;font-size:12pt;width:95%;">
+		</w2:textbox>
+	</xf:group></xf:group></body>
+</html>
+ 

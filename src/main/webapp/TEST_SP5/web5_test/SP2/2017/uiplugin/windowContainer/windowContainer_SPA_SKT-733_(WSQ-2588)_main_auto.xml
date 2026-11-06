@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <style>
+            .sp11 {
+                color:red;
+                font-size:15px;
+            }
+        </style>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.createWindow = function() {
+    var ws_s = "<span class=\"sp11\">";
+    var ws_m = "subTitle";
+    var ws_e = "</span>";
+    var c_cnt = 1;
+    var c_subName = "windowContainer_SPA_SKT-733_(WSQ-2588)_sub";
+    var c_xmlName = ".xml";
+    for (var i = 1; i <= c_cnt; i++) {
+        // createWindow = function(title, iconUrl, src , windowTitle , windowId ,openAction, closeAction, windowTooltip, windowHeaderHTML)
+        var windowHeaderHTML = ws_s + ws_m + i + ws_e;
+        windowContainer1.createWindow(c_subName + (((i + dx) % 4) + 1), null, c_subName + (((i + dx) % 4) + 1) + c_xmlName, null, null, "existWindow",
+            null, null, windowHeaderHTML);
+    }
+    dx += c_cnt;
+}
+scwin.setMenu = function(dataArr) {
+    /*
+     * @description nameLayerMenu 속성 사용시에 메뉴목록을 동적으로 설정합니다. 
+     * @param       <Array:Y> arrData 메뉴목록을 설정할 array 데이터
+     * @param       <Number:N> height 메뉴의 높이값  
+     */
+    windowContainer1.setMenu(dataArr, dataArr.length * 21);
+}
+scwin.windowContainer1_onmenuopen = function(windowId) {
+    if (windowContainer1.isMultiView()) {
+        scwin.setMenu(["화면 닫기", "듀얼 모니터로 보기", "단일 뷰로 보기", "공유하기"]);
+    } else {
+        if (windowId === windowContainer1.getSelectedWindowId()) {
+            scwin.setMenu(["화면 닫기", "듀얼 모니터로 보기", "공유하기"]);
+        } else {
+            scwin.setMenu(["화면 닫기", "듀얼 모니터로 보기", "멀티 뷰로 보기", "공유하기"]);
+        }
+    }
+}
+scwin.windowContainer1_onmenuclick = function(windowId, selectedItem) {
+    switch (selectedItem) {
+        case "화면 닫기":
+            windowContainer1.closeWindow(windowId);
+            break;
+        case "듀얼 모니터로 보기":
+            // 듀얼모니터로 보도록 함수 붙이면 됨.
+            break;
+        case "멀티 뷰로 보기":
+            windowContainer1.setMultiView(windowId);
+            break;
+        case "단일 뷰로 보기":
+            windowContainer1.setSingleView(windowId);
+            break;
+        case "공유하기":
+            // 공유하기 관련 로직 작성
+            break;
+    }
+}
+scwin.doInit = function() {
+    this.createWindow();
+    this.setMenu(["화면 닫기", "듀얼 모니터로 보기", "멀티 뷰로 보기", "공유하기"]);
+}
+scwin.Z = function(t) {
+    t = t || 0;
+    R = R + t;
+    scwin.createWindow();
+    //setTimeout(function(){try{scwin.createWindow();}catch(e){}},R);
+}
+scwin.Y = function(v) {
+    v = v || 0;
+    S = S + v;
+    windowContainer1.closeWindow();
+    //setTimeout(function(){try{windowContainer1.closeWindow();}catch(e){}},S);
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 2. 브라우저에서 약 10초정도 기다린다.
+    //2. Wait about 10 seconds in the browser.
+    //Verify 2. test success 팝업이 생성된다. (그전버전에서는  test fail 팝업이 생성됨.)
+    //2. A test success pop-up is generated. (In previous versions, a test fail popup was generated.)
+    WebSquare.wUnit.addCommand("pause", "11000");
+    WebSquare.wUnit.addCommand("assert", "log", "test succeess");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.dx = 0;
+    window.R = 100;
+    window.S = 800;
+    window.log;
+    scwin.Z()
+    scwin.Z()
+    scwin.Z()
+    scwin.Z()
+    scwin.Y()
+    scwin.Y()
+    setTimeout(function() {
+        scwin.Y();
+        scwin.Y();
+        setTimeout(function() {
+            scwin.Y();
+            scwin.Y();
+            setTimeout(function() {
+                scwin.Z();
+                scwin.Z();
+                scwin.Z();
+                scwin.Z();
+                scwin.Z();
+                setTimeout(function() {
+                    window.isExist = false;
+                    for (var i = 0; i < windowContainer1.windows.length; i++) {
+                        WebSquare.logger.printLog(windowContainer1.windows[i].id);
+                        console && console.log(windowContainer1.windows[i].id);
+                        for (var j = windowContainer1.windows.length - 1; j > i; j--) {
+                            if (i != j && windowContainer1.windows[i].id == windowContainer1.windows[j].id) {
+                                isExist = true;
+                            }
+                        }
+                    }
+                    if (isExist) {
+                        //alert("test fail");
+                    } else {
+                        //alert("test succeess");
+                        log = "test succeess";
+                    }
+                }, 1000);
+            }, 1000);
+        }, 1000)
+    }, 4000)
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="height:511px;width:900px;">
+    	<w2:textbox id="" style="position: relative;height:30px;font-size:18pt;width:100%;" label="WindowContainer Split Sample"></w2:textbox>
+    		<w2:windowContainer horizontalArrangeNum="2" verticalArrangeNum="2" windowMaxNum="4" tooltipGroupClass="false" class="" hideTitleOnMaximize="false" id="windowContainer1" spaInitCount="2" windowAutoResize="true" style="position: relative;height:550px;width:100%;" useStatusMsg="false" sequentialArrangeRowNum="2" tooltipDisplay="true" useCloseButton="false" stopToggleOnLast="false" fixArrangeFullScreen="true" windowMaximizeAll="false" windowTooltipDisplay="true" sequentialArrangeColNum="2" toolbarPosition="bottom" useControlIconTitle="false" defaultHeight="" userData3="" minimumWidth="" 
+            nameLayerMenu="true" ev:onmenuclick="scwin.windowContainer1_onmenuclick" ev:onmenuopen="scwin.windowContainer1_onmenuopen">
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer></xf:group></body>
+</html>
+ 

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.trigger1_onclick = function(e) {
+		
+		imports("uiplugin.popup");
+		
+		var dataObj = {
+			type : "json",			
+			name : "paramObj",
+			data : {
+				"id" : "00001",
+				"name" : "홍길동"
+			}
+		};
+
+		var options = {
+			id : "popup1",
+			type : "wframePopup",	//browserPopup, wframePopup
+			width : "600px",
+			height : "600px",
+			//top : "130px",
+			//left : "250px",
+			popupName : "openPopup",
+			//modal : true,
+			alwaysOnTop: true,
+			closeAction : "com.closeAction",
+			dataObject : dataObj
+		};
+		
+		$p.openPopup("gridview_userfilter_nextTabID_WESD-756_(WSQ-4813)_popupChild.xml", options);
+		
+		
+	};
+	
+	scwin.trigger2_onclick = function(e) {
+		
+		var popupList = parent.$p.getPopupWindowList();
+		
+		if(popupList.length > 0){
+			
+			var popupObj = popupList[popupList.length - 1];
+			
+			//wframePopup
+			if(popupObj.$p.isWFramePopup()){
+				if(typeof popupObj.scwin.popupChilTest == "function"){
+					popupObj.scwin.popupChilTest();
+				}
+			}else{
+				//browserPopup
+				if(typeof popupObj.mf_scwin.popupChilTest == "function"){
+					popupObj.focus();
+					popupObj.mf_scwin.popupChilTest();
+				}
+			}
+			
+		}	
+	};
+	
+		scwin.setSimulate1 = function() {
+			scwin.simulateWrapper('#popup1_wframe_gridView1_item_1_autocomplete_input', 'key-combo', {
+				combo: 'TAB'
+			});
+		}
+		scwin.simulateWrapper = function(target, type, options) {
+			WebSquare.wUnit.getJq(target).simulate(type, options);
+		}
+
+		scwin.checkVal = function() {
+			return WebSquare.wUnit.getJq('#popup1_wframe_gridView1_item_0_selectbox_column5').hasClass('w2selectbox_body_focus');
+		}
+		scwin.unitTest = function() {
+			//init
+			WebSquare.wUnit.start();
+			WebSquare.wUnit.addCommand("pause", "500");
+			
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup1_wframe_gridView1_column5_filter').click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup1_wframe_gridView1_customFilter_list').children[0].getElementsByTagName('span')[0].click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+			//WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup1_wframe_gridView1_item_1_autocomplete_label').click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+			WebSquare.wUnit.addCommand("pause", "500");
+			//Run  and stop
+			WebSquare.wUnit.run();
+			WebSquare.wUnit.stop();
+		}
+		scwin.unitTest()		
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[팝업오픈]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[팝업화면 함수 호출]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

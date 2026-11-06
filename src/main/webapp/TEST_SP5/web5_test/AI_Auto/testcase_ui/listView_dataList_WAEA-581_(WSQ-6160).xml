@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <!-- SelectBox/CheckCombobox/AutoComplete itemset용 DataList -->
+                <w2:dataList baseNode="list" id="dataList_options" repeatNode="map" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column dataType="text" id="label" name="라벨"></w2:column>
+                        <w2:column dataType="text" id="value" name="값"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <label><![CDATA[옵션1]]></label>
+                            <value><![CDATA[OPT1]]></value>
+                        </w2:row>
+                        <w2:row>
+                            <label><![CDATA[옵션2]]></label>
+                            <value><![CDATA[OPT2]]></value>
+                        </w2:row>
+                        <w2:row>
+                            <label><![CDATA[옵션3]]></label>
+                            <value><![CDATA[OPT3]]></value>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+
+                <!-- ListView에 바인딩될 DataList (16개 컬럼 - 각 컴포넌트 타입별 1개) -->
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true"
+                    ev:ondataload="scwin.dataList1_ondataload"
+                    ev:oninsertrow="scwin.dataList1_oninsertrow"
+                    ev:onremoverow="scwin.dataList1_onremoverow"
+                    >
+                    <w2:columnInfo>
+                        <!-- 1. AutoComplete -->
+                        <w2:column id="col_autocomplete" name="AutoComplete" dataType="text"></w2:column>
+                        <!-- 2. Anchor -->
+                        <w2:column id="col_anchor" name="Anchor" dataType="text"></w2:column>
+                        <!-- 3. Button -->
+                        <w2:column id="col_button" name="Button" dataType="text"></w2:column>
+                        <!-- 4. Calendar -->
+                        <w2:column id="col_calendar" name="Calendar" dataType="text"></w2:column>
+                        <!-- 5. CheckCombobox -->
+                        <w2:column id="col_checkcombobox" name="CheckCombobox" dataType="text"></w2:column>
+                        <!-- 6. Checkbox -->
+                        <w2:column id="col_checkbox" name="Checkbox" dataType="text"></w2:column>
+                        <!-- 7. Image -->
+                        <w2:column id="col_image" name="Image" dataType="text"></w2:column>
+                        <!-- 8. InputBox -->
+                        <w2:column id="col_inputbox" name="InputBox" dataType="text"></w2:column>
+                        <!-- 9. InputCalendar -->
+                        <w2:column id="col_inputcalendar" name="InputCalendar" dataType="text"></w2:column>
+                        <!-- 10. Radio -->
+                        <w2:column id="col_radio" name="Radio" dataType="text"></w2:column>
+                        <!-- 11. Secret -->
+                        <w2:column id="col_secret" name="Secret" dataType="text"></w2:column>
+                        <!-- 12. SelectBox -->
+                        <w2:column id="col_selectbox" name="SelectBox" dataType="text"></w2:column>
+                        <!-- 13. Spinner -->
+                        <w2:column id="col_spinner" name="Spinner" dataType="text"></w2:column>
+                        <!-- 14. Textarea -->
+                        <w2:column id="col_textarea" name="Textarea" dataType="text"></w2:column>
+                        <!-- 15. Textbox -->
+                        <w2:column id="col_textbox" name="Textbox" dataType="text"></w2:column>
+                        <!-- 16. Trigger -->
+                        <w2:column id="col_trigger" name="Trigger" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+    scwin.generateTestData();
+};
+
+scwin.getRandomDate = function () {
+    var start = new Date(2000, 0, 1).getTime();
+    var end = new Date(2025, 11, 31).getTime();
+    var randomTime = start + Math.random() * (end - start);
+    var date = new Date(randomTime);
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, "0");
+    var day = String(date.getDate()).padStart(2, "0");
+    return year + month + day;
+};
+
+scwin.generateTestData = function () {
+    var data = [];
+    
+    for (var i = 0; i < 100; i++) {
+        data.push({
+            col_autocomplete: "OPT" + ((i % 3) + 1),
+            col_anchor: "https://example.com/" + (i + 1),
+            col_button: "Button" + (i + 1),
+            col_calendar: scwin.getRandomDate(),
+            col_checkcombobox: "OPT" + ((i % 3) + 1),
+            col_checkbox: (i % 2 === 0) ? "Y" : "",
+            col_image: "/cm/images/sample.jpg",
+            col_inputbox: "입력값" + (i + 1),
+            col_inputcalendar: scwin.getRandomDate(),
+            col_radio: (i % 3 === 0) ? "R1" : ((i % 3 === 1) ? "R2" : "R3"),
+            col_secret: "secret" + (i + 1),
+            col_selectbox: "OPT" + ((i % 3) + 1),
+            col_spinner: String((i + 1) * 10),
+            col_textarea: "텍스트영역 내용 " + (i + 1) + "번째 행입니다.",
+            col_textbox: "텍스트" + (i + 1),
+            col_trigger: "Trigger" + (i + 1)
+        });
+    }
+    
+    dataList1.setJSON(data);
+};
+
+scwin.onpageunload = function () {
+};
+
+// setJSON: 전체 데이터 교체
+scwin.btnSetJSON_onclick = function (e) {
+    scwin.generateTestData();
+    var pass = dataList1.getRowCount() === 100;
+    console.log("[setJSON] " + dataList1.getRowCount() + "건 " + (pass ? "PASS" : "FAIL"));
+    return pass;
+};
+
+// insertJSON: 특정 위치에 행 삽입
+scwin.btnInsertJSON_onclick = function (e) {
+    var before = dataList1.getRowCount();
+    var data = [
+        { col_autocomplete: "OPT3", col_button: "Button", col_calendar: "20260201", col_checkbox: "Y", col_checkcombobox: "OPT3", col_image: "/cm/images/sample2.png", col_inputbox: "삽입1", col_inputcalendar: "20260201", col_radio: "R1", col_secret: "1234", col_selectbox: "OPT3", col_spinner: "50", col_textarea: "텍스트영역", col_textbox: "텍스트", col_trigger: "Trigger", col_anchor: "링크" },
+        { col_autocomplete: "OPT3", col_button: "Button", col_calendar: "20260202", col_checkbox: "", col_checkcombobox: "OPT3", col_image: "/cm/images/sample2.png", col_inputbox: "삽입2", col_inputcalendar: "20260202", col_radio: "R2", col_secret: "5678", col_selectbox: "OPT3", col_spinner: "100", col_textarea: "텍스트영역2", col_textbox: "텍스트2", col_trigger: "Trigger2", col_anchor: "링크2" }
+    ];
+    dataList1.insertJSON(0, data);
+    var after = dataList1.getRowCount();
+    var pass = (after === before + 2) && (dataList1.getCellData(0, 'col_inputbox') === '삽입1');
+    console.log("[insertJSON] " + before + "→" + after + "건, 0행 InputBox=" + dataList1.getCellData(0, 'col_inputbox') + " " + (pass ? "PASS" : "FAIL"));
+    return pass;
+};
+
+// setRowJSON: 특정 행 데이터 교체
+scwin.btnSetRowJSON_onclick = function (e) {
+    if (dataList1.getRowCount() === 0) { console.log("데이터 없음"); return false; }
+    var rowData = { col_autocomplete: "OPT3", col_button: "수정", col_calendar: "20260301", col_checkbox: "", col_checkcombobox: "OPT3", col_image: "sample2.png", col_inputbox: "수정", col_inputcalendar: "20260301", col_radio: "R3", col_secret: "0000", col_selectbox: "OPT3", col_spinner: "999", col_textarea: "수정텍스트", col_textbox: "수정", col_trigger: "수정Trigger", col_anchor: "수정링크" };
+    dataList1.setRowJSON(0, rowData, true);
+    var pass = (dataList1.getCellData(0, 'col_textbox') === '수정') && (dataList1.getCellData(0, 'col_spinner') === '999');
+    console.log("[setRowJSON] Textbox=" + dataList1.getCellData(0, 'col_textbox') + ", Spinner=" + dataList1.getCellData(0, 'col_spinner') + " " + (pass ? "PASS" : "FAIL"));
+    return pass;
+};
+
+// setCellData: 특정 셀 데이터 수정
+scwin.btnSetCellData_onclick = function (e) {
+    if (dataList1.getRowCount() === 0) { console.log("데이터 없음"); return false; }
+    dataList1.setCellData(0, "col_textbox", "셀수정됨");
+    var pass = dataList1.getCellData(0, 'col_textbox') === '셀수정됨';
+    console.log("[setCellData] Textbox=" + dataList1.getCellData(0, 'col_textbox') + " " + (pass ? "PASS" : "FAIL"));
+    return pass;
+};
+
+// removeRow: 단일 행 삭제
+scwin.btnRemoveRow_onclick = function (e) {
+    if (dataList1.getRowCount() === 0) { console.log("데이터 없음"); return false; }
+    var before = dataList1.getRowCount();
+    dataList1.removeRow(0);
+    var after = dataList1.getRowCount();
+    var pass = after === before - 1;
+    console.log("[removeRow] " + before + "→" + after + "건 " + (pass ? "PASS" : "FAIL"));
+    return pass;
+};
+
+// removeRows: 여러 행 삭제
+scwin.btnRemoveRows_onclick = function (e) {
+    if (dataList1.getRowCount() < 2) { console.log("행 2개 이상 필요"); return false; }
+    var before = dataList1.getRowCount();
+    dataList1.removeRows([0, 1]);
+    var after = dataList1.getRowCount();
+    var pass = after === before - 2;
+    console.log("[removeRows] " + before + "→" + after + "건 " + (pass ? "PASS" : "FAIL"));
+    return pass;
+};
+
+// removeAll: 전체 삭제
+scwin.btnRemoveAll_onclick = function (e) {
+    dataList1.removeAll();
+    var pass = dataList1.getRowCount() === 0;
+    console.log("[removeAll] " + dataList1.getRowCount() + "건 " + (pass ? "PASS" : "FAIL"));
+    return pass;
+};
+
+// ============================================================================
+// 양방향 바인딩 테스트
+// ============================================================================
+
+scwin.BIND_COMPONENTS = [
+    { compId: 'autoComplete1', colId: 'col_autocomplete', getter: 'getValue', setter: 'setValue', testValue: 'OPT2' },
+    { compId: 'anchor1', colId: 'col_anchor', getter: 'getValue', setter: 'setValue', testValue: 'https://test.com' },
+    { compId: 'button1', colId: 'col_button', getter: 'getLabel', setter: 'setLabel', testValue: '테스트버튼' },
+    { compId: 'calendar1', colId: 'col_calendar', getter: 'getValue', setter: 'gotoCalendar', testValue: '20260315' },
+    { compId: 'checkcombobox1', colId: 'col_checkcombobox', getter: 'getValue', setter: 'setValue', testValue: 'OPT1,OPT2' },
+    { compId: 'checkbox1', colId: 'col_checkbox', getter: 'getValue', setter: 'setValue', testValue: 'Y' },
+    { compId: 'image1', colId: 'col_image', getter: 'getSrc', setter: 'setSrc', testValue: '/cm/images/test.png' },
+    { compId: 'input1', colId: 'col_inputbox', getter: 'getValue', setter: 'setValue', testValue: '테스트입력' },
+    { compId: 'inputCalendar1', colId: 'col_inputcalendar', getter: 'getValue', setter: 'setValue', testValue: '20260315' },
+    { compId: 'radio1', colId: 'col_radio', getter: 'getValue', setter: 'setValue', testValue: 'R2' },
+    { compId: 'secret1', colId: 'col_secret', getter: 'getValue', setter: 'setValue', testValue: 'newpass' },
+    { compId: 'selectbox1', colId: 'col_selectbox', getter: 'getValue', setter: 'setValue', testValue: 'OPT3' },
+    { compId: 'spinner1', colId: 'col_spinner', getter: 'getValue', setter: 'setValue', testValue: '999' },
+    { compId: 'textarea1', colId: 'col_textarea', getter: 'getValue', setter: 'setValue', testValue: '테스트텍스트영역' },
+    { compId: 'textbox1', colId: 'col_textbox', getter: 'getValue', setter: 'setValue', testValue: '테스트텍스트' },
+    { compId: 'trigger1', colId: 'col_trigger', getter: 'getLabel', setter: 'setLabel', testValue: '테스트트리거' }
+];
+
+scwin.testDataListToComponent = function() {
+    console.log("=== [1] DataList → Component (초기 데이터 바인딩 확인) ===");
+    var results = [];
+    
+    for (var i = 0; i < scwin.BIND_COMPONENTS.length; i++) {
+        var item = scwin.BIND_COMPONENTS[i];
+        var comp = listView1.getCellComponentById(0, item.compId);
+        var dataValue = dataList1.getCellData(0, item.colId);
+        var compValue = comp ? comp[item.getter]() : null;
+        
+        // image는 getSrc()에 origin이 붙어서 반환되므로 뒤에서부터 비교
+        var match = (item.compId === 'image1') 
+            ? (compValue && compValue.slice(-dataValue.length) === dataValue)
+            : (compValue == dataValue);
+        
+        results.push({
+            component: item.compId,
+            dataList: dataValue,
+            component_val: compValue,
+            result: match ? 'PASS' : 'FAIL'
+        });
+    }
+    
+    console.table(results);
+};
+
+scwin.testDataListToComponent2 = function() {
+    console.log("=== [2] DataList → Component (DataList API 테스트) ===");
+    scwin.btnInsertJSON_onclick();
+    scwin.btnSetRowJSON_onclick();
+    scwin.btnSetCellData_onclick();
+    scwin.btnRemoveRow_onclick();
+    scwin.btnRemoveRows_onclick();
+    scwin.btnRemoveAll_onclick();
+    scwin.btnSetJSON_onclick();  // 데이터 복구
+};
+
+scwin.testComponentToDataList = function() {
+    console.log("=== [3] Component → DataList (Component → DataList 테스트) ===");
+    var results = [];
+    debugger;
+	
+    for (var i = 0; i < scwin.BIND_COMPONENTS.length; i++) {
+        var item = scwin.BIND_COMPONENTS[i];
+        var comp = listView1.getCellComponentById(0, item.compId);
+        
+        if (comp && comp[item.setter]) {
+            comp[item.setter](item.testValue);
+            var dataValue = dataList1.getCellData(0, item.colId);
+            var match = (dataValue == item.testValue);
+            
+            results.push({
+                component: item.compId,
+                setValue: item.testValue,
+                dataList: dataValue,
+                result: match ? 'PASS' : 'FAIL'
+            });
+        }
+    }
+    
+    console.table(results);
+};
+
+/**
+ * 전체 테스트 실행
+ */
+scwin.runAllTests = function() {
+    console.log("========================================");
+    console.log("양방향 바인딩 테스트");
+    console.log("========================================\n");
+    
+    scwin.testDataListToComponent();
+    
+    scwin.testDataListToComponent2();
+    
+    scwin.testComponentToDataList();
+    
+    console.log("\n========================================");
+    console.log("테스트 완료");
+    console.log("========================================");
+};
+
+]]></script>
+
+        <style type="text/css"><![CDATA[
+/* ============================================================================
+   ListView 테스트용 스타일 재정의
+   ============================================================================ */
+.w2group {
+    background-color: unset;
+}
+
+.w2listView {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.w2listView_header {
+    border: 1px solid #C4CDD5;
+    border-radius: 6px;
+    background-color: #e3f0ff;
+}
+
+.w2listView_body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.w2listView_footer {
+    border: 1px solid #C4CDD5;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.w2listView_pageList {
+    background-color: #ffffff;
+    border: 1px solid #C4CDD5;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+/* 행 스타일 */
+.header_row,
+.body_row {
+    display: flex;
+    align-items: stretch;
+    padding: 6px 8px;
+    height: 60px;
+}
+.body_row {
+    background-color: #ffffff;
+    border: 1px solid #C4CDD5;
+    border-radius: 4px;
+}
+
+.body_row:hover {
+    background-color: #f5f9ff;
+}
+
+.w2listView_mobile .body_row {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.footer_row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+}
+
+/* 셀 스타일 */
+.cell {
+    padding: 4px 6px;
+    box-sizing: border-box;
+    border-right: 1px solid #e0e0e0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.cell:last-child {
+    border-right: none;
+}
+
+/* Button */
+.btn {
+    padding: 4px 10px;
+    border: 1px solid #C4CDD5;
+    background: linear-gradient(#fcfbfc, #efefef);
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: linear-gradient(#efefef, #e0e0e0);
+}
+
+        ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group id="grp_main" style="padding: 20px;">
+            
+            <!-- 페이지 타이틀 -->
+            <w2:textbox id="tbx_title" label="ListView DataList 바인딩 테스트" style="font-size: 18px; font-weight: bold; margin-bottom: 20px;"></w2:textbox>
+
+            <xf:trigger id="btnRunAllTests" ev:onclick="scwin.runAllTests" type="button" class="btn">
+                <xf:label><![CDATA[전체 테스트 실행]]></xf:label>
+            </xf:trigger>
+
+            <xf:group id="grp_footer_row1" class="footer_row">
+                <xf:trigger id="btnSetJSON" ev:onclick="scwin.btnSetJSON_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[setJSON]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnInsertJSON" ev:onclick="scwin.btnInsertJSON_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[insertJSON]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnSetRowJSON" ev:onclick="scwin.btnSetRowJSON_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[setRowJSON]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnSetCellData" ev:onclick="scwin.btnSetCellData_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[setCellData]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            <xf:group id="grp_footer_row2" class="footer_row">
+                <xf:trigger id="btnRemoveRows" ev:onclick="scwin.btnRemoveRows_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[removeRows]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnRemoveRow" ev:onclick="scwin.btnRemoveRow_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[removeRow]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnRemoveAll" ev:onclick="scwin.btnRemoveAll_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[removeAll]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            
+            <!-- ListView 컴포넌트 -->
+            <w2:listView id="listView1" 
+                class=""
+                style="width: 100%; height: 700px;"
+                dataList="data:dataList1" 
+                
+                adaptive="true"
+                adaptiveThreshold="500"
+                adaptiveFormatter="scwin.listView1_adaptiveFormatter"
+
+                useFooter="false"
+                usePageList="true"
+                pageSize="10"
+
+                ev:onpageindexchange="scwin.listView1_onpageindexchange"
+                ev:onadaptivechange="scwin.listView1_onadaptivechange"
+
+                >
+                
+                <!-- columnInfo: 컴포넌트-컬럼 매핑 정보 -->
+                <w2:columnInfo>
+                    <w2:header>
+                        <w2:column componentId="header_autocomplete"/>
+                        <w2:column componentId="header_anchor"/>
+                        <w2:column componentId="header_button"/>
+                        <w2:column componentId="header_calendar"/>
+                        <w2:column componentId="header_checkcombobox"/>
+                        <w2:column componentId="header_checkbox"/>
+                        <w2:column componentId="header_image"/>
+                        <w2:column componentId="header_inputbox"/>
+                        <w2:column componentId="header_inputcalendar"/>
+                        <w2:column componentId="header_radio"/>
+                        <w2:column componentId="header_secret"/>
+                        <w2:column componentId="header_selectbox"/>
+                        <w2:column componentId="header_spinner"/>
+                        <w2:column componentId="header_textarea"/>
+                        <w2:column componentId="header_textbox"/>
+                        <w2:column componentId="header_trigger"/>
+                    </w2:header>
+                    <w2:body>
+                        <w2:column componentId="autoComplete1" headerComponentId="header_autocomplete" colId="col_autocomplete"/>
+                        <w2:column componentId="anchor1" headerComponentId="header_anchor" colId="col_anchor"/>
+                        <w2:column componentId="button1" headerComponentId="header_button" colId="col_button"/>
+                        <w2:column componentId="calendar1" headerComponentId="header_calendar" colId="col_calendar"/>
+                        <w2:column componentId="checkcombobox1" headerComponentId="header_checkcombobox" colId="col_checkcombobox"/>
+                        <w2:column componentId="checkbox1" headerComponentId="header_checkbox" colId="col_checkbox"/>
+                        <w2:column componentId="image1" headerComponentId="header_image" colId="col_image"/>
+                        <w2:column componentId="input1" headerComponentId="header_inputbox" colId="col_inputbox"/>
+                        <w2:column componentId="inputCalendar1" headerComponentId="header_inputcalendar" colId="col_inputcalendar"/>
+                        <w2:column componentId="radio1" headerComponentId="header_radio" colId="col_radio"/>
+                        <w2:column componentId="secret1" headerComponentId="header_secret" colId="col_secret"/>
+                        <w2:column componentId="selectbox1" headerComponentId="header_selectbox" colId="col_selectbox"/>
+                        <w2:column componentId="spinner1" headerComponentId="header_spinner" colId="col_spinner"/>
+                        <w2:column componentId="textarea1" headerComponentId="header_textarea" colId="col_textarea"/>
+                        <w2:column componentId="textbox1" headerComponentId="header_textbox" colId="col_textbox"/>
+                        <w2:column componentId="trigger1" headerComponentId="header_trigger" colId="col_trigger"/>
+                    </w2:body>
+                </w2:columnInfo>
+                
+                <!-- Header 영역 -->
+                <w2:header id="header1">
+                    <xf:group id="grp_header" class="header_row">
+                        <!-- 1. AutoComplete -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_autocomplete" label="AutoComplete"></w2:textbox>
+                        </xf:group>
+                        <!-- 2. Anchor -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_anchor" label="Anchor"></w2:textbox>
+                        </xf:group>
+                        <!-- 3. Button -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_button" label="Button"></w2:textbox>
+                        </xf:group>
+                        <!-- 4. Calendar -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_calendar" label="Calendar"></w2:textbox>
+                        </xf:group>
+                        <!-- 5. CheckCombobox -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_checkcombobox" label="CheckCombobox"></w2:textbox>
+                        </xf:group>
+                        <!-- 6. Checkbox -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_checkbox" label="Checkbox"></w2:textbox>
+                        </xf:group>
+                        <!-- 7. Image -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_image" label="Image"></w2:textbox>
+                        </xf:group>
+                        <!-- 8. InputBox -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_inputbox" label="InputBox"></w2:textbox>
+                        </xf:group>
+                        <!-- 9. InputCalendar -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_inputcalendar" label="InputCalendar"></w2:textbox>
+                        </xf:group>
+                        <!-- 10. Radio -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_radio" label="Radio"></w2:textbox>
+                        </xf:group>
+                        <!-- 11. Secret -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_secret" label="Secret"></w2:textbox>
+                        </xf:group>
+                        <!-- 12. SelectBox -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_selectbox" label="SelectBox"></w2:textbox>
+                        </xf:group>
+                        <!-- 13. Spinner -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_spinner" label="Spinner"></w2:textbox>
+                        </xf:group>
+                        <!-- 14. Textarea -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_textarea" label="Textarea"></w2:textbox>
+                        </xf:group>
+                        <!-- 15. Textbox -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_textbox" label="Textbox"></w2:textbox>
+                        </xf:group>
+                        <!-- 16. Trigger -->
+                        <xf:group class="cell">
+                            <w2:textbox id="header_trigger" label="Trigger"></w2:textbox>
+                        </xf:group>
+                    </xf:group>
+                </w2:header>
+                
+                <!-- Body 영역: DataList Row 수만큼 반복 -->
+                <w2:lBody id="lBody1">
+                    <xf:group id="grp_row" class="body_row">
+                        <!-- 1. AutoComplete -->
+                        <xf:group class="cell">
+                            <w2:autoComplete id="autoComplete1" 
+                                editType="select" 
+                                style="width: 110px;height: 21px;" 
+                                submenuSize="auto" 
+                                search="start">
+                                <w2:choices>
+                                    <w2:itemset nodeset="data:dataList_options">
+                                        <w2:label ref="label"></w2:label>
+                                        <w2:value ref="value"></w2:value>
+                                    </w2:itemset>
+                                </w2:choices>
+                            </w2:autoComplete>
+                        </xf:group>
+                        <!-- 2. Anchor -->
+                        <xf:group class="cell">
+                            <w2:anchor id="anchor1" 
+                                outerDiv="false" 
+                                style="width: 100px;height: 23px;">
+                                <xf:label><![CDATA[링크]]></xf:label>
+                            </w2:anchor>
+                        </xf:group>
+                        <!-- 3. Button -->
+                        <xf:group class="cell">
+                            <w2:button id="button1" style="width: 100px;height: 25px;">
+                            </w2:button>
+                        </xf:group>
+                        <!-- 4. Calendar -->
+                        <xf:group class="cell" style="">
+                            <w2:calendar id="calendar1"
+                                style="">
+                            </w2:calendar>
+                        </xf:group>
+                        <!-- 5. CheckCombobox -->
+                        <xf:group class="cell">
+                            <xf:checkcombobox id="checkcombobox1"
+                                chooseOption="false" 
+                                displayMode="label" 
+                                style="width: 110px;height: 21px;" 
+                                submenuSize="auto"
+                                allOption="false" 
+                                disabled="false" 
+                                direction="auto">
+                                <xf:choices>
+                                    <xf:itemset nodeset="data:dataList_options">
+                                        <xf:label ref="label"></xf:label>
+                                        <xf:value ref="value"></xf:value>
+                                    </xf:itemset>
+                                </xf:choices>
+                            </xf:checkcombobox>
+                        </xf:group>
+                        <!-- 6. Checkbox -->
+                        <xf:group class="cell">
+                            <xf:select id="checkbox1" 
+                                selectedindex="-1"
+                                appearance="full" 
+                                style="width: 110px;height: 21px;">
+                                <xf:choices>
+                                    <xf:item>
+                                        <xf:label><![CDATA[체크]]></xf:label>
+                                        <xf:value><![CDATA[Y]]></xf:value>
+                                    </xf:item>
+                                </xf:choices>
+                            </xf:select>
+                        </xf:group>
+                        <!-- 7. Image -->
+                        <xf:group class="cell">
+                            <xf:image id="image1"
+                                src=""
+                                style="width: 50px;height: 50px;">
+                            </xf:image>
+                        </xf:group>
+                        <!-- 8. InputBox -->
+                        <xf:group class="cell">
+                            <xf:input id="input1"
+                                style="width: 90px;height: 25px;">
+                            </xf:input>
+                        </xf:group>
+                        <!-- 9. InputCalendar -->
+                        <xf:group class="cell">
+                            <w2:inputCalendar id="inputCalendar1"
+                                style="width: 110px;height: 23px;" 
+                                calendarValueType="yearMonthDate">
+                            </w2:inputCalendar>
+                        </xf:group>
+                        <!-- 10. Radio -->
+                        <xf:group class="cell">
+                            <xf:select1 id="radio1" 
+                                selectedIndex="-1"
+                                appearance="full"
+                                style="width: 110px;height: 60px;">
+                                <xf:choices>
+                                    <xf:item>
+                                        <xf:label><![CDATA[R1]]></xf:label>
+                                        <xf:value><![CDATA[R1]]></xf:value>
+                                    </xf:item>
+                                    <xf:item>
+                                        <xf:label><![CDATA[R2]]></xf:label>
+                                        <xf:value><![CDATA[R2]]></xf:value>
+                                    </xf:item>
+                                    <xf:item>
+                                        <xf:label><![CDATA[R3]]></xf:label>
+                                        <xf:value><![CDATA[R3]]></xf:value>
+                                    </xf:item>
+                                </xf:choices>
+                            </xf:select1>
+                        </xf:group>
+                        <!-- 11. Secret -->
+                        <xf:group class="cell">
+                            <xf:secret id="secret1"
+                                style="width: 110px;height: 21px;">
+                            </xf:secret>
+                        </xf:group>
+                        <!-- 12. SelectBox -->
+                        <xf:group class="cell">
+                            <xf:select1 id="selectbox1" 
+                                chooseOption="false" 
+                                style="width: 110px;height: 21px;" 
+                                submenuSize="auto" 
+                                allOption="false" 
+                                disabled="false"
+                                direction="auto" 
+                                appearance="minimal" 
+                                disabledClass="w2selectbox_disabled">
+                                <w2:choices>
+                                    <xf:itemset nodeset="data:dataList_options">
+                                        <xf:label ref="label"></xf:label>
+                                        <xf:value ref="value"></xf:value>
+                                    </xf:itemset>
+                                </w2:choices>
+                            </xf:select1>
+                        </xf:group>
+                        <!-- 13. Spinner -->
+                        <xf:group class="cell">
+                            <w2:spinner id="spinner1"
+                                skin="type1" 
+                                buttonSize="30" 
+                                inputReadOnly="false" 
+                                style="position: relative;width: 110px;height: 21px;">
+                            </w2:spinner>
+                        </xf:group>
+                        <!-- 14. Textarea -->
+                        <xf:group class="cell">
+                            <xf:textarea id="textarea1"
+                                style="width: 110px;height: 50px;">
+                            </xf:textarea>
+                        </xf:group>
+                        <!-- 15. Textbox -->
+                        <xf:group class="cell">
+                            <w2:textbox id="textbox1" 
+                                label=""
+                                style="width: 110px;height: 23px;">
+                            </w2:textbox>
+                        </xf:group>
+                        <!-- 16. Trigger -->
+                        <xf:group class="cell">
+                            <xf:trigger id="trigger1" type="button" 
+                                style="width: 100px;height: 23px;">
+                                <xf:label><![CDATA[Trigger]]></xf:label>
+                            </xf:trigger>
+                        </xf:group>
+                    </xf:group>
+                </w2:lBody>
+                
+                <!-- pageList 영역 -->
+                <w2:pageList id="" style=""
+                    displayButtonType="display" 
+                    displayFormat="#" 
+                    pageSize="10"
+                    renderType="">
+                </w2:pageList>
+                
+            </w2:listView>
+
+        </xf:group>
+    </body>
+</html>

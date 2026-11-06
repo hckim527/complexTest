@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+scwin.fn01 = async function(){
+    for(i=0;i<30;i++){
+        debugger;
+        dataList1.insertJSON(i, [{}]);
+    }
+
+    for(i=0;i<30;i++){
+        dataList1.setCellData(i, 'col1', i);
+    }    
+
+    gridView1.setFocusedCell(12, 0);
+
+    if(await scwin.fn02() == -1){
+        return -1;
+    }
+}
+
+scwin.fn02 = async function(){
+    var kkk = 12;
+    var zzz = kkk+1;
+    while(zzz <30){
+
+        gridView1.setRowVisible(zzz, false);
+        zzz = zzz+1;
+    }
+}
+
+scwin.trigger1_onclick = function(e) {
+    scwin.fn01();
+};
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('gridView1_body_tbody').getElementsByTagName('tr')[4].style.display == '';
+	}
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('gridView1_body_tbody').getElementsByTagName('tr')[5].style.display == '';
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wq_uuid_4_tab_tabs2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	 
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[set]]></xf:label>
+    	</xf:trigger>
+    	<w2:tabControl useTabKeyOnly="true" id="" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist"
+    		confirmFalseAction="new" alwaysDraw="false" style="width: 500px;height: 410px;">
+    		<w2:tabs disabled="false" style="width:70px;height:30px;" id="tabs1"></w2:tabs>
+    		<w2:tabs disabled="false" style="width:70px;height:30px" id="tabs2"></w2:tabs>
+    		<w2:content alwaysDraw="false" style="height:380px;" id="content1"></w2:content>
+    		<w2:content alwaysDraw="true" style="height:380px;" id="content2">
+    			<w2:gridView id="gridView1" style="width:355px;height:422px;" checkAllType="false" scrollByColumn="false" defaultCellHeight="20"
+    				scrollByColumnAdaptive="false" dataList="data:dataList1">
+    				<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    				<w2:header style="" id="header2">
+    					<w2:row style="" id="row3">
+    						<w2:column width="70" inputType="text" style="height:30px;" id="column5" value="name1" displayMode="label"></w2:column>
+    						<w2:column width="70" inputType="text" style="height:30px;" id="column4" value="name2" displayMode="label"></w2:column>
+    						<w2:column width="70" inputType="text" style="height:30px;" id="column3" value="name3" displayMode="label"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody style="" id="gBody2">
+    					<w2:row style="" id="row4">
+    						<w2:column width="70" inputType="text" style="height:32px;" id="col1" value="" displayMode="label"></w2:column>
+    						<w2:column width="70" inputType="text" style="height:32px;" id="col2" value="" displayMode="label"></w2:column>
+    						<w2:column width="70" inputType="text" style="height:32px;" id="col3" value="" displayMode="label"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    	</w2:tabControl>
+    </body>
+</html>

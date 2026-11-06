@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns:xf="http://www.w3.org/2006/xforms"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:w2="http://www.inswave.com/websquare">
+<head>
+<xf:model>
+    <w2:dataCollection></w2:dataCollection>
+</xf:model>
+<script type="javascript"><![CDATA[
+scwin.onpageload = function() {
+    scwin.log("=== [메리츠화재] WAEA-846 엔진 예외 처리 보강 검증 ===");
+    scwin.log("의도: 비정상 입력이 와도 try-catch 진입 자체를 사전 차단하여 exception.printStackTrace → errorHandler(esq) 호출 방지.");
+    scwin.log("각 시나리오는 예외 발생 없이 default 값을 반환해야 PASS.");
+    scwin.log("");
+};
+
+scwin.log = function(msg) {
+    var prev = txa_log.getValue();
+    var line = "[" + new Date().toLocaleTimeString() + "] " + msg;
+    txa_log.setValue(prev ? prev + "\n" + line : line);
+};
+
+scwin.btn_parseResponseHeader_null_onclick = function() {
+    scwin.log("--- 시나리오 1: ModelUtil.parseResponseHeader(null) ---");
+    try {
+        var ret = WebSquare.ModelUtil.parseResponseHeader(null);
+        scwin.log("결과: " + ret);
+        scwin.log("기대: <header></header> → " + (ret === "<header></header>" ? "PASS" : "FAIL"));
+    } catch (e) {
+        scwin.log("예외 발생 (FAIL): " + e.message);
+    }
+    scwin.log("");
+};
+
+scwin.btn_parseResponseHeader_emptyHeaders_onclick = function() {
+    scwin.log("--- 시나리오 2: parseResponseHeader - getAllResponseHeaders() = null ---");
+    var fakeXhr = { getAllResponseHeaders: function() { return null; } };
+    try {
+        var ret = WebSquare.ModelUtil.parseResponseHeader(fakeXhr);
+        scwin.log("결과: " + ret);
+        scwin.log("기대: <header></header> → " + (ret === "<header></header>" ? "PASS" : "FAIL"));
+    } catch (e) {
+        scwin.log("예외 발생 (FAIL): " + e.message);
+    }
+    scwin.log("");
+};
+
+scwin.btn_parseResponseHeader_normal_onclick = function() {
+    scwin.log("--- 시나리오 3: parseResponseHeader - 정상 헤더 ---");
+    var fakeXhr = {
+        getAllResponseHeaders: function() {
+            return "Content-Type: text/xml\nCache-Control: no-cache\n";
+        }
+    };
+    try {
+        var ret = WebSquare.ModelUtil.parseResponseHeader(fakeXhr);
+        scwin.log("결과: " + ret);
+        var ok = ret.indexOf("Content-Type") >= 0 && ret.indexOf("text/xml") >= 0;
+        scwin.log("기대: Content-Type/text/xml 포함 → " + (ok ? "PASS" : "FAIL"));
+    } catch (e) {
+        scwin.log("예외 발생 (FAIL): " + e.message);
+    }
+    scwin.log("");
+};
+
+scwin.btn_parseResponseHeaderJSON_null_onclick = function() {
+    scwin.log("--- 시나리오 4: ModelUtil.parseResponseHeaderJSON(null) ---");
+    try {
+        var ret = WebSquare.ModelUtil.parseResponseHeaderJSON(null);
+        scwin.log("결과: " + ret);
+        scwin.log("기대: {} → " + (ret === "{}" ? "PASS" : "FAIL"));
+    } catch (e) {
+        scwin.log("예외 발생 (FAIL): " + e.message);
+    }
+    scwin.log("");
+};
+
+scwin.btn_parseResponseHeaderJSON_emptyString_onclick = function() {
+    scwin.log("--- 시나리오 5: parseResponseHeaderJSON - getAllResponseHeaders() = '' ---");
+    var fakeXhr = { getAllResponseHeaders: function() { return ""; } };
+    try {
+        var ret = WebSquare.ModelUtil.parseResponseHeaderJSON(fakeXhr);
+        scwin.log("결과: " + ret);
+        scwin.log("기대: {} → " + (ret === "{}" ? "PASS" : "FAIL"));
+    } catch (e) {
+        scwin.log("예외 발생 (FAIL): " + e.message);
+    }
+    scwin.log("");
+};
+
+scwin.btn_getParentWindow_invalid_onclick = function() {
+    scwin.log("--- 시나리오 6: wframe.getParentWindow - idCache 미존재 uuid ---");
+    var WframeProto = WebSquare.uiplugin.wframe.scope.prototype;
+    var fakeWframe = {
+        _parent_uuid: "nonexistent_uuid_for_WAEA_846",
+        getFrame: function() { return { options: { strictFrame: false } }; }
+    };
+    try {
+        var ret = WframeProto.getParentWindow.call(fakeWframe);
+        scwin.log("결과: " + ret);
+        scwin.log("기대: undefined (early return, esq 수집 없음) → " + (ret === undefined ? "PASS" : "FAIL"));
+    } catch (e) {
+        scwin.log("예외 발생 (FAIL): " + e.message);
+    }
+    scwin.log("");
+};
+
+scwin.btn_runAll_onclick = function() {
+    txa_log.setValue("");
+    scwin.onpageload();
+    scwin.btn_parseResponseHeader_null_onclick();
+    scwin.btn_parseResponseHeader_emptyHeaders_onclick();
+    scwin.btn_parseResponseHeader_normal_onclick();
+    scwin.btn_parseResponseHeaderJSON_null_onclick();
+    scwin.btn_parseResponseHeaderJSON_emptyString_onclick();
+    scwin.btn_getParentWindow_invalid_onclick();
+    scwin.log("=== 6개 시나리오 완료 ===");
+};
+]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+<xf:group class="testRoot" style="padding:16px;display:flex;flex-direction:column;gap:8px;">
+    <w2:textbox label="[메리츠화재 WAEA-846] 엔진 예외 처리 보강 검증" style="font-weight:bold;font-size:16px;"></w2:textbox>
+    <w2:textbox label="ModelUtil.parseResponseHeader / parseResponseHeaderJSON / wframe.getParentWindow 사전 가드 추가" style="font-size:12px;color:#666;"></w2:textbox>
+
+    <xf:group style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+        <xf:trigger type="button" id="btn_runAll" ev:onclick="scwin.btn_runAll_onclick" style="background:#1976d2;color:#fff;">
+            <xf:label><![CDATA[전체 실행]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_parseResponseHeader_null" ev:onclick="scwin.btn_parseResponseHeader_null_onclick">
+            <xf:label><![CDATA[1) parseResponseHeader(null)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_parseResponseHeader_emptyHeaders" ev:onclick="scwin.btn_parseResponseHeader_emptyHeaders_onclick">
+            <xf:label><![CDATA[2) parseResponseHeader - headers=null]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_parseResponseHeader_normal" ev:onclick="scwin.btn_parseResponseHeader_normal_onclick">
+            <xf:label><![CDATA[3) parseResponseHeader - 정상]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_parseResponseHeaderJSON_null" ev:onclick="scwin.btn_parseResponseHeaderJSON_null_onclick">
+            <xf:label><![CDATA[4) parseResponseHeaderJSON(null)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_parseResponseHeaderJSON_emptyString" ev:onclick="scwin.btn_parseResponseHeaderJSON_emptyString_onclick">
+            <xf:label><![CDATA[5) parseResponseHeaderJSON - headers='']]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_getParentWindow_invalid" ev:onclick="scwin.btn_getParentWindow_invalid_onclick">
+            <xf:label><![CDATA[6) getParentWindow - invalid uuid]]></xf:label>
+        </xf:trigger>
+    </xf:group>
+
+    <w2:textarea id="txa_log" style="width:100%;height:480px;font-family:monospace;font-size:12px;" readOnly="true"></w2:textarea>
+</xf:group>
+</body>
+</html>

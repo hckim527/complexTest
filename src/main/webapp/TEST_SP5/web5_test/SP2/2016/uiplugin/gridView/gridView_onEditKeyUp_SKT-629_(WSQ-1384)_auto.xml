@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name3" dataType="text"></w2:column>
+						<w2:column id="col5" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[checkbox]]></col1>
+							<col2><![CDATA[]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[radio]]></col1>
+							<col2><![CDATA[]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[text]]></col1>
+							<col2><![CDATA[테스트 입니다.]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[select]]></col1>
+							<col2><![CDATA[01]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[autoComplete]]></col1>
+							<col2><![CDATA[01]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[calendar]]></col1>
+							<col2><![CDATA[20160101]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[textImage]]></col1>
+							<col2><![CDATA[아무개]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[01]]></col1>
+							<col2><![CDATA[01]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[02]]></col1>
+							<col2><![CDATA[02]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[03]]></col1>
+							<col2><![CDATA[03]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.getType = function(info) {
+    var dynamicId = Math.floor(Math.random() * Math.random() * 1000); //ID중복 방지용
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var colId = info.colID;
+    var val = dataList1.getCellData(rowIndex, "col1");
+    var rtn = {};
+    rtn["options"] = {};
+    if (val == "checkbox") {
+        rtn["inputType"] = "checkbox";
+    } else if (val == "radio") {
+        rtn["inputType"] = "radio";
+    } else if (val == "text") {
+        rtn["inputType"] = "text";
+        rtn["options"]["maxLength"] = "10";
+    } else if (val == "select") {
+        rtn["inputType"] = "select";
+        rtn["options"]["viewType"] = "icon";
+        rtn["itemSet"] = {};
+        rtn["itemSet"]["nodeset"] = "data:dataList2";
+        rtn["itemSet"]["label"] = "col2";
+        rtn["itemSet"]["value"] = "col1";
+    } else if (val == "autoComplete") {
+        rtn["inputType"] = "autoComplete";
+        rtn["options"]["viewType"] = "icon";
+        rtn["itemSet"] = {};
+        rtn["itemSet"]["nodeset"] = "data:dataList2";
+        rtn["itemSet"]["label"] = "col2";
+        rtn["itemSet"]["value"] = "col1";
+    } else if (val == "button") {
+        rtn["inputType"] = "button";
+    } else if (val == "calendar") {
+        rtn["inputType"] = "calendar";
+        rtn["options"]["viewType"] = "icon";
+        rtn["options"]["displayFormatter"] = "ngmf.rtnCalendarDate"; //자동으로 날짜 표시
+    } else if (val == "textImage") {
+        rtn["inputType"] = "textImage";
+        rtn["options"]["viewType"] = "icon";
+        rtn["options"]["imageSrc"] = "/TEST/skt/lib/images/btn_lov.png";
+        rtn["options"]["imageWidth"] = "20";
+        rtn["options"]["imageHeight"] = "20";
+    }
+    if (!(gridView1.getCellReadOnly(rowIndex, colIndex) && gridView1.getCellDisabled(rowIndex, colIndex))) { // custom 에서 readonly 또는 disabled 제어시에는 체크로직 필요.
+        //					gridView1.setCellReadOnly( rowIndex , colIndex , true );	// 에디터 제어
+        //					gridView1.setCellDisabled( rowIndex , colIndex , true );
+    }
+    rtn["id"] = "dynamic_" + rtn["inputType"] + "_" + dynamicId + "_" + rowIndex + "_" + colIndex;
+    return rtn;
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+
+		
+
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.gridView1_oneditkeyup = function(info) {
+    //alert(1);
+    log = "1";
+};
+scwin.fireDbClick = function(id) {
+    var node = WebSquare.wUnit.getDomById($p.id + id);
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.setSimulate1 = function() {
+    WebSquare.wUnit.getJq('#gridView1_cell_2_1').simulate('key-combo', {
+        combo: 'UP_ARROW'
+    });
+}
+scwin.setSimulate2 = function() {
+    WebSquare.wUnit.getJq('#gridView1_cell_2_1').simulate('key-combo', {
+        combo: 'DOWN_ARROW'
+    });
+}
+scwin.setSimulate3 = function() {
+    WebSquare.wUnit.getJq('#gridView1_cell_2_1').simulate('key-combo', {
+        combo: 'LEFT_ARROW'
+    });
+}
+scwin.setSimulate4 = function() {
+    WebSquare.wUnit.getJq('#gridView1_cell_2_1').simulate('key-combo', {
+        combo: 'RIGHT_ARROW'
+    });
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 2. text컬럼의 입력필드에 마우스를 더블클릭(edit모드)하고 키보드의 방향키(위,아래,좌,우)를 각각 실행한다.
+    //2. Double-click (edit mode) on the input field of the text column and execute the direction keys (up, down, left, right) of the keyboard respectively.
+    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'gridView1_cell_2_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 입력모드로 변경되고 키보드의 방향키가 이동시 이벤트(alert = 1값)가 실행되어 보여진다.(이전에는 이벤트 실행안됨)
+    //2. It changes to input mode and event (alert = 1 value) is executed when the direction key of keyboard is moved. (Previous event is not executed)
+    //UP
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log", "1");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log = undefined");
+    //DOWN
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log", "1");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log = undefined");
+    //LEFT
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate3()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log", "1");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log = undefined");
+    //RIGHT
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate4()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log", "1");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //			dataList1.setJSON( [{"col1":"checkbox","col2":"","col3":"0","col4":"0","col5":"0","rowStatus":"R"},{"col1":"radio","col2":"","col3":"0","col4":"0","col5":"0","rowStatus":"R"},{"col1":"text","col2":"테스트 입니다.","col3":"0","col4":"0","col5":"0","rowStatus":"R"},{"col1":"select","col2":"01","col3":"","col4":"0","col5":"0","rowStatus":"R"},{"col1":"calendar","col2":"01001111111","col3":"0","col4":"0","col5":"0","rowStatus":"R"}] , false );
+    /*scwin.test = function(data) {
+    	return ngmf.setHyphenPhonFomatter(data);
+    };
+    scwin.test2 = function(data) {
+    	return data.replace(/([0-9]{3})([0-9]{4})([0-9]{4})([0-9]+)/, "$1-$2-$3-$4");	//테스트 용입니다.
+    };*/
+    //			gridView1.refresh();	//그리드 데이터 셋 한후 한번 호출 필요
+    window.log = undefined;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 13-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="27" id="gridView1"
+			style="position: absolute;width:726px;height:403px;left:203px;top:161px;" fixedColumnWithHidden="true" useShiftKey="true" ev:oneditkeyup="scwin.gridView1_oneditkeyup">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="70" value="inputType"></w2:column>
+					<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" value="inputType 예제"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70"></w2:column>
+					<w2:column blockSelect="false" id="col3" style="" inputType="custom" width="70" typeGetter="scwin.getType"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>
+ 

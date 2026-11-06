@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dtl_dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row></w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	WebSquare.wUnit.getObjById('cal_calendar').setHolidayRef("data:dtl_dataList1.col1");
+};
+scwin.onpageunload = function() {};
+scwin.cal_calendar_ondateselect = function(dateStr, dateObj) {
+    var arrRows = dtl_dataList1.getMatchedIndex("col1", dateStr, true);
+    if (arrRows.length == 0) {
+        var iRow = dtl_dataList1.insertRow();
+        dtl_dataList1.setCellData(iRow, "col1", dateStr);
+    } else {
+        for (var i = 0; i < arrRows.length; i++) {
+            dtl_dataList1.removeRow(arrRow[i]);
+        }
+        dtl_dataList1.reform();
+    }
+};
+scwin.grd1_onrownumclick = function(row) {};
+scwin.grd1_onfilereadend = function(value) {};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.checkSimulate1 = function() {
+    scwin.simulateWrapper('#grd1_cell_1_0', 'key-combo', {
+        combo: 'DELETE'
+    });
+}
+scwin.checkVal = function() {
+    return !WebSquare.wUnit.getJq('#cal_calendar_cell_1_1').hasClass('w2calendar_holiday');
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_calendar_cell_1_1').click()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_calendar_cell_1_2').click()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_calendar_cell_1_3').click()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_cell_1_0').click()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_cell_1_0').focus()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("set", "scwin.checkSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:calendar footerDiv="false" id="cal_calendar" style="width: 100px;height: 100px;float:left;" ev:ondateselect="scwin.cal_calendar_ondateselect"></w2:calendar>
+    	<w2:gridView id="grd1" style="float:left;width:120px;height: 50px;" checkAllType="false" scrollByColumn="false"
+    		defaultCellHeight="20" scrollByColumnAdaptive="false" dataList="data:dtl_dataList1" autoFit="allColumn"
+    		ev:onrownumclick="scwin.grd1_onrownumclick" ev:onfilereadend="scwin.grd1_onfilereadend" visibleRowNum="8">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="name1" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

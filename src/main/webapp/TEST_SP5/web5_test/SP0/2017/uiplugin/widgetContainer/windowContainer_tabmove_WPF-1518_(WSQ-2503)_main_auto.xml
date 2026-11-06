@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <style>
+            .sp11 {
+                color:red;
+                font-size:15px;
+            }
+        </style>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    window.alert1Showed = false;
+    window.alert2Showed = false;
+    scwin.doInit();
+}		
+scwin.createWindow = function() {
+    var c_cnt = 8;
+    var c_subName = "windowContainer_tabmove_WPF-1518_(WSQ-2503)_sub";
+    var c_xmlName = ".xml";
+    for (var i = 0; i < c_cnt; i++) {
+        windowContainer1.createWindow(c_subName + i, null, c_subName + i + c_xmlName, "", null, "existWindow", null, null);
+    }
+}
+scwin.doInit = function() {
+    this.createWindow();
+}
+scwin.windowContainer1_onafternamelayermove = function(info) {
+    //alert("onafternamelayermove");
+	alert1Showed = true;
+    console.log(info)
+}
+scwin.windowContainer1_onbeforenamelayermove = function(info) {
+    //alert("onbeforenamelayermove");
+	alert2Showed = true;
+    console.log(info)
+}
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow7', 'drag-n-drop', {
+			dx: -100,
+			dy: 0
+		});
+	}
+
+	scwin.checkVal = function() {
+		return alert1Showed && alert2Showed;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest() 
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="height:511px;width:900px;">
+    	<w2:textbox id="" style="position: relative;height:30px;font-size:18pt;width:100%;" label="WindowContainer nameLayerMove Test"></w2:textbox>
+    		<w2:windowContainer windowMaxNum="10" id="windowContainer1" spaInitCount="0" windowAutoResize="true" style="position: relative;height:550px;width:100%;" tooltipDisplay="true" windowTooltipDisplay="true" nameLayerMove="true"      
+            ev:onbeforenamelayermove="scwin.windowContainer1_onbeforenamelayermove" ev:onafternamelayermove="scwin.windowContainer1_onafternamelayermove"
+            >
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer></xf:group></body>
+</html>
+ 

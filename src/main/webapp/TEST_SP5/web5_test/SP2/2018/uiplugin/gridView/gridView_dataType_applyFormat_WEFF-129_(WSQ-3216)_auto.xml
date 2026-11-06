@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:data use="true">
+            			<w2:row></w2:row>
+            		</w2:data>
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.setVal = function() {
+    scwin.fireDbClick(WebSquare.wUnit.getObjById('wq_uuid_13_cell_0_0'));
+}
+scwin.checkVal = function() {
+    return input3.realValue == '1,234,567.12';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 3번의 inputbox에 '1234567.12'값을 입력하고 enterkey를 실행한다.
+    //1. After executing the sample, enter the value '1234567.12' in the input box 3 and execute enterkey.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input3').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input3').setValue('1234567.12')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input3').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. '1234567.12'값이 정상적으로 입력된다.
+    //1. The value '1234567.12' is input normally.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input3').getValue() == '1234567.12'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 9번의 gridView 컬럼에 '1234567.12'값을 입력하고 enterkey를 실행한다.
+    //2. Enter the value '1234567.12' in the 9th gridview column and execute enterkey.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_13__col1').setValue('1234567.12')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input6').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. '1234567.12'값이 정상적으로 입력된다. (이전에는 4자리 입력 시 1NAN,234 값이 입력되어짐)
+    //2. The value '1234567.12' is input normally. (Previously, when inputting 4 digits, 1NAN, 234 value is input)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_wq_uuid_13__col1').getValue() == '1234567.12'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="" style="position:absolute;top:50px;left:72px;width:410px;height:150px;">
+    		<xf:input id="input1" applyFormat="all" dataType="float" maxlength=""
+    			style="position: absolute;width:402px;height:62px;left:0px;top:0px;font-size:13pt;border: 2px solid;" displayFormat="###,###,###"
+    			placeholder="1번 dataType float // applyFormat all">
+    		</xf:input>
+    		<xf:input id="input2" applyFormat="display" dataType="float" maxlength=""
+    			style="position: absolute;width:402px;height:62px;left:0px;top:84px;font-size:13pt;border: 2px solid;" displayFormat="###,###,###"
+    			placeholder="2번 dataType float // applyFormat display">
+    		</xf:input>
+    	</xf:group>
+    	<xf:group id="" style="position:absolute;top:240px;left:71px;width:410px;height:150px;">
+    		<xf:input applyFormat="all" dataType="float" displayFormat="###,###,###" id="input3" maxlength="7.2"
+    			style="position: absolute;width:402px;height:62px;left:0px;top:0px;font-size:13pt;border: 2px solid;"
+    			placeholder="3번 maxlength : 7.2 / applyFormat all">
+    		</xf:input>
+    		<xf:input applyFormat="display" dataType="float" displayFormat="###,###,###" id="input4" maxlength="5.5"
+    			style="position: absolute;width:402px;height:62px;left:0px;top:84px;font-size:13pt;border: 2px solid;"
+    			placeholder="4번 maxlength : 5.5 / applyFormat display">
+    		</xf:input>
+    	</xf:group>
+    	<xf:input applyFormat="all" dataType="float" displayFormat="###,###,###" id="input5" maxlength="0.8"
+    		style="position: absolute;width:402px;height:60px;left:501px;top:240px;font-size:13pt;border: 2px solid;"
+    		placeholder="5번 maxlength : 0.8 / applyFormat all">
+    	</xf:input>
+    	<xf:input applyFormat="display" dataType="float" displayFormat="###,###,###" id="input6" maxlength="0.8"
+    		placeholder="6번 maxlength : 0.8 / applyFormat display"
+    		style="position: absolute;width:402px;height:60px;left:501px;top:325px;font-size:13pt;border: 2px solid;">
+    	</xf:input>
+    	<xf:input applyFormat="all" dataType="float" displayFormat="###,###,###" id="input7" maxlength="*.5"
+    		placeholder="7번 maxlength : *.5 / applyFormat all"
+    		style="position: absolute;width:402px;height:60px;left:920px;top:240px;font-size:13pt;border: 2px solid;">
+    	</xf:input>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id=""
+    		style="position: absolute;width:194px;height:141px;left:71px;top:442px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column1" style="height:32px;" width="167" inputType="text" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:55px;font-size:12pt;" width="167" inputType="text"
+    					displayMode="label" dataType="float" displayFormat="#,###.##" applyFormat="display">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView dataList="dataList1" fixedColumnWithHidden="true" id="" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		scrollByColumn="false" scrollByColumnAdaptive="false" style="position: absolute;width:195px;height:150px;left:325px;top:441px;"
+    		summaryAuto="false" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:32px;" value="name2"
+    					width="167">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" dataType="float" displayMode="label" id="col1" inputType="text"
+    					style="height:55px;font-size:12pt;" width="167" maxLength="7.2" applyFormat="all" displayFormat="#,###.##" maxByteLength="">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView dataList="dataList1" fixedColumnWithHidden="true" id="" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		scrollByColumn="false" scrollByColumnAdaptive="false" style="position: absolute;width:195px;height:150px;left:575px;top:441px;"
+    		summaryAuto="false" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:32px;" value="name3"
+    					width="167">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" dataType="float" displayMode="label" id="col1" inputType="text" maxLength="7.2"
+    					style="height:55px;font-size:12pt;" width="167" displayFormat="#,###.##">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:textbox label="8번 dataType float // applyFormat display// maxlength no" id=""
+    		style="position: absolute;width:224px;height:30px;left:70px;top:410px;">
+    	</w2:textbox>
+    	<w2:textbox id="" label="9번 dataType float // applyFormat all// maxlength 7.2"
+    		style="position: absolute;width:224px;height:30px;left:325px;top:410px;">
+    	</w2:textbox>
+    	<w2:textbox id="" label="10번 dataType no // applyFormat all// maxlength 7.2"
+    		style="position: absolute;width:224px;height:30px;left:575px;top:410px;">
+    	</w2:textbox>
+    </body>
+</html>
+ 

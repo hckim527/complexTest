@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    gridView1.setHeaderDisabled("column3", true);
+};
+scwin.trigger2_onclick = function(e) {
+    gridView1.setHeaderDisabled("column3", false);
+};
+scwin.headerClick = function(headerId) {
+    localStorage.setItem("headerclick", "true");
+    //alert(localStorage.getItem('header'));		
+};
+scwin.checkVal1 = function() {
+    return localStorage.getItem('headerclick') != 'true';
+}
+scwin.checkVal2 = function() {
+    return localStorage.getItem('headerclick') == 'true';
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. IE에서 샘플파일 실행 후 input1의 inputbox에 한글을 입력한다.
+    //1. After executing the sample file in IE, input Hangul in the input box of input1.
+    //Verify step 1. Hangul is entered normally.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column3').click()");
+    WebSquare.wUnit.addCommand("pause", "1500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "localStorage.removeItem('headerclick')");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = undefined;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="gridView1" style="position: relative;width: 500px;height: 150px;" ignoreCellClick="false" syncScroll="false" ev:onheaderclick="scwin.headerClick"
+    		ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="" inputType="button" width="70" value="column3" displayMode="label" dataType="own">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="button" value="column1" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width:232px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[column3 header setDisabled true]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;width:232px;height:23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[column3 header setDisabled false]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

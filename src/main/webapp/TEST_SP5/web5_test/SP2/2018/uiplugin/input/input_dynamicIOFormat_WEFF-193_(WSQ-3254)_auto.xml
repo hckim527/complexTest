@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="col1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="col2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="col3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var data = [];
+    var row = 5;
+    var col = 3;
+    for (var i = 0; i < row; i++) {
+        for (var j = 0; j < col; j++) {
+            var q = i * col + j;
+            if (j === 2) {
+                q = (q < 10 ? "0" + q : q) + "022018";
+            } else {
+                q = "201802" + (q < 10 ? "0" + q : q);
+            }
+            data.push(q);
+        }
+    }
+    dataList1.setData(data);
+    input1.setValue("4000000");
+    input2.setValue("20180201");
+    inputCalendar1.setValue("20180201");
+};
+scwin.onpageunload = function() {};
+scwin.trigger8_onclick = function(e) {
+    gridView1.setColumnDisplayFormat("col1", "####/##/##");
+};
+scwin.trigger10_onclick = function(e) {
+    gridView1.setColumnIoFormat("col2", "ddMMyyyy", "dd.MM.yyyy");
+};
+scwin.trigger11_onclick = function(e) {
+    gridView1.setColumnIoFormat("col3", "yyyyMMdd");
+};
+scwin.trigger1_onclick = function(e) {
+    input1.setDisplayFormat("#,###");
+};
+scwin.trigger2_onclick = function(e) {
+    input2.setIoFormat("ddMMyyyy", "dd/MM/yyyy");
+};
+scwin.trigger3_onclick = function(e) {
+    input2.setIoFormat("ddMMyyyy", "yyyy/MM/dd");
+};
+scwin.trigger4_onclick = function(e) {
+    input2.setIoFormat("yyyyMMdd", "yyyy_MM_dd");
+};
+scwin.trigger7_onclick = function(e) {
+    inputCalendar1.setIoFormat("ddMMyyyy", "dd/MM/yyyy")
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).value == value) {
+        return true;
+    }
+    return false
+}
+scwin.checkContent = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).textContent == value) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 col3항목의 값을 더블클릭 후 마우스를 blur 또는 enterkey를 입력한다.
+    //1. After running the sample, double-click the value of the col3 item and enter the mouse blur or enterkey.
+    //Verify step 1. DateValidCheck does not normally result in the message 'Date format is invalid'.(Previously occurred)
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_1_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkContent($p.id+'gridView1_cell_0_2', '2018-02-02')", "true");
+    //Test step 2. 새로고침(F5)후 맨끝 하단의 'setIoFormat'버튼을 클릭한다.
+    //2. After refreshing (F5), click the 'setIoFormat' button at the bottom of the terminal.
+    //Verify step 2. The value is changed to 01/02/2018 value normally.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('inputCalendar1_input', '01/02/2018')", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 22-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="col1 : inputType=text, dataType=text" id="textbox4" style="width:407px;height:23px;"></w2:textbox>
+    	<w2:textbox id="textbox5" label="col2 : inputType=text, dataType=date" style="width:407px;height:23px;"></w2:textbox>
+    	<w2:textbox id="textbox6" label='col3 : inputType=inputCalendar, ioFormat=ddMMyyyy, displayFormat="yyyy-MM-dd"' style="width:632px;height:23px;"></w2:textbox>
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="gridView1" style="width:446px;height:158px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" useShiftKey="true">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column11" style="" inputType="text" width="100" value="col1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="100" value="col2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" width="100" inputType="text" value="col3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label" dateValidCheck="true" validCheck="true"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" value="" displayMode="label" dataType="date" dateValidCheck="true" validCheck="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="calendar" value="" displayMode="label" dataType="date" ioFormat="ddMMyyyy" displayFormat="yyyy-MM-dd" dateValidCheck="true" validCheck="true">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:group id="group4" style="height:50px;"><xf:trigger id="trigger8" style="width:280px;height:23px;" type="button" ev:onclick="scwin.trigger8_onclick">
+    		<xf:label><![CDATA[setColumnDisplayFormat("col1", "####/##/##")]]></xf:label>
+    	</xf:trigger><xf:trigger id="trigger10" style="width:350px;height:23px;" type="button" ev:onclick="scwin.trigger10_onclick">
+    		<xf:label><![CDATA[setColumnIoFormat("col2", "ddMMyyyy", "dd.MM.yyyy")]]></xf:label>
+    	</xf:trigger><xf:trigger id="trigger11" style="width:280px;height:23px;" type="button" ev:onclick="scwin.trigger11_onclick">
+    		<xf:label><![CDATA[setColumnIoFormat("col3", "yyyyMMdd")]]></xf:label>
+    	</xf:trigger></xf:group><w2:textbox label="dataType:number" id="textbox1" style="width:284px;height:23px;"></w2:textbox>
+    	<xf:group id="group2" style="height:50px;">
+    		<xf:input id="input1" dataType="number" style="width: 144px;height: 21px;" adjustMaxLength="false"></xf:input>
+    		<xf:trigger id="trigger1" style="width: 250px;height: 21px;" type="button" ev:onclick="scwin.trigger1_onclick">
+    			<xf:label><![CDATA[setDisplayFormat("#,###")]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<w2:textbox label="dataType:date, ioFormat:yyyyMMdd" id="textbox2" style="width:281px;height:23px;"></w2:textbox>
+    	<xf:group id="group1" style="height:50px;">
+    		<xf:input id="input2" dataType="date" style="width: 144px;height: 21px;" adjustMaxLength="false" ioFormat="yyyyMMdd"></xf:input>
+    		<xf:trigger id="trigger2" style="width: 250px;height: 21px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    			<xf:label><![CDATA[setIoFormat("ddMMyyyy", "dd/MM/yyyy")]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger3" style="width: 250px;height: 21px;" type="button" ev:onclick="scwin.trigger3_onclick">
+    			<xf:label><![CDATA[setIoFormat("ddMMyyyy", "yyyy/MM/dd")]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger4" style="width: 250px;height: 21px;" type="button" ev:onclick="scwin.trigger4_onclick">
+    			<xf:label><![CDATA[setIoFormat("yyyyMMdd", "yyyy_MM_dd")]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<w2:textbox label='ioFormat : yyyyMMdd, displayFormat:"yyyy.MM.dd"' id="textbox3" style="width:286px;height:23px;"></w2:textbox>
+    	<xf:group id="group3" style="height:50px;">
+    		<w2:inputCalendar id="inputCalendar1" renderType="component" footerDiv="false" renderDiv="true"
+    			calendarValueType="yearMonthDate" style="width: 150px;height: 23px;" rightAlign="false" focusOnDateSelect="false" displayFormat="yyyy.MM.dd" validCheck="true" dateValidCheck="true">
+    		</w2:inputCalendar>
+    		<xf:trigger id="trigger7" style="width: 250px;height: 21px;" type="button" ev:onclick="scwin.trigger7_onclick">
+    			<xf:label><![CDATA[setIoFormat("ddMMyyyy", "dd/MM/yyyy")]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+
+
+
+    </body>
+</html>
+ 

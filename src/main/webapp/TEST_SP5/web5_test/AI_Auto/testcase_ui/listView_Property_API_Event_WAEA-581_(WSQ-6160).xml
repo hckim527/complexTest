@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <!-- ListView에 바인딩될 DataList -->
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true"
+                    >
+                    <w2:columnInfo>
+                        <w2:column id="no" name="번호" dataType="text"></w2:column>
+                        <w2:column id="applyDt" name="신청일자" dataType="text"></w2:column>
+                        <w2:column id="procDt" name="처리일자" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+    scwin.generateRandomData();
+};
+
+scwin.generateRandomData = function () {
+    var data = [];
+    
+    for (var i = 0; i < 100; i++) {
+        var month = String(Math.floor(Math.random() * 12) + 1).padStart(2, "0");
+        var day = String(Math.floor(Math.random() * 28) + 1).padStart(2, "0");
+        
+        data.push({
+            no: String(i + 1),
+            applyDt: "2025." + month + "." + day + ".",
+            procDt: "2025." + month + "." + day + ".",
+        });
+    }
+    
+    dataList1.setJSON(data);
+};
+
+scwin.onpageunload = function () {
+};
+
+// ============================================================================
+// ListView Event Handlers
+// ============================================================================
+
+/**
+ * adaptiveFormatter - 렌더링 완료 후 호출 (페이징, 데이터 변경, refresh 등)
+ */
+scwin.listView1_adaptiveFormatter = function(info) {
+    // 모바일뷰에서 스타일 적용 예시
+    if (info.mode === "mobile") {
+        for (var i = 0; i < info.rows.length; i++) {
+            var row = info.rows[i];
+            var rowElement = $p.getComponentById(row.elementId).render;
+            rowElement.firstChild.style.borderBottom = "1px solid #ccc";
+            rowElement.firstChild.style.marginBottom = "8px";
+        }
+    }
+};
+
+/**
+ * onadaptivechange - PC ↔ 모바일 모드 전환 시에만 호출
+ */
+scwin.onadaptivechange_mode = null;
+scwin.listView1_onadaptivechange = function(mode) {
+    scwin.onadaptivechange_mode = mode;
+};
+
+/**
+ * onpageindexchange - 페이지 변경 시 호출
+ */
+scwin.onpageindexchange_current = null;
+scwin.onpageindexchange_before = null;
+scwin.listView1_onpageindexchange = function(current, before) {
+    scwin.onpageindexchange_current = current;
+    scwin.onpageindexchange_before = before;
+};
+
+// ============================================================================
+// 테스트 함수
+// ============================================================================
+
+scwin.testPropertyAndEvent = function() {
+    console.log("=== Property / DOM 테스트 ===");
+    
+    // 1. [useFooter, usePageList] DOM 초기 렌더링 확인
+    var header = document.querySelector('.w2listView_header');
+    var body = document.querySelector('.w2listView_body');
+    var pageList = document.querySelector('.w2listView_pageList');
+    console.log("1.[Property] [useFooter, usePageList] w2listView_header:", header ? "PASS" : "FAIL");
+    console.log("2.[Property] [useFooter, usePageList] w2listView_body:", body ? "PASS" : "FAIL");
+    console.log("3.[Property] [useFooter, usePageList] w2listView_pageList:", pageList ? "PASS" : "FAIL");
+    
+
+    // 2. [adaptive, adaptiveThreshold] width 조절 테스트
+    var originalWidth = listView1.render.style.width;
+    
+    // 모바일뷰 전환
+    listView1.render.style.width = "500px"; // 이렇게말고 실제로 브라우저 크기 조절해야함
+    var mode500 = listView1.render.classList.contains('w2listView_mobile') ? "mobile" : "pc";
+    console.log("4.[Property] [adaptive, adaptiveThreshold] width=500px → " + mode500 + " " + (mode500 === "mobile" ? "PASS" : "FAIL"));
+    console.log("5.[Event] [onadaptivechange] " + (scwin.onadaptivechange_mode === "mobile" ? "PASS" : "FAIL"));
+
+    // adaptiveFormatter 스타일 적용 확인
+    var mobileLine = document.querySelector('.w2listView_mobile_line');
+    var stylePass = mobileLine && mobileLine.style.borderBottom === "1px solid rgb(204, 204, 204)" && mobileLine.style.marginBottom === "8px";
+    console.log("6.[Event] [adaptiveFormatter] 스타일 적용 " + (stylePass ? "PASS" : "FAIL"));
+    
+    
+    // PC뷰 전환
+    listView1.render.style.width = "1000px"; // 이렇게말고 실제로 브라우저 크기 조절해야함
+    var mode1000 = listView1.render.classList.contains('w2listView_mobile') ? "mobile" : "pc";
+    console.log("7.[Property] [adaptive, adaptiveThreshold] width=1000px → " + mode1000 + " " + (mode1000 === "pc" ? "PASS" : "FAIL"));
+    console.log("8.[Event] [onadaptivechange] " + (scwin.onadaptivechange_mode === "pc" ? "PASS" : "FAIL"));
+    
+    // 복구
+    listView1.render.style.width = originalWidth;
+    
+    
+    // 3. [pageSize]
+    var pageSize = listView1.getPageSize();
+    var totalRows = dataList1.getRowCount();
+    var totalPages = Math.ceil(totalRows / pageSize);
+    console.log("9.[Property] [pageSize] " + pageSize + "=" + (pageSize === 5 ? "PASS" : "FAIL") + ", 총 " + totalRows + "건, " + totalPages + "페이지");
+};
+
+scwin.testAPI = function() {
+    console.log("=== API 테스트 (1페이지) ===");
+    
+    // getCellComponentById
+    var comp0 = listView1.getCellComponentById(0, 'no1');
+    var comp4 = listView1.getCellComponentById(4, 'no1');
+    console.log("10.[API] [getCellComponentById] (0,'no1'):" + (comp0 ? "PASS" : "FAIL") + ", (4,'no1'):" + (comp4 ? "PASS" : "FAIL"));
+    
+    // getCellComponentByColId
+    var compNo = listView1.getCellComponentByColId(0, 'no');
+    var compDt = listView1.getCellComponentByColId(0, 'applyDt');
+    console.log("11.[API] [getCellComponentByColId] (0,'no'):" + (compNo ? "PASS" : "FAIL") + ", (0,'applyDt'):" + (compDt ? "PASS" : "FAIL"));
+    
+    // getRowIndex
+    var rowIdx0 = listView1.getRowIndex(comp0);
+    var rowIdx4 = listView1.getRowIndex(comp4);
+    console.log("12.[API] [getRowIndex] 0→" + rowIdx0 + " " + (rowIdx0 === 0 ? "PASS" : "FAIL") + ", 4→" + rowIdx4 + " " + (rowIdx4 === 4 ? "PASS" : "FAIL"));
+    
+    // getViewIndex
+    var viewIdx0 = listView1.getViewIndex(comp0);
+    var viewIdx3 = listView1.getViewIndex(listView1.getCellComponentById(3, 'no1'));
+    console.log("13.[API] [getViewIndex] 0→" + viewIdx0 + " " + (viewIdx0 === 0 ? "PASS" : "FAIL") + ", 3→" + viewIdx3 + " " + (viewIdx3 === 3 ? "PASS" : "FAIL"));
+    
+    // getViewRowCount
+    var viewRowCount = listView1.getViewRowCount();
+    console.log("14.[API] [getViewRowCount] " + viewRowCount + " " + (viewRowCount === 5 ? "PASS" : "FAIL"));
+    
+    // getFirstRowIndex
+    var firstRowIdx = listView1.getFirstRowIndex();
+    console.log("15.[API] [getFirstRowIndex] " + firstRowIdx + " " + (firstRowIdx === 0 ? "PASS" : "FAIL"));
+    
+    // getPageSize
+    var pageSize = listView1.getPageSize();
+    console.log("16.[API] [getPageSize] " + pageSize + " " + (pageSize === 5 ? "PASS" : "FAIL"));
+    
+    // getPageIndex
+    var pageIndex = listView1.getPageIndex();
+    console.log("17.[API] [getPageIndex] " + pageIndex + " " + (pageIndex === 1 ? "PASS" : "FAIL"));
+    
+    // setPageSize
+    listView1.setPageSize(10);
+    var newSize = listView1.getPageSize();
+    listView1.setPageSize(5);
+    console.log("18.[API] [setPageSize] 5→" + newSize + "→" + listView1.getPageSize() + " " + (newSize === 10 ? "PASS" : "FAIL"));
+};
+
+scwin.testAPI_page2 = function() {
+    console.log("=== API 테스트 (2페이지) ===");
+    pageList1.setSelectedIndex(2);
+    console.log("19.[Event] [onpageindexchange] " + (scwin.onpageindexchange_current == 2 && scwin.onpageindexchange_before == 1 ? "PASS" : "FAIL"));
+    
+    var comp0 = listView1.getCellComponentById(0, 'no1');
+    var comp4 = listView1.getCellComponentById(4, 'no1');
+    
+    var rowIdx0 = listView1.getRowIndex(comp0);
+    var rowIdx4 = listView1.getRowIndex(comp4);
+    console.log("20.[API] [getRowIndex] 0→" + rowIdx0 + " " + (rowIdx0 === 5 ? "PASS" : "FAIL") + ", 4→" + rowIdx4 + " " + (rowIdx4 === 9 ? "PASS" : "FAIL"));
+    
+    var firstRowIdx = listView1.getFirstRowIndex();
+    console.log("21.[API] [getFirstRowIndex] " + firstRowIdx + " " + (firstRowIdx === 5 ? "PASS" : "FAIL"));
+    
+    var pageIndex = listView1.getPageIndex();
+    console.log("22.[API] [getPageIndex] " + pageIndex + " " + (pageIndex === 2 ? "PASS" : "FAIL"));
+    
+    pageList1.setSelectedIndex(1);
+    console.log("1페이지로 복구");
+};
+
+scwin.runAllTests = function() {
+    console.log("========================================");
+    console.log("ListView 테스트");
+    console.log("========================================\n");
+    
+    scwin.testPropertyAndEvent();
+
+    scwin.testAPI();
+    scwin.testAPI_page2();
+
+    console.log("\n========================================");
+    console.log("테스트 완료");
+    console.log("========================================");
+};
+]]></script>
+
+	<style type="text/css"><![CDATA[
+
+/* ============================================================================
+   기존 스타일 재정의
+   ============================================================================ */
+
+.w2group {
+    background-color: unset;
+}
+.w2listView_body {
+    border-bottom: none;
+}
+
+/* ============================================================================
+   행 스타일
+   ============================================================================ */
+
+.header_row,
+.body_row {
+    display: flex;
+    align-items: stretch;
+    height: 40px;
+}
+.body_row {
+    border-bottom: 1px solid #C4CDD5;
+}
+.body_row:last-child {
+    border-bottom: none;
+}
+
+/* ============================================================================
+   셀 스타일
+   ============================================================================ */
+
+/* 기본 셀 */
+.cell {
+    border-right: 1px solid #C4CDD5;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+.cell:last-child {
+    border-right: none;
+}
+
+/* Button */
+.btn {
+    padding: 4px 10px;
+    border: 1px solid #C4CDD5;
+    background: linear-gradient(#fcfbfc, #efefef);
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.btn:hover {
+    background: linear-gradient(#efefef, #e0e0e0);
+}
+
+	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group id="grp_main" style="padding: 20px;">
+            
+            <w2:textbox id="tbx_title" label="ListView Property, API, Event 테스트" style="font-size: 20px; font-weight: bold; margin-bottom: 20px;"></w2:textbox>
+
+            <xf:trigger id="btnRunAllTests" ev:onclick="scwin.runAllTests" type="button" class="btn">
+                <xf:label><![CDATA[전체 테스트 실행]]></xf:label>
+            </xf:trigger>
+            
+            <w2:listView id="listView1" 
+                class=""
+                style="width: 100%;height: auto;"
+                dataList="data:dataList1" 
+                
+                adaptive="true"
+                adaptiveThreshold="768"
+                adaptiveFormatter="scwin.listView1_adaptiveFormatter"
+
+                useFooter="false"
+                usePageList="true"
+                pageSize="5"
+
+                ev:onpageindexchange="scwin.listView1_onpageindexchange"
+                ev:onadaptivechange="scwin.listView1_onadaptivechange"
+                >
+                <w2:columnInfo>
+                    <w2:header>
+                        <w2:column componentId="header_no"/>
+                        <w2:column componentId="header_applyDt"/>
+                        <w2:column componentId="header_procDt"/>
+                    </w2:header>
+                    <w2:body>
+                        <w2:column componentId="no1" colId="no" headerComponentId="header_no"/>
+                        <w2:column componentId="applyDt1" colId="applyDt" headerComponentId="header_applyDt"/>
+                        <w2:column componentId="procDt1" colId="procDt" headerComponentId="header_procDt"/>
+                    </w2:body>
+                </w2:columnInfo>
+                
+                <!-- Header 영역: 1회만 렌더링 -->
+                <w2:header id="header1" class="" style="background-color: #e3f0ff;">
+                    <xf:group id="grp_header" class="header_row" >
+                        <xf:group class="cell">
+                            <w2:textbox id="header_no" label="번호"></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell">
+                            <w2:textbox id="header_applyDt" label="신청일자"></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell">
+                            <w2:textbox id="header_procDt" label="처리일자"></w2:textbox>
+                        </xf:group>
+                    </xf:group>
+                </w2:header>
+                
+                <!-- Body 영역: DataList Row 수만큼 반복 -->
+                <w2:lBody id="lBody1" class="">
+                    <xf:group id="grp_row" class="body_row">
+                        <xf:group class="cell">
+                            <w2:textbox id="no1" label=""></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell">
+                            <w2:textbox id="applyDt1" label=""></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell">
+                            <w2:textbox id="procDt1" label=""></w2:textbox>
+                        </xf:group>
+                    </xf:group>
+                </w2:lBody>
+
+                <!-- pageList 영역 -->
+                <w2:pageList id="pageList1" style=""
+                    displayButtonType="display" 
+                    displayFormat="#" 
+                    pageSize="10"
+                    renderType=""
+                    >
+                </w2:pageList>
+                
+            </w2:listView>
+            
+        </xf:group>
+        
+    </body>
+</html>
+

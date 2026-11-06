@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dl_autoData" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="value" name="value" dataType="text"></w2:column>
+    					<w2:column id="label" name="label" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkVal1 = function() {
+    return autoComp1.getAttribute('submenuSize') == 'auto';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'autoComp1_itemTable_0') != null;
+}
+scwin.checkVal3 = function() {
+    return WebSquare.wUnit.getDomById($p.id+"autoComp1_itemTable_0").innerText == '[100]대리점사업부';
+}
+scwin.checkVal4 = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'autoComp1').style.width == WebSquare.wUnit.getDomById($p.id + 'autoComp1_itemTable').style.width;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step1. Property 탭에서 submenuSize 가 auto 인지 확인한다.- In the Property tab, verify that submenuSize is auto.
+    //Verify 1. submenuSize='auto'
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 브라우저에서 submenu 버튼을 클릭한다.- In the browser, click the submenu button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComp1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. submenu 가 활성화 된다.(width가 동일하게 보여진다.)-The submenu is activated.(The width is shown the same.)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "value": "[100]대리점사업부",
+        "label": "[100]대리점사업부"
+    }];
+    dl_autoData.setJSON(jsonData);
+    autoComp1.setItemSet("data:dl_autoData", "label", "value");
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 22-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete visibleRowNum="5" chooseOption="false" id="autoComp1"
+    		style="width: 130px;height: 22px;" search="start" interactionMode="" displayMode="label"
+    		useKeywordHighlight="false" submenuSize="auto" editType="select">
+    	</w2:autoComplete>
+    </body>
+</html>
+ 

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onclickcustombtn = function() {
+    console.log(arguments);
+}
+scwin.onwidgetmove = function() {
+    console.log(arguments);
+}
+scwin.onwidgetresize = function() {
+    console.log(arguments);
+}
+scwin.alert = function() {
+    alert("scwin.alert() is called!!!!");
+};
+scwin.__hasClass = function(className) {
+    if (WebSquare.wUnit.getJq("#widgetContainer1_widget0").hasClass(className)) {
+        return true;
+    }
+    return false;
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getObjById('widgetContainer1_widget0_title_text').innerText == 'widget0';
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 widget0의 오른쪽 상단에 최대화, 최소화버튼을 클릭한다.
+    //1. After running the sample file, click the Maximize and Minimize buttons at the top right of widget0.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('widgetContainer1_widget0_title_btnMinimize').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__hasClass('w2widget_minimized')", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('widgetContainer1_widget0_title_btnMaximize').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__hasClass('w2widget_maximized')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 11. 타이틀이 widget0의 위젯이 최대화, 최소화 되어진다.(이전에는 최대화, 최소화 기능이 없었음) 
+    //1. Title Widget widget0 widget is maximized and minimized (Previously, it was not maximized, minimized)
+    //Run and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    widgetContainer1.addWidgets({
+        title: "widget0",
+        src: null,
+        scope: true,
+        x: "0",
+        y: 0,
+        unitWidth: "03",
+        unitHeight: 1,
+        fixed: true,
+        minimizeonfixed: true,
+        maxmizeonfixed: true,
+        maximizeonfixed: true
+    });
+    widgetContainer1.addWidgets({
+        title: "widget1",
+        src: null,
+        scope: true,
+        x: 0,
+        y: 1,
+        unitWidth: 4,
+        unitHeight: 1
+    });
+    widgetContainer1.addWidgets({
+        title: "widget2",
+        src: null,
+        scope: true,
+        x: 0,
+        y: 2,
+        unitWidth: 4,
+        unitHeight: 1
+    });
+    /*
+    
+    scwin.wcount = 0;
+
+    scwin.add = function(x, y, width, height) {
+                    window.widget = widgetContainer1.addWidgets({
+                        title : "widget" + scwin.wcount,
+                        src : "widget.xml",
+                        scope : true,
+                        x : x,
+                        y : y,
+                        unitWidth : width,
+                        unitHeight : height,
+                        params : "USER_DATA"
+                    });
+                    scwin.wcount++;
+                };
+
+    scwin.resize = function(widgetId, width, height) {
+        window.widget = widgetContainer1.resizeWidget(widgetId, width, height);
+    }
+
+    scwin.t1_onclick = function(){
+        scwin.add(0,0,1,1);
+    };
+
+    scwin.add(0,0,2,2);
+    scwin.add(4,0,3,3);
+    //scwin.add(7,6,3,3);
+
+    
+
+    
+
+    
+
+    
+     */
+    //Function unitTest
+    //Created by: Sang.Do
+    //Created date: 13-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:group style="position:relative;width:100%;height:760px;left:10px;top:10px;">
+            <xf:group style="position:relative;width:98%;height:760px;left:10px;top:10px; float:left;">
+                <xf:group style="position:relative;width:90%;height:35px;">
+                    <xf:trigger id="t1"
+                        style="position:relative;height:25px;width:150px;float:left;"
+                        type="button" ev:onclick="scwin.t1_onclick">
+                        <xf:label>addWidgets</xf:label>
+                    </xf:trigger>
+                </xf:group>
+                <w2:widgetContainer id="widgetContainer1" cols="8"
+                    style="position: relative ;width:100%;height:800px;"
+                                    unitHeightPixel="200" mode="switch"
+                                    verticalMargin="5" horizontalMargin="5"
+                                    ev:onclickcustombtn="scwin.onclickcustombtn"
+                                    ev:onwidgetmove="scwin.onwidgetmove" ev:onwidgetresize="scwin.onwidgetresize">
+                </w2:widgetContainer>
+            </xf:group>
+            <!--
+            <xf:group style="position:relative;width:520px;height:760px;left:10px;top:10px;float:right">
+                <xf:group style="position:relative;width:520px;height:35px;">
+                    <xf:trigger id="t3"
+                        style="position:relative;height:25px;width:150px;float:left;"
+                        type="button" ev:onclick="scwin.t3_onclick">
+                        <xf:label>addWidget</xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="t4"
+                        style="position:relative;height:25px;width:150px;float:right;"
+                        type="button" ev:onclick="scwin.t4_onclick">
+                        <xf:label>removeWidget(0,0)</xf:label>
+                    </xf:trigger>
+                </xf:group>
+                <w2:widgetContainer id="widgetContainer2" cols="1"
+                    style="position: relative ;width:530px;height:670px;border:1px solid black;" widgetMove="true">
+                </w2:widgetContainer>
+            </xf:group>
+            -->
+        </xf:group>
+    </body>
+</html> 

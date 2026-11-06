@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.showFloatingLayer = function(title, width, height, url, modal, usePost, postData) {
+    var top = document.documentElement.scrollTop + document.documentElement.clientHeight / 2 - parseInt(height) / 2;
+    var left = document.documentElement.scrollLeft + document.documentElement.clientWidth / 2 - parseInt(width) / 2;
+    var tmp = url.split("/");
+    tmp = tmp.reverse();
+    var filename = tmp[0];
+    var popupId = "Pop_" + filename.split(".")[0];
+    var popupIframeId = "PopIf_" + filename.split(".")[0]
+    scwin.makeCommonPopup(popupId, popupIframeId, title, width, height, top, left, modal == false ? false : true);
+    eval(popupId).show();
+    eval(popupIframeId).setSrc(url);
+}
+scwin.makeCommonPopup = function(popupId, popupIframeId, title, width, height, top, left, modal, idx) {
+    var scrolling = "auto";
+    WebSquare.util.dynamicCreate(popupId, "floatingLayer", {
+        style: "position: absolute ;left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;display:none;z-index:4001",
+        useModal: modal,
+        className: "pop_lay",
+        title: title,
+        xmlEvents: [{
+            name: "onclose",
+            action: "script",
+            param: {
+                handler: function(e) {
+                    console.log("onclose");
+                    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
+                    WebSquare.wUnit.getObjById(popupIframeId).remove();
+                    WebSquare.wUnit.getObjById(popupId).remove();
+                    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
+                    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+                        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+                    };
+                }
+            }
+        }]
+    }, WebSquare.getBody());
+    WebSquare.wUnit.getJq(".pop_lay").css("z-index", "3999");
+    WebSquare.wUnit.getJq("#" + popupId).css("z-index", "4001");
+    WebSquare.util.dynamicCreate(popupIframeId, "iframe", {
+        style: "position: absolute ;left: 0px;width: 100%;height: 100%;",
+        name: popupIframeId,
+        scrolling: scrolling
+    }, eval(popupId + "_contents"));
+}
+scwin.hideFloatingLayer = function(popupId) {
+    var tmp = popupId.split("_");
+    var popupIframeId = "PopIf_" + tmp[1];
+    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
+    WebSquare.wUnit.getObjById(popupIframeId).remove();
+    WebSquare.wUnit.getObjById(popupId).remove();
+    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
+    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+    }
+}
+scwin.trigger1_onclick = function(e) {
+    scwin.showFloatingLayer("Common Address", "500", "300", "", true);
+};
+scwin.trigger2_onclick = function(e) {
+    var controlOptions = {
+        minimize: true,
+        maximize: true,
+        close: true
+    };
+    if (i) {
+        controlOptions = {
+            minimize: false,
+            maximize: false,
+            close: false
+        };
+    }
+    imports("uiplugin.popup");
+    WebSquare.util.openPopup("./popup_litewindow_WPF-1832_(WSQ-2938)_pop.xml", { //get방식으로 팝업의 아이디를 넘김니다.
+        id: "pop1",
+        type: "litewindow",
+        width: 500,
+        height: 500,
+        top: 50,
+        left: 50,
+        popupName: "test",
+        modal: true,
+        useIFrame: false,
+        resizable: false,
+        status: false,
+        menubar: false,
+        scrollbars: scroll,
+        title: 'test222',
+        useMaxmimize: true,
+        useControl: true,
+        controls: controlOptions,
+        foldSize: {
+            width: 200
+        },
+        foldOnMinimized: true
+    });
+    i++;
+};
+scwin.__isHidden = function() {
+    var count = 0;
+    var div = WebSquare.wUnit.getJq("#pop1_header_control").find("div");
+    div.each(function(i, el) {
+        if (WebSquare.wUnit.getJq(this).css("display") == "none") {
+            count++;
+        }
+    });
+    return count == div.length;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일 실행 후 2번(litewindow modal popup)을 클릭한다.
+    //1. After running the sample file, click 2 (litewindow modal popup).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    // verify step 1. 1. test 팝업창이 보여진다.
+    //1. The test popup window is displayed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pop1').length > 0", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 우측상단의 창사이즈최소화버튼을 클릭한다.
+    //2. Click the Minimize Window Size button in the upper right corner.
+    WebSquare.wUnit.addCommand("set", "pop1_minimize.click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. 창사이즈가 width 200으로 설정되어 보여진다.
+    //2. The window size is set to width 200.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pop1').css('width')", "200px");
+    //Test step 3. 샘플파일의 minimize, maximize, close 설정을 false로 하고 팝업창을 실행한다.
+    //3. Set the sample file"s minimize, maximize, close setting to false and run a pop-up window.
+    WebSquare.wUnit.addCommand("set", "pop1_close.click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 3. 팝업창 우측상단의 아이콘으 보이지 않는다.
+    //3. The icon at the top right of the pop-up window does not appear.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isHidden()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /**
+     * 공통팝업을 호출합니다.
+     * @param title : 공통팝업 타이틀
+     * @param width :  width
+     * @param height :height
+     * @param url : 오픈할 url
+     * @param useModal : 팝업을 modal로 띄울지 여부(defaule true, modal로 안띌 수 false 속성)
+     * @example scwin.showFloatingLayer("Common Address","820", "300",  "/content.xml", "false");
+     */
+    /**
+     * 공통팝업(플로팅레이어) 클로즈 하는 함수
+     */
+    window.i = 0;
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 12-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+
+    	/*.w2popup_window .w2window_minimize{display:block;}
+    	.w2window_maximized .w2window_restore{display:block;}
+    	.w2popup_window .w2window_restore{display:block;} */
+
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width:139px;height:33px;left:105px;top:74px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[1. floatingLayer]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="position: relative;width:206px;height:33px;left:105px;top:74px;margin-left:5px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[2. litewindow modal popup]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

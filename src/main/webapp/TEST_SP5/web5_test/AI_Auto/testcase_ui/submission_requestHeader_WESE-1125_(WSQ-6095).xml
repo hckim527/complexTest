@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+        	<w2:dataCollection baseNode="map"></w2:dataCollection>
+        	<w2:workflowCollection />
+        	<xf:submission id="submission1" ref="" target="" action="/JsonSubmissionServlet" method="get" mediatype="text/xml"
+        		encoding="EUC-KR" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+        		ev:submitdone="" ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+scwin.trigger1_onclick = function(e) {
+	// var options = {};
+	// options.action = "/JsonSubmissionServlet?name=111&age=20";
+	// options.mode = "asynchronous";
+	// options.mediatype = "text/plain";
+	// options.method = "POST";
+	// options.requestData = '{"name":"ajax", "addr":"한국"}';
+	// $p.ajax(options);
+
+	var submissionObj = {};
+	submissionObj.id = "submission_dynamic1";
+	submissionObj.action = "submission_requestHeader_WESE-1125_(WSQ-6095).json"; 
+	submissionObj.method = "POST";
+//	submissionObj.mediatype = "text/plain";
+	submissionObj.mediatype = "application/json";
+	submissionObj.encoding = "UTF-8";
+	submissionObj.processMsg = "처리중입니다";
+//	submissionObj.requestHeader =  {"X-XSRF-TOKEN": "token"}
+	submissionObj.requestHeader =  {"test": "aaa"}
+
+	//submission 생성
+	$p.createSubmission(submissionObj);
+		var subObj = $p.getSubmission("submission_dynamic1");
+	subObj.setRequestHeader({"X-XSRF-TOKEN": "token"});
+	$p.executeSubmission("submission_dynamic1");
+
+};
+
+scwin.trigger2_onclick = function(e) {
+	//debugger;
+	var submissionObj = {};
+	submissionObj.id = "submission_dynamic";
+	submissionObj.action = "submission_requestHeader_WESE-1125_(WSQ-6095).json"; 
+	submissionObj.method = "POST";
+//submissionObj.mediatype = "text/plain";
+	submissionObj.mediatype = "application/json";
+	submissionObj.encoding = "UTF-8";
+	submissionObj.mode = "synchronous";
+	submissionObj.requestHeader =  {"token": "bbb"};
+	submissionObj.processMsg = "처리중입니다";
+
+	//submission 생성
+	$p.createSubmission(submissionObj);
+	
+	// 동적 서브미션 헤더 세팅
+	var subObj = $p.getSubmission("submission_dynamic");
+	subObj.setRequestHeader("test", "aaa");
+
+	$p.executeSubmission("submission_dynamic");
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" id="trigger1" style="width:136px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[서버호출(ajax)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="width:136px;height:23px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[서버 호출(서브미션)]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

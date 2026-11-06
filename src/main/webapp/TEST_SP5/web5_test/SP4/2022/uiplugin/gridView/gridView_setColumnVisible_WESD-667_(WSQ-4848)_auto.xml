@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="ITEM_CD" name="상품코드" dataType="text"></w2:column>
+            			<w2:column id="ITEM_NM" name="상품명" dataType="text"></w2:column>
+            			<w2:column id="VALUE_TIME" name="결제금액" dataType="text"></w2:column>
+            			<w2:column id="CARD_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="CARD_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="HYUNDAI_CARD_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="HYUNDAI_CARD_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="SAMSUNG_CARD_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="SAMSUNG_CARD_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="KB_CARD_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="KB_CARD_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="ETC_CARD_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="ETC_CARD_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="INTEREST3M_PAY_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="INTEREST3M_PAY_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="INTEREST6M_PAY_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="INTEREST6M_PAY_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="INTEREST9M_PAY_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="INTEREST9M_PAY_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="PAY_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="PAY_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="AUCTION_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="AUCTION_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="NAVER_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="NAVER_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="DAUM_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="DAUM_RT" name="%" dataType="number"></w2:column>
+            			<w2:column id="KAKAO_TV_AMT" name="금액" dataType="number"></w2:column>
+            			<w2:column id="KAKAO_TV_RT" name="%" dataType="number"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+	        
+	scwin.onpageload = function() {
+
+		//그리드뷰1  우측 3개컬럼 고정 
+		gridView1.setFixedRightColumn(4);	
+		gridView1.setFixedColumn(1);	
+
+		
+		//그리드1 - 카드 접기
+		scwin.btn_card_fold_onclick();
+		//그리드1 - 현금 접기 
+		scwin.btn_pay_fold_onclick();
+		
+		
+		//그리드2 - 카드 접기
+		scwin.btn_card_fold2_onclick();
+		//그리드2 - 현금 접기 
+		scwin.btn_pay_fold2_onclick();		
+	};
+	
+	
+	scwin.onpageunload = function() {
+		
+	};	
+	
+
+	
+	//==============================================================//
+	//==============================================================//
+	//==============================================================//
+	
+	
+	
+	
+	//그리드1 - 카드결재 접기
+	scwin.btn_card_fold_onclick = function() {
+		var hiddenCols = [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ];
+		for ( i in hiddenCols ){
+			gridView1.setColumnVisible(hiddenCols[i], false);
+		}
+	};
+	
+	//그리드1 - 카드결재 펼치기
+	scwin.btn_card_unfold_onclick = function() {
+		var hiddenCols = [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ];
+		for ( i in hiddenCols ){
+			gridView1.setColumnVisible(hiddenCols[i], true);
+		}	
+	};
+	
+	
+	//그리드1 - 현금결재 접기
+	scwin.btn_pay_fold_onclick = function() {
+		var hiddenCols = [ 21, 22, 23, 24 ];
+		for ( i in hiddenCols ){
+			gridView1.setColumnVisible(hiddenCols[i], false);
+		}
+	};
+	
+	//그리드1 - 현금결재 펼치기
+	scwin.btn_pay_unfold_onclick = function() {
+		var hiddenCols = [ 21, 22, 23, 24 ];
+		for ( i in hiddenCols ){
+			gridView1.setColumnVisible(hiddenCols[i], true);
+		}		
+	};	
+	
+	
+	
+	//그리드2 - 카드결재 접기
+	scwin.btn_card_fold2_onclick = function() {
+		var hiddenCols = [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ];
+		for ( i in hiddenCols ){
+			gridView2.setColumnVisible(hiddenCols[i], false);
+		}
+	};
+	
+	//그리드2 - 카드결재 펼치기
+	scwin.btn_card_unfold2_onclick = function() {
+		var hiddenCols = [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ];
+		for ( i in hiddenCols ){
+			gridView2.setColumnVisible(hiddenCols[i], true);
+		}	
+	};	
+	
+	//그리드2 - 현금결재 접기
+	scwin.btn_pay_fold2_onclick = function() {
+		var hiddenCols = [ 21, 22, 23, 24 ];
+		for ( i in hiddenCols ){
+			gridView2.setColumnVisible(hiddenCols[i], false);
+		}
+	};
+	
+	//그리드2 - 현금결재 펼치기
+	scwin.btn_pay_unfold2_onclick = function() {
+		var hiddenCols = [ 21, 22, 23, 24 ];
+		for ( i in hiddenCols ){
+			gridView2.setColumnVisible(hiddenCols[i], true);
+		}	
+	};		
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#gridView1_scrollX_div').height() != 0;
+	};	
+	scwin.unitTest = function(){
+		//Init test
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+        
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_card_unfold').click()");
+        WebSquare.wUnit.addCommand("pause", "400");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_pay_unfold').click()");
+        WebSquare.wUnit.addCommand("pause", "400");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_pay_fold').click()");
+        WebSquare.wUnit.addCommand("pause", "400");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_card_fold').click()");
+        WebSquare.wUnit.addCommand("pause", "400");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_pay_unfold').click()");
+        WebSquare.wUnit.addCommand("pause", "400");	
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		//Run and Stop unit Test
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="">
+    		<xf:group id="" style="margin-top: 20px;">
+    			<w2:textbox dataType="" id="" label="■ 우측 컬럼 고정 시 (다음,카카오)" style="" tagname="h2"></w2:textbox>
+    		</xf:group>
+    		<xf:group style="" id="">
+    			<w2:gridView scrollByColumnAdaptive="false" dataList="data:dataList1" style="width: 100%;height: 300px;"
+    				scrollByColumn="false" id="gridView1" defaultCellHeight="20">
+    				<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    				<w2:header style="" id="header2">
+    					<w2:row style="" id="row5">
+    						<w2:column rowSpan="2" colSpan="" removeBorderStyle="false" width="70" inputType="text" style="height:40px;"
+    							id="column89" value="상품코드" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="2" colSpan="" removeBorderStyle="false" width="300" inputType="text" style="height:40px;"
+    							id="column88" value="상품명" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="2" colSpan="" removeBorderStyle="false" width="70" inputType="text" style="height:40px;"
+    							id="column87" value="결제금액" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="70" inputType="text" style="height:40px;color: red"
+    							id="HD_CARD_AMT" value="카드결제" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column84" value="현대카드" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column82" value="삼성카드" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column80" value="KB카드" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column78" value="etc카드" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column76" value="3개월 할부" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column74" value="6개월 할부" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column72" value="9개월 할부" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="70" inputType="text" style="height:40px;color: blue;"
+    							id="HD_PAY_AMT" value="현금 결제" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column68" value="옥션" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text" style="height:40px;"
+    							id="column66" value="네이버" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text"
+    							style="height:40px;background: yellow;" id="column64" value="다음" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column rowSpan="" colSpan="2" removeBorderStyle="false" width="140" inputType="text"
+    							style="height:40px;background: yellow;" id="column62" value="카카오" blockSelect="false" displayMode="label">
+    						</w2:column>
+    					</w2:row>
+    					<w2:row style="" id="row3">
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column28" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column27" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column26" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column25" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column24" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column23" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column22" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column21" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column20" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column19" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column18" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column17" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column16" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column15" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column14" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column13" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column12" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column11" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column10" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column9" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column8" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column7" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column6" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column5" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column4" value="금액"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="column3" value="%"
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    					</w2:row>
+    					<w2:row style="" id="row7">
+    						<w2:column rowSpan="" colSpan="3" removeBorderStyle="false" width="440" inputType="text" style="height:20px;"
+    							id="column147" value="합계" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('CARD_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column144" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression='SUM("CARD_RT")' removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column143" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('HYUNDAI_CARD_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column142" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('HYUNDAI_CARD_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column141" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('SAMSUNG_CARD_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column140" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('SAMSUNG_CARD_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column139" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('KB_CARD_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column138" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('KB_CARD_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column137" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('ETC_CARD_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column136" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('ETC_CARD_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column135" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('INTEREST3M_PAY_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column134" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('INTEREST3M_PAY_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column133" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('INTEREST6M_PAY_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column132" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('INTEREST6M_PAY_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column131" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('INTEREST9M_PAY_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column130" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('INTEREST9M_PAY_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column129" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('PAY_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column128" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('PAY_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column127" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('AUCTION_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column126" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('AUCTION_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column125" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('NAVER_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column124" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('NAVER_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column123" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('DAUM_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column122" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('DAUM_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column121" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('KAKAO_TV_AMT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column120" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column expression="SUM('KAKAO_TV_RT')" removeBorderStyle="false" dataType="float" width="70"
+    							displayFormat="#,##0.00" inputType="expression" style="height:20px" id="column119" value="" blockSelect="false"
+    							displayMode="label">
+    						</w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody style="" id="gBody2">
+    					<w2:row style="" id="row4">
+    						<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="ITEM_CD" value=""
+    							blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column textAlign="left" removeBorderStyle="false" width="300" inputType="text" style="height:20px"
+    							id="ITEM_NM" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column displayFormatter="#,##0.00" removeBorderStyle="false" dataType="float" width="70" inputType="text"
+    							style="height:20px" id="VALUE_TIME" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="CARD_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="CARD_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="HYUNDAI_CARD_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="HYUNDAI_CARD_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="SAMSUNG_CARD_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="SAMSUNG_CARD_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="KB_CARD_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="KB_CARD_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="ETC_CARD_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="ETC_CARD_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="INTEREST3M_PAY_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="INTEREST3M_PAY_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="INTEREST6M_PAY_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="INTEREST6M_PAY_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="INTEREST9M_PAY_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="INTEREST9M_PAY_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="PAY_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="PAY_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="AUCTION_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="AUCTION_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="NAVER_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="NAVER_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="DAUM_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="DAUM_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="KAKAO_TV_AMT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    						<w2:column removeBorderStyle="false" dataType="float" width="70" displayFormat="#,##0.00" inputType="text"
+    							style="height:20px" id="KAKAO_TV_RT" value="" blockSelect="false" displayMode="label">
+    						</w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    		<xf:group id="" style="margin-top: 10px;">
+    			<xf:trigger type="button" style="width: 130px;height: 23px;margin-left:10px;" id="btn_card_fold"
+    				ev:onclick="scwin.btn_card_fold_onclick">
+    				<xf:label><![CDATA[카드하위 접기]]></xf:label>
+    			</xf:trigger>
+    			<xf:trigger id="btn_card_unfold" style="width: 130px;height: 23px;margin-left:10px;" type="button"
+    				ev:onclick="scwin.btn_card_unfold_onclick">
+    				<xf:label><![CDATA[카드하위 펼치기]]></xf:label>
+    			</xf:trigger>
+    			<xf:trigger id="btn_pay_fold" style="width: 130px;height: 23px;margin-left:10px;" type="button"
+    				ev:onclick="scwin.btn_pay_fold_onclick">
+    				<xf:label><![CDATA[현금하위 접기]]></xf:label>
+    			</xf:trigger>
+    			<xf:trigger id="btn_pay_unfold" style="width: 130px;height: 23px;margin-left:10px;" type="button"
+    				ev:onclick="scwin.btn_pay_unfold_onclick">
+    				<xf:label><![CDATA[현금하위 펼치기]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="margin-top: 20px;">
+    			<w2:textbox dataType="" id="" label="■ 우측 컬럼 미 고정 시" style="" tagname="h2"></w2:textbox>
+    		</xf:group>
+    		<xf:group id="" style="">
+    			<w2:gridView dataList="data:dataList1" defaultCellHeight="20" id="gridView2" scrollByColumn="false"
+    				scrollByColumnAdaptive="false" style="width: 100%;height: 300px;">
+    				<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    				<w2:header id="header2" style="">
+    					<w2:row id="row5" style="">
+    						<w2:column blockSelect="false" colSpan="" displayMode="label" id="column89" inputType="text"
+    							removeBorderStyle="false" rowSpan="2" style="height:40px;" value="상품코드" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="" displayMode="label" id="column88" inputType="text"
+    							removeBorderStyle="false" rowSpan="2" style="height:40px;" value="상품명" width="300">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="" displayMode="label" id="column87" inputType="text"
+    							removeBorderStyle="false" rowSpan="2" style="height:40px;" value="결제금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="HD_CARD_AMT" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;color: red;" value="카드결제" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column84" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="현대카드" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column82" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="삼성카드" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column80" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="KB카드" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column78" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="etc카드" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column76" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="3개월 할부" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column74" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="6개월 할부" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column72" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="9개월 할부" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="HD_PAY_AMT" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;color: blue;" value="현금 결제" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column68" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="옥션" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column66" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;" value="네이버" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column64" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;background: yellow;" value="다음" width="140">
+    						</w2:column>
+    						<w2:column blockSelect="false" colSpan="2" displayMode="label" id="column62" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:40px;background: yellow;" value="카카오" width="140">
+    						</w2:column>
+    					</w2:row>
+    					<w2:row id="row3" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="column28" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column27" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column26" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column25" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column24" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column23" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column22" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column21" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column20" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column19" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column18" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column17" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column16" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column15" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column14" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column13" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column12" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column11" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column10" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column8" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column6" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column5" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column4" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="금액" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="%" width="70">
+    						</w2:column>
+    					</w2:row>
+    					<w2:row id="row7" style="">
+    						<w2:column blockSelect="false" colSpan="3" displayMode="label" id="column147" inputType="text"
+    							removeBorderStyle="false" rowSpan="" style="height:20px;" value="합계" width="440">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('CARD_AMT')" id="column144" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression='SUM("CARD_RT")' id="column143" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('HYUNDAI_CARD_AMT')" id="column142" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('HYUNDAI_CARD_RT')" id="column141" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('SAMSUNG_CARD_AMT')" id="column140" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('SAMSUNG_CARD_RT')" id="column139" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('KB_CARD_AMT')" id="column138" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('KB_CARD_RT')" id="column137" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('ETC_CARD_AMT')" id="column136" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('ETC_CARD_RT')" id="column135" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('INTEREST3M_PAY_AMT')" id="column134" inputType="expression" removeBorderStyle="false" style="height:20px"
+    							value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('INTEREST3M_PAY_RT')" id="column133" inputType="expression" removeBorderStyle="false" style="height:20px"
+    							value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('INTEREST6M_PAY_AMT')" id="column132" inputType="expression" removeBorderStyle="false" style="height:20px"
+    							value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('INTEREST6M_PAY_RT')" id="column131" inputType="expression" removeBorderStyle="false" style="height:20px"
+    							value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('INTEREST9M_PAY_AMT')" id="column130" inputType="expression" removeBorderStyle="false" style="height:20px"
+    							value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('INTEREST9M_PAY_RT')" id="column129" inputType="expression" removeBorderStyle="false" style="height:20px"
+    							value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('PAY_AMT')" id="column128" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('PAY_RT')" id="column127" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('AUCTION_AMT')" id="column126" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('AUCTION_RT')" id="column125" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('NAVER_AMT')" id="column124" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('NAVER_RT')" id="column123" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('DAUM_AMT')" id="column122" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('DAUM_RT')" id="column121" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('KAKAO_TV_AMT')" id="column120" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							expression="SUM('KAKAO_TV_RT')" id="column119" inputType="expression" removeBorderStyle="false" style="height:20px" value=""
+    							width="70">
+    						</w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody2" style="">
+    					<w2:row id="row4" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="ITEM_CD" inputType="text" removeBorderStyle="false"
+    							style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="ITEM_NM" inputType="text" removeBorderStyle="false"
+    							style="height:20px" textAlign="left" value="" width="300">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormatter="#,##0.00" displayMode="label" id="VALUE_TIME"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="CARD_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="CARD_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="HYUNDAI_CARD_AMT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="HYUNDAI_CARD_RT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="SAMSUNG_CARD_AMT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="SAMSUNG_CARD_RT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="KB_CARD_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="KB_CARD_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="ETC_CARD_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="ETC_CARD_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="INTEREST3M_PAY_AMT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="INTEREST3M_PAY_RT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="INTEREST6M_PAY_AMT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="INTEREST6M_PAY_RT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="INTEREST9M_PAY_AMT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label"
+    							id="INTEREST9M_PAY_RT" inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="PAY_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="PAY_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="AUCTION_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="AUCTION_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="NAVER_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="NAVER_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="DAUM_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="DAUM_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="KAKAO_TV_AMT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" dataType="float" displayFormat="#,##0.00" displayMode="label" id="KAKAO_TV_RT"
+    							inputType="text" removeBorderStyle="false" style="height:20px" value="" width="70">
+    						</w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+
+
+    		<xf:group id="" style="margin-top: 10px;">
+    			<xf:trigger ev:onclick="scwin.btn_card_fold2_onclick" id="btn_card_fold2" style="width: 130px;height: 23px;margin-left:10px;"
+    				type="button">
+    				<xf:label><![CDATA[카드하위 접기]]></xf:label>
+    			</xf:trigger>
+    			<xf:trigger ev:onclick="scwin.btn_card_unfold2_onclick" id="btn_card_unfold2" style="width: 130px;height: 23px;margin-left:10px;"
+    				type="button">
+    				<xf:label><![CDATA[카드하위 펼치기]]></xf:label>
+    			</xf:trigger>
+    			<xf:trigger ev:onclick="scwin.btn_pay_fold2_onclick" id="btn_pay_fold2" style="width: 130px;height: 23px;margin-left:10px;"
+    				type="button">
+    				<xf:label><![CDATA[현금하위 접기]]></xf:label>
+    			</xf:trigger>
+    			<xf:trigger ev:onclick="scwin.btn_pay_unfold2_onclick" id="btn_pay_unfold2" style="width: 130px;height: 23px;margin-left:10px;"
+    				type="button">
+    				<xf:label><![CDATA[현금하위 펼치기]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    	</xf:group></body>
+</html>

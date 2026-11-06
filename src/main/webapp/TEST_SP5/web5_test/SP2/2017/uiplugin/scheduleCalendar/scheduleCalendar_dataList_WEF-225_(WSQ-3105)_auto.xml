@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="colTitle" name="colTitle" dataType="text"></w2:column>
+            			<w2:column id="colEnd" name="colEnd" dataType="text"></w2:column>
+            			<w2:column id="colId" name="colId" dataType="text"></w2:column>
+            			<w2:column id="colStart" name="colStart" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<colTitle><![CDATA[타이틀 12345]]></colTitle>
+            				<colEnd><![CDATA[20171116090000]]></colEnd>
+            				<colId><![CDATA[id_111]]></colId>
+            				<colStart><![CDATA[20171110080000]]></colStart>
+            			</w2:row>
+            			<w2:row>
+            				<colTitle><![CDATA[타이틀 0000]]></colTitle>
+            				<colEnd><![CDATA[20171122]]></colEnd>
+            				<colId><![CDATA[id_222]]></colId>
+            				<colStart><![CDATA[20171122]]></colStart>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.scheduleCalendar1_onclick = function(retObj) {
+    //alert("retObj==" + JSON.stringify(retObj));
+	console.log("retObj==" + JSON.stringify(retObj));
+};
+scwin.trigger1_onclick = function(e) {
+    var num = progressbar1.get() + 10;
+    progressbar1.set(num);
+};
+scwin.trigger2_onclick = function(e) {
+    var num = progressbar1.get() - 10;
+    progressbar1.set(num);
+};
+scwin.trigger4_onclick = function(e) {
+    var jsonData1 = [{
+            "colTitle": "타이틀 12345",
+            "colEnd": "20171115090000",
+            "colId": "id_111",
+            "colStart": "2017-11-10"
+        },
+        {
+            "colTitle": "타이틀 67890",
+            "colEnd": "20171117090000",
+            "colId": "id_112",
+            "colStart": "2017-11-13"
+        },
+        {
+            "colTitle": "타이틀 0000",
+            "colEnd": "2017-11-22",
+            "colId": "id_221",
+            "colStart": "2017-11-22"
+        },
+        {
+            "colTitle": "타이틀 1111",
+            "colEnd": "2017-11-22",
+            "colId": "id_222",
+            "colStart": "2017-11-22"
+        },
+        {
+            "colTitle": "타이틀 2222",
+            "colEnd": "2017-11-22",
+            "colId": "id_223",
+            "colStart": "2017-11-22"
+        }
+    ];
+    dataList1.setJSON(jsonData1);
+};
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.clickMonth = function() {
+    var date1 = new Date(2017, 11);
+    var date2 = new Date();
+    var month = (date2 - date1) / 86400000;
+    for (i = 0; i < Math.floor(month / 30) + 1; i++) {
+        WebSquare.wUnit.getJq(".fc-prev-button").click();
+    }
+}
+
+scwin.setVal1 = function() {
+    WebSquare.wUnit.getObjById('scheduleCalendar1').gotoCalendar("20171101", {noSelectable : true})
+}
+scwin.checkVal1 = function() {
+    return WebSquare.wUnit.getObjById('dataList1').getAllJSON()[0].colEnd == '20171116090000';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getObjById('dataList1').getAllJSON()[0].colStart == '20171110080000';
+}
+
+scwin.checkVal3 = function() {
+    return dataList1.getAllJSON()[0].colEnd == '20171115090000';
+}
+scwin.checkVal4 = function() {
+    return dataList1.getAllJSON()[0].colStart == '2017-11-10';
+}
+scwin.checkVal5 = function() {
+    return dataList1.getAllJSON()[1].colEnd == '20171117090000';
+}
+scwin.checkVal6 = function() {
+    return dataList1.getAllJSON()[1].colStart == '2017-11-13';
+}
+
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+	//WebSquare.wUnit.addCommand("set", "scwin.clickMonth()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal5()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal6()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 29-Mar-2018
+}
+]]></script>
+    </head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" style="padding:10px;">
+			<w2:scheduleCalendar headerLeftBtn="true" ev:onclick="scwin.scheduleCalendar1_onclick" titleColumn="colTitle" lang="ko"
+				editable="false" endColumn="colEnd" idColumn="colId" id="scheduleCalendar1" dataList="data:dataList1" defaultDate=""
+				style="width:600px;height:400px;" selectable="false" startColumn="colStart" ioFormat="yyyyMMdd" headerTitle="true" headerRightBtn="true"
+				version="">
+			</w2:scheduleCalendar>
+			<xf:trigger ev:onclick="scwin.trigger4_onclick" id="trigger4" style="width: 80px;height: 23px;" type="button">
+				<xf:label><![CDATA[조회]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group id="" style="padding:10px;height:30px;">
+			<w2:progressbar min="0" id="progressbar1" duration="1000" max="100" style="width:400px;height:30px;float:left;" progressClass="type2"
+				valueType="percent" autoClose="false" step="10">
+			</w2:progressbar>
+			<xf:trigger id="trigger1" style="width:80px;height:23px;float:left;" ev:onclick="scwin.trigger1_onclick" type="button">
+				<xf:label><![CDATA[+10]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="trigger2" style="width: 80px;height: 23px;float:left;" ev:onclick="scwin.trigger2_onclick" type="button">
+				<xf:label><![CDATA[-10]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>
+ 

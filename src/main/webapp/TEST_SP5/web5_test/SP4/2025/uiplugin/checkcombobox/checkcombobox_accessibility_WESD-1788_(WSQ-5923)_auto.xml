@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>COMPONENT</w2:type>
+    	<w2:buildDate />
+    	<w2:MSA />
+    	<xf:model>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" repeatNode="map" id="dlt_exam_code" saveRemovedData="true">
+    				<w2:columnInfo>
+    					<w2:column id="label" name="label" dataType="text"></w2:column>
+    					<w2:column id="code" name="code" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection />
+    	</xf:model>
+    	<w2:layoutInfo />
+    	<w2:publicInfo method="" />
+    	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	document.title = "CheckCombobox";
+
+	 //DataList dlt_exam_code에 데이터 할당
+    dlt_exam_code.setJSON([
+        {"label":"Apple","code":"01"},
+        {"label":"Pear","code":"02"},
+        {"label":"Grapes","code":"03"},
+        {"label":"Melon","code":"04"},
+        {"label":"Peach","code":"05"}
+    ]);
+};
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('ccb_samp_itemTable_main').getAttribute('role') == 'listbox';
+	}
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('ccb_samp_itemTable_0').getAttribute('aria-checked') === null;
+	}	
+	scwin.checkVal3 = function() {
+		return WebSquare.wUnit.getDomById('ccb_samp_itemTable_0').getAttribute('role') == 'option';
+	}		
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ccb_samp').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+]]></script>
+
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:input id="" style="position: relative;width: 144px;height: 21px;"></xf:input>
+    	<xf:checkcombobox accessibility="true" allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false"
+    		displayAllOptionLabel="false" displayMode="label" id="ccb_samp" ref="" renderType="native" separator=", "
+    		style="width: 180px;height: 34px;" submenuSize="auto">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dlt_exam_code">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="code"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:checkcombobox>
+
+    </body>
+</html>

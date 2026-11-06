@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.__hasTooltip = function() {
+    if (!WebSquare.wUnit.getDomById($p.id + 'gridView1_tooltip')) {
+        return false;
+    }
+    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + "gridView1_tooltip")).getPropertyValue("display") == "block";
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 gridView1 의 tooltipDisplay 를 확인한다.
+    //1. In the Source tab, check the tooltipDisplay of gridView1.
+    //Verify 1. tooltipDisplay='true'
+    //Test step 2. tooltipShowAlways 를 확인한다.
+    //2. Check tooltipShowAlways.
+    //Verify 2. tooltipShowAlways = 'true'
+    //Test step 3. 브라우저에서 inputType 이 버튼(button항목)인 컬럼에 마우스오버한다.
+    //3. In your browser, hover over the column whose inputType is the button (button item).
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_3')");
+    WebSquare.wUnit.addCommand("pause", "2000");
+    //Verify 3. 해당 컬럼의 툴팁이 표시된다. (그전버전에서는 inputType='button' 일 경우 tooltip 이 나오지 않는 현상발생)
+    //3. The tooltip for that column is displayed. (In previous versions, if inputType = 'button', tooltip does not appear)
+    WebSquare.wUnit.addCommand("assert", "scwin.__hasTooltip()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setData(["hello world hello world", 2, 3, 4, 6, 7, 8, "hello world hello world"]);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 08-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left:17px;top:39px;width: 400px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true" tooltipDisplay="true" tooltipShowAlways="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" displayMode="label"
+    					value="button">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" title="옵로드22"  width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="button" title="옵로드" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

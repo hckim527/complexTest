@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="a" name="a" dataType="text"></w2:column>
+            			<w2:column id="b" name="b" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<a><![CDATA[aaa]]></a>
+            				<b><![CDATA[1]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[12345]]></a>
+            				<b><![CDATA[5]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[aaa]]></a>
+            				<b><![CDATA[3]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[12345]]></a>
+            				<b><![CDATA[4]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[bbb]]></a>
+            				<b><![CDATA[3]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[bbb]]></a>
+            				<b><![CDATA[1]]></b>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+            		<w2:condition type="filter"><![CDATA[a == 'aaa' && (b == '1' || b == '3'|| b == '4')]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 0. linkedDataList의 condition filter를 설정한다.
+    //Set the condition filter of linkedDataList.
+    // verify step 0. [CDATA[a == "aaa" && (b == "1" || b == "3"|| b == "4")]]
+    // Test step 1. 샘플파일을 실행 후 하단의 filter결과값을 확인한다.
+    //1. Run the sample file and check the filter result at the bottom.                
+    // verify step 1. a항목값과 b항목값이 각각 아래와 같다.aaa 1 aaa 3(이전에는 bbb 3값도 보여짐)
+    //1. Items a and b are shown below.aaa 1 aaa 3(Previously the bbb 3 value is also shown)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_5_body_tbody tr').not('.w2grid_hidedRow').length == 2", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_5_cell_0_0').text() == 'aaa'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_5_cell_0_1').text() == '1'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_5_cell_1_0').text() == 'aaa'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_5_cell_1_1').text() == '3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 29-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="" style="position: relative;width:272px;height:150px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="a">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="b">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="a" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="b" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView dataList="linkedDataList1" scrollByColumn="false" id="" style="position: relative;width:272px;height:150px;margin-top:10px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="a">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="b">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="a" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="b" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

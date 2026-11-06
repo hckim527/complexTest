@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <!-- DrillDown 계층: depth 1=본부, 2=팀, 3=사원 -->
+                <w2:dataList baseNode="list" id="dlt_bind" repeatNode="map" useStatusValue="true">
+                    <w2:columnInfo>
+                        <w2:column id="name" name="name" dataType="text"></w2:column>
+                        <w2:column id="dept" name="dept" dataType="text"></w2:column>
+                        <w2:column id="depth" name="depth" dataType="number"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row><name><![CDATA[영업본부]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[1]]></depth></w2:row>
+                        <w2:row><name><![CDATA[  영업1팀]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[2]]></depth></w2:row>
+                        <w2:row><name><![CDATA[    김영업]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[3]]></depth></w2:row>
+                        <w2:row><name><![CDATA[    이영업]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[3]]></depth></w2:row>
+                        <w2:row><name><![CDATA[개발본부]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[1]]></depth></w2:row>
+                        <w2:row><name><![CDATA[  개발1팀]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[2]]></depth></w2:row>
+                        <w2:row><name><![CDATA[    박개발]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[3]]></depth></w2:row>
+                        <w2:row><name><![CDATA[    최개발]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[3]]></depth></w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// ===== 리턴 값 출력 영역 (body_bottom.xml inline 복사) =====
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+
+
+scwin.onpageload = function () {
+    // DrillDown Drag&Drop 활성화(속성 미제공 → 메소드로만 활성). 동일 그리드 내 이동은 dataDragDropSelf=true.
+    target1.setDrillDownDragDrop(true);
+};
+
+
+// [데이터 / 표시 비교] : 데이터(getAllJSON)와 화면에 실제 렌더된 셀(DOM)을 비교 출력
+//  - 결함 재현 후 호출 시: getAllJSON 은 8행 정상(데이터 유실 아님), 화면 표시 셀은 빈 칸 발생(렌더 깨짐).
+scwin.btn_compare_onclick = function () {
+    scwin.setReturnValue("===== [데이터(getAllJSON)] - 접힌 자식 포함 전체 =====");
+    var arr = dlt_bind.getAllJSON();
+    for (var i = 0; i < arr.length; i++) {
+        scwin.setReturnValue("  " + i + " : name=" + arr[i].name + ", dept=" + arr[i].dept + ", depth=" + arr[i].depth);
+    }
+    scwin.setReturnValue("getRowCount(표시 행 수)=" + target1.getRowCount() + " / getTotalRow(전체)=" + target1.getTotalRow());
+
+    scwin.setReturnValue("===== [화면 표시 셀(DOM name 컬럼)] =====");
+    var tds = document.querySelectorAll("td[id*='target1_cell_']");
+    var line = "";
+    for (var j = 0; j < tds.length; j++) {
+        if (/_cell_\d+_0$/.test(tds[j].id)) {
+            line += "[" + ((tds[j].textContent || "").trim() || "(빈칸)") + "] ";
+        }
+    }
+    scwin.setReturnValue("  " + line);
+    scwin.setReturnValue("→ 데이터는 정상인데 화면 표시 셀에 (빈칸)이 생기면 렌더링 결함.");
+    scwin.setReturnValue("");
+};
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding: 10px;" id="grp_root">
+            <w2:textbox style="" id="" label="[FAIL] gridView DrillDown(setDrillDownDragDrop true) 에서 부모 노드를 동일 그리드 하단 빈 영역으로 Drag&amp;Drop 하면 데이터(getAllJSON)는 정상이나 그리드 표시가 빈 셀로 깨지는(렌더링) 결함" class="" escape="false"></w2:textbox>
+
+            <w2:textbox style="margin-top:8px;" id="" label="[재현] (1) 초기 화면(본부만 표시)에서 영업본부 행을 마우스로 Drag → 그리드 하단 빈 영역에 Drop  (2) [데이터 / 표시 비교] 클릭 → getAllJSON 은 8행 정상이나 화면 표시 셀에 (빈칸) 발생. (펼친 상태에서 이동해도 이동된 부모 행이 빈 셀로 렌더됨)" class="" escape="false"></w2:textbox>
+
+            <w2:gridView id="target1" style="width:520px; height:300px; margin-top:10px; border:1px solid black;" dataList="data:dlt_bind"
+                dataDragDrop="true" dataDragDropSelf="true">
+                <w2:caption style="" id="cap1" value="DrillDown 그리드 (setDrillDownDragDrop true 적용)"></w2:caption>
+                <w2:header style="" id="hdr1">
+                    <w2:row style="" id="hrow1">
+                        <w2:column width="220" inputType="text" id="hcol1" value="이름(DrillDown)"></w2:column>
+                        <w2:column width="120" inputType="text" id="hcol2" value="부서"></w2:column>
+                        <w2:column width="*" inputType="text" id="hcol3" value="depth"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody style="" id="gbody1">
+                    <w2:row style="" id="brow1">
+                        <w2:column width="220" inputType="drilldown" depthColumn="depth" showDepth="1" depthStartIndex="1" id="name" dataList="name"></w2:column>
+                        <w2:column width="120" inputType="text" id="dept" dataList="dept"></w2:column>
+                        <w2:column width="*" inputType="text" id="depth" dataList="depth"></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+
+            <xf:group style="margin-top:10px;display:flex;gap:6px;" id="grp_buttons">
+                <w2:button class="" ev:onclick="scwin.btn_compare_onclick" id="btn_compare" label="데이터 / 표시 비교"></w2:button>
+            </xf:group>
+
+            <xf:group class="" id="grp_bottom" style="margin-top:10px;">
+                <w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+                <xf:group id="" style="display: flex;justify-content: flex-end">
+                    <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+                </xf:group>
+                <xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 300px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

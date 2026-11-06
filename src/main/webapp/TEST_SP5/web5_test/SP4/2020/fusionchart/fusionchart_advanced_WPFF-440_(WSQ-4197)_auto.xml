@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+     			<w2:dataList baseNode="list" id="dataList2" repeatNode="map" saveRemovedData="true" style="" ev:ondataload="scwin.dataList2_ondataload">
+    				<w2:columnInfo>
+    					<w2:column dataType="text" id="col2" name="name"></w2:column>
+    					<w2:column dataType="number" id="col3" name="vaue"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>           
+            
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+            "col2": "접수등록",
+            "col3": "400"
+        },
+        {
+            "col2": "가입확정",
+            "col3": "500"
+        },
+        {
+            "col2": "가입증서발급",
+            "col3": "200"
+        },
+        {
+            "col2": "지급심사",
+            "col3": "100"
+        },
+        {
+            "col2": "지급내역조회",
+            "col3": "55"
+        },
+        {
+            "col2": "신청내역조회",
+            "col3": "555"
+        },
+        {
+            "col2": "증서재발급",
+            "col3": "22"
+        },
+        {
+            "col2": "해지심사",
+            "col3": "23"
+        },
+        {
+            "col2": "111",
+            "col3": "222"
+        },
+        {
+            "col2": "222",
+            "col3": "244"
+        }
+    ];
+    dataList2.setJSON(jsonData);
+    fusionchart1.configure({
+        "ChartNoDataText": "데이타가 없습니다.1"
+    });
+    fusionchart2.configure({
+        "ChartNoDataText": "데이타가 없습니다.2"
+    });
+    fusionchart3.configure({
+        "ChartNoDataText": "데이타가 없습니다.3"
+    });
+    fusionchart3.setChartColumnRef("data:dataList2", "col2", "[['col3']]");
+};
+scwin.onpageunload = function() {};
+scwin.dataList2_ondataload = function() {
+    //debugger;
+    //var fc = fusionchart3.fc();
+    //if($p.getComponentById(fusionchart3.getDataListInfo().id).getTotalRow() == 0) fc.setJSONData({});
+};
+scwin.trigger1_onclick = function(e) {
+    dataList2.setJSON({});
+};
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getObjById('fc_'+$p.id+'fusionchart2').innerText == '데이타가 없습니다.2';
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+	scwin.init()
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" style="width:145px;height:23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[dataList2.setJSON({});]]></xf:label>
+    	</xf:trigger>
+    	<w2:textbox label="simple의 경우" style="width: 150px;height: 23px;" id=""></w2:textbox>
+    	<w2:fusionchart accessibility="false" chartType="StackedBar2D" drawType="javascript" id="fusionchart1" labelNode=""
+    		ref="data:dataList2" runflashAt="IE6,IE7,IE8" seriesNode="" seriesType="simple" style="height:150px;width:250px;left:21px;top:1447px;"
+    		valueNode="">
+    	</w2:fusionchart>
+    	<w2:textbox label="advanced이면서&lt;br/&gt;labelNode=&quot;col2&quot;&lt;br/&gt;seriesColumns=&quot;[['col3']]&quot; 속성으로 설정한 경우"
+    		style="width:291px;height:56px;margin-top:15px;" id="">
+    	</w2:textbox>
+    	<w2:fusionchart accessibility="false" chartType="StackedBar2D" drawType="javascript" id="fusionchart2" labelNode="col2"
+    		ref="data:dataList2" runflashAt="IE6,IE7,IE8" seriesNode="" seriesType="advanced"
+    		style="height:150px;width:250px;left:21px;top:1447px;" valueNode="" seriesColumns="[['col3']]">
+    	</w2:fusionchart>
+    	<w2:textbox label="advanced이면서 &lt;br/&gt;fusionchart3.setChartColumnRef( &quot;data:dataList2&quot; , &quot;col2&quot; , &quot;[['col3']]&quot; ); api로 설정한 경우" style="width:534px;height:36px;margin-top:15px;" id=""></w2:textbox>
+    	<w2:fusionchart accessibility="false" chartType="StackedBar2D" drawType="javascript" id="fusionchart3" labelNode=""
+    		ref="data:dataList2" runflashAt="IE6,IE7,IE8" seriesNode="" seriesType="advanced"
+    		style="height:150px;width:250px;left:21px;top:1447px;" valueNode="">
+    	</w2:fusionchart>
+    </body>
+</html>
+ 

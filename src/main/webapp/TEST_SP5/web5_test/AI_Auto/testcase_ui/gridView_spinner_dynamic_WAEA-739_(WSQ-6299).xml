@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <w2:type>DEFAULT</w2:type>
+    <w2:buildDate/>
+    <xf:model>
+        <xf:instance>
+            <data xmlns=""/>
+        </xf:instance>
+        <w2:dataCollection baseNode="map">
+            <w2:dataList id="dlt_order" baseNode="list" repeatNode="map" saveRemovedData="true">
+                <w2:columnInfo>
+                    <w2:column id="symbol" name="symbol" dataType="text"></w2:column>
+                    <w2:column id="name" name="name" dataType="text"></w2:column>
+                    <w2:column id="priceSpinner" name="priceSpinner" dataType="number"></w2:column>
+                    <w2:column id="priceCustom" name="priceCustom" dataType="number"></w2:column>
+                </w2:columnInfo>
+                <w2:data use="true">
+                    <w2:row>
+                        <symbol><![CDATA[SAMSUNG]]></symbol>
+                        <name><![CDATA[Samsung Electronics]]></name>
+                        <priceSpinner><![CDATA[10]]></priceSpinner>
+                        <priceCustom><![CDATA[10]]></priceCustom>
+                    </w2:row>
+                    <w2:row>
+                        <symbol><![CDATA[SKHYNIX]]></symbol>
+                        <name><![CDATA[SK hynix]]></name>
+                        <priceSpinner><![CDATA[50]]></priceSpinner>
+                        <priceCustom><![CDATA[50]]></priceCustom>
+                    </w2:row>
+                    <w2:row>
+                        <symbol><![CDATA[CANCEL]]></symbol>
+                        <name><![CDATA[Cancel row]]></name>
+                        <priceSpinner><![CDATA[5]]></priceSpinner>
+                        <priceCustom><![CDATA[5]]></priceCustom>
+                    </w2:row>
+                </w2:data>
+            </w2:dataList>
+        </w2:dataCollection>
+        <w2:workflowCollection></w2:workflowCollection>
+    </xf:model>
+    <script lazy="false" type="text/javascript"><![CDATA[
+
+        // Playwright 검증에서 handler context를 확인하기 위한 호출 이력을 저장한다.
+        scwin.beforeSpinCalls = [];
+        scwin.afterInputCalls = [];
+
+        scwin.onpageload = function() {
+        };
+
+        // spinner handler가 전달한 GridView row context로 종목 코드를 조회한다.
+        scwin.getSymbol = function(info) {
+            var rowIndex = info && info.rowIndex != null ? info.rowIndex : 0;
+            return dlt_order.getCellData(rowIndex, "symbol");
+        };
+
+        // 업무 규칙 예시: row의 종목 코드와 현재 값으로 spin increment를 결정한다.
+        scwin.getDynamicIncrement = function(symbol, value) {
+            if (symbol === "SAMSUNG") {
+                return value > 10 ? 0.05 : 0.01;
+            }
+            if (symbol === "SKHYNIX") {
+                return value > 50 ? 2 : 1;
+            }
+            return 1;
+        };
+
+        // beforeSpinHandler 예시.
+        // spinner up/down 계산 직전에 호출된다. 반환한 increment는 현재 spin 1회에만 적용되고,
+        // cancel:true를 반환하면 증감 동작을 차단한다.
+        scwin.beforeSpin = function(info) {
+            var symbol = scwin.getSymbol(info);
+            var currentValue = Number(info.currentValue || 0);
+            var result;
+
+            if (symbol === "CANCEL") {
+                result = { cancel: true };
+            } else {
+                result = {
+                    increment: scwin.getDynamicIncrement(symbol, currentValue)
+                };
+            }
+
+            scwin.beforeSpinCalls.push({
+                colID: info.colID,
+                rowIndex: info.rowIndex,
+                realRowIndex: info.realRowIndex,
+                direction: info.direction,
+                currentValue: info.currentValue,
+                increment: result.increment,
+                cancel: result.cancel === true
+            });
+
+            return result;
+        };
+
+        // afterInputHandler 예시.
+        // 내부 spinner input의 사용자 입력 처리 후 호출된다. 반환한 문자열은 입력창 표시값으로 바로 적용된다.
+        // 예: SAMSUNG 종목에서 10을 입력하면 10.00을 반환하고, 10.04는 그대로 반환한다.
+        scwin.afterInput = function(info) {
+            var symbol = scwin.getSymbol(info);
+            var displayFormat = symbol === "SAMSUNG" ? "#,###.00" : "#,###";
+            var displayValue = info.newValue != null ? info.newValue + "" : "";
+            if (symbol === "SAMSUNG" && displayValue !== "" && displayValue.indexOf(".") < 0) {
+                displayValue += ".00";
+            }
+
+            scwin.afterInputCalls.push({
+                colID: info.colID,
+                rowIndex: info.rowIndex,
+                realRowIndex: info.realRowIndex,
+                oldValue: info.oldValue,
+                newValue: info.newValue,
+                displayFormat: displayFormat,
+                displayValue: displayValue
+            });
+
+            return displayValue;
+        };
+
+        // inputType="custom"의 typeGetter 예시.
+        // 반환되는 동적 spinner에도 일반 inputType="spinner" 컬럼과 동일한 handler를 전달해
+        // 두 경로가 하나의 업무 규칙을 공유하도록 한다.
+        scwin.customTypeGetter = function(info) {
+            return {
+                id: "dynamic_spinner_" + info.realRowIndex + "_" + info.colIndex,
+                inputType: "spinner",
+                options: {
+                    dataType: "number",
+                    increment: 1,
+                    min: 0,
+                    max: 1000,
+                    displayFormat: "#,###.00",
+                    applyFormat: "all",
+                    viewType: "icon",
+                    beforeSpinHandler: "scwin.beforeSpin",
+                    afterInputHandler: "scwin.afterInput"
+                }
+            };
+        };
+
+        // Playwright assertion에서 마지막 handler 호출 정보를 조회하기 위한 helper 함수다.
+        scwin.getLatestBeforeSpinCall = function() {
+            return scwin.beforeSpinCalls[scwin.beforeSpinCalls.length - 1] || null;
+        };
+
+        scwin.getLatestAfterInputCall = function() {
+            return scwin.afterInputCalls[scwin.afterInputCalls.length - 1] || null;
+        };
+
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <w2:gridView id="gridView1" dataList="data:dlt_order" setCellInputTypeCustom="true"
+        style="width:760px;height:180px;" rowNumVisible="true" rowStatusVisible="true">
+        <w2:header id="header1" style="">
+            <w2:row id="row1" style="">
+                <w2:column id="hd_symbol" inputType="text" value="Symbol" width="120"></w2:column>
+                <w2:column id="hd_name" inputType="text" value="Name" width="180"></w2:column>
+                <w2:column id="hd_priceSpinner" inputType="text" value="Spinner" width="180"></w2:column>
+                <w2:column id="hd_priceCustom" inputType="text" value="Custom Spinner" width="200"></w2:column>
+            </w2:row>
+        </w2:header>
+        <w2:gBody id="gBody1" style="">
+            <w2:row id="row2" style="">
+                <w2:column id="symbol" inputType="text" readOnly="true" width="120"></w2:column>
+                <w2:column id="name" inputType="text" readOnly="true" width="180"></w2:column>
+                <w2:column id="priceSpinner" inputType="spinner" dataType="number" width="180"
+                    increment="1" min="0" max="1000" displayFormat="#,###.00" applyFormat="all" viewType="icon"
+                    beforeSpinHandler="scwin.beforeSpin" afterInputHandler="scwin.afterInput"></w2:column>
+                <w2:column id="priceCustom" inputType="custom" dataType="number" width="200"
+                    displayFormat="#,###.00" applyFormat="all" viewType="icon" typeGetter="scwin.customTypeGetter"></w2:column>
+            </w2:row>
+        </w2:gBody>
+    </w2:gridView>
+</body>
+</html>

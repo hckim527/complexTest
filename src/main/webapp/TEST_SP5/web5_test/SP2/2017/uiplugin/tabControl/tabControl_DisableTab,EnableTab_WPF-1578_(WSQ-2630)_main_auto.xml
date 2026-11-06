@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    tabCon1.disableTab(0);
+    tabCon1.disableTab(1);
+};
+scwin.trigger2_onclick = function(e) {
+    tabCon1.enableTab(0);
+    tabCon1.enableTab(1);
+};
+scwin.checkValue = function() {
+    if (WebSquare.wUnit.getJq('#ip2').length == 0) {
+        return WebSquare.wUnit.getObjById('tabCon1_contents_content2_body_ip2').getAttribute('disabled')
+    } else {
+        return ip2.getAttribute('disabled')
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabCon1').setActiveTab(1)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. tab Disable 된다.
+    //3. The tab is disabled.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('tabCon1_contents_content1_body').getAttribute('disabled')", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('tabCon1_contents_content2_body').getAttribute('disabled')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. enableTab 버튼을 클릭한다.
+    //Click the enableTab button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. tab Enable 된다. (그전버전에서는 2. 2. EnableTab 그림처럼 inputBox 가 활성화되는 현상이 발생함.)
+    // Enable the tab. (In the previous version, inputBox is activated as shown in 2. 2. EnableTab.)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('tabCon1_contents_content1_body').getAttribute('disabled')", "false");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('tabCon1_contents_content2_body').getAttribute('disabled')", "false");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 30-Jan-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:tabControl useMoveNextTabFocus="false" id="tabCon1"
+    		style="position: relative ;width: 500px;height: 200px;left:77px;top:60px;"
+    		confirmTrueAction="exist" useTabKeyOnly="true"
+    		useConfirmMessage="false" confirmFalseAction="new"
+    		alwaysDraw="false">
+    		<w2:tabs label="tab1" id="tabs1" style="width:70px;height:30px;"
+    			disabled="false">
+    		</w2:tabs>
+    		<w2:tabs id="tabs2" style="width:70px;height:30px" label="tab2"
+    			disabled="false">
+    		</w2:tabs>
+    		<w2:content id="content1" style="height:170px"
+    			alwaysDraw="false" src="tabControl_DisableTab,EnableTab_WPF-1578_(WSQ-2630)_sub1.xml">
+    		</w2:content>
+    		<w2:content id="content2" style="height:170px"
+    			alwaysDraw="false" src="tabControl_DisableTab,EnableTab_WPF-1578_(WSQ-2630)_sub2.xml">
+    		</w2:content>
+    	</w2:tabControl>
+    	<xf:trigger type="button" id="trigger1"
+    		style="position: relative;width: 80px;height: 23px;left:108px;top:-142px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[disableTab]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2"
+    		style="position: relative;width: 80px;height: 23px;left:28px;top:-105px;margin-left:0px;margin-top:-5px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[enableTab]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

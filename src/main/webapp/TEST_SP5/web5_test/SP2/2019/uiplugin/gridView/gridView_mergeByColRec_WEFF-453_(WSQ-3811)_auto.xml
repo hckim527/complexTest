@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                        <w2:column id="col5" name="name5" dataType="text"></w2:column>
+                        <w2:column id="col6" name="name6" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">	
+                        <w2:row>
+                            <label><![CDATA[byrestriccol : 같은 column 내에서 연속적으로 데이터가 같으면서 동시에 자신의 왼쪽에 위치한 column이 merge된 경우 해당 row들을 merge한다. (n+1컬럼에 n컬럼을 upperColumn으로 지정한 형태)]]></label>
+                            <value><![CDATA[byrestriccol]]></value>
+                        </w2:row><w2:row>
+                            <label><![CDATA[byrestricrow : 같은 row 내에서 연속적으로 데이터가 같으면서 동시에 자신의 위쪽에 위치한 row가 merge된 경우 해당 row들을 merge한다. (n+행에 n행을 upperRow으로 지정한 형태)]]></label>
+                            <value><![CDATA[byrestricrow]]></value>
+                        </w2:row>
+            		</w2:data>
+            	</w2:dataList>
+                <w2:dataList id="dataList3" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="label" name="label" dataType="text"></w2:column>
+                        <w2:column id="value" name="value" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <label><![CDATA[never : merge를 해제한다. grid1.mergeClear(); 와 동일.]]></label>
+                            <value><![CDATA[never]]></value>
+                        </w2:row>
+                        <w2:row>
+                            <label><![CDATA[bycol : 같은 column 내에서 연속적으로 데이터가 같은 row들을 merge한다.]]></label>
+                            <value><![CDATA[bycol]]></value>
+                        </w2:row><w2:row>
+                            <label><![CDATA[byrow : 같은 row 내에서 연속적으로 데이터가 같은 column들을 merge한다.]]></label>
+                            <value><![CDATA[byrow]]></value>
+                        </w2:row>
+                        
+                        <w2:row>
+                            <label><![CDATA[bycolrec : bycol후, merge되지 않은 cell들을 대상으로 byrow를 실행한다.]]></label>
+                            <value><![CDATA[bycolrec]]></value>
+                        </w2:row><w2:row>
+                            <label><![CDATA[byrowrec : byrow후, merge되지 않은 cell들을 대상으로 bycol을 수행한다.]]></label>
+                            <value><![CDATA[byrowrec]]></value>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var data1 = [1, 1, 2, 4, 4, 4, 1, 1, 2, 4, 4, 4, 1, 3, 2, 4, 4, 5, 1, 3, 3, 5, 5, 5];
+    dataList1.setData(data1);
+    radio2.setValue("bycol");
+}
+scwin.radio2_onviewchange = function(info) {
+    gridView1.mergeCells(info.value);
+    gridView2.mergeCells(info.value);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').getAttribute('rowspan') == null", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_2').getAttribute('rowspan') == null", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+	scwin.init()
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="" style="position: relative;height: 120px;width: 600px;" class="">
+            <w2:textbox label="동적 컬럼병합 + mergeCol 예제" id="" style="position: relative;width: 700px;height: 60px;font-size:24pt;">
+            </w2:textbox>
+            <xf:group style="height:30px;">
+                <w2:anchor id="" style="position: relative;width: 300px;height: 30px;" outerDiv="false"
+                    href="https://inswave.com/jira/browse/WPF-1911">
+                    <xf:label><![CDATA[https://inswave.com/jira/browse/WPF-1911]]></xf:label>
+                </w2:anchor>
+            </xf:group>
+            <xf:group style="height:30px;">
+                <w2:anchor id="" style="position: relative;width: 300px;height: 30px;" outerDiv="false"
+                    href="https://inswave.com/jira/browse/WEFF-453">
+                    <xf:label><![CDATA[https://inswave.com/jira/browse/WEFF-453]]></xf:label>
+                </w2:anchor>
+            </xf:group>
+        </xf:group> 
+    	<xf:group id="" style="height:200px;">
+    		<w2:textbox label="mergeCol=col1,col4,col5" id=""
+                style="position: relative;width: 700px;height: 30px;font-size:16pt;">
+            </w2:textbox>
+            <w2:textbox label="col1,col4,col5 컬럼만 merge기능 수행 (아래 전체 컬럼 merge하는 그리드와 비교)" id=""
+                style="position: relative;width: 700px;height: 30px;font-size:12pt;">
+            </w2:textbox>
+            <w2:gridView id="gridView1" applyAllColumnStyle="false" dataList="dataList1"
+    			style="position: relative;width:900px;height:150px;" useShiftKey="true" scrollByColumn="false" rowStatusVisible="true"
+    			defaultCellHeight="20" rowNumVisible="true" columnMove="true" mergeCol="col1,col4,col5" mergeCells="bycol">
+    			<w2:header id="header1" style="">
+    				<w2:row id="row1" style="">
+    					<w2:column id="column21" blockSelect="false" width="80" inputType="text" value="col1"></w2:column>
+    					<w2:column id="column19" blockSelect="false" width="80" inputType="text" value="col2" textAlign="left"></w2:column>
+                        <w2:column id="column17" blockSelect="false" width="80" inputType="text" value="col3" textAlign="left"></w2:column>
+                        <w2:column id="column15" blockSelect="false" width="80" inputType="text" value="col4"></w2:column>
+                        <w2:column id="column13" blockSelect="false" width="80" inputType="text" value="col5" textAlign="left"></w2:column>
+                        <w2:column id="column11" blockSelect="false" width="80" inputType="text" value="col6" textAlign="left"></w2:column>
+    				</w2:row>
+    			</w2:header>
+    			<w2:gBody id="gBody1" style="">
+    				<w2:row id="row2" style="">
+    					<w2:column id="col1" blockSelect="false" width="70" inputType="text"></w2:column>
+    					<w2:column id="col2" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col3" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col4" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col5" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col6" blockSelect="false" width="70" inputType="text"></w2:column>
+    				</w2:row>
+    			</w2:gBody>
+    		</w2:gridView>
+    	</xf:group>
+
+    	<xf:group id="" style="position: relative;width: 700px;height: 170px;" class="">
+            <xf:group id="" style="position: relative;width: 600px;height: 150x;" class="">
+                <xf:select1 id="radio2" ref="" cols="" selectedIndex="-1" appearance="full"
+                    style="position: relative;width: 450px;height: 150px;border: 3px solid black;" ev:onviewchange="scwin.radio2_onviewchange"
+                    rows="">
+                    <xf:choices>
+                        <xf:itemset nodeset="data:dataList3">
+                            <xf:label ref="label"></xf:label>
+                            <xf:value ref="value"></xf:value>
+                        </xf:itemset>
+                    </xf:choices>
+                </xf:select1>
+            </xf:group>
+    	</xf:group>
+        <xf:group id="" style="height:200px;">
+            <w2:textbox label="전체 컬럼 merge기능 수행" id=""
+                style="position: relative;width: 700px;height: 30px;font-size:12pt;">
+            </w2:textbox>
+            <w2:gridView id="gridView2" applyAllColumnStyle="false" dataList="dataList1"
+                style="position: relative;width:900px;height:150px;" useShiftKey="true" scrollByColumn="false" rowStatusVisible="true"
+                defaultCellHeight="20" rowNumVisible="true" columnMove="true" mergeCells="bycol">
+                <w2:header id="header1" style="">
+                    <w2:row id="row1" style="">
+                        <w2:column id="column21" blockSelect="false" width="80" inputType="text" value="col1"></w2:column>
+                        <w2:column id="column19" blockSelect="false" width="80" inputType="text" value="col2" textAlign="left"></w2:column>
+                        <w2:column id="column17" blockSelect="false" width="80" inputType="text" value="col3" textAlign="left"></w2:column>
+                        <w2:column id="column15" blockSelect="false" width="80" inputType="text" value="col4"></w2:column>
+                        <w2:column id="column13" blockSelect="false" width="80" inputType="text" value="col5" textAlign="left"></w2:column>
+                        <w2:column id="column11" blockSelect="false" width="80" inputType="text" value="col6" textAlign="left"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody id="gBody1" style="">
+                    <w2:row id="row2" style="">
+                        <w2:column id="col1" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col2" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col3" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col4" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col5" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col6" blockSelect="false" width="70" inputType="text"></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>
+    </body>
+</html>
+ 

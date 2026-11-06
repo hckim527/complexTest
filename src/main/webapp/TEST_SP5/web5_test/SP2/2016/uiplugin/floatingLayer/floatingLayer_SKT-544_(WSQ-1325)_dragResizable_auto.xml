@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#floatingLayer1_resize', 'drag-n-drop', {
+        dx: 160,
+        dy: 60
+    });
+}
+scwin.checktype = function() {
+    return typeof WebSquare.wUnit.getObjById('floatingLayer1_resize');
+}
+scwin.checktype2 = function() {
+    return scwin.checktype() == 'object';
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq('#floatingLayer1').css('width') != widthInit;
+}
+scwin.checkVal1 = function() {
+    return widthInit = WebSquare.wUnit.getJq('#floatingLayer1').css('width');
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 3. 2번의 샘플파일을 실행 후 floatingLayer_dragResizable창을 마우스로 크기를 조절한다.
+    //3. After executing sample file 2, resize floatingLayer_dragResizable window with mouse.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.checkVal1()");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 3. floatingLayer_dragResizable창의 크기가 조절된다.
+    //3. floatingLayer_dragResizable The window is resized.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 28-Mar-2018
+    window.widthInit = undefined;
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:floatingLayer id="floatingLayer1" title="floatingLayer_dragResizable" style="position: absolute;top:40px;left:10px;width:300px;height:140px;" dragResizable="true">
+    	</w2:floatingLayer>
+    	<w2:floatingLayer id="floatingLayer2" title="floatingLayer2_noResize" style="position: absolute;width:300px;height:140px;top:40px;left:500px;" >
+    	</w2:floatingLayer>
+    	
+    </body>
+</html>
+ 

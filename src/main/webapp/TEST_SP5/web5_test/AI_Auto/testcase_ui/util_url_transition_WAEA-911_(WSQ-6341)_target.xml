@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// WAEA-911 : util.url transition(fadeout/slideup) jQuery 제거 검증 - [도착] 화면
+//
+// 출발 화면이 sessionStorage 에 남긴 상태를 읽어 판정한다.
+// SPA 는 문서를 새로 로드하지 않으므로 body 인라인 스타일(opacity/height/display)이
+// 복원되지 않으면 도착 화면이 안 보이거나 찌그러진다. 그게 이 수정의 실질적 합격 조건.
+
+var W911_STATE = "WAEA911_STATE";
+var W911_LOG   = "WAEA911_LOG";
+
+var TRANSITION_MS = 1000;   // util._pageTransition 의 rAF 지속시간
+var SLOW_MIN      = 700;    // 효과 케이스가 최소한 이만큼은 걸려야 한다
+var FAST_MAX      = 700;    // 미설정 케이스는 이보다 빨라야 한다 (지연 없음)
+
+scwin.readState = function() {
+    try { return JSON.parse(sessionStorage.getItem(W911_STATE)) || null; } catch (e) { return null; }
+};
+scwin.writeState = function(st) {
+    try { sessionStorage.setItem(W911_STATE, JSON.stringify(st)); } catch (e) {}
+};
+scwin.readLog = function() {
+    try { return JSON.parse(sessionStorage.getItem(W911_LOG)) || []; } catch (e) { return []; }
+};
+scwin.appendLog = function(line) {
+    var arr = scwin.readLog();
+    arr.push(line);
+    try { sessionStorage.setItem(W911_LOG, JSON.stringify(arr)); } catch (e) {}
+    scwin.renderLog();
+};
+scwin.renderLog = function() {
+    txa_log.setValue(scwin.readLog().join("\n") + "\n");
+};
+
+scwin.siblingPath = function(fileName) {
+    var m = location.search.match(/w2xPath=([^&]+)/);
+    var base = m ? decodeURIComponent(m[1]) : location.pathname;
+    return base.replace(/[^\/]*$/, "") + fileName;
+};
+
+scwin.mark = function(ok) { return ok ? "PASS" : "FAIL"; };
+
+// ---- body 상태 수집 ----
+scwin.bodySnapshot = function() {
+    var cs = window.getComputedStyle(document.body);
+    return {
+        display: cs.display,
+        opacity: cs.opacity,
+        inlineHeight: document.body.style.height || "",
+        inlineStyle: document.body.getAttribute("style") || ""
+    };
+};
+
+// body 가 정상적으로 보이는 상태인가
+scwin.bodyVisible = function(snap) {
+    if (snap.display === "none") { return false; }
+    if (parseFloat(snap.opacity) < 0.99) { return false; }
+    if (snap.inlineHeight === "0px") { return false; }
+    return true;
+};
+
+scwin.judge = function() {
+    var st = scwin.readState();
+    if (!st) {
+        scwin.appendLog("[도착] 이전 상태 없음. 출발 화면의 버튼으로 이동해야 판정됩니다.");
+        return;
+    }
+
+    st.arrivals = (st.arrivals || 0) + 1;
+    scwin.writeState(st);
+
+    var elapsed = new Date().getTime() - st.t0;
+    var isTransition = st.opt && (st.opt.transition === "fadeout" || st.opt.transition === "slideup");
+    var jqTotal = (st.jq.fadeOut || 0) + (st.jq.slideUp || 0);
+    var snap = scwin.bodySnapshot();
+
+    scwin.appendLog("[도착] " + st.caseName);
+    scwin.appendLog("  elapsed = " + elapsed + "ms,  arrivals = " + st.arrivals);
+    scwin.appendLog("  body : display=" + snap.display + " opacity=" + snap.opacity +
+                    " inlineHeight=\"" + snap.inlineHeight + "\"");
+    scwin.appendLog("  body inline style = \"" + snap.inlineStyle + "\"");
+    scwin.appendLog("  jQuery 호출 : fadeOut=" + (st.jq.fadeOut || 0) + " slideUp=" + (st.jq.slideUp || 0));
+
+    var fails = [];
+
+    // (1) 페이지 이동 — 여기에 도달했으므로 항상 성공. 효과 실패 케이스에서 특히 중요.
+    scwin.appendLog("  1) 페이지 이동            : PASS (도착함)");
+
+    // (2) 중복 콜백 — 같은 클릭으로 두 번 도착하면 안 된다.
+    var noDup = (st.arrivals === 1);
+    if (!noDup) { fails.push("콜백 중복 호출"); }
+    scwin.appendLog("  2) 콜백 중복 없음        : " + scwin.mark(noDup) + " (arrivals=" + st.arrivals + ", 기대 1)");
+
+    // (3) 소요 시간 — 효과 있으면 느리게, 없으면 즉시.
+    if (st.breakRaf) {
+        scwin.appendLog("  3) 소요 시간              : SKIP (rAF 강제실패 케이스, 시간 무관)");
+    } else if (isTransition) {
+        var slow = (elapsed >= SLOW_MIN);
+        if (!slow) { fails.push("전환 효과가 동작하지 않음(너무 빠름)"); }
+        scwin.appendLog("  3) 전환 효과 소요시간    : " + scwin.mark(slow) +
+                        " (" + elapsed + "ms, 기대 >=" + SLOW_MIN + "ms / 효과 " + TRANSITION_MS + "ms)");
+    } else {
+        var fast = (elapsed < FAST_MAX);
+        if (!fast) { fails.push("미설정 경로에 불필요한 지연"); }
+        scwin.appendLog("  3) 미설정 즉시 이동      : " + scwin.mark(fast) +
+                        " (" + elapsed + "ms, 기대 <" + FAST_MAX + "ms)");
+    }
+
+    // (4) body 복원 — SPA 의 핵심. display:none / opacity:0 / height:0 이 남으면 화면이 안 보인다.
+    var visible = scwin.bodyVisible(snap);
+    scwin.appendLog("  4) body 복원(즉시)       : " + scwin.mark(visible));
+    if (!visible) {
+        scwin.appendLog("     -> 300ms 뒤 늦게 복원되는지 재확인합니다.");
+    }
+
+    // (5) jQuery 미사용 — 신엔진에서만 0. 구엔진은 >0 이 정상이며 이 항목만 FAIL 로 갈린다.
+    var noJq = (jqTotal === 0);
+    scwin.appendLog("  5) jQuery 미사용         : " + scwin.mark(noJq) +
+                    " (호출 " + jqTotal + "회, 신엔진 기대 0)");
+    if (!noJq) {
+        scwin.appendLog("     -> 구엔진이거나 구버전 js 캐시. 기능 항목이 PASS 여도 수정은 미반영입니다.");
+    }
+
+    // 지연 복원 재확인
+    var self = scwin;
+    setTimeout(function() {
+        var late = self.bodySnapshot();
+        var lateOk = self.bodyVisible(late);
+        self.appendLog("  4') body 복원(+300ms)    : " + self.mark(lateOk) +
+                       " (display=" + late.display + " opacity=" + late.opacity +
+                       " inlineHeight=\"" + late.inlineHeight + "\")");
+        if (!lateOk) {
+            fails.push("전환 후 body 스타일 미복원 (SPA 화면 깨짐)");
+        }
+        self.appendLog("  ===> 기능 등가성 판정 : " + (fails.length === 0 ? "PASS" : "FAIL"));
+        if (fails.length > 0) {
+            for (var i = 0; i < fails.length; i++) { self.appendLog("       - " + fails[i]); }
+        }
+        self.appendLog("  ===> 수정 반영 판정   : " + (noJq ? "PASS (jQuery 미사용)" : "FAIL (jQuery 사용 중)"));
+        self.appendLog("");
+    }, 300);
+};
+
+scwin.btn_back_onclick = function() {
+    var st = scwin.readState();
+    var back = (st && st.backPath) ? st.backPath : scwin.siblingPath("util_url_transition_WAEA-911_(WSQ-6341)_main.xml");
+    try { sessionStorage.removeItem(W911_STATE); } catch (e) {}
+    if (window.$p && typeof $p.url === "function") { $p.url(back, { spa: true }); }
+    else { WebSquare.util.url(back, { spa: true }); }
+};
+
+scwin.btn_fix_body_onclick = function() {
+    document.body.style.display = "";
+    document.body.style.opacity = "";
+    document.body.style.height = "";
+    document.body.style.overflow = "";
+    scwin.appendLog("[복구] body 인라인 스타일을 수동으로 되돌렸습니다.");
+};
+
+scwin.btn_clear_onclick = function() {
+    try {
+        sessionStorage.removeItem(W911_LOG);
+        sessionStorage.removeItem(W911_STATE);
+    } catch (e) {}
+    txa_log.setValue("");
+};
+
+scwin.onpageload = function() {
+    window.WAEA_911_TARGET_READY = true;
+    scwin.renderLog();
+    scwin.judge();
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:8px;">
+            <w2:textbox label="WAEA-911 util.url transition 검증 [도착]" style="display:block;font-weight:bold;margin:4px 2px;"/>
+
+            <xf:trigger type="button" id="btn_back" ev:onclick="scwin.btn_back_onclick" style="width:180px;height:28px;margin:2px;">
+                <xf:label><![CDATA[돌아가기 (출발 화면)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_fix_body" ev:onclick="scwin.btn_fix_body_onclick" style="width:220px;height:28px;margin:2px;">
+                <xf:label><![CDATA[body 스타일 수동 복구]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick" style="width:80px;height:28px;margin:2px;">
+                <xf:label><![CDATA[clear]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <w2:textarea id="txa_log" readOnly="true" style="width:780px;height:360px;margin:8px;font-family:monospace;font-size:12px;background:#1e1e1e;color:#0f0;"/>
+    </body>
+</html>

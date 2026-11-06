@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="pivot_WPF-1272_(WSQ-2020)_all.css" type="text/css"?>
+<?xml-stylesheet href="pivot_WPF-1272_(WSQ-2020)_content.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dc_stats" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="QUARTER" name="분기" dataType="text"></w2:column>
+						<w2:column id="COMPANY_NM" name="회사명" dataType="text"></w2:column>
+						<w2:column id="COMPANY_CD" name="회사코드" dataType="text"></w2:column>
+						<w2:column id="GUBUN" name="구분" dataType="text"></w2:column>
+						<w2:column id="GBCD" name="구분코드" dataType="text"></w2:column>
+						<w2:column id="CATEGORY1" name="분류" dataType="text"></w2:column>
+						<w2:column id="CATEGORY2" name="소분류" dataType="text"></w2:column>
+						<w2:column id="AMT" name="금액" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="submission1" ref="" target="data:json,dc_card" action="pivot_WPF-1272_(WSQ-2020)_pivot_csv.txt" method="post"
+				mediatype="text/xml" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="조회중입니다."
+				singleMode="true" ev:submit="" ev:submitdone="scwin.submission1_submitdone" ev:submiterror="">
+			</xf:submission>
+		</xf:model>
+		
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.submission1_submitdone = function(e) {
+    dc_stats.setData(e.responseText.split(","));
+};
+scwin.btn_sch_onclick = function() {
+    $w.executeSubmission("submission1");
+};
+scwin.amtFormat = function(value) {
+    return {
+        digitsAfterDecimal: 0,
+        showZero: true
+    };
+}
+scwin.checkVal = function() {
+    debugger;
+    //return WebSquare.wUnit.getJq("th[header-data*='row:2'][rowspan*='1'][colspan = '2']")[0].innerText;
+    return WebSquare.wUnit.getDomById('pivotTable1_head_table').querySelectorAll('th')[6].innerText == '자동차';
+}
+scwin.getVal2 = function() {
+    debugger;
+    if (WebSquare.wUnit.getJq("th[data-coordinate='1,5'][colspan='3']").length > 0) {
+        return WebSquare.wUnit.getJq("th[data-coordinate='1,5'][colspan='3']")[0].innerText;
+    } else {
+        return "undefine";
+    }
+}
+scwin.getVal3 = function() {
+    return WebSquare.wUnit.getJq("th[data-coordinate='1,1'][colspan='4'][rowspan = '1']")[0].innerText;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "document.getElementsByTagName('a')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_12_body_tbody').children().length > 0", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pivotTable1_body_table').children().length > 0", "true");
+
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "firstValue = scwin.getVal()");
+    //WebSquare.wUnit.addCommand("set", "firstValue2 = scwin.getVal2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pivotTable1_container_scrollX').scrollLeft = 100");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "secondValue2 = scwin.getVal2()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pivotTable1_container_scrollX').scrollLeft = 400");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "secondValue = scwin.checkVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 09-Mar-2018
+    var firstValue, secondValue;
+    var firstValue2, secondValue2;
+}
+]]></script>
+		<style type="text/css"><![CDATA[
+		
+		
+		table.pvtTable col:nth-child(n+3){
+    		width:88px !important;
+		}
+		
+		table.pvtTable col[id=pivotTable1_col3]{
+    		width:100px !important;
+		}
+		
+		table.pvtTable .pvtVal{
+			text-align:right;
+		}
+		
+		table.pvtTable tr th, table.pvtTable tr th {
+		   /* white-space: initial; */
+		}
+		
+		table.pvtTable .pvtColLabel {
+		    text-align: center;
+		    white-space: initial;
+		    height:56px;
+		}
+		
+		table.pvtTable .pvtRowLabel {
+		    text-align: left;
+		}
+	
+
+		 ]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="contentbox" id="" style="">
+			<xf:group class="defaultbox mt10" id="" style="">
+				<w2:textbox class="df_tt fl" ev:onclick="scwin.textbox2_onclick" id="textbox2" label="통계표명" style="padding: 0 30px;"></w2:textbox>
+				<w2:textbox class="df_tt fl" ev:onclick="scwin.textbox1_onclick" id="textbox1" label="사업실적표" style="font-size:11px;font-weight: normal;">
+				</w2:textbox>
+				<xf:group class="fr" id="343" style="">
+					<w2:textbox class="df_tt fl" ev:onclick="scwin.textbox1_onclick" id="time_txt" label="TIME : 0 ms"
+						style="font-size:11px;font-weight: normal;margin-left:0px;">
+					</w2:textbox>
+					<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+						displayMode="label" ev:onchange="scwin.csv_cnt_onchange" id="csv_cnt" optionOrder="false" selectedData="true"
+						style="float:left;width: 148px;height: 21px;display:none;margin-left:5px;" submenuSize="auto">
+						<xf:choices>
+							<xf:item>
+								<xf:label><![CDATA[100csv]]></xf:label>
+								<xf:value><![CDATA[100]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[500csv]]></xf:label>
+								<xf:value><![CDATA[500]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[1000csv]]></xf:label>
+								<xf:value><![CDATA[1000]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[5000csv]]></xf:label>
+								<xf:value><![CDATA[5000]]></xf:value>
+							</xf:item>
+						</xf:choices>
+					</xf:select1>
+					<w2:anchor class="btn_gcm" ev:onclick="scwin.btn_sch_onclick" id="btn_sch" style="">
+						<xf:label><![CDATA[조회]]></xf:label>
+					</w2:anchor>
+					<w2:anchor class="btn_gcm" ev:onclick="scwin.anchor3_onclick" id="btn_init" style="">
+						<xf:label><![CDATA[초기화]]></xf:label>
+					</w2:anchor>
+				</xf:group>
+			</xf:group>
+			<w2:gridView dataList="dc_stats" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id=""
+				style="height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn"
+				autoFitMinWidth="800" sortable="true" sortEvent="onclick">
+				<w2:header id="header1" style="">
+					<w2:row id="row1" style="">
+						<w2:column blockSelect="false" id="column15" style="height:20px" inputType="text" width="70" displayMode="label" value="분기">
+						</w2:column>
+						<w2:column blockSelect="false" id="column13" style="height:20px" inputType="text" width="70" displayMode="label" value="회사명">
+						</w2:column>
+						<w2:column blockSelect="false" id="column11" style="height:20px" inputType="text" width="70" displayMode="label" value="회사코드">
+						</w2:column>
+						<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label" value="구분">
+						</w2:column>
+						<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label" value="구분코드">
+						</w2:column>
+						<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="70" displayMode="label" value="분류">
+						</w2:column>
+						<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label" value="소분류">
+						</w2:column>
+						<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label" value="금액">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" id="QUARTER" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+						<w2:column blockSelect="false" id="COMPANY_NM" style="height:20px" inputType="text" width="70" displayMode="label">
+						</w2:column>
+						<w2:column blockSelect="false" id="COMPANY_CD" style="height:20px" inputType="text" width="70" displayMode="label">
+						</w2:column>
+						<w2:column blockSelect="false" id="GUBUN" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+						<w2:column blockSelect="false" id="GBCD" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+						<w2:column blockSelect="false" id="CATEGORY1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+						<w2:column blockSelect="false" id="CATEGORY2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+						<w2:column blockSelect="false" id="AMT" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<xf:group id="" style="height: 700px;margin-top:5px;" class="">
+				<w2:pivot id="pivotTable1" editablePivotMode="true" dataList="dc_stats" contextMenuGetter="scwin.getContext"
+					style="height:100%;width:100%;border: 1px solid black;" sortFunction="" rows="COMPANY_NM,GBCD,GUBUN" cols="QUARTER,CATEGORY1,CATEGORY2"
+					vals="AMT" numberFormatter="" valuesAxis="row" class="" renderMode="full" defaultAggregator="Integer Sum" >
+					<w2:fieldInfo >
+						<w2:field id="QUARTER" name="분기" sortOrder="201603,201512,201509,201506,201503,201412,201409,201406,201403"></w2:field>
+						<w2:field id="COMPANY_NM" name="회사명"></w2:field>
+						<w2:field id="GUBUN" name="구분"></w2:field>
+						<w2:field id="GBCD" name="코드"></w2:field>
+						<w2:field id="CATEGORY1" name="분류" sortOrder="화재,해상,자동차,보증,특종,해외원보험,해외수재보험,장기/연금/자산연계/퇴직/퇴직연금 보험계,부수사업,일반계정계,장기무배당,장기유배당,개인연금,자산연계형,합계"></w2:field>
+						<w2:field id="CATEGORY2" name="소분류"  sortOrder="화재,적화,선박,기타,소계,책임,임의,소계,보증,특종,해외원보험,해외수재보험,장기/연금/자산연계/퇴직/퇴직연금 보험계,부수사업,일반계정계,장기무배당,장기유배당,개인연금,자산연계형,합계"></w2:field>
+						<w2:field id="AMT" name="금액" formatter=""></w2:field>
+					</w2:fieldInfo>
+				</w2:pivot>
+
+
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+ 

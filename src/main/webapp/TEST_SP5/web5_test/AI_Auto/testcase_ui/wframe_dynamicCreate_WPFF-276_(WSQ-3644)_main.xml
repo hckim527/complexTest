@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map"></w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_trigger1_onclick = async function() {
+    var tempMenuCd = "cmcm001" + scwin.n++
+    await tabControl1.addTab(tempMenuCd, {
+        "label": "공통코드등록",
+        "title": "공통코드등록",
+        "openAction": "new",
+        "closable": "true"
+    }, {
+        "src": "wframe_dynamicCreate_WPFF-276_(WSQ-3644)_tab3.xml",
+        "wframe": true,
+        "scope": true,
+        "alwaysDraw": false
+    });
+    await tabControl1.setSelectedTabIndex(tempMenuCd);
+    var wfmObj = tabControl1.getFrame(tabControl1.getTabIndex(tempMenuCd));
+    var targetObj = WebSquare.util.getChildren(wfmObj, {
+        recursive: true
+    })[0] || "";
+    var screenObj = wfmObj.getObj("$p").dynamicCreate("wfmScreenHeader", "wframe", {
+        mode: "sync",
+        scope: true
+    }, targetObj);
+    if (await screenObj.setSrc("wframe_dynamicCreate_WPFF-276_(WSQ-3644)_tab2.xml")) {
+        screenObj.getObj("scwin").init();
+    }
+};
+scwin.btn_trigger2_onclick = function() {
+    tabControl1.getFrame(1).setSrc("wframe_dynamicCreate_WPFF-276_(WSQ-3644)_tab2.xml");
+};
+scwin.btn_trigger3_onclick = function() {
+    tabControl1.getFrame(1).setSrc("wframe_dynamicCreate_WPFF-276_(WSQ-3644)_tab1.xml");
+};
+scwin.btn_trigger4_onclick = function() {
+    tabControl1.setSelectedTabIndex(1);
+    var wfmObj = tabControl1.getFrame(1);
+    var targetObj = WebSquare.util.getChildren(wfmObj, {
+        "recursive": true
+    })[0] || "";
+    console.log(targetObj.render);
+    var screenObj = scwin.$p.dynamicCreate("wfmScreenHeader", "wframe", {
+        "mode": "sync",
+        "scope": true
+    }, targetObj);
+    console.log(screenObj.render);
+    if (screenObj.setSrc("wframe_dynamicCreate_WPFF-276_(WSQ-3644)_tab1.xml")) {
+        screenObj.getObj("scwin").init();
+    }
+};
+scwin.onpageload = function() {
+    scwin.n = 0;
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" style="width: 80px;height: 23px;margin-top:5px;margin-left:5px;" id="btn_trigger1"
+    		ev:onclick="scwin.btn_trigger1_onclick">
+    		<xf:label><![CDATA[Add Tab]]></xf:label>
+    	</xf:trigger>
+    	<xf:group style="height:50px;"></xf:group>
+    	<w2:tabControl useMoveNextTabFocus="false" id="tabControl1" style="position:relative;width: 700px;height: 700px;"
+    		confirmTrueAction="exist" useTabKeyOnly="true" useConfirmMessage="false" confirmFalseAction="new" alwaysDraw="false">
+    	</w2:tabControl>
+    </body>
+</html> 

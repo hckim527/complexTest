@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[3]]></col2>
+            				<col3><![CDATA[4]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[3]]></col2>
+            				<col3><![CDATA[5]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[3]]></col2>
+            				<col3><![CDATA[6]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.createMouseEvent = function(ev, type) {
+    if (ev.initMouseEvent) {
+        if (WebSquare.util.isIE(9) || WebSquare.util.isIE(10)) {
+            if (type.slice(0, 2) != "on") {
+                type = "on" + type;
+            }
+            if (document.createEventObject) {
+                var mouseEvent = document.createEventObject();
+                mouseEvent.button = 0;
+                ev.target.fireEvent(type, mouseEvent);
+            }
+        } else {
+            var mouseEvent = document.createEvent("MouseEvent");
+            if (type.slice(0, 2) == "on") {
+                type = type.slice(2);
+            }
+            mouseEvent.initMouseEvent(type, true, true, window, 0,
+                ev.screenX, ev.screenY, ev.clientX, ev.clientY,
+                ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey,
+                0, null);
+            ev.target.dispatchEvent(mouseEvent);
+        }
+    } else {
+        if (type.slice(0, 2) != "on") {
+            type = "on" + type;
+        }
+        if (document.createEventObject) {
+            var mouseEvent = document.createEventObject();
+            mouseEvent.button = 0;
+            WebSquare.wUnit.getDomById($p.id + ev).fireEvent(type, mouseEvent);
+        }
+    }
+}
+scwin.createDblClickEvent = function(ev) {
+    scwin.createMouseEvent(ev, "onmousedown");
+    scwin.createMouseEvent(ev, "onmouseup");
+    scwin.createMouseEvent(ev, "onclick");
+    scwin.createMouseEvent(ev, "onmousedown");
+    scwin.createMouseEvent(ev, "onmouseup");
+    scwin.createMouseEvent(ev, "onclick");
+    scwin.createMouseEvent(ev, "ondblclick");
+}
+scwin.__triggerKeyboardEvent = function(el, keyCode) {
+    var eventObj = document.createEventObject ?
+        document.createEventObject() : document.createEvent("Events");
+    if (eventObj.initEvent) {
+        eventObj.initEvent("keydown", true, true);
+    }
+    eventObj.keyCode = keyCode;
+    eventObj.which = keyCode;
+    el.dispatchEvent ? el.dispatchEvent(eventObj) : el.fireEvent("onkeydown", eventObj);
+}
+scwin.setVal = function() {
+    scwin.createDblClickEvent(evtObj['gridView1_cell_0_0']);
+}
+scwin.setVal1 = function() {
+    scwin.__triggerKeyboardEvent(WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col1'), 13);
+}
+scwin.checkVal = function() {
+    return gridView1.getCellData(0, 0) == '25';
+}
+scwin.setVal2 = function() {
+    scwin.createDblClickEvent(evtObj['gridView1_cell_0_1']);
+}
+scwin.setVal3 = function() {
+    scwin.__triggerKeyboardEvent(WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col2'), 13);
+}
+scwin.checkVal1 = function() {
+    return gridView1.getCellData(0, 1) == '25';
+}
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click();");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col1').setValue('25')");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').click();");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2').setValue('25')");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal3()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.evtObj = {};
+    window.cell01 = WebSquare.wUnit.getDomById($p.id + "gridView1_cell_0_1");
+    window.cell00 = WebSquare.wUnit.getDomById($p.id + "gridView1_cell_0_0");
+    cell00.onclick = function(ev) {
+        evtObj["gridView1_cell_0_0"] = ev;
+    }
+    cell01.onclick = function(ev) {
+        evtObj["gridView1_cell_0_1"] = ev;
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left:60px;top:65px;width: 494px;height: 324px;" fixedColumnWithHidden="true" useShiftKey="true"
+    		editModeEvent="" columnMove="" excludeDeletedRows="" colMerge="true" colMergeEdit="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" value="col1"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" value="col2"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" value="col3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text" colMerge="true"
+    					colMergeEdit="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" colMerge="true"
+    					colMergeEdit="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70" colMerge="true"
+    					colMergeEdit="true">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

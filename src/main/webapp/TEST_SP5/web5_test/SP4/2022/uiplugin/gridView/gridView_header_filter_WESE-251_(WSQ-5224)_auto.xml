@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true" 
+                    ev:onbeforecolumnfilterchange="scwin.dataList1_onbeforecolumnfilterchange" ev:onaftercolumnfilterchange="scwin.dataList1_onaftercolumnfilterchange">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+    scwin.onpageload = function() {
+        var json = [
+            { "col1" : "10", "col2" : "10", "col3" : "a"},
+            { "col1" : "10", "col2" : "20", "col3" : "b"},
+            { "col1" : "20", "col2" : "10", "col3" : "c"},
+            { "col1" : "20", "col2" : "20", "col3" : "d"},
+            { "col1" : "30", "col2" : "10", "col3" : "e"},
+            { "col1" : "30", "col2" : "20", "col3" : "f"}
+        ]
+        dataList1.setJSON(json)
+    };
+    
+    scwin.onpageunload = function() {
+        
+    };
+    
+    scwin.dataList1_onbeforecolumnfilterchange = function() {
+        console.log("onbeforecolumnfilterchange 발생");
+    };
+    
+    scwin.dataList1_onaftercolumnfilterchange = function() {
+        console.log("onaftercolumnfilterchange 발생");
+    };
+    
+    scwin.trigger3_onclick = function(e) {
+        dataList1.setColumnFilter( 
+               {type:'row', colIndex:'col1', key:"10", condition:'and'}
+           );   
+    };
+	
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('gridView1_column5_filter').getAttribute('title') == '필터 버튼';
+	}		
+
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+    ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:textbox label="&lt;현재 &gt;&lt;br/&gt;사용자가 직접 필터를 조작할 경우에만 아래의 이벤트 발생&lt;br/&gt;- onbeforecolumnfilterchange&lt;br/&gt;- onaftercolumnfilterchange&lt;br/&gt;&lt;br/&gt;&lt;원하는 동작&gt;&lt;br/&gt;dataList의 setColumnFilter API 사용시에도 해당 이벤트 발생해야 함" style="width:507px;height:147px;" id="" escape="false"></w2:textbox>
+        <w2:gridView id="gridView1" style="width:508px;height:180px;" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false"
+            dataList="data:dataList1" mergeCells="bycol" mergeCol="col1" sortable="true" showSortableUseFilter="true">
+            <w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+            <w2:header style="" id="header2">
+                <w2:row style="" id="row3">
+                    <w2:column removeBorderStyle="false" width="120" inputType="text" style="height:20px" id="column5" value="name1"
+                        blockSelect="false" displayMode="label" useFilter="true">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="170" inputType="text" style="height:20px" id="column4" value="name2"
+                        blockSelect="false" displayMode="label" useFilter="true">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="150" inputType="text" style="height:20px" id="column3" value="name3"
+                        blockSelect="false" displayMode="label" useFilter="true">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody style="" id="gBody2">
+                <w2:row style="" id="row4">
+                    <w2:column removeBorderStyle="false" width="120" inputType="text" style="height:20px" id="col1" value=""
+                        blockSelect="false" displayMode="label" useFilter="true">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="col2" value=""
+                        blockSelect="false" displayMode="label" useFilter="true">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="col3" value=""
+                        blockSelect="false" displayMode="label" useFilter="true">
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <xf:trigger type="button" style="width:160px;height:33px;" id="trigger3" ev:onclick="scwin.trigger3_onclick">
+            <xf:label><![CDATA[setColumnFilter]]></xf:label>
+        </xf:trigger>
+    </body>
+</html>

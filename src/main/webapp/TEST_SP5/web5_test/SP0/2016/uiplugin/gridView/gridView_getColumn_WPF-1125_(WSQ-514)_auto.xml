@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) { //debugger
+    var colIndex = input1.getValue();
+    var colId = gridView1.getColumnID(parseInt(colIndex));
+    //getColumnWidth 비공개 API
+    //rowNumVisible, rowStatusVisible 설정시 getColumnIndex("col1") 과 같이 index 를 가져올 경우 고려하지 않은 문제가 있어 +2
+    //alert(gridView1.getColumnWidth(gridView1.getColumnIndex(colId) + 2)); // 기존 방식 : +2 를 해서 계산 (예 : name1 의 width 를 확인할려면, 1 입력) 
+    //alert(gridView1.getColumnWidth(gridView1.getColumnIndex(colId), true)); // 새로운 방식 : +2를 제외, true일 때 자동으로 defaultColumn(rowNum컬럼 및 status컬럼)을 제외하고 column index를 계산
+    log = gridView1.getColumnWidth(gridView1.getColumnIndex(colId), true);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#input1').val('0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log == 100", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#input1').val('02')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log == 200", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setData(['test data', 'test data', 'test data', 'test data', 'test data', 'test data']);
+    window.log = 0;
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 10-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" scrollByColumnAdaptive="false" id="gridView1" style="position: absolute ;left:45px;top:64px;width:859px;height:377px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" rowNumVisible="true" rowStatusVisible="true" rowStatusHeaderValue="status" rowNumWidth="50" rowStatusWidth="60" rowNumHeaderValue="rownum">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="100" displayMode="label" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="150" displayMode="label" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="200" inputType="text" displayMode="label" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 47px;top: 27px;width: 138px;height: 22px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[getColumnWidth]]></xf:label>
+    	</xf:trigger>
+    	<xf:input id="input1" style="position: absolute ;left: 199px;top: 30px;width: 126px;height: 16px;"></xf:input>
+    </body>
+</html>
+ 

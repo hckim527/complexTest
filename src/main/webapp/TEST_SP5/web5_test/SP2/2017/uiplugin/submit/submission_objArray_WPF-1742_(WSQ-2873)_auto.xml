@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:config>
+            <WebSquare>
+                <submission> 
+                    <useModal value="true" /> 
+                </submission>
+            </WebSquare>
+        </w2:config>
+
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dataList1" baseNode="list" style=""
+        			repeatNode="map" keyNode="infoList">
+        			<w2:columnInfo>
+        				<w2:column id="sDate" name="name1"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="nDateType" name="name2"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sDesc" name="name3"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC1" name="name4"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC2" name="name5"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC3" name="name6"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC4" name="name7"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC5" name="name8"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC6" name="name9"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC7" name="name10"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC8" name="name11"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC9" name="name12"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC10" name="name13"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC11" name="name14"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC12" name="name15"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC13" name="name16"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC14" name="name17"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC15" name="name18"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC16" name="name19"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="sETC17" name="name20"
+        					dataType="text">
+        				</w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="data:json"
+        		target='data:json,{"id":"dataList1","key":"infoList"}'
+        		action="jsonData10000.json" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance=""
+        		replace="" errorHandler="" customHandler="" abortTrigger="true"
+        		mode="asynchronous" preSubmitFunction="scwin.preSubmitFn" processMsg="submission~~" ev:submit="scwin.submission1_submit"
+        		ev:submitdone="scwin.submission1_submitdone" ev:submiterror="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var childComps = WebSquare.util.getChildren(grp);
+    var enabledComps = [];
+    for (var i = 0, len = childComps.length; i < len; i++) {
+        var comp = childComps[i];
+        if (comp.getDisabled && comp.getDisabled() !== true) {
+            enabledComps.push(comp);
+        }
+    }
+    $w.executeSubmission("submission1", "", enabledComps);
+};
+scwin.preSubmitFn = function(submitobj) {
+    var childComps = WebSquare.util.getChildren(grp);
+    //alert("preSubmitFunction");
+    for (var i = 0, len = childComps.length; i < len; i++) {
+        var comp = childComps[i];
+        if (comp.getDisabled && comp.getDisabled() !== true) {
+            submitobj.linkedObj.push(comp);
+        }
+    }
+    grp.invoke('setDisabled', 'true');
+};
+scwin.submission1_submit = function(e) {
+    //debugger;	
+};
+scwin.submission1_submitdone = function(e) {
+    //debugger;	
+};
+scwin.checkVal1 = function() {
+    return ipx.getAttribute('disabled');
+}
+scwin.checkVal2 = function() {
+    return ta.getAttribute('disabled');
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 0. configl.xml에서 속성을 추가한다.(추가하지 않고 확인해서 disabled되는지 확인하면됨)
+    //Add the attribute in configl.xml (check it without adding it to see if it is disabled)
+    //Verify 0. <submission> <useModal value='true' /> </submission>
+    //Test step 1. 샘플파일을 실행 후 '데이터전송'버튼을 클릭한다.
+    //Execute the sample file and click the 'Data Transfer' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    //Verify 1. submission이 잠깐 실행될때 inputbox부분을 보면 disable되어지는것이 확인된다.
+    //When the submission is executed for a while, it is confirmed that the input box is disabled.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 29-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[데이터 전송]]></xf:label>
+    	</xf:trigger>
+    	
+    	<xf:group id="grp" style="" keepDisabled="true">
+    		<xf:select1 appearance="full" cols="" id="rdo" rows="1" selectedIndex="-1"
+    			style="position: relative;width: 150px;height: 21px;">
+    			<xf:choices>
+    				<xf:item>
+    					<xf:label><![CDATA[1]]></xf:label>
+    					<xf:value><![CDATA[1]]></xf:value>
+    				</xf:item>
+    				<xf:item>
+    					<xf:label><![CDATA[2]]></xf:label>
+    					<xf:value><![CDATA[2]]></xf:value>
+    				</xf:item>
+    			</xf:choices>
+    		</xf:select1>
+    		<xf:input displayFormat="###,###" id="ipx" style="position: relative;width: 144px;height: 21px;"></xf:input>
+    		<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="true"
+    			disabledClass="w2selectbox_disabled" displayMode="label" id="sel" optionOrder="false" selectedData="true"
+    			style="position: relative;width: 148px;height: 21px;" submenuSize="auto">
+    			<xf:choices>
+    				<xf:item>
+    					<xf:label><![CDATA[1]]></xf:label>
+    					<xf:value><![CDATA[1]]></xf:value>
+    				</xf:item>
+    				<xf:item>
+    					<xf:label><![CDATA[2]]></xf:label>
+    					<xf:value><![CDATA[2]]></xf:value>
+    				</xf:item>
+    			</xf:choices>
+    		</xf:select1>
+    		<xf:select appearance="full" cols="" id="chk" rows="" selectedindex="-1" disabled="true"
+    			style="position: relative;width: 148px;height: 21px;">
+    			<xf:choices>
+    				<xf:item>
+    					<xf:label><![CDATA[1]]></xf:label>
+    					<xf:value><![CDATA[1]]></xf:value>
+    				</xf:item>
+    			</xf:choices>
+    		</xf:select>
+    		<xf:textarea id="ta" style="position: relative;width: 300px;height: 100px;"></xf:textarea>
+    		<w2:inputCalendar calendarValueType="yearMonthDate" focusOnDateSelect="false" footerDiv="false" id="ic" disabled="true" renderDiv="true"
+    			renderType="component" rightAlign="false" style="position: relative;width: 150px;height: 23px;" useAnchor="true" weekStartsOn="0">
+    		</w2:inputCalendar>
+    		
+    		<w2:gridView dataList="dataList1" summaryAuto="false" useFilterList="false" scrollByColumn="false" showSortableUseFilter="false" scrollByColumnAdaptive="false" id="" style="position: relative;width: 500px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column39" style="height:20px" inputType="text" width="70" displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column37" style="height:20px" inputType="text" width="70" displayMode="label" value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column35" style="height:20px" inputType="text" width="70" displayMode="label" value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column33" style="height:20px" inputType="text" width="70" displayMode="label" value="name4">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column31" style="height:20px" inputType="text" width="70" displayMode="label" value="name5">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column29" style="height:20px" inputType="text" width="70" displayMode="label" value="name6">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column27" style="height:20px" inputType="text" width="70" displayMode="label" value="name7">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column25" style="height:20px" inputType="text" width="70" displayMode="label" value="name8">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column23" style="height:20px" inputType="text" width="70" displayMode="label" value="name9">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column21" style="height:20px" inputType="text" width="70" displayMode="label" value="name10">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column19" style="height:20px" inputType="text" width="70" displayMode="label" value="name11">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column17" style="height:20px" inputType="text" width="70" displayMode="label" value="name12">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column15" style="height:20px" inputType="text" width="70" displayMode="label" value="name13">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column13" style="height:20px" inputType="text" width="70" displayMode="label" value="name14">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px" inputType="text" width="70" displayMode="label" value="name15">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label" value="name16">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label" value="name17">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="70" displayMode="label" value="name18">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label" value="name19">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label" value="name20">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="sDate" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="nDateType" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sDesc" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC1" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC2" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC3" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC4" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC5" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC6" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC7" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC8" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC9" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC10" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC11" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC12" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC13" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC14" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC15" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC16" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="sETC17" style="height:20px" width="70" inputType="text" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	</xf:group>
+    </body>
+</html>
+ 

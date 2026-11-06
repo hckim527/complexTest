@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[AA]]></col1>
+            				<col2><![CDATA[RR]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[BB]]></col1>
+            				<col2><![CDATA[TT]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[CC]]></col1>
+            				<col2><![CDATA[YY]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[DD]]></col1>
+            				<col2><![CDATA[UU]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[EE]]></col1>
+            				<col2><![CDATA[II]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.trigger1_onclick = function(e) {
+		  dataList1.setColumnFilter( 
+                        {type:'row', colIndex:'col1', key:"AA", condition:'and', exactMatch:true}
+          );
+          
+          dataList1.setColumnFilter( 
+                        {type:'row', colIndex:'col1', key:"CC", condition:'or', exactMatch:true}
+          );
+	};
+    scwin.trigger2_onclick = function(e) {
+          dataList1.clearFilter();
+    };
+	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#gridView1_column4_filter').hasClass('w2grid_customFilter_filter');
+	}
+	scwin.unitTest = function() {
+		//Unit test
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run and Stop test
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group>
+        	<w2:gridView id="gridView1" style="position:relative;width: 500px;height: 150px;" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" dataList="data:dataList1" useFilterListSync="true"
+        		useFilterList="true" autoFit="allColumn">
+        		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+        		<w2:header style="" id="header2">
+        			<w2:row style="" id="row3">
+        				<w2:column width="70" inputType="text" style="height:20px" id="column4" value="name1" displayMode="label" useFilter="true"></w2:column>
+        				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="name2" displayMode="label" useFilter="true"></w2:column>
+        			</w2:row>
+        		</w2:header>
+        		<w2:gBody style="" id="gBody2">
+        			<w2:row style="" id="row4">
+        				<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label" useFilter="true"></w2:column>
+        				<w2:column width="70" inputType="text" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+        			</w2:row>
+        		</w2:gBody>
+        	</w2:gridView>
+        </xf:group>
+        <xf:group>
+        	<xf:trigger type="button" style="position:relative;width: 180px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+        		<xf:label><![CDATA[col1 setFilter]]></xf:label>
+        	</xf:trigger>
+            <xf:trigger type="button" style="position:relative;width: 180px;height: 23px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+                <xf:label><![CDATA[dataList clearFilter]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+    </body>
+</html>

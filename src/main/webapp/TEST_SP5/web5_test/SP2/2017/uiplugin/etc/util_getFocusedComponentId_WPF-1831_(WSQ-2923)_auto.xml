@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[aaaaaaaaaaaaaaaaaaa]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[bbbbbbbbbbbbbbbbbbbbbbb]]></col1>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var data = dataList1.getAllJSON();
+    grid1.setJSON(data);
+};
+scwin.onfocus = function() {
+    result.setValue(result.getValue() + '\n[' + this.id + '] ' + WebSquare.util.getFocusedComponentId());
+};
+scwin.focusItem = function(id) {
+    return WebSquare.wUnit.getDomById($p.id + id).focus();
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 tab키로 이동한다.inputbox, treeView, selectbox, anchor, 
+    //1. Run the sample file and move to the tab key.inputbox, treeView, selectbox, anchor, gridView (autoComplete), triger tab
+    WebSquare.wUnit.addCommand("set", "scwin.focusItem('input1')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'input1'", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.focusItem('treeview')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'treeview'", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.focusItem('select1')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'select1'", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.focusItem('anchor1')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'anchor1'", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.focusItem('grid1')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'grid1'", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.focusItem('trigger')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'trigger' ", "true");
+    // verify step 1. 각각 아래와 같이 포커스가 되어있는 컴포넌트의 ID가 정상적으로 반환된다.[input1] input1[treeview] treeview[select1] select1[anchor1] anchor1[grid1] grid1[trigger] trigger[trigger] trigger[trigger] trigger
+    //1. The ID of the focused component is returned as shown below. [input1] input1[treeview] treeview[select1] select1[anchor1] anchor1[grid1] grid1[trigger] trigger[trigger] trigger
+    //Test step 2. selectbox의 다른값을 클릭한다.
+    //2. Click another value in the selectbox.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('select1').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('select1_itemTable_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 2. 동일하게 [select1] select1 값이 보여진다.
+    //2. The [select1] select1 value is displayed in the same way.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'select1'", "true");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 22-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+    	<xf:input id="input1" style="position: absolute ;left:50px;top:80px;width:277px;height:30px;" ev:onfocus="scwin.onfocus">
+    	</xf:input>
+    	<w2:span label="SPAN" id="span1" toolTip="sapn tooltip" tooltipFormatter="scwin.tooltipFormatter"
+    		style="position: absolute ;left:51px;top:130px;width:163px;height:69px;border:1px solid #000;" ev:onfocus="scwin.onfocus">
+    	</w2:span>
+    	<w2:textbox label="TEXTBOX" id="txt1" toolTip="textbox tooltip"
+    		style="position: absolute ;left:231px;top:130px;width:143px;height:70px;border: 1px solid #000;" ev:onfocus="scwin.onfocus">
+    	</w2:textbox>
+    	<w2:treeview useDrag="" id="treeview"
+    		style="position: absolute ;left:51px;top:223px;width:164px;height:133px;border: 1px solid #000;" lineShow="" tooltipGroupClass="false"
+    		dataType="listed" tooltipTime="0" tooltipDisplay="true" toolTip="" ev:onfocus="scwin.onfocus">
+    		<w2:node>
+    			<w2:label><![CDATA[New abcfewlkfjmkwfmeklwfmklwjflkewjflkewjlfjewklfj]]></w2:label>
+    			<w2:value><![CDATA[]]></w2:value>
+    			<w2:folder><![CDATA[]]></w2:folder>
+    			<w2:checkbox><![CDATA[]]></w2:checkbox>
+    			<w2:checkboxDisabled><![CDATA[]]></w2:checkboxDisabled>
+    			<w2:image><![CDATA[]]></w2:image>
+    			<w2:iconImage><![CDATA[]]></w2:iconImage>
+    			<w2:selectedImage><![CDATA[]]></w2:selectedImage>
+    			<w2:expandedImage><![CDATA[]]></w2:expandedImage>
+    			<w2:leafImage><![CDATA[]]></w2:leafImage>
+    			<w2:node>
+    				<w2:label><![CDATA[New2 fnlkewmflkqemdklqwmklmdlqwkmdlwkqmdlwkq]]></w2:label>
+    				<w2:value><![CDATA[]]></w2:value>
+    				<w2:folder><![CDATA[]]></w2:folder>
+    				<w2:checkbox><![CDATA[]]></w2:checkbox>
+    				<w2:checkboxDisabled><![CDATA[]]></w2:checkboxDisabled>
+    				<w2:image><![CDATA[]]></w2:image>
+    				<w2:iconImage><![CDATA[]]></w2:iconImage>
+    				<w2:selectedImage><![CDATA[]]></w2:selectedImage>
+    				<w2:expandedImage><![CDATA[]]></w2:expandedImage>
+    				<w2:leafImage><![CDATA[]]></w2:leafImage>
+    			</w2:node>
+    		</w2:node>
+    	</w2:treeview>
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="select1"
+    		style="position: absolute ;left:351px;top:80px;width:220px;height:30px;" displayMode="label" selectedData="true" optionOrder="false"
+    		allOption="" disabled="false" submenuSize="auto" tooltipTime="0" tooltipDisplay="true" toolTip="" ev:onfocus="scwin.onfocus">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[new row]]></xf:label>
+    				<xf:value><![CDATA[]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[new row]]></xf:label>
+    				<xf:value><![CDATA[]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[new row]]></xf:label>
+    				<xf:value><![CDATA[]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select1>
+    	<w2:anchor id="anchor1" toolTip="anchor tooltip"
+    		style="position: absolute;width:167px;height:68px;left:399px;top:131px;border: 1px solid #000;" outerDiv="false" ev:onfocus="scwin.onfocus">
+    		<xf:label><![CDATA[ANCHOR]]></xf:label>
+    	</w2:anchor>
+    	<w2:grid summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" showSortableUseFilter="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="grid1"
+    		style="position: absolute;width:339px;height:131px;left:231px;top:223px;border: 1px solid #000;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true" tooltipDisplay="true" ev:onfocus="scwin.onfocus">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="70" inputType="text" value="aaaaaaaaaaaaa" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+
+    	<xf:textarea id="result" style="position: absolute;width:300px;height:390px;left:640px;top:79px;border: 1px solid #000;"
+    		readOnly="true">
+    	</xf:textarea>
+    	<w2:textbox label="result" id=""
+    		style="position: absolute;width: 150px;height:20px;left:640px;top:53px;font-size:12pt;padding-top:3px;padding-bottom:0px;font-weight:bold;">
+    	</w2:textbox>
+    	<xf:trigger type="button" id="trigger" style="position: absolute;width:102px;height:32px;left:471px;top:369px;" ev:onfocus="scwin.onfocus">
+    		<xf:label><![CDATA[trigger]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:80px;height:26px;left:866px;top:51px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[clear]]></xf:label>
+    	</xf:trigger>
+    	<xf:group id="group1" style="position: absolute;width:401px;height:88px;left:51px;top:370px;border: 1px dashed #000;" class="" toolTip="group tooltip"  ev:ontooltipshow="scwin.ontooltipshow" ev:ontooltiphide="scwin.ontooltiphide"></xf:group>
+    </body>
+</html>
+ 

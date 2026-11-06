@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <!-- tree Test DataSet -->
+                <w2:dataList baseNode="list" repeatNode="map" id="dlTree" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="chk" name="chk" dataType="text"></w2:column>
+                        <w2:column id="deptNm" name="deptNm" dataType="text"></w2:column>
+                        <w2:column id="deptCd" name="deptCd" dataType="text"></w2:column>
+                        <w2:column id="lvl" name="level" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <deptNm><![CDATA[10000 부서명1]]></deptNm>
+                            <deptCd><![CDATA[10000]]></deptCd>
+                            <lvl><![CDATA[1]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[10100 팀명1]]></deptNm>
+                            <deptCd><![CDATA[10100]]></deptCd>
+                            <lvl><![CDATA[2]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[10110 이름1]]></deptNm>
+                            <deptCd><![CDATA[10110]]></deptCd>
+                            <lvl><![CDATA[2]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[10120 이름2]]></deptNm>
+                            <deptCd><![CDATA[10120]]></deptCd>
+                            <lvl><![CDATA[3]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[10130 이름3]]></deptNm>
+                            <deptCd><![CDATA[10130]]></deptCd>
+                            <lvl><![CDATA[3]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[10200 팀명2]]></deptNm>
+                            <deptCd><![CDATA[10200]]></deptCd>
+                            <lvl><![CDATA[2]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[10300 팀명3]]></deptNm>
+                            <deptCd><![CDATA[10300]]></deptCd>
+                            <lvl><![CDATA[2]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[2000 부서명2]]></deptNm>
+                            <deptCd><![CDATA[20000]]></deptCd>
+                            <lvl><![CDATA[1]]></lvl>
+                        </w2:row>
+                        <w2:row>
+                            <deptNm><![CDATA[3000 부서명3]]></deptNm>
+                            <deptCd><![CDATA[3000]]></deptCd>
+                            <lvl><![CDATA[1]]></lvl>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    for (var idx = 0; idx < 5; idx++) {
+        //generator1.insertChild(  );
+        scwin.trigger1_onclick();
+    }
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    var label = "test";
+    var obj = generator1;
+    //        var irow = obj.insert();
+    var irow = obj.insertChild();
+    obj.getChild(irow, "anchor1").setValue(label + irow);
+    obj.getChild(irow, "anchor2").setValue("삭제" + irow);
+    obj.getChild(irow, "anchor1").focus();
+    return irow;
+};
+scwin.anchor2_onclick = function() {
+    this.getGenerator().removeChild(this.getGeneratedIndex());
+};
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'generator1_5_anchor2') != null
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'generator1_4_anchor2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /*
+    scwin.trigger2_onclick = function(e) {
+    	this.getGenerator().removeChild( this.getGeneratedIndex() );
+    };
+    */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[추가]]></xf:label>
+        </xf:trigger>
+        <xf:group style="height: 200px;" id="group1" class="">
+            <w2:generator style="width: 200px;height: 100px;" id="generator1">
+            <xf:group style="height:46px;margin-left:20px;" id="" tagname="li">
+                <xf:group style="height:46px;" id="group2">
+                    <w2:anchor id="anchor1" style="width: 100px;height: 23px;" outerDiv="false">
+                        <xf:label><![CDATA[]]></xf:label>
+                    </w2:anchor>
+                    <w2:anchor id="anchor2" style="width: 100px;height: 23px;" outerDiv="false" ev:onclick="scwin.anchor2_onclick">
+                        <xf:label><![CDATA[]]></xf:label>
+                    </w2:anchor>
+                </xf:group></xf:group></w2:generator>
+        </xf:group>
+    </body>
+</html> 

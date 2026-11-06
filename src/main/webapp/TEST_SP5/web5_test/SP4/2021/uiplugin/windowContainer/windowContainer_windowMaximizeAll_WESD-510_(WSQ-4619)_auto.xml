@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).innerText == value) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('windowContainer1_subWindow1_restore')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_subWindow1_restore').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('windowContainer1_subWindow1').maximize()");
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('windowContainer1_subWindow1_restore')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow1').style.width == '300px'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    windowContainer1.createWindow("aaa", "", "", "abc", "ccccc", "", "", "tooltip");
+    windowContainer1.createWindow("bbb", "", "", "def", "ddddd", "", "", "tooltip");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:windowContainer id="windowContainer1"
+		    style="position: absolute ;left:24px;top:53px;width:83.9445%;height:481px;"
+		    class="" windowMaxNum="5" toolbarPosition="top"
+		    ev:onwindowchange="" ev:onclosewindow=""
+		    ev:onbeforecloseall="" ev:onwindowkeyup="" frameMode="wframe" windowMaximizeAll="true">
+		    <w2:windowToolbar style="" showWindowControlIcon="true"
+		        position="bottom">
+		        <w2:controlIconLayer style="">
+		            <w2:controlIcon alignEvent="vertical"></w2:controlIcon>
+		            <w2:controlIcon alignEvent="horizontal"></w2:controlIcon>
+		            <w2:controlIcon alignEvent="cascade"></w2:controlIcon>
+		            <w2:controlIcon alignEvent="sequential"></w2:controlIcon>
+		            <w2:controlIcon alignEvent="closeAll"></w2:controlIcon>
+		        </w2:controlIconLayer>
+		        <w2:nameLayer style=""></w2:nameLayer>
+		        <w2:selectedNameLayer style=""></w2:selectedNameLayer>
+		    </w2:windowToolbar>
+		</w2:windowContainer>
+    </body>
+</html>
+ 

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>	
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dataList3" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dataList4" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dlt_select" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="label" name="name1" dataType="text"></w2:column>
+                        <w2:column id="code" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="sel_sample" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+    scwin.init = function() {
+        requires("uiplugin.popup");
+        scwin.popupIdx = 0;
+        var jsonData = [
+            {"label":"button","code":"button"},
+            {"label":"calendar","code":"calendar"},
+            {"label":"checkbox","code":"checkbox"},
+            {"label":"select","code":"select"},
+            {"label":"radio","code":"radio"},
+            {"label":"text","code":"text"}
+        ];
+        dlt_select.setJSON(jsonData);
+        
+        var sel_sampleData = [
+            {"col1":"축구", "col2":"1"},
+            {"col1":"농구", "col2":"2"},
+            {"col1":"야구", "col2":"3"},
+            {"col1":"배구", "col2":"4"}
+        ];
+        
+        sel_sample.setJSON(sel_sampleData);
+        
+        
+        var arr=[{"col3":"1"},{"col3":"2"},{"col3":"1"},{"col3":"1"},{"col3":"2"}];
+        dataList1.setJSON(arr);
+        dataList2.setJSON(arr);
+        dataList3.setJSON(arr);
+        dataList4.setJSON(arr);
+    };
+    
+    scwin.inputTypeCustomObj = {
+        text: {inputType: "text"},
+        calendar : {inputType : "calendar"},
+        radio: {inputType : "radio"},
+        checkbox : {inputType :"checkbox"},
+        input : {inputType : "input", className:"test1"},
+        select : {inputType : "select",
+            options : {viewType :"default",  
+                chooseOption : true,
+                chooseOptionLabel : "-선택-"},
+            itemSet : {
+                nodeset:"data:sel_sample",
+                label : "col1",
+                value : "col2"
+            }
+        },
+        select2 : {inputType : "select",
+            options : {
+                viewType : "icon",
+                chooseOption : true
+            },
+            itemSet : {
+                nodeset:"data:sel_sample",
+                label : "col1",
+                value : "col2"
+            }
+        },
+        button : {
+                        inputType : "button", className: "test1", value: "button"
+        },
+         textImage : {
+                        inputType : "textImage",
+                        options : {
+                            imageSrc : "/websquare/uiplugin/grid/images/plus.gif",
+                            imageHeight : "20",
+                            imageWidth : "20", 
+                            viewType: "icon"
+                        }}
+    };
+    
+    //값 변경 시 col2의 inputType을 동적으로 변경한다.
+    scwin.gridView1_onviewchange = function(info) {
+        var inputType = info.newValue;
+        var obj = scwin.inputTypeCustomObj[inputType];
+        var temp = dataList1.getCellData(info.rowIndex, "col3");
+        if(temp == "2"){
+            obj = scwin.inputTypeCustomObj["select2"];
+        }
+        gridView1.setCellInputType( info.rowIndex , "col2" , obj );
+    };
+
+    scwin.gridView2_onviewchange = function(info) {
+        var inputType = info.newValue;
+        var obj = scwin.inputTypeCustomObj[inputType];
+        var temp = dataList2.getCellData(info.rowIndex, "col3");
+        if(temp == "2"){
+            obj = scwin.inputTypeCustomObj["select2"];
+        }
+        gridView2.setCellInputType( info.rowIndex , "col2" , obj );
+    };
+
+    scwin.gridView_oncellclick = function(row, col, colId) {
+        var inputType = this.getInputType(colId);
+        console.log(this.id + " oncellclick column ID : " + colId + ", inputType : " + inputType);
+        if (inputType == "button") {
+            scwin.openPopup("wframePopup");
+        } else if (inputType === "custom") {
+            var cellInfo = this.getCellInfo(col);
+            var cellManager = cellInfo.cellManagerHashByRowIndex[row];
+            if (cellManager && cellManager.options.inputType === "button") {
+                scwin.openPopup("wframePopup");
+            }
+        }
+    }
+
+    scwin.custom_cell_onclick = function(row, col, colId) {
+        console.log(this.parentControl + " custom_cell_onclick");
+    }
+            
+    scwin.onpageload = function() {
+        scwin.init();
+    };
+    
+    scwin.onpageunload = function() {
+        
+    };
+    
+    scwin.openPopup = function(type) {
+        var top = "100px";
+        var left = "100px";
+        var locPosition = $p.top().scwin.popupIdx % 3;
+        
+        var modal = false;
+         
+        switch(locPosition) {
+            case 0 : 
+                top = "100px";
+                left = "100px";
+                break;
+            case 1 :
+                top = "370px";
+                left = "400px";
+                break;  
+            case 2 :
+                top = "100px";
+                left = "700px";
+                break;
+            default :
+        }
+        
+        var popupName = (type + $p.top().scwin.popupIdx) || ("wframePopup" + $p.top().scwin.popupIdx);
+        
+        if (modal === true) {
+            popupName += " (modal)";
+        } else {
+            popupName += " (modaless)";
+        }
+        
+        requires("uiplugin.popup");
+        var options = {
+            id : "popup" + $p.top().scwin.popupIdx,
+            type : type || "wframePopup",
+            width : "580px",
+            height : "250px",
+            top : top,
+            left : left,
+            popupName : popupName,
+            modal : modal,
+            useModalStack : true,
+            resizable : true,
+            status : true,
+            menubar : false,
+            scrollbars : false,
+            accessibility : true,
+            title : false
+        };
+        $p.openPopup("WESD_86_content1.xml", options);
+        
+        $p.top().scwin.popupIdx++;
+    };
+    scwin.getType = function ( info ) {
+        var rowIndex = info.rowIndex;
+        var colIndex = info.colIndex;
+        var returnInfo;
+        if(colIndex == 1){
+            returnInfo = {
+                id : "dynamic_button_" + rowIndex + "_" + colIndex,
+                inputType : "button",
+                value : "button",
+                options : {
+                }
+            };
+            console.log( "[typeGetter] (" + rowIndex + ", " + colIndex + ") : " +JSON.stringify(returnInfo));
+        
+        } else {
+            returnInfo = {
+                id : "dynamic_text_" + rowIndex + "_" + colIndex,
+                inputType : "text",
+                options : {
+                }
+            };
+        }
+        return returnInfo;
+    };
+    ]]></script>
+
+        <style type="text/css"><![CDATA[
+            .test1 { background-color:red !important; }
+         ]]></style>
+	</head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group>
+            <w2:textbox label="gridView1.setCellInputType(); accessibility = true" id="" style="width: 600px;height: 30px;font-size:200%;padding:5px;"></w2:textbox>
+            <w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" setCellInputTypeCustom = "true" accessibility="false" senseReader="true" 
+                scrollByColumnAdaptive="false" id="gridView1" style="width: 500px;height: 170px;" ignoreCellClick="false" syncScroll="false" sortable="true" ev:oncellclick="scwin.gridView_oncellclick" titleAuto="true"
+                ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true" ev:onviewchange="scwin.gridView1_onviewchange">
+                <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+                <w2:header id="header1" style="">
+                    <w2:row id="row1" style="">
+                        <w2:column id="column5" style="" inputType="text" width="100" value="select"></w2:column>
+                        <w2:column id="column3" style="" inputType="text" width="100" value="custom"></w2:column>
+                        <w2:column id="column1" style="" inputType="text" width="100"  value="button"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody id="gBody1" style="">
+                    <w2:row id="row2" style="">
+                        <w2:column id="col1" style="" inputType="select" width="70" value=""
+                            allOption="" chooseOption="true" ref="">
+                            <w2:choices>
+                                <w2:itemset nodeset="data:dlt_select">
+                                    <w2:label ref="label"></w2:label>
+                                    <w2:value ref="code"></w2:value>
+                                </w2:itemset>
+                            </w2:choices>
+                        </w2:column>
+                        <w2:column id="col2" style="" inputType="custom" width="70" ev:onclick="scwin.custom_cell_onclick" value=""></w2:column>
+                        <w2:column id="col3" style="" width="70" inputType="button" value=""></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>
+        <xf:group>
+            <w2:textbox label="gridView2.setCellInputType(); accessibility = false" id="" style="width: 600px;height: 30px;font-size:200%;padding:5px;"></w2:textbox>
+            <w2:gridView dataList="data:dataList2" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" setCellInputTypeCustom = "true" accessibility="false" titleAuto="true"
+                scrollByColumnAdaptive="false" id="gridView2" style="width: 500px;height: 170px;" ignoreCellClick="false" syncScroll="false" sortable="true" ev:oncellclick="scwin.gridView_oncellclick"
+                ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true" ev:onviewchange="scwin.gridView2_onviewchange">
+                <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+                <w2:header id="header1" style="">
+                    <w2:row id="row1" style="">
+                        <w2:column id="column5" style="" inputType="text" width="100" value="name1"></w2:column>
+                        <w2:column id="column3" style="" inputType="text" width="100" value="name2"></w2:column>
+                        <w2:column id="column1" style="" inputType="text" width="100"  value="name3"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody id="gBody1" style="">
+                    <w2:row id="row2" style="">
+                        <w2:column id="col1" style="" inputType="select" width="70" value=""
+                            allOption="" chooseOption="true" ref="">
+                            <w2:choices>
+                                <w2:itemset nodeset="data:dlt_select">
+                                    <w2:label ref="label"></w2:label>
+                                    <w2:value ref="code"></w2:value>
+                                </w2:itemset>
+                            </w2:choices>
+                        </w2:column>
+                        <w2:column id="col2" style="" inputType="custom" width="70" ev:onclick="scwin.custom_cell_onclick" value=""></w2:column>
+                        <w2:column id="col3" style="" width="70" inputType="button" value=""></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>
+        <xf:group>
+            <w2:textbox label="gridView3 typeGetter accessibility = true" id="" style="width: 600px;height: 30px;font-size:200%;padding:5px;"></w2:textbox>
+            <w2:gridView dataList="data:dataList3" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" ev:oncellclick="scwin.gridView_oncellclick" accessibility="true" 
+                id="gridView3" style="width: 500px;height: 170px;" sortable="true" useShiftKey="true">
+                <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+                <w2:header id="header1" style="">
+                    <w2:row id="row1" style="">
+                        <w2:column id="column5" style="" inputType="text" width="100" value="name1"></w2:column>
+                        <w2:column id="column3" style="" inputType="text" width="100" value="name2"></w2:column>
+                        <w2:column id="column1" style="" inputType="text" width="100"  value="name3"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody id="gBody1" style="">
+                    <w2:row id="row2" style="">
+                        <w2:column id="col1" style="" inputType="select" width="70" value=""
+                            allOption="" chooseOption="true" ref="">
+                            <w2:choices>
+                                <w2:itemset nodeset="data:dlt_select">
+                                    <w2:label ref="label"></w2:label>
+                                    <w2:value ref="code"></w2:value>
+                                </w2:itemset>
+                            </w2:choices>
+                        </w2:column>
+                        <w2:column id="col2" style="" inputType="custom" width="70" ev:onclick="scwin.custom_cell_onclick" value="" typeGetter="scwin.getType"></w2:column>
+                        <w2:column id="col3" style="" width="70" inputType="button" value=""></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>
+        <xf:group>
+            <w2:textbox label="gridView4 typeGetter accessibility = false" id="" style="width: 600px;height: 30px;font-size:200%;padding:5px;"></w2:textbox>
+            <w2:gridView dataList="data:dataList3" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" ev:oncellclick="scwin.gridView_oncellclick"
+                accessibility="false"
+                id="gridView4" style="width: 500px;height: 170px;" sortable="true" useShiftKey="true">
+                <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+                <w2:header id="header1" style="">
+                    <w2:row id="row1" style="">
+                        <w2:column id="column5" style="" inputType="text" width="100" value="name1"></w2:column>
+                        <w2:column id="column3" style="" inputType="text" width="100" value="name2"></w2:column>
+                        <w2:column id="column1" style="" inputType="text" width="100"  value="name3"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody id="gBody1" style="">
+                    <w2:row id="row2" style="">
+                        <w2:column id="col1" style="" inputType="select" width="70" value=""
+                            allOption="" chooseOption="true" ref="">
+                            <w2:choices>
+                                <w2:itemset nodeset="data:dlt_select">
+                                    <w2:label ref="label"></w2:label>
+                                    <w2:value ref="code"></w2:value>
+                                </w2:itemset>
+                            </w2:choices>
+                        </w2:column>
+                        <w2:column id="col2" style="" inputType="custom" width="70" ev:onclick="scwin.custom_cell_onclick" value="" typeGetter="scwin.getType"></w2:column>
+                        <w2:column id="col3" style="" width="70" inputType="button" value=""></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>
+    </body>
+</html>

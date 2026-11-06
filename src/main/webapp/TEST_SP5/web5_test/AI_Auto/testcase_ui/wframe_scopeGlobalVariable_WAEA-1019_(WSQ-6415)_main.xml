@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2006/xforms">
+    <head>
+        <w2:config>
+            <WebSquare xmlns="http://www.w3.org/1999/xhtml">
+                <spa>
+                    <scopeGlobalVariable value="scvar"/>
+                </spa>
+            </WebSquare>
+        </w2:config>
+        <xf:model/>
+        <w2:msgLink>
+            <w2:linkage id="LK_16_4902" type="in">
+                <w2:send sour="16_8012" dest="16_4902">
+                    <w2:field sfn="MA_global_cusno" dfn="MA_cusno" lock="0" />
+                </w2:send>
+                <w2:recv sour="16_4902" dest="16_8012">
+                    <w2:field sfn="MA_SendData" dfn="MA_cus_rev" lock="0" />
+                </w2:recv>
+            </w2:linkage>
+        </w2:msgLink>
+        <w2:global>
+            <w2:var id="VR_Count" description="gride Count"/>
+            <w2:var id="VR_Rdflag" />
+            <w2:var id="VR_cnt" description="새로운 변수" value="0"/>
+            <w2:var id="VR_date_yn" description="사업분리이전여부" value="Y"/>
+            <w2:var id="VR_ctl_nm" description="새로운 변수"/>
+            <w2:var id="한글변수" description="유니코드 식별자 - 한글" value="가"/>
+            <w2:var id="変数" description="유니코드 식별자 - 일본어" value="ア"/>
+            <w2:var id="café" description="유니코드 식별자 - 라틴 확장" value="E"/>
+            <w2:var id="Кириллица" description="유니코드 식별자 - 키릴" value="K"/>
+            <w2:var id="9_invalid_id" description="식별자 규칙 위반 - skip 대상"/>
+            <w2:var id="잘못-이름" description="식별자 규칙 위반(하이픈) - skip 대상"/>
+            <w2:var id="__proto__" description="프로토타입 오염 시도 - 거부 대상"/>
+            <w2:var id="constructor" description="프로토타입 오염 시도 - 거부 대상"/>
+        </w2:global>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        scwin.log = function (msg) {
+            var prev = txa_log.getValue() || "";
+            txa_log.setValue(prev + msg + "\n");
+        };
+        scwin.onpageload = function () {
+            scwin.log("=== onpageload 시점 검증 ===");
+            scwin.log("typeof scvar = " + (typeof scvar));
+            if (typeof scvar === "undefined") {
+                scwin.log("[FAIL] scvar 객체가 생성되지 않았습니다.");
+                return;
+            }
+            scwin.log("[PASS] scvar 존재 (onpageload 이전 생성됨)");
+            scwin.log("VR_Count(value 생략) = [" + scvar.VR_Count + "]");
+            scwin.log("VR_cnt(value=0) = [" + scvar.VR_cnt + "]");
+            scwin.log("VR_date_yn(value=Y) = [" + scvar.VR_date_yn + "]");
+            scwin.log("등록된 변수 목록 = " + Object.keys(scvar).join(", "));
+            // 맨이름 대입 검증
+            scvar.VR_Count = "10";
+            scwin.log("맨이름 대입 후 VR_Count = [" + scvar.VR_Count + "]");
+        };
+        scwin.btn_checkInvalid_onclick = function () {
+            scwin.log("=== 식별자 검증 / 프로토타입 오염 차단 ===");
+            scwin.log("9_invalid_id 등록 여부 = " + scvar.hasOwnProperty("9_invalid_id") + " (false 기대)");
+            scwin.log("잘못-이름 등록 여부 = " + scvar.hasOwnProperty("잘못-이름") + " (false 기대)");
+            scwin.log("__proto__ 자체 프로퍼티 = " + scvar.hasOwnProperty("__proto__") + " (false 기대)");
+            scwin.log("constructor 자체 프로퍼티 = " + scvar.hasOwnProperty("constructor") + " (false 기대)");
+            scwin.log("Object.prototype 오염 = " + ({}).hasOwnProperty("VR_Count") + " (false 기대)");
+            scwin.log("정상 변수 개수 = " + Object.keys(scvar).length + " (9 기대)");
+        };
+        scwin.btn_checkUnicode_onclick = function () {
+            scwin.log("=== 유니코드 식별자 ===");
+            scwin.log("한글변수 = [" + scvar.한글변수 + "] (가 기대)");
+            scwin.log("変数 = [" + scvar.変数 + "] (ア 기대)");
+            scwin.log("café = [" + scvar.café + "] (E 기대)");
+            scwin.log("Кириллица = [" + scvar.Кириллица + "] (K 기대)");
+            // 맨이름 대입 (with 스코프 해석 확인)
+            scvar.한글변수 = "나";
+            scwin.log("맨이름 대입 후 한글변수 = [" + scvar.한글변수 + "] (나 기대)");
+        };
+        scwin.btn_checkMsgLink_onclick = function () {
+            scwin.log("=== msgLink 무해 통과 / head DOM 보존 ===");
+            var pageInfo = $p.getPageInfo ? $p.getPageInfo() : null;
+            scwin.log("화면 로딩 오류 없이 스크립트 실행 = [PASS]");
+            var links = document.getElementsByTagName("w2:msgLink");
+            scwin.log("문서 내 w2:msgLink 태그 수(참고) = " + links.length);
+        };
+        scwin.btn_loadScope_onclick = function () {
+            scwin.log("=== scope 모드 격리 검증 (wframe 2개 로딩) ===");
+            wfrm1.setSrc("wframe_scopeGlobalVariable_WAEA-1019_(WSQ-6415)_sub.xml");
+            wfrm2.setSrc("wframe_scopeGlobalVariable_WAEA-1019_(WSQ-6415)_sub.xml");
+        };
+        scwin.btn_checkScope_onclick = function () {
+            scwin.log("=== scope 격리 결과 ===");
+            // scope wframe 의 전역변수 객체는 window["{프레임 실행 ID}_{객체명}"] 으로 조회한다.
+            // strictMode 화면에서는 실행 ID 에 프레임 prefix 가 붙으므로(wfrm1 -> mf_wfrm1)
+            // 선언 ID 를 그대로 쓰면 조회되지 않는다. 컴포넌트의 getID() 로 실행 ID 를 얻는다.
+            var key1 = wfrm1.getID() + "_scvar";
+            var key2 = wfrm2.getID() + "_scvar";
+            scwin.log("조회 키 = " + key1 + " / " + key2);
+            var v1 = window[key1];
+            var v2 = window[key2];
+            if (!v1 || !v2) {
+                scwin.log("[대기] wframe 로딩 후 다시 눌러주세요. (" + key1 + "=" + (typeof v1) + ")");
+                return;
+            }
+            scwin.log(key1 + ".VR_ctl_nm = [" + v1.VR_ctl_nm + "]");
+            scwin.log(key2 + ".VR_ctl_nm = [" + v2.VR_ctl_nm + "]");
+            scwin.log("두 scope 객체 동일 여부 = " + (v1 === v2) + " (false 기대)");
+            scwin.log("최상위 scvar.VR_ctl_nm = [" + scvar.VR_ctl_nm + "] (간섭 없어야 함)");
+        };
+        ]]>
+        </script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:10px;">
+            <w2:textbox label="WAEA-1019/1021/1022/1023 화면 전역변수 검증" style="font-weight:bold;"></w2:textbox>
+            <xf:group style="margin:8px 0;">
+                <xf:trigger id="btn_checkInvalid" type="button" ev:onclick="scwin.btn_checkInvalid_onclick">
+                    <xf:label><![CDATA[식별자/오염 차단 확인]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_checkUnicode" type="button" ev:onclick="scwin.btn_checkUnicode_onclick">
+                    <xf:label><![CDATA[유니코드 식별자 확인]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_checkMsgLink" type="button" ev:onclick="scwin.btn_checkMsgLink_onclick">
+                    <xf:label><![CDATA[msgLink 통과 확인]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_loadScope" type="button" ev:onclick="scwin.btn_loadScope_onclick">
+                    <xf:label><![CDATA[scope wframe 로딩]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_checkScope" type="button" ev:onclick="scwin.btn_checkScope_onclick">
+                    <xf:label><![CDATA[scope 격리 확인]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            <w2:textarea id="txa_log" style="width:800px; height:320px;"></w2:textarea>
+            <xf:group style="margin-top:8px;">
+                <w2:wframe id="wfrm1" scope="true" style="width:390px; height:110px; border:1px solid #888;"></w2:wframe>
+                <w2:wframe id="wfrm2" scope="true" style="width:390px; height:110px; border:1px solid #888;"></w2:wframe>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

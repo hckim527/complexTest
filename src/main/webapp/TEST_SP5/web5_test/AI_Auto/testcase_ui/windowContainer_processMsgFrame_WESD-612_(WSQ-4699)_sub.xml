@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map"
+                    ev:onrowpositionchange="">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+            <xf:submission id="submission1" ref="" target='data:json,{"id":"dataList1","key":"dataList1"}' action="windowContainer_processMsgFrame_WESD-612_(WSQ-4699).jsp" method="post" mediatype="application/json" encoding="UTF-8"
+                instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="...1" ev:submit=""
+                ev:submitdone="scwin.submission1_submitdone" ev:submiterror="" abortTrigger="false" hideTrigger="false">
+            </xf:submission>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.trigger2_onclick();
+    //		setTimeout(() => {
+    //			$p.executeSubmission("submission1");
+    //		}, 10);
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    //		windowContainer1.createWindow( "aaa" , "" , "http://www.daum.net" , "abc" , "ccccc" , "" , "" , "tooltip" );
+    //		setTimeout(() => {
+    $p.parent().windowContainer1.createWindow("bbb", "", "windowContainer_processMsgFrame_WESD-612_(WSQ-4699)_sub.xml", "bbb", "bbbb", "", "", "bbbb");
+    WebSquare.event.stopPropagation(e);
+    //		}, 0);
+};
+scwin.trigger2_onclick = function(e) {
+    $p.executeSubmission("submission1");
+};
+scwin.trigger3_onclick = function(e) {
+    if(WebSquare._xv !== "SP5"){requires("uiplugin.popup");} //팝업을 사용하기 위해 반드시 포함되어야 한다.
+    // 실제 전달할 데이터 정의 
+    var rowJSON = {
+        "Personal Info": {
+            "Name": "Lee",
+            "Age": 50,
+            "Married": false
+        },
+        "Region": "Seoul",
+        "Carrier": true
+    };
+    // 새로 열릴 화면에 데이터를 전달 (dataObject를 통해 전달 가능)
+    var dataObject = {
+        "type": "json", // 데이터 타입. "json" 권장 
+        "name": "paramTest", // 데이터를 가져오기 위한 key 값. popup에서 $p.getParameter( "paramTest" )로 깨내올 수 있음.
+        "data": rowJSON // 실제 전달할 데이터
+    };
+    /*	     
+    	options.modal
+    	<String:N>
+    	[default: false] modal을 이용해서 뒤 쪽 배경을 동작하지 않도록 만들기 위한 인자. false이면 뒤쪽의 컴포넌트 사용 가능.
+    	
+    	options.frameModal
+    	<String:N>
+    	[default: ""] modal을 표시해줄 frame(wframe, tabControl, windowContainer)을 지정. "top", "parent", "frame", frame id
+    	
+    	options.processMsgFrame
+    	<Object:N>
+    	[default: false] wframePopup인 경우 processMessage를 popup 내부에 띄울지에 대한 설정.
+    */
+    var options = {
+        id: "popup1",
+        type: "wframePopup",
+        width: "400px",
+        height: "300px",
+        top: "130px",
+        left: "200px",
+        popupName: "테스트 팝업",
+        modal: false,
+        resizable: true,
+        status: true,
+        menubar: false,
+        scrollbars: false,
+        dataObject: dataObject,
+        title: "false",
+        processMsgFrame: "true"
+    };
+    // 팝업 생성.
+    $p.openPopup("windowContainer_processMsgFrame_WESD-612_(WSQ-4699)_sub.xml", options);
+};
+scwin.trigger4_onclick = function(e) {
+    // id가 a,b,c,d,e인 5개 컬럼이 존재하는 dataList
+    var options = {
+        common: {
+            fileName: "user.xlsx",
+            showProcess: true,
+            multipleSheet: true,
+            printSet: {
+                landScape: "true",
+                fitToPage: "true",
+                fitWidth: "1",
+                fitHeight: "1",
+                scale: "222"
+            }
+        },
+        excelInfo: [{
+            gridId: $p.getComponentById("gridView1").getID(),
+            sheetName: "첫번째 sheet",
+            //		            removeColumns : "1,3",
+            //		            foldColumns : "2",
+            //		            startRowIndex : 3,
+            //		            startColumnIndex : 0,
+            headerColor: "#DBEEF3",
+            bodyColor: "#92CDDC",
+            wframeId: "popup1",
+            infoArr: [{
+                rowIndex: 1,
+                colIndex: 3,
+                rowSpan: 1,
+                colSpan: 2,
+                text: "데이터표시",
+                textAlign: "center"
+            }]
+        }]
+    };
+    //		WebSquare.util.multipleDataListDownload( options );		
+    WebSquare.util.multipleExcelDownload(options)
+};
+scwin.trigger5_onclick = function(e) {
+    // id가 a,b,c,d,e인 5개 컬럼이 존재하는 dataList
+    var options = {
+        common: {
+            fileName: "user.xlsx",
+            showProcess: true,
+            multipleSheet: true,
+            printSet: {
+                landScape: "true",
+                fitToPage: "true",
+                fitWidth: "1",
+                fitHeight: "1",
+                scale: "222"
+            }
+        },
+        excelInfo: [{
+            dataListId: $p.getComponentById("dataList1").getID(),
+            sheetName: "첫번째 sheet",
+            removeColumns: "1,3",
+            foldColumns: "2",
+            startRowIndex: 3,
+            startColumnIndex: 0,
+            headerColor: "#DBEEF3",
+            bodyColor: "#92CDDC",
+            wframeId: "wframe1",
+            infoArr: [{
+                rowIndex: 1,
+                colIndex: 3,
+                rowSpan: 1,
+                colSpan: 2,
+                text: "데이터표시",
+                textAlign: "center"
+            }]
+        }]
+    };
+    $p.multipleDataListDownload(options);
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        //scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        //scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[add]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[submission]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger3" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[popup]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger4" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[multiple]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger5" ev:onclick="scwin.trigger5_onclick">
+    		<xf:label><![CDATA[$p.multiple]]></xf:label>
+    	</xf:trigger>
+    	<w2:gridView id="gridView1" style="width: 500px;height: 150px;" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" dataList="data:dataList1">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column5" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column4" value="name2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="name3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col3" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

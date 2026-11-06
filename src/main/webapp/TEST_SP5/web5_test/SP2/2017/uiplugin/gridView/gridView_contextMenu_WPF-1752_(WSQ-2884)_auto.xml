@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col4" name="name4"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('oncontextmenu');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('contextmenu', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.oncontextmenu();
+    }
+}
+scwin.rightClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireClick(el);
+}
+scwin.checkEl = function(id) {
+    if (WebSquare.wUnit.getDomById($p.id + id)) {
+        return false;
+    }
+    return true;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 0. gridView속성의 contextMenu='false로 설정한다.
+    //Set the contextMenu = 'false' of the gridView property.
+    // verify step 0. gridView속성의 contextMenu='false로 설정된다.
+    //0. The contextMenu of the gridView property is set to 'false'.
+    // Test step 1. 샘플 실행 후 gridView에서 마우스 우클릭을 실행한다.
+    //1. After executing the sample, right-click in gridView.
+    WebSquare.wUnit.addCommand("set", "scwin.rightClick($p.id+'gv1_cell_4_1')");
+    // verify step 1. contextMenu가 보여지지 않는다.(정상)(이전에는 false로 설정해도 보여졌음)
+    //1. The contextMenu is not shown (normal)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('gv1_contextMenu_list')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "col1": "123456",
+        "col2": "23456789",
+        "col3": "3",
+        "col4": "2"
+    }, {
+        "col1": "123456",
+        "col2": "2",
+        "col3": "3",
+        "col4": "3"
+    }, {
+        "col1": "c1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "4"
+    }, {
+        "col1": "d1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "5"
+    }, {
+        "col1": "e1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "6"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "7"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "8"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "9"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "10"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "11"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "12"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "13"
+    }, {
+        "col1": "f1",
+        "col2": "test",
+        "col3": "3",
+        "col4": "14"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "15"
+    }, {
+        "col1": "f1",
+        "col2": "2",
+        "col3": "3",
+        "col4": "16"
+    }];
+    dataList1.setJSON(jsonData);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 23-Jan-2018
+    //Function rightMouseClick    
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" summaryAuto="false"
+    		useFilterList="false" scrollByColumn="false"
+    		showSortableUseFilter="false" scrollByColumnAdaptive="false"
+    		id="gv1" contextMenu="false"
+    		style="position: relative;width:627px;height:313px;left:95px;top:50px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" fixedColumnWithHidden="true"
+    		useShiftKey="true" autoFit="allColumn" fixedColumn="0" columnMove="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column7"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" value="name4">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

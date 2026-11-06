@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/css/common.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="col1" dataType="text"></w2:column>
+						<w2:column id="custom" name="custom" dataType="text"></w2:column>
+						<w2:column id="col2" name="col2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="submission1" ref='data:json,["dataList1",{"id":"dataList2","key":"testKey"}]'
+				target='data:json,{"id":"dataList1","key":"testKey"}' action="test.do" method="post" mediatype="application/json" encoding="UTF-8"
+				instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone=""
+				ev:submiterror="" abortTrigger="">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "col1": "1",
+        "custom": "19941005",
+        "col2": "1"
+    }, {
+        "col1": "1",
+        "custom": "v3",
+        "col2": "1"
+    }, {
+        "col1": "1",
+        "custom": "v1",
+        "col2": "1"
+    }];
+    dataList1.setJSON(jsonData);
+    var jsonData1 = [{
+        "col1": "v1",
+        "col2": "lb1"
+    }, {
+        "col1": "v2",
+        "col2": "lb2"
+    }, {
+        "col1": "v3",
+        "col2": "lb3"
+    }];
+    dataList2.setJSON(jsonData1);
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    ++sIdx;
+    select1.addItem("value" + sIdx, "label" + sIdx);
+};
+scwin.fn1 = function() {
+    gridView1.setCellInputType(0, "custom", {
+        inputType: "calendar",
+        options: {
+            imageSrc: "",
+            viewType: "icon"
+        }
+    });
+}
+scwin.trigger3_onclick = function(e) {
+    scwin.fn1();
+};
+scwin.__hasClass = function() {
+    var classList = WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__dynamic_calendar_0_1').className;
+    return classList.indexOf('gridBodyDefault') == -1;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').click()");
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand("assert", "scwin.__hasClass()", "true");
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.sIdx = 0;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+			style="position: absolute ;left:40px;top:35px;width:407px;height:251px;" setCellInputTypeCustom="true" applyAllColumnStyle="true">
+			<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+			<w2:header id="header2" style="">
+				<w2:row id="row3" style="">
+					<w2:column blockSelect="false" id="column7" removeBorderStyle="false" style="height:20px;" inputType="text" width="70" value="col1"
+						displayMode="label">
+					</w2:column>
+					<w2:column blockSelect="false" id="column5" removeBorderStyle="false" style="height:20px;" inputType="text" width="121"
+						value="custom" displayMode="label">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="height:20px;" width="130" inputType="text" value="calendar"
+						displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2" style="">
+				<w2:row id="row4" style="">
+					<w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="ime-mode:disabled;" inputType="text"
+						width="70" value="" displayMode="label" allOption="" chooseOption="" ref="" displayFormatter="" upperColumn="">
+					</w2:column>
+					<w2:column blockSelect="false" id="custom" removeBorderStyle="false" style="" inputType="custom" width="121" value=""
+						displayMode="label">
+					</w2:column>
+					<w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" width="130" inputType="calendar" value=""
+						displayMode="label" allOption="" chooseOption="" ref="" allowChar="a-z0-9" viewType="icon" editModeEvent="">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" style="position: absolute ;left:475px;top:125px;width: 180px;height: 72px;" id="trigger3"
+			ev:onclick="scwin.trigger3_onclick">
+			<xf:label><![CDATA[test_inputType="calendar"]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

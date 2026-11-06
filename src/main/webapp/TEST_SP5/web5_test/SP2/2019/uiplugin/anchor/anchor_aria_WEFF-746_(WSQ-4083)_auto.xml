@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    textbox1.setValue(anchor1.getAttribute("role"));
+};
+scwin.tabControl1_onchange = function(tabID, idx, userTabID) {
+    textbox2.setValue("tab1 : aria-selected = " +
+        tabControl1.getTabHostAndContainer().tabhost.childNodes[0].firstChild.firstChild.getAttribute("aria-selected") +
+        "<br/>tab1 : aria-hidden = " +
+        tabControl1.getTabHostAndContainer().tabhost.childNodes[0].firstChild.firstChild.getAttribute("aria-hidden")
+    );
+    textbox3.setValue("tab2 : aria-selected = " +
+        tabControl1.getTabHostAndContainer().tabhost.childNodes[1].firstChild.firstChild.getAttribute("aria-selected") +
+        "<br/>tab2 : aria-hidden = " +
+        tabControl1.getTabHostAndContainer().tabhost.childNodes[1].firstChild.firstChild.getAttribute("aria-hidden")
+    );
+};
+scwin.tabControl2_onchange = function(tabID, idx, userTabID) {
+    textbox4.setValue("tab1 : aria-selected = " +
+        tabControl2.getTabHostAndContainer().tabhost.childNodes[0].firstChild.firstChild.getAttribute("aria-selected") +
+        "<br/>tab1 : aria-hidden = " +
+        tabControl2.getTabHostAndContainer().tabhost.childNodes[0].firstChild.firstChild.getAttribute("aria-hidden")
+    );
+    textbox5.setValue("tab2 : aria-selected = " +
+        tabControl2.getTabHostAndContainer().tabhost.childNodes[1].firstChild.getAttribute("aria-selected") +
+        "<br/>tab2 : aria-hidden = " +
+        tabControl2.getTabHostAndContainer().tabhost.childNodes[1].firstChild.getAttribute("aria-hidden")
+    );
+};
+scwin.checkVal1 = function() {
+    var temp = WebSquare.wUnit.getDomById($p.id + 'textbox2').innerText;
+    return temp.indexOf('tab1 : aria-selected = false') >= 0;
+}
+scwin.checkVal2 = function() {
+    var temp = WebSquare.wUnit.getDomById($p.id + 'textbox2').innerText;
+    return temp.indexOf('tab1 : aria-selected = true') >= 0;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControl1').setActiveTab(0)");
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:anchor id="anchor1" style="position: absolute;width:70px;height:18px;left:54px;top:65px;" outerDiv="false" role="button">
+    		<xf:label><![CDATA[Insert Text]]></xf:label>
+    	</w2:anchor>
+    	<w2:tabControl useMoveNextTabFocus="false" id="tabControl1" style="position: absolute;width:310px;height:200px;left:239px;top:45px;"
+    		confirmTrueAction="exist" useTabKeyOnly="true" useConfirmMessage="false" confirmFalseAction="new" alwaysDraw="false" selectedIndex="1"
+    		ev:onchange="scwin.tabControl1_onchange">
+    		<w2:tabs label="tab1" id="tabs1" style="width:70px;height:30px;" disabled="false"></w2:tabs>
+    		<w2:tabs id="tabs2" style="width:70px;height:30px" label="tab2" disabled="false"></w2:tabs>
+    		<w2:content id="content1" style="height:170px;" alwaysDraw="false" src=""></w2:content>
+    		<w2:content id="content2" style="height:170px;" alwaysDraw="false"></w2:content>
+    	</w2:tabControl>
+    	<w2:tabControl alwaysDraw="false" confirmFalseAction="new" confirmTrueAction="exist" id="tabControl2" selectedIndex="1"
+    		style="position: absolute;width:316px;height:200px;left:238px;top:258px;" useConfirmMessage="false" useMoveNextTabFocus="false"
+    		useTabKeyOnly="true" ev:onchange="scwin.tabControl2_onchange">
+    		<w2:tabs disabled="false" id="tabs1" label="tab1" style="width:70px;height:30px;"></w2:tabs>
+    		<w2:tabs disabled="false" id="tabs2" label="tab2" style="width:70px;height:30px;background-color:yellow;" tabType="image" defaultImage="" selectedImage="" tabWidth="70"></w2:tabs>
+    		<w2:content alwaysDraw="false" id="content1" src="" style="height:170px;"></w2:content>
+    		<w2:content alwaysDraw="false" id="content2" style="height:170px;"></w2:content>
+    	</w2:tabControl>
+    	<w2:textbox label='' id="textbox1" style="position: absolute;width: 150px;height: 23px;left:18px;top:141px;"></w2:textbox>
+    	<xf:trigger type="button" id="trigger1" style="position:absolute;width:154px;height:23px;left:19px;top:97px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[anchor1.getAttribute("role")]]></xf:label>
+    	</xf:trigger>
+    	<w2:textbox id="textbox2" label="" style="position: absolute;width:356px;height:41px;left:580px;top:68px;"></w2:textbox>
+    	<w2:textbox id="textbox3" label="" style="position: absolute;width:357px;height:45px;left:580px;top:155px;"></w2:textbox>
+    	<w2:textbox id="textbox4" label="" style="position: absolute;width:356px;height:41px;left:580px;top:300px;"></w2:textbox>
+    	<w2:textbox id="textbox5" label="" style="position: absolute;width:357px;height:45px;left:580px;top:400px;"></w2:textbox>
+    </body>
+</html>
+ 

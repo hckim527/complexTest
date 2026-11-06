@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[2]]></col2>
+            				<col3><![CDATA[3]]></col3>
+            				<col4><![CDATA[88]]></col4>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[4]]></col1>
+            				<col2><![CDATA[5]]></col2>
+            				<col3><![CDATA[6]]></col3>
+            				<col4><![CDATA[77]]></col4>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[7]]></col1>
+            				<col2><![CDATA[8]]></col2>
+            				<col3><![CDATA[9]]></col3>
+            				<col4><![CDATA[66]]></col4>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(id) {
+    var node = WebSquare.wUnit.getDomById($p.id + id);
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.__isBackground = function() {
+    var color = WebSquare.wUnit.getJq("#gridView1_cell_0_1").css("background-color");
+    if (color.indexOf("rgb") < 0) {
+        return color == "#fca73c";
+    }
+    return color == "rgb(252, 167, 60)";
+}
+scwin.setVal = function() {
+    scwin.fireDbClick('gridView1_cell_0_0');
+}
+scwin.setSimulate1 = function() {
+    WebSquare.wUnit.getJq('#gridView1_cell_0_0').simulate('keydown', {
+        keyCode: 9,
+        which: 9,
+        key: 'TAB'
+    });
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일 실행 후 name1항목의 첫번째 컬럼에 마우스를 더블클릭한다.
+    //1. After running the sample file, double click on the first column of name1 item.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 선택할수 있는 리스트가 보여진다.
+    //2. The value is checked.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1___checkcombobox_col1_itemTable').css('display')", "block");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 선택값 리스트에서 값을 선택하여 체크한다.
+    //2. Select and check the values in the selection list.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col1_itemTable_0_checkbox').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 값이 체크되어진다.
+    //2. The value is checked.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col1_itemTable_0_checkbox').checked", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 2번상태에서 tab키를 누른다.
+    //3. In the second state, press the tab key.
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 선택한값이 입력되어지고 포커스는 다음항목의 값으로 이동되어진다.(이전에는 선택한값이 입력되어지지 않고 그대로 선택리스트로 있었음)
+    //3. The selected value is entered and the focus is moved to the next item"s value (previously the selected value was not entered but it was in the selected list)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText", "11");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isBackground()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 15-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="position: relative;width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name3"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name4"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="checkcombobox" width="70" allOption="" chooseOption="">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[11]]></w2:label>
+    							<w2:value><![CDATA[aa]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[22]]></w2:label>
+    							<w2:value><![CDATA[bb]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[33]]></w2:label>
+    							<w2:value><![CDATA[cc]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[44]]></w2:label>
+    							<w2:value><![CDATA[dd]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

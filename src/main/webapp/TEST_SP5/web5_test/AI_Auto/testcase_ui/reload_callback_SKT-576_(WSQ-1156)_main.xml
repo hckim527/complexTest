@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    alert(scwin.$w.getRuntimeId("trigger1"));
+    scwin.increaseCount();
+}
+scwin.trigger1_onclick = function(e) {
+    $w.url("reload_callback_SKT-576_(WSQ-1156)_sub1.xml", {
+        "spa": true
+    });
+};
+scwin.increaseCount = function() {
+    if (!localStorage.getItem("count")) {
+        localStorage.setItem("count", 0);
+    }
+    var count = parseInt(localStorage.getItem("count"));
+    count = count + 1;
+    localStorage.setItem("count", count);
+}
+scwin.unitTest1 = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행한다.
+    //1. Run the sample file.
+    //Verify step 1. alert창이 보여진다.(trigger1)
+    //1. The alert window is displayed (trigger1)
+    WebSquare.wUnit.addCommand('pause', '1000');
+    WebSquare.wUnit.addCommand('assert', 'localStorage.getItem("count") == 1', 'true');
+    //Test step 2. reload test버튼을 클릭한다.
+    //2. Click the reload test button.
+    WebSquare.wUnit.addCommand('pause', '100');
+    WebSquare.wUnit.addCommand('set', 'localStorage.setItem("isAllowShow","true")');
+    WebSquare.wUnit.addCommand('pause', '100');
+    WebSquare.wUnit.addCommand('set', 'trigger1.click()');
+    WebSquare.wUnit.addCommand('pause', '1000');
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest2 = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Verify step 2. 화면이 리로딩되면서 alert창이 다시 보여진다.(trigger1)(이전에는 리로딩되면서 alert창이 다시 뜨지 않았음)
+    //2. The screen is reloaded and the alert window is displayed again (trigger1) (Previously, the alert window was not reloaded while reloading)
+    WebSquare.wUnit.addCommand('pause', '100');
+    WebSquare.wUnit.addCommand('set', 'localStorage.setItem("isAllowShow", "false")');
+    WebSquare.wUnit.addCommand('pause', '100');
+    WebSquare.wUnit.addCommand('set', 'currentCount = parseInt(localStorage.getItem("count"))');
+    WebSquare.wUnit.addCommand('pause', '100');
+    WebSquare.wUnit.addCommand('set', 'localStorage.setItem("count", 0)');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'currentCount == 2', 'true');
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest()
+    //Created by: Quan.Nguyen
+    //Created date: 03-Apr-2018
+    var currentCount;
+    if (localStorage.getItem("isAllowShow") == "true") {
+        //unitTest2();
+    } else {
+        //unitTest1();
+    }
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width:181px;height:59px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[reload test]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

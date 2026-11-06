@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col4" name="name4"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col5" name="name5"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col6" name="name6"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col7" name="name7"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col8" name="name8"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col9" name="name9"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col10" name="name10"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col11" name="name11"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col12" name="name12"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[112]]></col1>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('oncontextmenu');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('contextmenu', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.contextmenu == 'function') {
+        node.oncontextmenu();
+    }
+}
+scwin.rightClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireClick(el);
+}
+scwin.clickContextMenu = function() {
+    var el = WebSquare.wUnit.getJq('.w2grid_contextMenu_row')[3];
+    el.click();
+}
+scwin.setVal = function() {
+    localStorage.setItem('width', WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width"));
+}
+scwin.checkVal = function() {
+    return localStorage.getItem('width') == WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width");
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. Source 탭에서 dataList1 의 contextMenu 부분을 확인한다.
+    //1. In the Source tab, check the contextMenu part of dataList1.
+    // verify step 1. contextMenu='true'
+    //Test step 2. 브라우저에서 임의의컬럼에서 마우스오른쪽 버튼을 클릭한다.
+    //2. Right-click on any column in the browser.
+    WebSquare.wUnit.addCommand("set", "scwin.rightClick($p.id+'wq_uuid_3_cell_0_0')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. 선택된 컬럼의 ContextMenu 가 생성된다.
+    //2. The ContextMenu of the selected column is created.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_3_contextMenu_list').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 3. ContextMenu 에서 '선택 컬럼 크기 자동 맞추기' 를 클릭한다.
+    //3. In the ContextMenu, click 'Auto-fit selection column size'.
+    WebSquare.wUnit.addCommand("set", "scwin.clickContextMenu()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 3. 선택된 컬럼의 크기가 자동으로 맞춰진다. (2017-02-17 엔진에서는 선택된 컬럼이 없어지는 현상이 발생함)
+    //3. The size of the selected column is automatically adjusted. (In 2017-02-17 engine, selected column disappears)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 30-Jan-2018
+    window.height = WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width");
+    localStorage.removeItem('height');
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView useFilterList="false" dataList="dataList1"
+    		contextMenu="true" scrollByColumn="false" summaryAuto="false"
+    		scrollByColumnAdaptive="false" id=""
+    		style="position: relative;width:653px;height:150px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column23"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column21"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column19"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column17"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name4">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column15"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name5">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column13"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name6">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column11"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name7">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name8">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name9">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name10">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name11">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" value="name12">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col5"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col6"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col7"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col8"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col9"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col10"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col11"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col12"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

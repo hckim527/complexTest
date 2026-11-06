@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="label" name="label" dataType="text"></w2:column>
+    					<w2:column id="value" name="value" dataType="text"></w2:column>
+    					<w2:column id="depth" name="depth" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.initPage();
+};
+scwin.onpageunload = function() {};
+scwin.showLayer = function(dragNodeLabel, dropNodeLabel, e) {
+    var layerId = 'treeview_ghostLayer';
+    layerObj = WebSquare.wUnit.getDomById($p.id + layerId);
+    if (layerObj == null) {
+        layerObj = WebSquare.document.createElement("div");
+        WebSquare.document.body.insertBefore(layerObj, null);
+        layerObj.id = layerId;
+        var str = "<div onselectstart='return false' style='position:relative; overflow-x:hidden; overflow-y: auto; width:175px;border:3px solid #e7e7e7; '><table width='175' border='0' cellspacing='0' cellpadding='0' style='border-collapse:collapse; border:1px solid #9fbcd4; background-color:#FFFFFF;'><tr><td id='dragLayer' style='font-family: Tahoma, Verdana, arial,helvetica; font-size: 15px; color: #991199; line-height: normal;background-color:#FFFFFF; width:100%; height:19px; text-decoration:none; padding:3px 3px 1px 3px;' ></td></tr><tr><td id='dropLayer' style='font-family: Tahoma, Verdana, arial,helvetica; font-size: 15px; color: #119999; line-height: normal;background-color:#FFFFFF; border-top:1px dotted #9fbcd4;width:100%; height:19px; text-decoration:none; padding:3px 3px 1px 3px; cursor:pointer ' ></td></tr></table></div>";
+        layerObj.innerHTML = str;
+    } else {
+        var dragLayer = WebSquare.WebSquare.wUnit.getDomById($p.id + "dragLayer");
+        var dropLayer = WebSquare.WebSquare.wUnit.getDomById($p.id + "dropLayer");
+        if (dragLayer) {
+            dragLayer.innerHTML = "drag:" + dragNodeLabel;
+        }
+        if (dropLayer) {
+            dropLayer.innerHTML = "drop:" + dropNodeLabel;
+        }
+    }
+    // Layer 위치 조정
+    layerObj.style.position = 'absolute';
+    e = e || window.event;
+    var pageXOffset = window.pageXOffset || document.body.scrollLeft;
+    var pageYOffset = window.pageYOffset || document.body.scrollTop;
+    layerObj.style.left = (pageXOffset + e.clientX + 5) + "px";
+    layerObj.style.top = (pageYOffset + e.clientY + 5) + "px";
+    // layer가 항상 위에 보이도록 설정
+    layerObj.style.zIndex = "20000";
+    layerObj.style.visibility = "visible";
+};
+scwin.hideLayer = function() {
+    var layerId = 'treeview_ghostLayer';
+    var layerObj = WebSquare.wUnit.getDomById($p.id + layerId);
+    if (layerObj != null) {
+        layerObj.style.visibility = "hidden";
+    }
+}
+scwin.treeview1_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {
+    scwin.hideLayer();
+    if (dragNode._hasChild == false) { // child not
+        var tempRowData = dataList1.getRowJSON(dragNode.index - 1);
+        if (dropNode.index >= dragNode.index) { //아래
+            dataList1.removeRow(dragNode.index - 1);
+            $p.log("bottom");
+        } else { //위
+            $p.log("top11111 : " + dragNode.index);
+            dataList1.removeRow(dragNode.index - 1);
+            $p.log("top11111");
+        }
+        dataList1.setRowJSON(dropNode.index, tempRowData);
+    } else {
+        var temp = [];
+        if (dropNode.index >= dragNode.index) { //아래로
+            temp.push(dragNode.index - 1);
+            for (var i = 0; i < dragNode.childNodes.length; i++) {
+                temp.push(dragNode.childNodes[i].index - 1); //dataList index는 0 부터 treeview index는 1부
+            }
+            $p.log("top : " + temp);
+            dataList1.setRowJSON(dropNode.index, dataList1.getRowJSON(dragNode.index - 1));
+            for (var i = 0; i < dragNode.childNodes.length; i++) {
+                dataList1.setRowJSON(dropNode.index + i + 1, dataList1.getRowJSON(dragNode.childNodes[i].index - 1));
+            }
+            $p.log("top2 : end");
+        } else { //위로
+            temp.push(dragNode.index + dragNode.childNodes.length);
+            for (var i = 0; i < dragNode.childNodes.length; i++) {
+                temp.push(dragNode.childNodes[i].index + dragNode.childNodes.length); //dataList index는 0 부터 treeview index는 1부
+            }
+            $p.log("bottom : " + temp);
+            dataList1.setRowJSON(dropNode.index, dataList1.getRowJSON(dragNode.index - 1));
+            for (var i = 0; i < dragNode.childNodes.length; i++) {
+                dataList1.setRowJSON(dropNode.index + i + 1, dataList1.getRowJSON(dragNode.childNodes[i].index + i));
+            }
+        }
+        dataList1.removeRows(temp);
+    }
+};
+scwin.treeview1_ondragover = function(dragNode, dropNode, dragControl, dropControl, e) {
+    if (dragNode && dropNode) {
+        //debugger;
+        scwin.showLayer(dragNode.label, dropNode.label, e);
+    } else {
+        scwin.hideLayer();
+    }
+};
+scwin.initPage = function() {
+    var jsonData = [{
+        "label": "a1",
+        "value": "a1",
+        "depth": "1"
+    }, {
+        "label": "a1-1",
+        "value": "a1-1",
+        "depth": "2"
+    }, {
+        "label": "a1-1-1",
+        "value": "a1-1-1",
+        "depth": "3"
+    }, {
+        "label": "a1-1-2",
+        "value": "a1-1-2",
+        "depth": "3"
+    }, {
+        "label": "a1-1-3",
+        "value": "a1-1-3",
+        "depth": "3"
+    }, {
+        "label": "a1-2",
+        "value": "a1-2",
+        "depth": "2"
+    }, {
+        "label": "a1-3",
+        "value": "a1-3",
+        "depth": "2"
+    }, {
+        "label": "b1",
+        "value": "b1",
+        "depth": "1"
+    }, {
+        "label": "b1-1",
+        "value": "b1-1",
+        "depth": "2"
+    }, {
+        "label": "b1-2",
+        "value": "b1-2",
+        "depth": "2"
+    }, {
+        "label": "b1-3",
+        "value": "b1-3",
+        "depth": "2"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.trigger1_onclick = function(e) {
+    var temp = trv_menu.getSelectedElement();
+    //alert(temp);
+    if (temp instanceof XMLDocument)
+        localStorage.setItem("log", "document");
+    else
+        localStorage.setItem("log", "ojbect");
+    debugger;
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trv_menu_label_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'ojbect'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+    		.w2treeview_drag{
+                z-index : -999999;
+                display: none !important;
+            }
+
+            .w2treeview_col_label{width: 100%;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+        <xf:trigger type="button" id="trigger1" style="position: absolute ;left:407px;top:49px;width: 100px;height: 30px;" ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[get]]></xf:label>
+        </xf:trigger>
+        <w2:treeview checkboxDisabledTrueValue="" showTreeDepth="4" tooltipGroupClass="false" ev:onlabelclick=""
+        dataType="listed" ev:onclick="" lineShow="" style="position: absolute ;left:21px;top:11px;width: 305px;height: 367px;" id="trv_menu" useDrag="" class="mn_tvw" toggleEvent="onclick"
+        showCheckbox="false" renderType="virtual" rowHeight="25">
+    		<w2:itemset nodeset="data:dataList1">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="value"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref=""></w2:folder>
+    			<w2:checkbox ref=''></w2:checkbox>
+    			<w2:checkboxDisabled ref=''></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=''></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    </body>
+</html>
+ 

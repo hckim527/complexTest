@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2006/xforms"
+      xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events">
+<head>
+    <xf:model/>
+    <script type="javascript"><![CDATA[
+        /**
+         * [래퍼 페이지] MFEClient E-NO-SERVER 기능 데모
+         * - txa_log: 로그 출력용 textarea
+         * - wf_main: 하위 페이지(demo.xml) 로드
+         */
+        scwin.log = function(msg) {
+            var txa = $p.getComponentById("txa_log");
+            var timestamp = new Date().toLocaleTimeString();
+            txa.setValue(txa.getValue() + "[" + timestamp + "] " + msg + "\n");
+            // 스크롤을 맨 아래로
+            var el = txa.render;
+            if (el) el.scrollTop = el.scrollHeight;
+        };
+
+        scwin.btn_clear_onclick = function() {
+            $p.getComponentById("txa_log").setValue("");
+        };
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_header" style="padding:10px;background:#f5f5f5;border-bottom:1px solid #ddd;">
+        <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick"
+                    style="width:100px;height:28px;float:right;">
+            <xf:label><![CDATA[로그 삭제]]></xf:label>
+        </xf:trigger>
+        <w2:textBox id="txt_title" style="font-size:16px;font-weight:bold;line-height:28px;"
+                    value="WAEA-708 : MFEClient E-NO-SERVER 기능 데모"/>
+    </xf:group>
+    <w2:wframe id="wf_main" src="mfe_executeMfe_WAEA-708_(WSQ-6296)_sub.xml"
+               style="width:100%;height:400px;"/>
+    <w2:textarea id="txa_log" style="width:100%;height:250px;" readOnly="true"
+                 placeHolder="이벤트 로그가 여기에 출력됩니다."/>
+    <script type="javascript"><![CDATA[
+        scwin.onpageload = function() {
+            scwin.log("=== 래퍼 페이지 로드 완료 ===");
+        };
+    ]]></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <w2:type>DEFAULT</w2:type>
+    <w2:buildDate/>
+    <xf:model>
+        <xf:instance>
+            <data xmlns=""/>
+        </xf:instance>
+        <w2:dataCollection baseNode="map">
+            <w2:dataList id="dlt_task" baseNode="list" repeatNode="map" saveRemovedData="true">
+                <w2:columnInfo>
+                    <w2:column id="status" name="status" dataType="text"></w2:column>
+                    <w2:column id="embedded" name="embedded" dataType="text"></w2:column>
+                    <w2:column id="name" name="name" dataType="text"></w2:column>
+                </w2:columnInfo>
+                <w2:data use="true">
+                    <w2:row>
+                        <status><![CDATA[Ready]]></status>
+                        <embedded><![CDATA[Ready]]></embedded>
+                        <name><![CDATA[Alpha]]></name>
+                    </w2:row>
+                    <w2:row>
+                        <status><![CDATA[Review]]></status>
+                        <embedded><![CDATA[Review]]></embedded>
+                        <name><![CDATA[Bravo]]></name>
+                    </w2:row>
+                    <w2:row>
+                        <status><![CDATA[Done]]></status>
+                        <embedded><![CDATA[Done]]></embedded>
+                        <name><![CDATA[Charlie]]></name>
+                    </w2:row>
+                </w2:data>
+            </w2:dataList>
+        </w2:dataCollection>
+        <w2:workflowCollection></w2:workflowCollection>
+    </xf:model>
+    <script lazy="false" type="text/javascript"><![CDATA[
+/* =========================================================================
+ * WAEA-891 검증용 _fix 샘플 (버튼 클릭형)
+ * 핫픽스: 2026_0602_hotfix_WAEA_891_v2.js (기준 REL_6_0_0_1485B_20260226_161523)
+ *
+ * 신규 API 검증:
+ *   gridView1.setCellImageSrc(rowIndex, columnInfo, imageSrc)
+ *   gridView1.getCellImageSrc(rowIndex, columnInfo)
+ *   gridView1.removeCellImageSrc(rowIndex, columnInfo)
+ *
+ * 이미지: icon_D.gif(컬럼 기본) / icon_C.gif, icon_U.gif(변경 테스트용) — 같은 폴더 존재
+ * 각 버튼 클릭 후 하단 로그(txa_log)와 그리드 화면으로 결과 확인.
+ * ========================================================================= */
+
+// --- 로그 helper (textarea + console 동시 출력) ---
+scwin.log = function (msg, obj) {
+    var line = msg + (obj !== undefined ? " " + JSON.stringify(obj) : "");
+    console.log("[WAEA-891]", msg, (obj !== undefined ? obj : ""));
+    try { txa_log.setValue((txa_log.getValue() || "") + line + "\n"); } catch (e) {}
+};
+scwin.clearLog = function () { try { txa_log.setValue(""); } catch (e) {} };
+
+// --- 상태 조회 (원본 샘플 헬퍼 유지) ---
+scwin.getCellImageStates = function () {
+    var states = [], gridId = gridView1.id;
+    for (var r = 0; r < dlt_task.getTotalRow(); r++) {
+        var cell = document.getElementById(gridId + "_cell_" + r + "_0");
+        var img = cell ? cell.querySelector("img") : null;
+        var stored = gridView1.getCellImageSrc(r, "status");
+        states.push({ row: r, data: dlt_task.getCellData(r, "status"),
+            stored: stored == null ? null : stored, src: img ? img.getAttribute("src") : null });
+    }
+    return states;
+};
+scwin.getEmbeddedImageStates = function () {
+    var states = [], gridId = gridView1.id;
+    for (var r = 0; r < dlt_task.getTotalRow(); r++) {
+        var cell = document.getElementById(gridId + "_cell_" + r + "_1");
+        var button = cell ? cell.querySelector(".w2grid_textImage_button") : null;
+        var stored = gridView1.getCellImageSrc(r, "embedded");
+        states.push({ row: r, data: dlt_task.getCellData(r, "embedded"),
+            stored: stored == null ? null : stored,
+            backgroundImage: button ? button.style.backgroundImage : null });
+    }
+    return states;
+};
+
+/* ===================== 검증 케이스 버튼 ===================== */
+
+// ① 특정 셀만 변경: 0행 status → icon_C.gif (1·2행은 기본 icon_D.gif 유지 기대)
+scwin.case1 = function () {
+    var ret = gridView1.setCellImageSrc(0, "status", "gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_C.gif");
+    scwin.log("① setCellImageSrc(0,'status','icon_C.gif') 반환=", ret);
+    scwin.log("   status 상태=", scwin.getCellImageStates());
+};
+
+// ② 조회: getCellImageSrc(0,'status')
+scwin.case2 = function () {
+    scwin.log("② getCellImageSrc(0,'status') =", gridView1.getCellImageSrc(0, "status"));
+};
+
+// ③ 빈 문자열 = 이미지 숨김: 1행 status → ""
+scwin.case3 = function () {
+    var ret = gridView1.setCellImageSrc(1, "status", "");
+    scwin.log("③ setCellImageSrc(1,'status','') 반환=", ret);
+    scwin.log("   status 상태=", scwin.getCellImageStates());
+};
+
+// ④ 삭제 = 컬럼 기본 복귀: removeCellImageSrc(0,'status')
+scwin.case4 = function () {
+    var ret = gridView1.removeCellImageSrc(0, "status");
+    scwin.log("④ removeCellImageSrc(0,'status') 반환=", ret);
+    scwin.log("   status 상태=", scwin.getCellImageStates());
+};
+
+// ⑤ null 지정 = 삭제와 동일: setCellImageSrc(2,'status', null)
+scwin.case5 = function () {
+    var ret = gridView1.setCellImageSrc(2, "status", null);
+    scwin.log("⑤ setCellImageSrc(2,'status',null) 반환=", ret);
+    scwin.log("   status 상태=", scwin.getCellImageStates());
+};
+
+// ⑥ embeddedInput 즉시 갱신(v2 보강): 0행 embedded → icon_U.gif
+scwin.case6 = function () {
+    var ret = gridView1.setCellImageSrc(0, "embedded", "gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_U.gif");
+    scwin.log("⑥ setCellImageSrc(0,'embedded','icon_U.gif') 반환=", ret);
+    scwin.log("   embedded 상태=", scwin.getEmbeddedImageStates());
+};
+
+// ⑦ 행 삽입/이동 후 이미지 유지: 2행에 set 후 맨 위에 행 삽입
+scwin.case7 = function () {
+    gridView1.setCellImageSrc(2, "status", "gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_C.gif");
+    scwin.log("⑦ 삽입 전 status 상태=", scwin.getCellImageStates());
+    dlt_task.insertRow(0, { status: "New", embedded: "New", name: "Inserted" });
+    scwin.log("⑦ 0행 삽입 후 status 상태=", scwin.getCellImageStates());
+    scwin.log("   → 'icon_C.gif' 가 원래 데이터(Done) 행을 따라갔는지 확인");
+};
+
+// 상태만 출력
+scwin.showStatus   = function () { scwin.log("status 상태=", scwin.getCellImageStates()); };
+scwin.showEmbedded = function () { scwin.log("embedded 상태=", scwin.getEmbeddedImageStates()); };
+
+// 초기화: 페이지 리로드
+scwin.resetAll = function () { location.reload(); };
+
+scwin.onpageload = function () {
+    scwin.log("WAEA-891 _fix 로드 완료. ①~⑦ 버튼을 순서대로 눌러 확인하세요.");
+    scwin.log("초기 status 상태=", scwin.getCellImageStates());
+};
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <w2:gridView id="gridView1" dataList="data:dlt_task"
+        style="width:720px;height:180px;" rowNumVisible="false" rowStatusVisible="false">
+        <w2:header id="header1">
+            <w2:row id="headerRow1">
+                <w2:column id="hd_status" inputType="text" value="Status" width="180"></w2:column>
+                <w2:column id="hd_embedded" inputType="text" value="Embedded" width="180"></w2:column>
+                <w2:column id="hd_name" inputType="text" value="Name" width="240"></w2:column>
+            </w2:row>
+        </w2:header>
+        <w2:gBody id="gBody1">
+            <w2:row id="bodyRow1">
+                <w2:column id="status" inputType="textImage" displayMode="label" viewType="icon"
+                    imageSrc="gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_D.gif" imageWidth="16" imageHeight="16" width="180"></w2:column>
+                <w2:column id="embedded" inputType="textImage" displayMode="label" embeddedInput="true"
+                    imageSrc="gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_D.gif" imageWidth="16" imageHeight="16" width="180"></w2:column>
+                <w2:column id="name" inputType="text" readOnly="true" width="240"></w2:column>
+            </w2:row>
+        </w2:gBody>
+    </w2:gridView>
+
+    <xf:group style="margin:10px 0;">
+        <xf:trigger id="b1" type="button" ev:onclick="scwin.case1" style="width:330px;height:26px;margin:2px;">
+            <xf:label><![CDATA[① 0행 status 변경 (icon_C) - 해당 셀만]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="b2" type="button" ev:onclick="scwin.case2" style="width:330px;height:26px;margin:2px;">
+            <xf:label><![CDATA[② getCellImageSrc(0,'status') 조회]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="b3" type="button" ev:onclick="scwin.case3" style="width:330px;height:26px;margin:2px;">
+            <xf:label><![CDATA[③ 1행 status = "" (이미지 숨김)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="b4" type="button" ev:onclick="scwin.case4" style="width:330px;height:26px;margin:2px;">
+            <xf:label><![CDATA[④ removeCellImageSrc(0,'status') (기본 복귀)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="b5" type="button" ev:onclick="scwin.case5" style="width:330px;height:26px;margin:2px;">
+            <xf:label><![CDATA[⑤ 2행 status = null (삭제와 동일)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="b6" type="button" ev:onclick="scwin.case6" style="width:330px;height:26px;margin:2px;">
+            <xf:label><![CDATA[⑥ 0행 embedded 변경 (즉시 갱신 / v2)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="b7" type="button" ev:onclick="scwin.case7" style="width:330px;height:26px;margin:2px;">
+            <xf:label><![CDATA[⑦ set 후 행 삽입 → 이미지 유지 확인]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="bS" type="button" ev:onclick="scwin.showStatus" style="width:160px;height:26px;margin:2px;">
+            <xf:label><![CDATA[status 상태출력]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="bE" type="button" ev:onclick="scwin.showEmbedded" style="width:160px;height:26px;margin:2px;">
+            <xf:label><![CDATA[embedded 상태출력]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="bC" type="button" ev:onclick="scwin.clearLog" style="width:120px;height:26px;margin:2px;">
+            <xf:label><![CDATA[로그 지우기]]></xf:label>
+        </xf:trigger>
+        <xf:trigger id="bR" type="button" ev:onclick="scwin.resetAll" style="width:120px;height:26px;margin:2px;">
+            <xf:label><![CDATA[초기화(리로드)]]></xf:label>
+        </xf:trigger>
+    </xf:group>
+
+    <xf:textarea id="txa_log" style="width:720px;height:240px;font-family:monospace;font-size:12px;" rows="12"></xf:textarea>
+</body>
+</html>

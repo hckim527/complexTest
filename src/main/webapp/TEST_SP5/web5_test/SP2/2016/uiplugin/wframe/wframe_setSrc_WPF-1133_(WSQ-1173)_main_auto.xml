@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.__triggerDbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.__isShowPopup = function() {
+    if (WebSquare.wUnit.getJq('#G_gridView1__col1').length == 0) {
+        var modify = WebSquare.wUnit.getObjById('G_'+$p.id+'wf_test_gridView1__col1').getValue();
+    } else {
+        var modify = WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col1').getValue();
+    }
+    return newVal == modify;
+}
+scwin.__triggerBlur = function() {
+    if (WebSquare.wUnit.getJq('#gridView1_column1').length == 0) {
+        WebSquare.wUnit.getObjById('wf_test_gridView1_column1').click();
+    } else {
+        gridView1_column1.click();
+    }
+}
+scwin.setVal = function() {
+    if (WebSquare.wUnit.getJq('#gridView1_cell_0_0').length == 0)
+        scwin.__triggerDbClick('wf_test_gridView1_cell_0_0');
+    else
+        scwin.__triggerDbClick('gridView1_cell_0_0');
+}
+scwin.checkVal = function() {
+    if (WebSquare.wUnit.getJq('#G_gridView1__col1').length == 0) {
+        WebSquare.wUnit.getObjById("G_"+$p.id+"wf_test_gridView1__col1").setValue(WebSquare.wUnit.getObjById("G_"+$p.id+"wf_test_gridView1__col1").getValue() + '111');
+    } else {
+        WebSquare.wUnit.getObjById("G_"+$p.id+"gridView1__col1").setValue(WebSquare.wUnit.getObjById("G_"+$p.id+"gridView1__col1").getValue() + '111');
+    }
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 브라우저에서 임의의 컬럼을 수정한다.
+    //2. Modify any column in the browser.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.checkVal()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.__triggerBlur()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 2. 컬럼의 데이터가 수정되면서, 수정된 데이터가 팝업으로 표시된다.
+    //2. As the data in the column is modified, the modified data is displayed as a pop-up.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowPopup()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    wf_test.setSrc("wframe_setSrc_WPF-1133_(WSQ-1173)_sub.xml");
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 07-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:wframe style="position: relative;width: 500px;height: 500px;" id="wf_test" src="" initScript=""></w2:wframe>
+    </body>
+</html>
+ 

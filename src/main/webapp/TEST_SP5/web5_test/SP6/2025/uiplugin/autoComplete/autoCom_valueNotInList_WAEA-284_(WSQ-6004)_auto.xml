@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="false">
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    //1.autoComplete에
+    //noResult:useData 로 설정했을 때
+    //새로운 값을 setValue시 값 저장 및 표현 안됨
+
+    //autoComplete에 값 설정
+	auto1.setValue("abc");
+    //autoComplete 값 확인
+    console.log("auto1.getValue(): "+ auto1.getValue());
+    window.checkLog1 = auto1.getValue();
+
+    //2.autoComplete에
+    //noResult:useData 로 설정하고
+    //데이터리스트의 컬럼을 ref로 설정한 뒤
+    //데이터리스트 컬럼 값을 바꾸었을 때 표현 안됨
+
+    //행추가 및 값 설정
+    dataList1.insertRow(0);
+    dataList1.setRowPosition(0);
+    dataList1.setCellData(0, "col1", "abc");
+
+    //데이터리스트 값 확인
+    console.log("dataList1.getAllJSON(): "+ JSON.stringify(dataList1.getAllJSON()));
+    //autoComplete 값 확인
+    console.log("auto2.getValue(): "+ auto2.getValue());
+    window.checkLog2 = auto2.getValue();
+	
+    //3.autoComplete에
+    //noResult:useData 로 설정하고
+    //맵을 ref로 설정한 뒤
+    //맵 값을 바꾸었을 때 표현 안됨
+
+    //key1 에 abc를 설정
+    dataMap1.set("key1", "abc");
+
+    //dataMap1 값 확인
+    console.log("dataMap1.get('key1') : " + dataMap1.get("key1"));
+    //autoComplete 값 확인
+    console.log("auto3.getValue() : " + auto3.getValue());
+    window.checkLog3 = auto3.getValue();
+	
+}
+
+	scwin.checkVal1 = function() {
+		const checkVal1 = window.checkLog1 == 'abc';
+		const checkVal2 = window.checkLog2 == 'abc';
+		const checkVal3 = window.checkLog3 == 'abc';		
+		return checkVal1 && checkVal2 && checkVal3;
+	}
+	scwin.checkVal2 = function() {
+		const checkVal1 = WebSquare.wUnit.getDomById('auto1_label').innerText == 'abc';
+		const checkVal2 = WebSquare.wUnit.getDomById('auto2_label').innerText == 'abc';
+		const checkVal3 = WebSquare.wUnit.getDomById('auto3_label').innerText == 'abc';
+		return checkVal1 && checkVal2 && checkVal3;
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:autoComplete editType="select" id="auto1" style="width: 148px;height: 21px;" submenuSize="auto" search="start" noResult="useData" valueNotInList="addItem"></w2:autoComplete>
+        <w2:autoComplete editType="select" id="auto2" style="width: 148px;height: 21px;" submenuSize="auto" search="start" noResult="useData" ref="data:dataList1.col1" valueNotInList="addItem"></w2:autoComplete>
+        <w2:autoComplete editType="select" id="auto3" style="width: 148px;height: 21px;" submenuSize="auto" search="start" noResult="useData" ref="data:dataMap1.key1" valueNotInList="addItem"></w2:autoComplete>
+    </body>
+
+</html>

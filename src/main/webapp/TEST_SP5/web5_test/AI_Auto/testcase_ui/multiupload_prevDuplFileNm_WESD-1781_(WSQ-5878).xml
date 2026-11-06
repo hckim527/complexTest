@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list"
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text"></w2:column>
+						<w2:column id="name" name="FileName" dataType="text"></w2:column>
+						<w2:column id="displaySize" name="Size" dataType="text"></w2:column>
+						<w2:column id="Status" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false">
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="javascript"><![CDATA[
+		scwin.selectCallback = function() {
+			
+			var fileInfos = tobe.getFileInfos();
+			/*	var fileInfosLen = tobe.getFileInfos().length;
+
+			// 현재 그리드에 있는 파일명 배열 가져오기
+			var newFileName = tobe.getFileNames();
+
+			var length= gridView1.getRowCount();
+ 	 	for (var i =0; i<length; i++){
+				if(gridView1.getCellDisplayData(i, 1)==newFileName[fileInfosLen-1])
+				{
+					alert("중복된 파일명 입니다");
+					return false;
+				}
+			}  */
+				dataList1.setJSON( fileInfos );
+		}
+		
+		scwin.tobe_onprogress = function(info) {
+			console.log(info.fileName + "("+info.percentData+"%)");
+			
+			var rowidx = dataList1.getMatchedIndex("name", info.fileName);
+			
+			$("td[colindex='3']:eq("+rowidx+") .w2grid_input").text(info.percentData+"%");
+			$("td[colindex='3']:eq("+rowidx+") .w2grid_input").css("width", info.percentData+"%");
+		};
+		
+		function multiupload10_ondone(data) {
+	
+			console.log(JSON.stringify(data));
+				setTimeout( clearUpload, "3000" );
+		
+		};
+		
+		function clearUpload() {
+			dataList1.removeAll();
+		}
+
+		scwin.deleteBtn_onclick = function(e) {
+			var idxArr = gridView1.getCheckedJSON("chk");
+			var idxArr1 = gridView1.getCheckedIndex( "chk" );
+			for( var i=0;i<idxArr.length;i++ ) {
+				var fileName = idxArr[i].name;
+				tobe.removeFile( fileName );
+			}
+			dataList1.removeRows( idxArr1 );
+		};
+		
+		scwin.start_onclick = function(e) {
+			tobe.startUpload();
+		};
+]]></script>
+		<style type="text/css"><![CDATA[ 
+		
+			.w2multiupload_uploader {
+				background:url(/w2test/multiupload.jpg);
+			}
+			
+			.delete_ing {
+				background:url(/w2test/multiupload.jpg) 83px;
+			}
+			
+			.start {
+				background:url(/w2test/multiupload.jpg) 346px;
+			}
+			
+			
+			td[colindex='3'] .w2grid_input {
+				display: block;
+				text-align: right;
+				background-color: yellow;
+				width: 0%;
+			}
+			
+
+#filedrag
+{
+	display: block;
+	height: 50px;
+	padding: 10px;
+	font-weight: bold;
+	text-align: center;
+	color: #555;
+	border: 2px dashed #555;
+	border-radius: 7px;
+	cursor: default;
+	font-size: 20px;
+}
+
+#filedrag.hover
+{
+	color: #f00;
+	border: 2px solid red;
+}			
+		]]></style>
+	</head>
+	<body>
+		<xf:group id="group2" style="padding:10px;">
+			<w2:textbox id="textbox1" style="position: relative;" label="HTML5 MultiUpload Sample" tagname="h1"></w2:textbox>
+			<w2:gridView ignoreCellClick="false" id="gridView1" dataList="dataList1" style="position: relative;height: 200px;"
+				useShiftKey="true" scrollByColumn="false" fixedColumnWithHidden="true" autoFit="allColumn" ev:onviewchange="scwin.gridView1_onviewchange">
+				<w2:header id="header1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="checkbox" width="27" value="chk"></w2:column>
+						<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="422" value="FileName"></w2:column>
+						<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="133" value="Size"></w2:column>
+						<w2:column blockSelect="false" id="column3" style="height:20px;" width="197" inputType="text" value="Status"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody4" style="">
+					<w2:row id="row5" style="">
+						<w2:column blockSelect="false" id="chk" style="height:20px;" inputType="checkbox" width="27"></w2:column>
+						<w2:column blockSelect="false" id="name" style="height:20px;" inputType="text" width="422" textAlign="left"></w2:column>
+						<w2:column blockSelect="false" id="displaySize" style="height:20px;" inputType="text" width="133"></w2:column>
+						<w2:column blockSelect="false" id="Status" style="height:20px;" width="197" inputType="text" value="Ready.."></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<xf:group id="group1" style="overflow:hidden;margin-top:5px;">
+				<xf:group id="">
+					<xf:trigger class="wq_trg2" ev:onclick="" id="trigger3"
+						style="position:absolute;height:24px;width:102px;left:14px;top:278px;" type="button">
+						<xf:label>파일 선택</xf:label>
+					</xf:trigger>
+					<w2:multiupload filter="한글파일:*.doc;*.hwp;*.docx;*.jpg" mode="html5_transparent" ev:ondone="multiupload10_ondone"
+						maxcount="" action="" style="position:relative;height:34px;width:111px;float:left;border: 10px;" wmode="false" id="tobe"
+						maxsize="10000000" ev:onprogress="scwin.tobe_onprogress" uploadButton="" selectCallback="scwin.selectCallback" preventDuplicatedFileName="true">
+					</w2:multiupload>
+					
+				</xf:group>
+			</xf:group>
+
+		</xf:group>
+
+		<xf:trigger type="button" style="position:absolute;left:240px;top:278px;height:24px;width:102px;" id="deleteBtn"
+			ev:onclick="scwin.deleteBtn_onclick">
+			<xf:label><![CDATA[삭제]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" style="position:absolute;left:130px;top:278px;height:24px;width:102px;" id="start"
+			ev:onclick="scwin.start_onclick">
+			<xf:label><![CDATA[전송]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+    let encoding = 'euc-kr';
+    let specialChar = '';
+    let websquareBytes = "";
+    //================== 아스키코드 테스트 ==================
+    console.log("================== 아스키코드 테스트 ==================");
+    specialChar = '2d<34>aHO?';  //return 10
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 10, 실제 결과 : `, websquareBytes);
+
+    //================== 한글 ==================
+    console.log("================== 한글 ==================");
+    specialChar = '대한민국만세'; //return 12 
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 12, 실제 결과 : `, websquareBytes);
+
+    specialChar = 'ㅓㄲㄴㅅ ㅂㅂ '; //return 14
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 14, 실제 결과 : `, websquareBytes);
+
+    //================== 일본어 ==================
+    console.log("================== 일본어 ==================");
+    specialChar = 'これはなんですか'; //return 16
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 16, 실제 결과 : `, websquareBytes);
+
+    specialChar = 'サイトマップ'; //return 12
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 12, 실제 결과 : `, websquareBytes);
+
+    //================== 중국어 ==================
+    console.log("================== 중국어 ==================");
+    specialChar = '早饭几点钟?'; //return 11
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 11, 실제 결과 : `, websquareBytes);
+
+    specialChar = '两个人的餐桌'; //return 12
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 12, 실제 결과 : `, websquareBytes);
+
+    //================== 키릴 ==================
+    console.log("================== 키릴 ==================");
+    specialChar = 'фЩаю'; //return 8
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 8, 실제 결과 : `, websquareBytes);
+
+    //================== 특수문자 (MS IME 유니코드 포함) ==================
+    console.log("================== 특수문자 (MS IME 유니코드 포함) ==================");
+    specialChar = '·'; //return 2
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 2, 실제 결과 : `, websquareBytes);
+
+    specialChar = '♠㉶⒲●'; //return 8
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 8, 실제 결과 : `, websquareBytes);
+
+    //================== 혼합 테스트 ==================
+    console.log("================== 혼합 테스트 ==================");
+    specialChar = '안녕 こんにちは 你好...'; //return 23
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 23, 실제 결과 : `, websquareBytes);
+
+    specialChar = '☎:(02)는 서울 지역번호 → 地域番号'; //return 35
+    websquareBytes = WebSquare.util.getStringByteSize(specialChar);
+    console.log(`${specialChar}문자 예상 결과 : 35, 실제 결과 : `, websquareBytes);
+
+    //ignorechar test
+};
+
+scwin.input1_onblur = function (e) {
+    let inputVal = input1.getValue();
+    websquareBytes = WebSquare.util.getStringByteSize(inputVal);
+    console.log(`실제 결과 : `, websquareBytes);
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:input id="input1" style="width: 144px;height: 21px;" maxByteLength="40" validateOnCheckMaxByteLength="true" ev:onblur="scwin.input1_onblur"></xf:input>
+    </body>
+</html>

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<style type="text/css"><![CDATA[
+			.w2accordion {
+				overflow: auto;
+				border : 0px !important;
+			}
+			
+			.w2panels {
+				position: relative;
+				border: 1px solid #ffffff;
+			}
+			
+			.w2panels_content_closed {
+				display: none;
+			}
+			
+			.w2panels_content_open {
+				position: relative;
+				display: block;
+				overflow: auto;
+			}
+			
+			.w2panels_title {
+				position: relative;
+				height: 25px;
+				cursor: pointer;
+				background: #ff6d00;
+			}
+			
+			.w2panels_title_over {
+				background: #0000ff;
+				/* 전체 panels에 mouse over시 색상 */
+			}
+		]]></style>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.panels1_panelsOpen = function(e) {
+    console.log("panels1_open");
+}
+scwin.panels1_mouseover = function(e) {
+    console.log("panels1_over");
+}
+scwin.panels1_mouseout = function(e) {
+    console.log("panels1_out");
+}
+scwin.panels2_panelsOpen = function(e) {
+    console.log("panels2_open");
+}
+scwin.panels2_mouseover = function(e) {
+    console.log("panels1_over");
+}
+scwin.panels2_mouseout = function(e) {
+    console.log("panels1_out");
+}
+scwin.panels3_panelsOpen = function(e) {
+    console.log("panels3_open");
+}
+scwin.panels3_mouseover = function(e) {
+    console.log("panels3_over");
+}
+scwin.panels3_mouseout = function(e) {
+    console.log("panels3_out");
+}
+scwin.trigger1_onclick = function(e) {
+    var panel_open_obj = accordion1.getOpenPanelInfo();
+    console.log("panel_open_obj.userID:::::" + panel_open_obj.userID);
+    log1 = panel_open_obj.userID;
+};
+scwin.accordion1_onclick = function(panelInfo, isOpen) {
+    console.log("panelInfo:::::" + panelInfo + "isOpen:::::::" + isOpen);
+    log = isOpen;
+};
+scwin.__checkEl = function(id) {
+    if (WebSquare.wUnit.getDomById($p.id + id)) {
+        return true;
+    }
+    return false;
+}
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.checkVal1 = function() {
+    return log == true;
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 F12버튼을 클릭한다.
+    //1. Run the sample file and click the F12 button.
+    //Verify step 1. Execution screen and console window are displayed.
+    //Test step 2. 가입서비스선택항목에 마우스를 오버하고 클릭한다.
+    //2. Mouse over the subscription service selection and click it.
+    //Verify step 2. When mouse over, console log is displayed and true value is displayed when clicked (previously undefined)
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkEl('accordion1_panel_panel1_title')", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('accordion1_panel_panel1_title')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('accordion1_panel_panel1_title').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    //Test step 3. 화면아래의 test버튼을 클릭한다.
+    //3. Click the test button at the bottom of the screen.
+    //Verify step 3. You will see panel1 in the console log (previously no logs left).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("assert", "log1 == 'panel1'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.title_ids = accordion1.getPanelInfo();
+    window.panel_ids = accordion1.getPanelInfo(); //debugger;
+    window.log1 = undefined;
+    window.log = undefined;
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 28-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="" style="padding:30px;">
+			<xf:group id="" style="">
+				<w2:textbox label="collapse : true" id=""
+					style="position: relative;width: 100%;height: 23px;font-size:20px;font-style:bold;">
+				</w2:textbox>
+				<w2:accordion id="accordion1" style="height:400px;width:500px;margin:30px" selectedPanel="panel2" class="w2accordion"
+					collapsible="true" collapseAll = "true" ev:onclick="scwin.accordion1_onclick">
+					<w2:panels id="panel1" style="" ev:onpanelsmouseover="scwin.panels1_mouseover"
+						ev:onpanelsmouseout="scwin.panels1_mouseout" ev:onpanelsopen="scwin.panels1_panelsOpen ">
+						<w2:panelTitle id="t1" label="가입서비스선택" style=""></w2:panelTitle>
+						<w2:panelContent id="content1" style="" class="">
+							<xf:group id="" style="" class="">
+								<xf:group tagname="table" id="" style="position: relative ;width:100%;" class="w2tb">
+									<w2:attributes>
+										<w2:summary></w2:summary>
+									</w2:attributes>
+									<xf:group tagname="colgroup">
+										<xf:group style="width:50.00%;" tagname="col"></xf:group>
+										<xf:group style="width:50.00%;" tagname="col"></xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유형</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">이동전화</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유형상세&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">일반전화,인터넷,인터넷전화&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">이동전화추가정보&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">선택사항&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">판매단말&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유선전화추가정보&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">가입유형&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">신규가입&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">설치장소&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">해지번호&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">123456789</xf:group>
+									</xf:group>
+									<xf:group id="group_test" tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">동일장소&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+								</xf:group>
+							</xf:group>
+						</w2:panelContent>
+					</w2:panels>
+					<w2:panels id="panel2" style="" ev:onpanelsmouseover="scwin.panels3_mouseover"
+						ev:onpanelsmouseout="scwin.panels3_mouseout" ev:onpanelsopen="scwin.panels3_panelsOpen ">
+						<w2:panelTitle id="t2" label="신청정보" style=""></w2:panelTitle>
+						<w2:panelContent id="content2" style="" class="">
+							<xf:group id="" style="" class="">
+								<xf:group tagname="table" id="" style="position: relative ;width:100%;" class="w2tb">
+									<w2:attributes>
+										<w2:summary></w2:summary>
+									</w2:attributes>
+									<xf:group tagname="colgroup">
+										<xf:group style="width:50.00%;" tagname="col"></xf:group>
+										<xf:group style="width:50.00%;" tagname="col"></xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유형</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">이동전화</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유형상세&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">일반전화,인터넷,인터넷전화&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">이동전화추가정보&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">선택사항&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">판매단말&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유선전화추가정보&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">가입유형&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">신규가입&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">설치장소&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">해지번호&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">123456789</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">동일장소&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+								</xf:group>
+							</xf:group>
+						</w2:panelContent>
+					</w2:panels>
+					<w2:panels id="panel3" style="" ev:onpanelsmouseover="scwin.panels2_mouseover"
+						ev:onpanelsmouseout="scwin.panels2_mouseout" ev:onpanelsopen="scwin.panels2_panelsOpen ">
+						<w2:panelTitle id="t3" label="청구정보" style=""></w2:panelTitle>
+						<w2:panelContent id="content3" style="" class="">
+							<xf:group id="" style="" class="">
+								<xf:group tagname="table" id="" style="position: relative ;width:100%;" class="w2tb">
+									<w2:attributes>
+										<w2:summary></w2:summary>
+									</w2:attributes>
+									<xf:group tagname="colgroup">
+										<xf:group style="width:50.00%;" tagname="col"></xf:group>
+										<xf:group style="width:50.00%;" tagname="col"></xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유형</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">이동전화</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유형상세&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">일반전화,인터넷,인터넷전화&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">이동전화추가정보&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">선택사항&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">판매단말&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">유선전화추가정보&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">가입유형&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">신규가입&amp;nbsp;</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">설치장소&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">해지번호&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">123456789</xf:group>
+									</xf:group>
+									<xf:group tagname="tr" style="">
+										<xf:group style="" class="w2tb_th" tagname="th">동일장소&amp;nbsp;</xf:group>
+										<xf:group style="" class="w2tb_td" tagname="td">-</xf:group>
+									</xf:group>
+								</xf:group>
+							</xf:group>
+						</w2:panelContent>
+					</w2:panels>
+				</w2:accordion>
+				<xf:trigger id="trigger1" style="position: relative;width:134px;height:36px;left:163px;top:-22px;" type="button" ev:onclick="scwin.trigger1_onclick">
+					<xf:label><![CDATA[test]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+ 

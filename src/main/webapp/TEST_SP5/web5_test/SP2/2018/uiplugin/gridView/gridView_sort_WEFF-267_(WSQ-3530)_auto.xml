@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text"></w2:column>
+    					<w2:column id="col3" name="name3" dataType="text"></w2:column>
+    					<w2:column id="col4" name="name4" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+            "col1": "1111",
+            "col2": "2222",
+            "col3": "3333",
+            "col4": "4444"
+        },
+        {
+            "col1": "2222",
+            "col2": "2222",
+            "col3": "3333",
+            "col4": "4444"
+        },
+        {
+            "col1": "3333",
+            "col2": "2222",
+            "col3": "3333",
+            "col4": "4444"
+        },
+        {
+            "col1": "4444",
+            "col2": "2222",
+            "col3": "3333",
+            "col4": "4444"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    dataList1.sort('col1', 1);
+};
+scwin.trigger2_onclick = function(e) {
+    var options = {};
+    options.sortIndex = "col1";
+    options.sortOrder = "-1";
+    dataList1.multisort(options);
+};
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq(WebSquare.wUnit.getObjById('gridView1_column7').getElementsByTagName('td')[1]).hasClass('w2grid_head_sort_desc') == true;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="gridView1" style="width: 500px;height: 150px;" ignoreCellClick="false" syncScroll="false"
+    		ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true" dataDragDrop="" sortable="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="name1" displayMode="label"
+    					sortable="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name3" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name4" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[sort]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[multisort]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

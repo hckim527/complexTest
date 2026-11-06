@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="category1" name="category1" dataType="number"></w2:column>
+						<w2:column id="category2" name="category2" dataType="number"></w2:column>
+						<w2:column id="category3" name="category3" dataType="number"></w2:column>
+						<w2:column id="category4" name="category4" dataType="number"></w2:column>
+						<w2:column id="category5" name="category5" dataType="number"></w2:column>
+						<w2:column id="category6" name="category6" dataType="number"></w2:column>
+						<w2:column id="category7" name="category7" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+            "category1": "1",
+            "category2": "shin"
+        },
+        {
+            "category1": "2",
+            "category2": "shin"
+        },
+        {
+            "category1": "3",
+            "category2": "kim"
+        },
+        {
+            "category1": "2",
+            "category2": "kim"
+        },
+        {
+            "category1": "1",
+            "category2": "kim"
+        },
+        {
+            "category1": "3",
+            "category2": "kim"
+        },
+        {
+            "category1": "2",
+            "category2": "kim"
+        },
+        {
+            "category1": "1",
+            "category2": "shin"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+    //			dataList1.insertRow( );
+};
+scwin.grid1_ongroupby = function(options) {
+    return false;
+};
+scwin.trigger4_onclick = function(e) {
+    grid1.setColumnVisible("category2", false);
+};
+scwin.trigger5_onclick = function(e) {
+    //			var options = {
+    //					type:"1",
+    //					fileName : "test.xlsx"
+    //				};
+    //			grid1.advancedExcelDownload( options );
+    grid1.setColumnVisible("category2", true);
+};
+scwin.checkValue = function() {
+    var data = WebSquare.wUnit.getJq("#grid1_body_tbody tr>td:nth-child(3)");
+    for (i = 0; i < data.length; i++) {
+        if (data[i].innerText != "1" && data[i].innerText != "2") {
+            return false;
+            break;
+        }
+    }
+    return true;
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#grid1_header_category1', 'drag-n-drop', {
+        dx: -10,
+        dy: -50
+    });
+}
+scwin.checktype = function() {
+    return typeof WebSquare.wUnit.getDomById('grid1_header_category1_filter') === 'object';
+}
+scwin.checkVal1 = function() {
+    return WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[4].checked == false;
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].checked == true;
+}
+scwin.checkVal3 = function() {
+    return WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[3].checked == true;
+}
+scwin.checkVal4 = function() {
+    return WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[1].checked == false;
+}
+scwin.checkVal5 = function() {
+    return WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[0].checked == false;
+}
+scwin.checkVal6 = function() {
+    return WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].checked == true;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header_category1_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_scrollView').querySelectorAll('div')[6].click()");	
+	
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header_category1_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_groupbyFilterBox_select_label').text() == '((category1 = 1 OR category1 = 2))'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. 1번 샘플을 실행 후 gridView의 category1 필터를 클릭 후 1과2를 선택하여 필터링 한다.
+    //1. After running sample 1, click filter of category1 of gridView and select 1 and 2 to filter.
+    //Verify step 1. The items of category1 are filtered by 1 and 2, and the filterbox at the bottom shows filter details.
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').length == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_groupbyFilterBox_select_itemTable_0').text() == '((category1 = 1 OR category1 = 2))'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. groupby되어진 category1을 마우스로 클릭한다.
+    //3. Click on the group1 category1.
+    //Verify step 3. Filtering value of group1 is maintained and displayed (1,2)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal5()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. groupby되어진 category1을 닫기버튼으로 groupby를 해지한다.
+    //4. Close the groypby with the close button of the group1 group1.
+    //Verify step 4. Filtering indication of category1 item of gridView is maintained and shown.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_closeButtonImg').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. category1의 필터를 클릭하여 '3'값만 필터한후 category2의 필터를 클릭하여 필터링값을 확인한다.
+    //6. Click filter of category1, filter only '3' value, and click filter of category2 to check filtering value.
+    //Verify step 6. Only the value of '3' is filtered and only the value of 'kim' corresponding to the value '3' of category1 is filtered.
+	WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_scrollView').querySelectorAll('div')[4].click()");		
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_scrollView').querySelectorAll('div')[5].click()");		
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_scrollView').querySelectorAll('div')[6].click()");		
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header_category2_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal6()", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_text')[2].innerText == 'kim'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    scwin.init();
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 02-Apr-2018
+}
+]]></script>
+
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" baseNode="vector"
+			repeatNode="data/INFO" id="grid1" rowNumVisible="true"
+			rowStatusVisible="true"
+			style="position: relative ;width: 300px;height: 300px;border: 1px solid black;"
+			useFilterList="true" columnMove="false"
+			ev:ongroupby="scwin.grid1_ongroupby" class="" groupbyFilterBox="true"
+			groupbyZoneMessage="이곳으로 드레그 하세요..."
+			groupbyFilterBoxLocation="bottom" groupbyZone="true" autoFit=""
+			editModeEvent="onclick"
+			customFilterBox = "true">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column id="header_category1"
+						style="height:20px;" inputType="text" width="100"
+						value="category1" useFilter="true">
+					</w2:column>
+					<w2:column id="header_category2"
+						style="height:20px;" inputType="text" width="100"
+						value="category2" useFilter="true">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="category1" style="height:20px"
+						inputType="text" width="100">
+					</w2:column>
+					<w2:column id="category2" style="height:20px"
+						inputType="text" width="100" editType="">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="footer_category1" style="height:20px"
+						inputType="text" width="100">
+					</w2:column>
+					<w2:column id="footer_category2" style="height:20px"
+						inputType="text" width="100">
+					</w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger4"
+			style="position: relative;width: 80px;height: 23px;"
+			ev:onclick="scwin.trigger4_onclick">
+			<xf:label><![CDATA[]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger5"
+			style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger5_onclick">
+			<xf:label><![CDATA[]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

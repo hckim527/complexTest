@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.historyTitle1_onclick();
+    scwin.historyTitle2_onclick();
+};
+scwin.onpageunload = function() {};
+scwin.openMenu = function(menuNm, url, menuCode, paramObj, menuType) {
+    debugger;
+    // client에서 url 숨기기 메뉴일 경우에는 새 창으로 띄우기 적용 
+    if (url == "/") {
+        var url = document.location.href + "/";
+        window.open(url, "", "width=1200, height=700, left=450, top=100");
+    } else {
+        menuCode = menuCode || "";
+        var layout = "T";
+        var tmpUrl;
+        var menuCodeParm = menuCode;
+        var frameMode; // "wframe", "iframe"
+        var favStatus;
+        var data;
+        //즐겨찾기가 추가 여부 확인하여 flag 붙임.
+        favStatus = "T";
+        if ((typeof paramObj !== "undefined") && (paramObj !== null)) {
+            data = paramObj;
+        } else {
+            data = {};
+        }
+        data.menuNm = menuNm;
+        data.menuCode = menuCode;
+        data.favStatus = favStatus;
+        data.menuType = menuType;
+        var frameMode = "";
+        if (layout == "T") {
+            var tabObj = {
+                closable: true, //탭 닫기 기능 제공
+                openAction: "exist", // exist 는 기존 탭을 갱신, new 는 항상 새로, select는 동일 id 가 존재하면 선택, last: 기존 tab을 마지막 tab으로 이동후 선택
+                //							   openAction : "select", // exist 는 기존 탭을 갱신, new 는 항상 새로, select는 동일 id 가 존재하면 선택, last: 기존 tab을 마지막 tab으로 이동후 선택
+                label: menuNm
+            };
+            if (true) {
+                frameMode = "wframePreload";
+            } else {
+                frameMode = "iframe";
+            }
+            var contObj = {
+                frameMode: frameMode,
+                scope: true,
+                src: url,
+                alwaysDraw: false,
+                title: menuNm,
+                dataObject: {
+                    type: "json",
+                    name: "param",
+                    data: data
+                }
+            };
+            debugger;
+            var tabComp = $w.getComponentById("mf_tabControl1");
+            tabComp.addTab(menuCode, tabObj, contObj);
+            // tabObj의 openAction의 last값의 동작 특이 사항으로 선택이 되지 않은 경우 선택하는 로직 추가
+            if (tabComp.getSelectedTabID() !== menuCode) {
+                var tabIndex = tabComp.getTabIndex(menuCode);
+                if (tabIndex) {
+                    tabComp.setSelectedTabIndex(tabIndex);
+                }
+            }
+        } else if (layout == "M") {
+            if (true) {
+                frameMode = "wframe";
+            } else {
+                frameMode = "iframe";
+            }
+            var options = {
+                title: menuNm,
+                src: url,
+                windowTitle: menuNm,
+                windowId: menuCode,
+                openAction: "existWindow",
+                frameMode: frameMode,
+                dataObject: {
+                    type: "json",
+                    name: "param",
+                    data: data
+                }
+            }
+            debugger;
+            var wdcComp = $w.getComponentById("mf_wdc_main");
+            debugger;
+            wdcComp.createWindow(options);
+        }
+    }
+};
+scwin.historyTitle1_onclick = function() {
+    scwin.openMenu("udc1", "WESD_263_tmp01.xml", "010001");
+};
+scwin.historyTitle2_onclick = function() {
+    scwin.openMenu("udc2", "sample/udc/multiupload/tmp02.xml", "010002");
+    scwin.openMenu("udc3", "sample/udc/multiupload/tmp02.xml", "010003");
+    scwin.openMenu("udc4", "sample/udc/multiupload/tmp02.xml", "010004");
+    scwin.openMenu("udc5", "sample/udc/multiupload/tmp02.xml", "010005");
+    scwin.openMenu("udc6", "sample/udc/multiupload/tmp02.xml", "010006");
+    scwin.openMenu("udc7", "sample/udc/multiupload/tmp02.xml", "010007");
+};
+scwin.trigger1_onclick = function() {
+    tabControl1.hideTab(1);
+}
+scwin.trigger2_onclick = function() {
+    tabControl1.disableTab(4);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'mf_tabControl1_tabhost').style.width == '60px'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+	 	<xf:group class="" id="contents">
+			<w2:tabControl alwaysDraw="false" class="" confirmFalseAction="new" confirmTrueAction="exist" tabPosition="right" id="tabControl1" changeActiveTab="true" tabScrollAuto="true"
+				style="width:300px;height:600px;" useConfirmMessage="false" useTabKeyOnly="true" tabScroll="true" adaptive="" adaptiveThreshold="" closable="true"
+				spaInitCount="" spaAuto="" spaAutoDelay="1000" windowMaxNum="10" focusOnStart="" tabMove="true" ev:ontabclick=""
+				ev:onbeforeselect="" ev:ondrawcomplete="">
+			</w2:tabControl>
+			<xf:trigger type="button"
+	    		style="height:32px;width:148px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+	    		<xf:label><![CDATA[tab 2 hideTab)]]></xf:label>
+	    	</xf:trigger>
+	    	<xf:trigger type="button"
+	    		style="height:32px;width:148px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+	    		<xf:label><![CDATA[tab 5 disableTab)]]></xf:label>
+	    	</xf:trigger>
+		</xf:group>
+    
+    </body>
+</html>
+ 

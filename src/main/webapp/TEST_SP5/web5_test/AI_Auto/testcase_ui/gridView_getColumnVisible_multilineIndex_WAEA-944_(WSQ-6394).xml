@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] gridView.getColumnVisible MultiLine 3줄" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성" meta_date="20260625" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.tData = {
+    "description" : "[FAIL] gridView.getColumnVisible 가 MultiLine(Body 3줄) 그리드에서, 전체 컬럼 수(6)가 아닌 '한 줄당 컬럼 수'(columnOrder.length=2)를 기준으로 판정하여, 그 수를 넘는 고유 인덱스(3·4·5)를 모두 표시 상태인데도 undefined 로 반환하는 결함 재현 (인덱스 0~2 만 정상, 마지막 컬럼만의 문제가 아님)",
+    "validation" : [
+        "MultiLine(3줄) 이어도 모든 Column 은 고유 인덱스(0~5)를 가지므로, 모든 Column 이 표시된 상태에서 getColumnVisible(0~5)은 모두 true 를 반환해야 합니다.",
+    ]
+}
+
+scwin.strNameSpace = 'xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"';
+
+scwin.onpageload = function () {
+    scwin.comp_init();
+};
+
+scwin.comp_init = async function () {
+    if (typeof dlt_bind !== 'undefined') { $p.data.remove("dlt_bind"); }
+    if (typeof gridMulti !== 'undefined') { gridMulti.remove(); }
+
+    // MultiLine 그리드에 바인딩할 DataList (col1~col6)
+    let strDlt = '';
+    strDlt += '<w2:dataList ' + scwin.strNameSpace + ' id="dlt_bind" baseNode="list" repeatNode="map">';
+    strDlt += '<w2:columnInfo>';
+    strDlt += '<w2:column id="col1" name="col1" dataType="text"></w2:column>';
+    strDlt += '<w2:column id="col2" name="col2" dataType="text"></w2:column>';
+    strDlt += '<w2:column id="col3" name="col3" dataType="text"></w2:column>';
+    strDlt += '<w2:column id="col4" name="col4" dataType="text"></w2:column>';
+    strDlt += '<w2:column id="col5" name="col5" dataType="text"></w2:column>';
+    strDlt += '<w2:column id="col6" name="col6" dataType="text"></w2:column>';
+    strDlt += '</w2:columnInfo>';
+    strDlt += '<w2:data use="true"></w2:data>';
+    strDlt += '</w2:dataList>';
+    $p.data.create(strDlt);
+    dlt_bind.setJSON([
+        { "col1": "서울 강남점", "col2": "1250", "col3": "김영업", "col4": "010-1111-2222", "col5": "VIP", "col6": "활성" },
+        { "col1": "부산 해운대점", "col2": "980", "col3": "이판매", "col4": "010-3333-4444", "col5": "일반", "col6": "활성" },
+        { "col1": "대구 수성점", "col2": "1430", "col3": "박상담", "col4": "010-5555-6666", "col5": "VIP", "col6": "대기" }
+    ], false);
+
+    // MultiLine 그리드 : 한 데이터 Row 가 3줄. 1줄 col1(0)/col2(1), 2줄 col3(2)/col4(3), 3줄 col5(4)/col6(5)
+    //  - 어떤 Column 도 숨기지 않는다(모두 표시 상태).
+    let strMulti = '';
+    strMulti += '<w2:gridView ' + scwin.strNameSpace + ' dataList="data:dlt_bind" id="gridMulti" style="width:560px;height:300px;">';
+    strMulti += '<w2:caption id="capM" value="MultiLine (3줄, col1~col6 고유 인덱스 0~5, 숨긴 컬럼 없음)"></w2:caption>';
+    strMulti += '<w2:header id="hM">';
+    strMulti += '<w2:row id="hMr1"><w2:column width="280" inputType="text" id="hMcol1" value="지점명"></w2:column><w2:column width="*" inputType="text" id="hMcol2" value="매출"></w2:column></w2:row>';
+    strMulti += '<w2:row id="hMr2"><w2:column width="280" inputType="text" id="hMcol3" value="담당자"></w2:column><w2:column width="*" inputType="text" id="hMcol4" value="연락처"></w2:column></w2:row>';
+    strMulti += '<w2:row id="hMr3"><w2:column width="280" inputType="text" id="hMcol5" value="등급"></w2:column><w2:column width="*" inputType="text" id="hMcol6" value="상태"></w2:column></w2:row>';
+    strMulti += '</w2:header>';
+    strMulti += '<w2:gBody id="gMb">';
+    strMulti += '<w2:row id="gMr1"><w2:column width="280" inputType="text" id="col1" dataList="col1"></w2:column><w2:column width="*" inputType="text" id="col2" dataList="col2"></w2:column></w2:row>';
+    strMulti += '<w2:row id="gMr2"><w2:column width="280" inputType="text" id="col3" dataList="col3"></w2:column><w2:column width="*" inputType="text" id="col4" dataList="col4"></w2:column></w2:row>';
+    strMulti += '<w2:row id="gMr3"><w2:column width="280" inputType="text" id="col5" dataList="col5"></w2:column><w2:column width="*" inputType="text" id="col6" dataList="col6"></w2:column></w2:row>';
+    strMulti += '</w2:gBody>';
+    strMulti += '</w2:gridView>';
+    scwin.gridMulti = await $p.dynamicCreate("gridMulti", "gridView", strMulti, grp_comp);
+}
+
+// 결함 재현 : MultiLine(3줄) 그리드에서 getColumnVisible(0~5) 을 호출해 반환값을 출력한다.
+//  - 모든 Column 이 표시 상태이므로 0~5 모두 true 가 기대값.
+//  - 실제로는 한 줄당 컬럼 수(columnOrder.length=2) 를 넘는 인덱스 3·4·5 가 모두 undefined 로 반환됨(결함).
+//    (엔진 useRealColIndex=true 분기: _colIndex % columnOrder.length 로 줄당 위치에 접고, _colIndex > columnOrder.length 면 미반환)
+scwin.btn_repro_onclick = function () {
+    scwin.setReturnValue("getColumnVisible(0) : " + gridMulti.getColumnVisible(0));
+    scwin.setReturnValue("getColumnVisible(1) : " + gridMulti.getColumnVisible(1));
+    scwin.setReturnValue("getColumnVisible(2) : " + gridMulti.getColumnVisible(2));
+    scwin.setReturnValue("getColumnVisible(3) : " + gridMulti.getColumnVisible(3));
+    scwin.setReturnValue("getColumnVisible(4) : " + gridMulti.getColumnVisible(4));
+    scwin.setReturnValue("getColumnVisible(5) : " + gridMulti.getColumnVisible(5));
+}
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="grp_main" style="padding:16px;">
+			<w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ [FAIL] gridView.getColumnVisible - MultiLine(3줄) : 한 줄당 컬럼수(2) 초과 인덱스 3·4·5 가 모두 undefined (마지막 컬럼만의 문제 아님)" style=""></w2:textbox>
+
+			<xf:group id="grp_comp" style="margin-bottom:16px;"></xf:group>
+
+			<xf:group id="" style="display:flex; gap:8px; margin:8px 0;">
+				<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_repro_onclick" id="btn_repro" label="getColumnVisible"></w2:button>
+			</xf:group>
+
+			<xf:group class="" id="grp_bottom" style="">
+				<w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 140px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

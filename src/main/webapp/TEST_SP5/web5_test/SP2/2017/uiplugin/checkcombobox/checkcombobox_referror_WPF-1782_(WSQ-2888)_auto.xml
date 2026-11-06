@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행한다.
+    //1. Run the sample file.
+    // verify step 1. checkcombobox, selectbox 값에 동일하게 3이 보여진
+    //1. checkcombobox, 3 is shown in the selectbox value as well.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('ccb_inrv_rslt_cd').getText()", "3");
+    // Test step 2. checkcombobox 값을 변경한다.(3값을 체크해지하고 2값을 체크로 변경)
+    //2. Change the value of checkcombobox (uncheck 3 and change 2 to check)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('ccb_inrv_rslt_cd').setText('2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 2. selectbox 값도 동일하게 2값으로 변경되어진다.
+    //2. The value of selectbox is also changed to 2.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('select1').getText()", "2");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. selectbox 값을 변경한다.
+    //3. Change the value of the selectbox.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('select1').setText('1')");
+    // verify step 3.checkcombobox 값도 동일하게 변경되어진다.
+    //3. The checkcombobox value is also changed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('ccb_inrv_rslt_cd').getText()", "1");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setData(["1", "1", "2", "2", "3", "3"]);
+    dataMap1.set("key1", "3");
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 23-Jan-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:checkcombobox allOption="" appearance="minimal" chooseOption="true" chooseOptionLabel="-선택-" class="f_star" direction="auto"
+    		disabled="false" displayMode="label" id="ccb_inrv_rslt_cd" ref="dataMap1.key1" separator="," style="height:17px;width: 200px;"
+    		submenuSize="auto" ev:onchange="scwin.ccb_inrv_rslt_cd_onchange" sortOption="" ev:onviewchange=""
+    		ev:ondblclick="scwin.ccb_inrv_rslt_cd_ondblclick">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dataList1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:checkcombobox>
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="select1"
+    		style="position: relative;width: 148px;height: 21px;" displayMode="label" optionOrder="false" allOption="" disabled="false"
+    		submenuSize="auto" ref="dataMap1.key1">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dataList1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:select1>
+    </body>
+</html>
+ 

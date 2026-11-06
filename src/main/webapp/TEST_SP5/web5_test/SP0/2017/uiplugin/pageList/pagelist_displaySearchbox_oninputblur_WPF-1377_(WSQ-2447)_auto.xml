@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList3" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="amount" name="금액" dataType="number">
+						</w2:column>
+						<w2:column id="customer_code" name="고객코드" dataType="text">
+						</w2:column>
+						<w2:column id="end_date" name="종료시간" dataType="date">
+						</w2:column>
+						<w2:column id="from_date" name="시작시간" dataType="date">
+						</w2:column>
+						<w2:column id="model_code" name="모델코드" dataType="text">
+						</w2:column>
+						<w2:column id="national_code" name="국가코드" dataType="text">
+						</w2:column>
+						<w2:column id="national_word" name="국가어" dataType="text">
+						</w2:column>
+						<w2:column id="order_no" name="정렬번호" dataType="text">
+						</w2:column>
+						<w2:column id="order_type" name="정렬구분" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true" style="">
+					<w2:columnInfo>
+						<w2:column id="no" name="번호" dataType="text"></w2:column>
+						<w2:column dataType="number" id="amount" name="금액"></w2:column>
+						<w2:column dataType="text" id="customer_code" name="고객코드"></w2:column>
+						<w2:column dataType="date" id="end_date" name="종료시간"></w2:column>
+						<w2:column dataType="date" id="from_date" name="시작시간"></w2:column>
+						<w2:column dataType="text" id="model_code" name="모델코드"></w2:column>
+						<w2:column dataType="text" id="national_code" name="국가코드"></w2:column>
+						<w2:column dataType="text" id="national_word" name="국가어"></w2:column>
+						<w2:column dataType="text" id="order_no" name="정렬번호"></w2:column>
+						<w2:column dataType="text" id="order_type" name="정렬구분"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<xf:submission id="submission1" ref="" target='data:json,{"id":"dataList3","key":"jsondata"}' action="pagelist_displaySearchbox_oninputblur_WPF-1377_(WSQ-2447).json"
+				method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+				processMsg="" ev:submit="" ev:submitdone="scwin.submission1_done" ev:submiterror="">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.setNo = function(startNo) {
+    var len = gridRowCount;
+    for (var ix = 0; ix < len; ix++) {
+        dataList1.setCellData(ix, "no", startNo++);
+    }
+}
+scwin.init = function() {
+    $w.executeSubmission("submission1");
+}
+scwin.submission1_done = function(e) { //debugger;
+    var totrowcnt = dataList3.getRowCount();
+    scwin.setPageListCount(totrowcnt);
+    dataList1.setJSON(dataList3.getRangeJSON(0, gridRowCount - 1));
+    scwin.setNo(1);
+};
+scwin.setPageListCount = function(totrowcnt) { //debugger;
+    var cnt = Number(totrowcnt) / gridRowCount;
+    //cnt = Math.floor(cnt);
+    //var cnt = totrowcnt / gridRowCount;
+    console.log(cnt);
+    pageList3.setCount(cnt);
+}
+scwin.pageList3_onchange = function(current, before) {
+    console.log("current = " + current + ", before = " + before);
+    var start;
+    var end;
+    var getJson;
+    if (current < before) {
+        start = (current - 1) * gridRowCount;
+        end = start + gridRowCount - 1;
+        getJson = dataList3.getRangeJSON(start, end);
+        dataList1.setJSON(getJson);
+    } else {
+        start = (current - 1) * gridRowCount;
+        end = start + gridRowCount - 1;
+        getJson = dataList3.getRangeJSON(start, end);
+        dataList1.setJSON(getJson);
+    }
+    scwin.setNo((current - 1) * gridRowCount + 1);
+};
+scwin.pageList3_oninputblur = function(value) {
+    console.log("value = " + value);
+    logger = value;
+};
+
+scwin.simulateWrapper = function(target, type, options) {
+	WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate = function() {
+	scwin.simulateWrapper('#pageList3_input', 'key-combo', {
+		combo: 'ENTER'
+	});
+}
+	
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').focus()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#pageList3_input').val('0')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#pageList3_input').simulate('keydown', {keyCode: 13, which: 13, key: 'ENTER'})");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pageList3_input').val()", "1");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').focus()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#pageList3_input').val('0')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').blur()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pageList3_input').val()", "1");
+    WebSquare.wUnit.addCommand("assert", "logger", "1");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.gridRowCount = 7;
+    window.logger = 0;
+    scwin.init();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 15-Mar-2018
+    //end unitTest
+}
+]]></script>
+		<style type="text/css"><![CDATA[
+
+    	 ]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="group1" style="display:inline-block;padding:30px;">
+			<w2:gridView autoFit="lastColumn" dataList="dataList1" dragEndFunction="" dragStartFunction="" enterKeyMove=""
+				fixedColumnWithHidden="true" focusMode="" id="gridView3" rowNumHeaderValue="" rowNumVisible="false" rowStatusWidth="" scrollByColumn="false"
+				style="position: relative;width:850px;height:186px;" useShiftKey="false" visibleRowNum="" oddEvenColorDisplay="false" dragDisplayColumn=""
+				dataDragDrop="" columnMove="" class="" editModeEvent="" rowNumWidth="" rowStatusHeaderValue="">
+				<w2:header id="header1" style="">
+					<w2:row id="row1" style="">
+						<w2:column blockSelect="false" id="column4" style="height:20px;" inputType="text" width="46" displayMode="label" value="No">
+						</w2:column>
+						<w2:column blockSelect="false" id="column11" inputType="text" style="height:20px;" value="시작시간" width="100">
+						</w2:column>
+						<w2:column blockSelect="false" id="column13" inputType="text" style="height:20px;" value="종료시간" width="100">
+						</w2:column>
+						<w2:column blockSelect="false" id="column15" inputType="text" style="height:20px;" value="고객코드" width="80">
+						</w2:column>
+						<w2:column blockSelect="false" id="column9" inputType="text" style="height:20px;" value="모델코드" width="90">
+						</w2:column>
+						<w2:column blockSelect="false" id="column1" inputType="text" style="height:20px;" value="정렬구분" width="110">
+						</w2:column>
+						<w2:column blockSelect="false" id="column17" inputType="text" style="height:20px;" value="금액" width="100">
+						</w2:column>
+						<w2:column blockSelect="false" id="column7" inputType="text" style="height:20px;" value="국가코드" width="70">
+						</w2:column>
+						<w2:column blockSelect="false" id="column5" inputType="text" style="height:20px;" value="국가어" width="140">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" id="no" style="height:20px" inputType="text" width="46" displayMode="label">
+						</w2:column>
+						<w2:column blockSelect="false" displayFormat="yyyy-MM-dd" displayFormatter="" id="from_date" inputType="text" style="height:20px"
+							width="100">
+						</w2:column>
+						<w2:column blockSelect="false" displayFormat="yyyy-MM-dd" displayFormatter="" id="end_date" inputType="text" style="height:20px"
+							width="100">
+						</w2:column>
+						<w2:column blockSelect="false" id="customer_code" inputType="text" style="height:20px" width="80">
+						</w2:column>
+						<w2:column blockSelect="false" id="model_code" inputType="text" style="height:20px" width="90"></w2:column>
+						<w2:column blockSelect="false" id="order_type" inputType="text" style="height:20px" width="110"></w2:column>
+						<w2:column blockSelect="false" displayFormat="###,###" id="amount" inputType="text" style="height:20px" width="100">
+						</w2:column>
+						<w2:column blockSelect="false" id="national_code" inputType="text" style="height:20px" width="70">
+						</w2:column>
+						<w2:column blockSelect="false" id="national_word" inputType="text" style="height:20px" width="70">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<w2:pageList buttonShowType="" class="" deliImage="" deliImageStyle="" deliWidth="" delimiter="" displayButtonType="display"
+				displayFormat="#" ev:onchange="scwin.pageList3_onchange" ev:oninputblur="scwin.pageList3_oninputblur" id="pageList3" pageSize="5" renderType="list" displaySearchbox="true" displaySelectedIndex = "true"
+				style="position: relative;maring: 0 auto;height: 40px;margin-top:10px;">
+			</w2:pageList>
+		</xf:group>
+	</body>
+</html> 

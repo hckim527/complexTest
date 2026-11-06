@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dataList1" style="" saveRemovedData="true" removeDummyRowStatus="false" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[11]]></col1>
+							<col2><![CDATA[22]]></col2>
+							<col3><![CDATA[33]]></col3>
+						</w2:row>
+						<w2:row>
+							<col3><![CDATA[44]]></col3>
+							<col2><![CDATA[11]]></col2>
+							<col1><![CDATA[22]]></col1>
+						</w2:row>
+						<w2:row>
+							<col3><![CDATA[55]]></col3>
+							<col2><![CDATA[22]]></col2>
+							<col1><![CDATA[33]]></col1>
+						</w2:row>
+					</w2:data>
+					<script ev:event="onbeforecolumnfilterchange" type="javascript"><![CDATA[
+					    //alert("onbeforecolumnfilterchange = " + this.getRowCount());
+						window.beforecolumnfilter = this.getRowCount();
+						//alert(this.getRowCount());
+					 ]]></script>
+					<script ev:event="onaftercolumnfilterchange" type="javascript"><![CDATA[
+					    //alert("onaftercolumnfilterchange = " + this.getRowCount());
+						window.aftercolumnfilter = this.getRowCount();
+						//alert(this.getRowCount());
+					 ]]></script>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    //alert("onaftercolumnfilterchange = " + this.getRowCount());
+    //alert(this.getRowCount());
+    //localStorage.setItem("log1", this.getRowCount());
+	//window.beforecolumnfilter = this.getRowCount()
+	//window.aftercolumnfilter = this.getRowCount()	
+}
+
+scwin.__clickFilter = function() {
+    var el = WebSquare.wUnit.getDomById('gridView1_customFilter_list').getElementsByTagName('input')[1];
+    return el.click();
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column1_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1').getRowCount() == 3", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.__clickFilter()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "beforecolumnfilter == 3", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "aftercolumnfilter== 0", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" scrollByColumn="false"
+			id="gridView1" useFilterList="true"
+			style="position: relative ;width: 430px;height: 169px;"
+			fixedColumnWithHidden="true" useShiftKey="true" adaptiveThreshold=""
+			columnMove="true" sortable="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" useFilter="true" id="column5"
+						style="height:20px" inputType="text" width="132" value="name1"
+						sortable="true">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px"
+						inputType="text" width="100" value="name2" sortable="true"
+						useFilter="true"></w2:column>
+					<w2:column blockSelect="false" id="column1" style="height:20px"
+						width="100" inputType="text" value="name3" sortable="true"
+						useFilter="true"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="col1" style="height:20px"
+						inputType="text" width="132"></w2:column>
+					<w2:column blockSelect="false" id="col2" style="height:20px"
+						inputType="text" width="70"></w2:column>
+					<w2:column blockSelect="false" id="col3" style="height:20px"
+						width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>
+ 

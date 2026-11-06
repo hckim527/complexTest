@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+	 	<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="codeList1" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="code" name="name1" dataType="text"></w2:column>
+                        <w2:column id="label" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    codeList1.setData(["value1", "label1", "value2", "label2", "value3", "label3", "value4", "label4"]);
+};
+scwin.onpageunload = function() {};
+scwin.selectLabelCustom = function(label, value, isOpen) {
+    //debugger;
+    if (isOpen) {
+        return label + " " + value;
+    } else {
+        return value;
+    }
+};
+scwin.autoComplete1_oneditkeyup = function(info) {
+    console.log(this.id + " oneditkeyup");
+    console.log(info);
+    //alert("oneditkeyup");
+    localStorage.setItem("log", "oneditkeyup");
+}
+scwin.autoComplete1_oneditfull = function(e) {
+    console.log(this.id + " oneditfull");
+    //alert("oneditfull");
+}
+scwin.autoComplete1_oneditenter = function(e) {
+    console.log(this.id + " oneditenter");
+    //alert("oneditenter");
+    localStorage.setItem("log2", "oneditenter");
+}
+scwin.sbx_searchTarget_onchange = function() {}
+scwin.trigger1_onclick = function(e) {
+    if (WebSquare.util.getComponentById("autoComplete1")) {
+        autoComplete11.remove();
+    }
+    var customLabelFormatter;
+    if (sbx_customLabelFormatter.getValue() === "true") {
+        customLabelFormatter = "scwin.selectLabelCustom"
+    }
+    //debugger;
+    var autoComplete1Obj = $p.dynamicCreate("autoComplete1", "autoComplete", {
+        style: "position: relative;width: 148px;height: 21px;",
+        autoFocus: sbx_autoFocus.getValue(),
+        searchTarget: sbx_searchTarget.getValue(),
+        displayMode: sbx_displayMode.getValue(),
+        customLabelFormatter: customLabelFormatter,
+        nextTabID: "input1",
+        nextTabByEnter: sbx_nextTabByEnter.getValue(),
+        autocomplete: "off"
+    }, group1);
+    if (sbx_oneditkeyup.getValue() === "true") {
+        autoComplete1Obj.bind("oneditkeyup", "scwin.autoComplete1_oneditkeyup");
+    }
+    if (sbx_oneditenter.getValue() === "true") {
+        autoComplete1Obj.bind("oneditenter", "scwin.autoComplete1_oneditenter");
+    }
+    autoComplete1Obj.setNodeSet('data:codeList1', 'label', 'code');
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#autoComplete1_input', 'key-sequence', {
+        sequence: '1'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#autoComplete1_input', 'key-combo', {
+        combo: 'ENTER'
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'oneditkeyup'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log2') == 'oneditenter'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    localStorage.removeItem("log2");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:group tagname="table" style="width:100%;" id="table1" class="w2tb" adaptive="layout" adaptiveThreshold="900">
+            <w2:attributes>
+                <w2:summary></w2:summary>
+            </w2:attributes>
+            <xf:group tagname="caption"></xf:group>
+            <xf:group tagname="colgroup">
+                <xf:group tagname="col" style="width:25.00%;"></xf:group>
+                <xf:group tagname="col" style="width:25.00%"></xf:group>
+                <xf:group tagname="col" style="width:25.00%;"></xf:group>
+                <xf:group tagname="col" style="width:25.00%"></xf:group>
+            </xf:group>
+            <xf:group tagname="tr" style="">
+                <xf:group tagname="th" style="" class="w2tb_th" adaptive="" adaptiveThreshold="">
+                    searchTarget
+                    <w2:attributes>
+                        <w2:scope>row</w2:scope>
+                        <w2:colspan>1</w2:colspan>
+                        <w2:rowspan>1</w2:rowspan>
+                    </w2:attributes>
+                </xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_searchTarget" style="width:131px;height:21px;" appearance="minimal" ev:onchange="">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[label]]></xf:label>
+                                <xf:value><![CDATA[label]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[value]]></xf:label>
+                                <xf:value><![CDATA[value]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[both]]></xf:label>
+                                <xf:value><![CDATA[both]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+                <xf:group tagname="th" style="" class="w2tb_th">displayMode</xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_displayMode" style="width:131px;height:21px;" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[label delim value]]></xf:label>
+                                <xf:value><![CDATA[label delim value]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[label]]></xf:label>
+                                <xf:value><![CDATA[label]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[value]]></xf:label>
+                                <xf:value><![CDATA[value]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[value delim label]]></xf:label>
+                                <xf:value><![CDATA[value delim label]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+            </xf:group>
+            <xf:group tagname="tr" style="">
+                <xf:group tagname="th" adaptiveThreshold="" class="w2tb_th">
+                    customLabelFormatter
+                    <w2:attributes>
+                        <w2:scope>row</w2:scope>
+                    </w2:attributes>
+                </xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_customLabelFormatter" style="width:131px;height:21px;" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[true]]></xf:label>
+                                <xf:value><![CDATA[true]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[false]]></xf:label>
+                                <xf:value><![CDATA[false]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+                <xf:group tagname="th" style="" class="w2tb_th">autoFocus</xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_autoFocus" style="width:131px;height:21px;" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[true]]></xf:label>
+                                <xf:value><![CDATA[true]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[false]]></xf:label>
+                                <xf:value><![CDATA[false]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+            </xf:group>
+            <xf:group tagname="tr" style="">
+                <xf:group tagname="th" adaptiveThreshold="" class="w2tb_th">
+                    disableEdit
+                    <w2:attributes>
+                        <w2:scope>row</w2:scope>
+                    </w2:attributes>
+                </xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_disableEdit" style="width:131px;height:21px;" disabled="true" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[false]]></xf:label>
+                                <xf:value><![CDATA[false]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[true]]></xf:label>
+                                <xf:value><![CDATA[true]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+                <xf:group tagname="th" style="" class="w2tb_th">nextTabByEnter</xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_nextTabByEnter" style="width:131px;height:21px;" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[true]]></xf:label>
+                                <xf:value><![CDATA[true]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[false]]></xf:label>
+                                <xf:value><![CDATA[false]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+            </xf:group>
+            <xf:group tagname="tr" style="">
+                <xf:group tagname="th" adaptiveThreshold="" class="w2tb_th">
+                    caseSensitive
+                    <w2:attributes>
+                        <w2:scope>row</w2:scope>
+                    </w2:attributes>
+                </xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_caseSensitive" style="width:131px;height:21px;" disabled="true" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[true]]></xf:label>
+                                <xf:value><![CDATA[true]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[false]]></xf:label>
+                                <xf:value><![CDATA[false]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+                <xf:group tagname="th" style="" class="w2tb_th">noResult</xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_noResult" style="width:131px;height:21px;" disabled="true" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[previous]]></xf:label>
+                                <xf:value><![CDATA[previous]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[clear]]></xf:label>
+                                <xf:value><![CDATA[clear]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[noEnd]]></xf:label>
+                                <xf:value><![CDATA[noEnd]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[first]]></xf:label>
+                                <xf:value><![CDATA[first]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+            </xf:group>
+            <xf:group tagname="tr" style="">
+                <xf:group tagname="th" adaptiveThreshold="" class="w2tb_th">
+                    bind oneditkeyup
+                    <w2:attributes>
+                        <w2:scope>row</w2:scope>
+                    </w2:attributes>
+                </xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_oneditkeyup" style="width:131px;height:21px;" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[true]]></xf:label>
+                                <xf:value><![CDATA[true]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[false]]></xf:label>
+                                <xf:value><![CDATA[false]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+                <xf:group tagname="th" style="" class="w2tb_th">bind oneditenter</xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:select1 id="sbx_oneditenter" style="width:131px;height:21px;" appearance="minimal">
+                        <xf:choices>
+                            <xf:item>
+                                <xf:label><![CDATA[true]]></xf:label>
+                                <xf:value><![CDATA[true]]></xf:value>
+                            </xf:item>
+                            <xf:item>
+                                <xf:label><![CDATA[false]]></xf:label>
+                                <xf:value><![CDATA[false]]></xf:value>
+                            </xf:item>
+                        </xf:choices>
+                    </xf:select1>
+                </xf:group>
+            </xf:group>
+        </xf:group>
+        <xf:trigger id="trigger1" style="width:140px;height:30px;margin-left:5px" type="button"
+            ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[autoComplete create]]></xf:label>
+        </xf:trigger>
+        <xf:group id="group1">            
+        </xf:group>
+        <xf:input adjustMaxLength="false" id="input1" initValue="input1" style="width: 144px;height: 21px;"></xf:input>
+    </body>
+</html>
+ 

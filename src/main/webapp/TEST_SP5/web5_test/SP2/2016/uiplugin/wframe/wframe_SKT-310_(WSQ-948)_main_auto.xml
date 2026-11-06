@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkValue = function(log) {
+    if (log) {
+        return true;
+    }
+    return false
+}
+scwin.checktype = function() {
+    return typeof log;
+}
+scwin.setVal = function() {
+    return scwin.checkValue(log);
+}
+scwin.checkVal = function() {
+    return WebSquare.logger.getLog().indexOf(String(log)) !== -1;
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행하여 alert창의 내용을 확인한다.
+    //1. Run the sample file and check the contents of the alert window.
+    //Verify step 1. The alert window is displayed and the value that returns the wframe ID in tac_Main is displayed. (Refer to -1 after modifying SKT-310_ sample)
+    WebSquare.wUnit.addCommand("assert", "scwin.setVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 로그보기를 통해 alert창의 내용과 동일한 값이 보여지는 지를 확인한다.
+    //2. The same as the contents of the alert window through the log view Verify that the value is shown.
+    //Verify step 2. The same value is shown in the log view.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //console.log(wfm_main.getObjList());
+    window.log;
+    WebSquare.logger.printLog(wfm_main.getObjList());
+    //alert(wfm_main.getObjList());
+    log = wfm_main.getObjList();
+    // 콘솔 로그에 아래와 같이 3개의 object id만 반환하고 tac_Main안에 wframe 아이디는 반환하지 않음
+    // ["tac_Main", "scwin", "scvar"]
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 01-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:wframe id="wfm_main" style="position: relative;width:629px;height:340px;" src="wframe_SKT-310_(WSQ-948)_tabControl01.xml" scope="true"></w2:wframe>
+    </body>
+</html>
+ 

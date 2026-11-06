@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1.setFocusedMultiCell(1, 1);
+};
+scwin.trigger2_onclick = function(e) {
+    gridView1.setFocusedMultiCell(0, 1, totalRow - 1, 1);
+};
+scwin.trigger3_onclick = function(e) {
+    gridView1.setFocusedMultiCell(0, 0, totalRow - 1, totalCol - 1);
+};
+scwin.trigger4_onclick = function(e) {
+    gridView1.removeFocusedMultiCell(0, 0, totalRow - 1, totalCol - 1);
+};
+scwin.isCheckValid = function(x1, x2, y1, y2) {
+    var focusedCellInfos = gridView1.focusedCell;
+    var focusedCellMin = [focusedCellInfos[0].focusedRowIndex, focusedCellInfos[0].focusedColIndex];
+    var focusedCellMax = [focusedCellInfos[focusedCellInfos.length - 1].focusedRowIndex, focusedCellInfos[focusedCellInfos.length - 1].focusedColIndex];
+    return (focusedCellMin[0] <= x1 && focusedCellMin[1] <= x2) && (y1 <= focusedCellMax[0] && y2 <= focusedCellMax[1]);
+}
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    //cell단위포커스
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.isCheckValid(1, 1, 1, 1)", "true");
+    //column단위포커스
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.isCheckValid(0, 1, 9, 1)", "true");
+    //전체포커스
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.isCheckValid(0, 0, 9, 2)", "true");
+    //전체포커스 아웃
+    //WebSquare.wUnit.addCommand("set","WebSquare.wUnit.getDomById('trigger4').click()");
+    //WebSquare.wUnit.addCommand("assert", "scwin.isCheckValid(0, 0, 9, 2)", "true");	
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.arr = [];
+    for (var i = 0; i < 30; i++) {
+        arr[i] = i;
+    }
+    dataList1.setData(arr);
+    window.totalRow = dataList1.getTotalRow();
+    window.totalCol = dataList1.getTotalCol();
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: absolute;width:500px;height:286px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column2" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:230px;height:62px;left:534px;top:46px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[cell 단위 포커스]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="position: absolute;width:230px;height:62px;left:535px;top:134px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[column단위 포커스]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger3" style="position: absolute;width:230px;height:62px;left:535px;top:225px;" type="button" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[전체 포커스 ]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger4" style="position: absolute;width:232px;height:65px;left:787px;top:46px;" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[전체 포커스 아웃]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

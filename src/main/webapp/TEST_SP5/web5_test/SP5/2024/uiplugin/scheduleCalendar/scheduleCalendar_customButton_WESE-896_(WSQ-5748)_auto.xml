@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" style=""
+                    saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="title" name="title" dataType="text">
+                        </w2:column>
+                        <w2:column id="start" name="start" dataType="text">
+                        </w2:column>
+                        <w2:column id="end" name="end" dataType="text">
+                        </w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <title><![CDATA[All Day Event]]></title>
+                            <start><![CDATA[20240501120000]]></start>
+                            <end><![CDATA[20240503000000]]></end>
+                        </w2:row>
+                        <w2:row>
+                            <title><![CDATA[Long Event]]></title>
+                            <start><![CDATA[20240507080000]]></start>
+                            <end><![CDATA[20240510090000]]></end>
+
+                        </w2:row>
+                        <w2:row>
+                            <title><![CDATA[Repeating Event]]></title>
+                            <start><![CDATA[20240509]]></start>
+                            <end><![CDATA[20240509]]></end>
+                        </w2:row>
+                        <w2:row>
+                            <title><![CDATA[Meeting]]></title>
+                            <start><![CDATA[20240512]]></start>
+                            <end><![CDATA[20240512]]></end>
+                        </w2:row>
+                        <w2:row>
+                            <title><![CDATA[Birthday Party]]></title>
+                            <start><![CDATA[20240513]]></start>
+                            <end><![CDATA[20240513]]></end>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[
+        scwin.onpageload = function () {
+
+        };
+
+        scwin.trigger3_onclick = function(e) {
+            var options = {
+                "sun" : {
+                    "header" : {
+                        "color":"#ff0000"
+                    },
+                    "body" : {
+                        "background" : { "background-color":"#ffcccc","opacity":"0.2" },
+                        "num" : { "color" : "#ff0000" }
+                    }
+                },
+                "sat" : {
+                    "header" : {
+                        "color":"#0000ff"
+                    },
+                    "body" : {
+                        "background" : { "background-color":"#ccccff","opacity":"0.2" },
+                        "num" : { "color" : "#0000ff" }
+                    }
+                }
+            };
+            schdule1.setDayNameStyle(options);
+        };
+        
+        scwin.trigger4_onclick = function(e) {
+            //schdule1.setHeaderBtn({"headerLeftBtn":true});
+            //schdule1.setHeaderBtn({"headerTitle":true});
+            schdule1.setHeaderBtn({"headerRightBtn":false,"headerLeftBtn":false,"headerTitle":false});
+            //schdule1.setHeaderBtn({"headerRightBtn":true});
+        };
+        scwin.customButton1_onclick = function (e) {
+		window.log1 = "custom1 clicked";
+            console.log("custom1 clicked");
+        };
+        scwin.customButton2_onclick = function (e) {
+		window.log2 = "custom2 clicked";
+            console.log("custom2 clicked");
+        };
+		
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('schdule1').children[0].classList.contains('fc-header-toolbar');
+	}
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('schdule1').children[0].classList.contains('fc-header-toolbar');
+	}	
+	scwin.checkVal3 = function() {
+		return window.log1 == 'custom1 clicked';
+	}		
+	scwin.checkVal4 = function() {
+		return window.log2 == 'custom2 clicked';
+	}		
+	scwin.unitTest = function(){
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('schdule1').querySelectorAll('button')[6].click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('schdule1').querySelectorAll('button')[7].click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+
+	
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <w2:scheduleCalendar useHeaderToolbar="true" useFooterToolbar="true" customButtonText="custom1,custom2" customButtonClickFunction="scwin.customButton1_onclick,scwin.customButton2_onclick" footerToolbarStart="custom1,custom2" id="schdule1" style="width:100%;height:400px;" defaultDate="" version="6.1.11" editable="false" eventLimit="false" selectable="true" dataList="dataList1" titleColumn="title" startColumn="start" endColumn="end" headerRightBtn="false" headerLeftBtn="true" headerTitle="true">
+        </w2:scheduleCalendar>
+        <xf:group id="" style="height:23px;">
+            <xf:trigger type="button" id="trigger3"
+                style="position: relative;width: 120px;height: 23px;"
+                ev:onclick="scwin.trigger3_onclick">
+                <xf:label><![CDATA[setDayNameStyle]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="trigger4"
+                style="width: 180px;height: 23px;margin:5px;" ev:onclick="scwin.trigger4_onclick">
+                <xf:label><![CDATA[setHeaderBtn hide]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+    </body>
+</html>

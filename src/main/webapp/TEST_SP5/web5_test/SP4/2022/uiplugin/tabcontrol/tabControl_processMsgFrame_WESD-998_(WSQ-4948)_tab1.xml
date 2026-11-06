@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_excel" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk_col" name="chk_col" dataType="text" defaultValue="0"></w2:column>
+						<w2:column id="menuCd" name="메뉴코드" dataType="text"></w2:column>
+						<w2:column id="menuNm" name="메뉴명" dataType="text"></w2:column>
+						<w2:column id="uprMenuNm" name="부모메뉴명" dataType="text"></w2:column>
+						<w2:column id="urlAddr" name="경로" dataType="text"></w2:column>
+						<w2:column id="uprMenuId" name="부모메뉴코드" dataType="text"></w2:column>
+						<w2:column id="desc" name="비고" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>      
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+			<xf:submission id="sbm_search" ref="" target='data:json,{"id":"dlt_excel","key":"dlt_excel"}'
+				action="tabControl_processMsgFrame_WESD-998_(WSQ-4948)_sleep.jsp" method="get" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.searchFn_callback" ev:submiterror="scwin.searchFn_callback"
+				abortTrigger="">
+			</xf:submission>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		console.log("업무화면 : onpageload START ==============");
+		
+		//서브미션 호출 
+		scwin.searchFn();
+		
+		console.log("업무화면 : onpageload END ==============");
+	};
+	
+	scwin.onpageunload = function() {
+	};
+	
+	
+	//서브미션 호출 
+	scwin.searchFn = function(){
+		console.log("업무화면 : 서브미션 호출 -------");	
+		
+		sbm_search.processMsg = "$blank";
+		$p.executeSubmission(sbm_search);
+
+		//$p.getFrame().showProcessMessage("show");
+		
+	}; 
+	scwin.searchFn_callback = function(e){
+		console.log("업무화면 : 서브미션 callback -------");	
+	};		
+	
+
+	scwin.trigger1_onclick = function(e){
+		alert("a");
+	}
+	
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:group style="width:850px;height:800px;border: dashed;" id="">
+    		<w2:textbox id="" label="업무화면-메인" style="width: 150px;height: 23px;"></w2:textbox>
+    		
+    		<w2:wframe style="width:1000px;height:600px;" id="wfm_sub" src="tabControl_processMsgFrame_WESD-998_(WSQ-4948)_tab2.xml"></w2:wframe>
+    		
+    	<xf:trigger type="button" style="top:700px;width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[click]]></xf:label>
+    	</xf:trigger>
+    	</xf:group>
+    </body>
+</html>

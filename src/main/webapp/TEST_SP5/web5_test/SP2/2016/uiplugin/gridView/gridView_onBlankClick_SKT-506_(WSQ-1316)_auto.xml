@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[가나다라마바사아자차카타파하123456789abcdefghijklmnopqrstuvwxyz]]></col2>
+            				<col3><![CDATA[12334]]></col3>
+            				<col4><![CDATA[]]></col4>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[0]]></col1>
+            				<col2><![CDATA[20160423#1]]></col2>
+            				<col3><![CDATA[555555]]></col3>
+            				<col4><![CDATA[]]></col4>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+    			<w2:dataList baseNode="list" id="dst_tr01_out01" repeatNode="map" >
+    				<w2:columnInfo>
+
+    					<w2:column dataType="text" id="A" name="선택" />
+    					<w2:column dataType="text" id="B" name="선택" />
+    					<w2:column dataType="text" id="C" name="선택" />    
+    					    					
+    					<w2:column dataType="text" id="chk_col" name="선택" />
+    					<w2:column dataType="text" id="svc_cd" name="서비스코드" />
+    					<w2:column dataType="text" id="scrbr_trnsf_op_cd" name="이관업무코드" />
+    					<w2:column dataType="text" id="from_org_nm" name="FROM조직명" />
+    					<w2:column dataType="text" id="to_org_nm" name="TO조직명" />
+    					<w2:column dataType="text" id="req_dt" name="요청일자" />
+
+    					    				
+    				</w2:columnInfo>
+    			</w2:dataList>            	
+
+    							       	
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.gridView2_oneditkeydown = function(info) {
+    console.log("gridView2_oneditkeydown");
+    console.log("info.rowIndex : " + info.rowIndex);
+    console.log("info.colIndex : " + info.colIndex);
+};
+scwin.gridView2_onblankclick = function(e) {
+    gridView2.setFocusedCell(0, 0, true);
+};
+scwin.div_Search_cal_ObjDt_onkeydown = function(e) {
+    if (e.keyCode == '13') {
+        div_Search_btn_Search.focus();
+    }
+};
+scwin.div_Search_btn_Search_onclick = function(e) {
+    var row = dst_tr01_out01.insertRow();
+    gridView2.setFocusedCell(0, 0, true);
+};
+scwin.input11_onkeydown = function(e) {
+    WebSquare.wUnit.getDomById('input2').focus();
+};
+scwin.input11_onkeypress = function(e) {
+    if (e.keyCode == '13') {
+        div_Search_btn_Search.focus();
+    }
+};
+scwin.input11_oneditkeyup = function(info) {};
+scwin.div_Search_cal_ObjDt_onkeyup = function(e) {
+    if (e.keyCode == '13') {
+        div_Search_btn_Search.focus();
+    }
+};
+scwin.isFocus = function() {
+    return WebSquare.wUnit.getJq(WebSquare.wUnit.getDomById('G_'+$p.id+'gridView2__chk_col')).is(':focus');
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 버튼을 클릭한다.
+    //1. Run the sample file and click the button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('div_Search_btn_Search').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 1. 첫번째 컬럼영역이 선택(주황색)되어진다.
+    //1. The first column area is selected (orange).
+    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 그리드 영역내부(컬럼영역제외)에서 마우스를 이동하여 클릭한다.
+    //2. Move the mouse inside the grid area (except for the column area) and click.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_dataLayer').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. 선택한 컬럼영역에 focus가 edit모드로 계속 보여진다.(이전에는 focus는 보여지지 않고 계속 선택영역으로 보여짐)
+    //2. The focus is continuously displayed in edit mode in the selected column area (previously the focus is not shown but is still displayed as the selection area)
+    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 28-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+    	<w2:gridView dataList="dst_tr01_out01" applyAllColumnStyle="false" scrollByColumn="false" id="gridView2"
+    		style="width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true" ev:oneditkeyup=""
+    		ev:oneditkeydown="scwin.gridView2_oneditkeydown" ev:onblankclick="scwin.gridView2_onblankclick">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" value="1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="70" value="2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="70" inputType="text" value="3"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="height:20px;" inputType="text" width="70" value="4"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" value="5"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="70" value="6"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="chk_col" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="svc_cd" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="scrbr_trnsf_op_cd" style="" width="70" inputType="text"></w2:column>
+    				<w2:column blockSelect="false" id="from_org_nm" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="to_org_nm" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="req_dt" style="" inputType="" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:inputCalendar class="pil" displayFormat="yyyy-MM-dd" ev:onchange="" ev:onkeydown=""
+    		ev:onviewchange="" id="div_Search_cal_ObjDt" style="width:150px;" validCheck="true" ev:onkeyup="scwin.div_Search_cal_ObjDt_onkeyup">
+    	</w2:inputCalendar>
+    	<xf:input id="input11" style="width: 144px;height: 21px;" adjustMaxLength="false" ev:onkeydown="scwin.input11_onkeydown"
+    		ev:oneditkeyup="" ev:onkeypress="">
+    	</xf:input>
+    	<xf:input id="input2" style="width: 144px;height: 21px;" adjustMaxLength="false"></xf:input>
+    	<xf:trigger type="button" id="div_Search_btn_Search" style="width: 80px;height: 23px;"
+    		ev:onclick="scwin.div_Search_btn_Search_onclick">
+    		<xf:label><![CDATA[버튼]]></xf:label>
+    	</xf:trigger>
+
+    </body>
+</html>
+ 

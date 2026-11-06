@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="grid 활용 예제">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<res>
+                		<map>
+	                		<vector>
+		                		<map index="0">
+		                			<number value="one">1</number>
+		                			<dept value="insa">인사</dept>
+		                			<age value="17">17</age>
+		                			<name value="hong">홍길동</name>
+		                			<address value="seoul dongjak">서울 동작구</address>
+		                		</map>
+		                 		<map index="1">
+		                			<number value="two">2</number>
+		                			<dept value="insa">홍보</dept>
+		                			<age value="24">24</age>
+		                			<name value="heo">허준</name>
+		                			<address value="seoul Kangseo">서울 강서구</address>
+		                		</map>
+		                 		<map index="2">
+		                			<number value="three">3</number>
+		                			<dept value="insa">인사</dept>
+		                			<age value="37">37</age>
+		                			<name value="jeon">전우치</name>
+		                			<address value="seoul mapo">서울 마포구</address>
+		                		</map>
+		                 		<map index="3">
+		                			<number value="four">4</number>
+		                			<dept value="dev">개발</dept>
+		                			<age value="32">32</age>
+		                			<name value="na">나이름</name>
+		                			<address value="seoul seocho">서울 서초구</address>
+		                		</map>
+	                		</vector>
+                		</map>
+                	</res>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.btnRefresh_onclick();
+};
+scwin.onpageunload = function() {};
+scwin.btnRefresh_onclick = function(e) {
+    var xmlObj = WebSquare.ModelUtil.findInstanceNode("res/map/vector");
+    grid1.setXML(xmlObj);
+};
+scwin.btnInsert_onclick = function(e) {
+    var focusIdx = grid1.getFocusedRowIndex();
+    grid1.insertRow(focusIdx);
+};
+scwin.btnDelete_onclick = function(e) {
+    var focusIdx = grid1.getFocusedRowIndex();
+    grid1.deleteRow(focusIdx);
+};
+scwin.btnRemove_onclick = function(e) {
+    var focusIdx = grid1.getFocusedRowIndex();
+    var obj = grid1.removeRow(focusIdx);
+    console.log(obj);
+};
+scwin.btnRemoveRows_onclick = function(e) {
+    var chkArr = grid1.getCheckedIndex("chk");
+    var objs = grid1.removeRows(chkArr);
+    console.log(objs);
+};
+scwin.btnInit_onclick = function(e) {
+    var objAll = grid1.removeAll();
+    console.log(objAll);
+};
+scwin.btnExcelDown_onclick = function(e) {
+    grid1.advancedExcelDownload([]);
+};
+scwin.btnExcelUp_onclick = function(e) {
+    grid1.advancedExcelUpload({
+        "headerExist": "1"
+    });
+};
+scwin.grid1_oncelldblclick = function(row, col) {
+    var colId = grid1.getColumnID(col);
+    if (colId == "name") {
+        //alert(grid1.getCellData(row, "address"));
+		console.log(grid1.getCellData(row, "address"))
+		window.log = grid1.getCellData(row, "address");
+    }
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkVal = function() {
+    return window.log == '서울 동작구';
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_0_4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grid1_cell_0_4')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group style="padding: 10px" id="" class="">
+    	<xf:group style="padding: 10px;margin-bottom: 10px;border: 1px solid gray" id="" class="">
+    		<w2:textbox style="" label="* Grid 활용하기" id="" tagname="h2"></w2:textbox>
+    	</xf:group>
+    	<xf:group style="border: 1px solid gray;padding: 10px;margin-bottom: 10px;overflow: hidden;" id="" class="">
+    		<xf:trigger ev:onclick="scwin.btnInsert_onclick" id="btnInsert"
+    			style="width: 80px;height: 23px;float : left;margin-right: 10px;" type="button">
+    			<xf:label><![CDATA[입력]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.btnDelete_onclick" id="btnDelete" style="width: 80px;height: 23px;float : left;margin-right: 10px;" type="button">
+    			<xf:label><![CDATA[삭제(delete)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.btnRemove_onclick" id="btnRemove" style="width: 85px;height: 23px;float : left;margin-right: 10px;" type="button">
+    			<xf:label><![CDATA[삭제(remove)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.btnRemoveRows_onclick" id="btnRemoveRows" style="width: 140px;height: 23px;float : left;margin-right: 10px;" type="button">
+    			<xf:label><![CDATA[다중삭제(removeRows)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.btnInit_onclick" id="btnInit" style="width: 80px;height: 23px;float : left;margin-right: 10px;" type="button">
+    			<xf:label><![CDATA[초기화]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.btnExcelDown_onclick" id="btnExcelDown" style="width: 80px;height: 23px;float : left;margin-right: 10px;" type="button">
+    			<xf:label><![CDATA[ExcelDown]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.btnExcelUp_onclick" id="btnExcelUp" style="width: 80px;height: 23px;float : left;margin-right: 10px;" type="button">
+    			<xf:label><![CDATA[ExcelUp]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger type="button" style="width: 80px;height: 23px;float : right;" id="btnRefresh" ev:onclick="scwin.btnRefresh_onclick">
+    			<xf:label><![CDATA[새로고침]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<w2:grid baseNode="vector" fixedColumnWithHidden="true" repeatNode="map" useShiftKey="true" style="height: 200px;" id="grid1"
+    		autoFit="allColumn" autoFitMinWidth="800" sortable="true" rowNumVisible="true" rowNumHeaderValue="순번" rowStatusHeaderValue="상태"
+    		rowStatusVisible="true" ev:oncelldblclick="scwin.grid1_oncelldblclick" keyMoveEditMode="true" editModeEvent="onclick" focusFlow="linear" focusMode="row" useFilterList="true">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column removeBorderStyle="false" width="30" inputType="checkbox" style="height:20px;" id="column11" value="" blockSelect="false"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="50" inputType="text" style="height:20px;" id="column1" value="번호"
+    					blockSelect="false" displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="100" inputType="text" style="height:20px;" id="column9" value="부서"
+    					blockSelect="false" displayMode="label" useFilter="true">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px;" id="column7" value="나이"
+    					blockSelect="false" displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="100" inputType="text" style="height:20px;" id="column5" value="이름"
+    					blockSelect="false" displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="200" inputType="text" style="height:20px;" id="column3" value="주소"
+    					blockSelect="false" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column removeBorderStyle="false" width="30" inputType="checkbox" style="" id="chk" value="" blockSelect="false"
+    					displayMode="label" ignoreStatus="true">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" id="number" blockSelect="false" displayMode="label" readOnly="true" editModeEvent="">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="100" inputType="text" id="dept" blockSelect="false" displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" id="age" blockSelect="false" displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" id="name" blockSelect="false" displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" id="address" blockSelect="false" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    </xf:group></body>
+</html>
+ 

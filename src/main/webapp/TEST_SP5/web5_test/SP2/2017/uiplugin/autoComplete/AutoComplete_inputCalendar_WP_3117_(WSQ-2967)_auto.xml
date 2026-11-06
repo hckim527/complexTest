@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.getToday = function() {
+    var date = new Date();
+    dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
+    mm = date.getMonth() > 8 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1);
+    yy = date.getFullYear();
+    var today = yy + '-' + mm + '-' + dd;
+    return today;
+}
+scwin.isFocus = function() {
+    return WebSquare.wUnit.getJq("#inputCalendar4_calendar_cell_2_3").hasClass("w2calendar_selected")
+}
+scwin.checkVal = function() {
+    return scwin.getToday() === WebSquare.wUnit.getDomById('inputCalendar4_calendar_currentDate').innerText;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 0. inputCalendar에 속성을 추가한다.
+    //Add an attribute to inputCalendar.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar4').keepFixedDate = true");
+    // verify step 0. keepFixedDate = 'true'
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar4').keepFixedDate", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 달력버튼을 클릭하여 포커스되어진 날짜를 확인한다.
+    //1. Run the sample file and click on the calendar button to confirm the focus date.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar4_img').click()");
+    // verify step 1. keepFixedDate = 'true'
+    //The calendar"s focus date is shown and moved to the set date 20170901. (Normal)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar4').getValue() == '20170901'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 달력의 포커스날짜가 셋팅된 20170901일자로 이동되어 보여진다.(정상)
+    //2. Change the date and click the calendar button again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar4_calendar_cell_2_3').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar4_img').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 2. 변경되어진 날짜로 포커스되어 보여지고 하단의 today날짜는 유지되어 진다.
+    //2. It will be focused on the modified date and the current today date will be maintained.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar4').getValue() == 20170913", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('inputCalendar4_calendar_currentDate').innerText == scwin.getToday()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    WebSquare.wUnit.getObjById('inputCalendar4').setValue("20170901");
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:inputCalendar weekStartsOn="0" rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar4"
+    		renderDiv="true" style="position: absolute;width:403px;height:174px;left:99px;top:135px;" focusOnDateSelect="false" footerDiv="false"
+    		fixedDate="today" keepFixedDate = "true">
+    	</w2:inputCalendar>
+    	<!-- <w2:inputCalendar calendarValueType="yearMonthDate" fixedDate="today" focusOnDateSelect="false" footerDiv="false"
+    		id="inputCalendar3" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:403px;height:174px;left:102px;top:337px;" weekStartsOn="0">
+    	</w2:inputCalendar> -->
+    </body>
+</html>
+ 

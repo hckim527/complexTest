@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    widgetContainer.addWidgets([{
+            id: "widget1",
+            title: "위젯1",
+            src: "widgetContainer_showTitle_WPF-1557_(WSQ-2557)_content.xml",
+            scope: true,
+            x: 0,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget2",
+            title: "위젯2",
+            src: "widgetContainer_showTitle_WPF-1557_(WSQ-2557)_content.xml",
+            scope: true,
+            x: 1,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget3",
+            title: "위젯3",
+            src: "widgetContainer_showTitle_WPF-1557_(WSQ-2557)_content.xml",
+            scope: true,
+            hasTitleBar: false,
+            x: 2,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        }
+    ]);
+}
+scwin.trigger1_onclick = function(e) {
+    widgetContainer.enableWidgetTitle(false);
+};
+scwin.trigger2_onclick = function(e) {
+    widgetContainer.getWidgetById('widget3').showTitle(true);
+};
+scwin.trigger3_onclick = function(e) {
+    widgetContainer.enableWidgetTitle(true);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일 실행 후 우측의 1번 버튼을 클릭한다.
+    //1. After executing the sample file, click button 1 on the right side.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 위젯 타이틀이 모두 숨겨진다.
+    //1. All the widget titles are hidden.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1_title').style.display", "none");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget2_title').style.display", "none");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 실행화면의 2번 버튼을 클릭한다.
+    //2. Click button 2 on the execution screen.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 위젯3번만 타이틀이 보여진다.
+    //2. The title of the widget is displayed only 3 times.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget3_title').style.display", "block");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1_title').style.display", "none");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget2_title').style.display", "none");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 실행화면의 3번 버튼을 클릭한다.
+    //3. Click button 3 on the execution screen.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 위젯 타이틀이 모두 보여진다.
+    //3. All widget titles are shown.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget3_title').style.display", "block");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1_title').style.display", "block");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget2_title').style.display", "block");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 31-Jan-2018
+    //Test case Fail PUASE
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:widgetContainer id="widgetContainer" widgetMove="true" minUnitWidth="1" cols="3" horizontalMargin="0" verticalMargin="0"
+    		params="false" widgetResize="true" maxUnitWidth="1" threshold="null" mode="pushpull"
+    		style="position: absolute;width:869px;height:495px;border: 1px solid #000000;" minUnitHeight="1" maxUnitHeight="1"
+    		unitHeightPixel="300">
+    	</w2:widgetContainer>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:276px;height:42px;left:892px;top:7px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[1번 widgetContainer.enableWidgetTitle(false)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="position: absolute;width:326px;height:42px;left:892px;top:120px;" type="button"
+    		ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[2번 widgetContainer.getWidgetById('widget3').showTitle(true)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3"
+    		style="position: absolute;width:276px;height:42px;left:892px;top:64px;" type="button">
+    		<xf:label><![CDATA[3번 widgetContainer.enableWidgetTitle(true)]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

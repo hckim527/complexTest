@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model ev:submitdone="scwin.submission1_submitdone">
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dataList1" baseNode="list"
+        			saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="col2" name="name2"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="col3" name="name3"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="col4" name="name4"
+        					dataType="text">
+        				</w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="" target="" useModal="true"
+        		action="gridView_ShowHide_WPF-1579_(WSQ-2553)_time.jsp" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance=""
+        		replace="" errorHandler="" customHandler=""
+        		mode="asynchronous" processMsg="loading" ev:submit=""
+        		ev:submitdone="scwin.submission1_submitdone"
+        		ev:submiterror="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.submission1_submitdone = function(e) {
+    //		$w.hideModal();
+};
+scwin.btn_onclick = function(e) {
+    scwin.$w.executeSubmission("submission1", null, grd);
+};
+scwin.tbtn_onclick = function(e) {
+    alert('tbtn');
+};
+scwin.init = function() {
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+};
+scwin.grd_oncellindexchange = function(row, col, oldRow, oldCol) {
+    //		$w.showModal();
+    scwin.$w.executeSubmission("submission1", null);
+    //		scwin.$w.executeSubmission("submission1", null, grd);
+};
+scwin.__isSubmissionWorked = function() {
+    var sub = WebSquare.wUnit.getJq("#___processbar2_i");
+    return (sub.length > 0) && (WebSquare.wUnit.getJq(sub).css("display") == "block");
+}
+scwin.checkVal1 = function() {
+    return WebSquare.wUnit.getJq('#grd_cell_0_1').css('background-color') == 'rgb(252, 167, 60)';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getJq('#grd_cell_0_0').css('background-color') == 'background-color: rgb(252, 167, 60)';
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 브라우저에서 임의의 컬럼을 선택한다.
+    //2. Select an arbitrary column in the browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_0').click()");
+    // verify step 2. submission 이 동작한다.
+    //2. Submission works;
+    WebSquare.wUnit.addCommand("assert", "scwin.__isSubmissionWorked()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Test step 3. submission 동작중에 임의의 컬럼을 마우스 또는 키보드로 선택한다
+    //3. Select any column on the mouse or keyboard during submission operation.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 3. 비활성되어서 이동할 수 없다.
+    //3. It is inactive and can not be moved.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "false");
+    WebSquare.wUnit.addCommand("pause", "4000");
+    //Test step 4. submission 이 종료 후 임의로 마우스 또는 키보드로 다른컬럼을 선택 (이동) 한다.
+    //4. At the end of submission, arbitrarily select (move) another column with mouse or keyboard.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    // verify step 4. submission 이 동작한다.
+    //4. Submission works
+    WebSquare.wUnit.addCommand("assert", "scwin.__isSubmissionWorked()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Test step 5. 다시 submission 동작중에 임의의 컬럼을 마우스 또는 키보드로 선택한다.
+    //5. Select any column on the mouse or keyboard again during submission operation.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 5. 비활성되어서 이동할 수 없다.
+    //5. It is inactive and can not be moved.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "false");
+    WebSquare.wUnit.addCommand("pause", "4000");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 09-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="grp" style="height:23px;">
+    		<xf:input id="ibx"
+    			style="position: relative;width: 144px;height: 21px;">
+    		</xf:input>
+    		<xf:trigger id="btn"
+    			style="position: relative;width: 80px;height: 23px;"
+    			ev:onclick="scwin.btn_onclick" type="button">
+    			<xf:label><![CDATA[submission]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="tbtn"
+    			style="position: relative;width: 80px;height: 23px;"
+    			ev:onclick="scwin.tbtn_onclick" type="button">
+    			<xf:label><![CDATA[testBtn]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    <xf:group id="grd_grp" style="height:150px;"><w2:gridView ignoreCellClick="false" summaryAuto="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useFilterList="false" fixedColumnWithHidden="true" scrollByColumnAdaptive="false" dataList="dataList1" id="grd" focusMode="" style="position: relative;width: 500px;height: 150px;" scrollByColumn="false" useShiftKey="true" editModeEvent="onclick" ev:oncellclick="" ev:oncellindexchange="scwin.grd_oncellindexchange" readOnly="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption.">
+    		</w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column id="column7" blockSelect="false" style="height:20px" width="70" inputType="text" value="name1" displayMode="label">
+    				</w2:column>
+    				<w2:column id="column5" blockSelect="false" style="height:20px" width="70" inputType="text" value="name2" displayMode="label">
+    				</w2:column>
+    				<w2:column id="column3" blockSelect="false" style="height:20px" width="70" inputType="text" value="name3" displayMode="label">
+    				</w2:column>
+    				<w2:column id="column1" blockSelect="false" style="height:20px" inputType="text" width="70" value="name4" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column id="col1" blockSelect="false" style="height:20px" width="70" inputType="text" displayMode="label">
+    				</w2:column>
+    				<w2:column id="col2" blockSelect="false" style="height:20px" width="70" inputType="text" displayMode="label">
+    				</w2:column>
+    				<w2:column id="col3" blockSelect="false" style="height:20px" width="70" inputType="text" displayMode="label">
+    				</w2:column>
+    				<w2:column id="col4" blockSelect="false" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView></xf:group></body>
+</html>
+ 

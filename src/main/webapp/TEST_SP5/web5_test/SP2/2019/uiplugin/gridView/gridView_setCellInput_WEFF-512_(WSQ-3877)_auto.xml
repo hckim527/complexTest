@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dlt_select" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="code" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="sel_sample" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+            "label": "input",
+            "code": "input"
+        },
+        {
+            "label": "calendar",
+            "code": "calendar"
+        },
+        {
+            "label": "checkbox",
+            "code": "checkbox"
+        },
+        {
+            "label": "select",
+            "code": "select"
+        },
+        {
+            "label": "radio",
+            "code": "radio"
+        }
+    ];
+    dlt_select.setJSON(jsonData);
+    var sel_sampleData = [{
+            "col1": "축구",
+            "col2": "1"
+        },
+        {
+            "col1": "농구",
+            "col2": "2"
+        },
+        {
+            "col1": "야구",
+            "col2": "3"
+        },
+        {
+            "col1": "배구",
+            "col2": "4"
+        }
+    ];
+    sel_sample.setJSON(sel_sampleData);
+    var arr = [];
+    for (var i = 0; i < 5; i++) {
+        arr.push(new Array);
+    }
+    dataList1.setJSON(arr);
+};
+scwin.grd_onviewchange = function(info) {
+    var inputType = info.newValue;
+    var obj = scwin.inputTypeCustomObj[inputType];
+    grd.setCellInputType(info.rowIndex, "col2", obj);
+};
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "scwin.init();");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd').setFocusedCell(2,0,true)");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd').getCellInfo(0).select.setSelectedIndex1(3)");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('dataList1').getCellData(2,0)", "select");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd').setFocusedCell(2,1,true)");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd').setFocusedCell(0,0)");
+    WebSquare.wUnit.addCommand("pause", "50");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd').getCellDisplayData(2,1)", "축구");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd').removeFocusedCell()");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.inputTypeCustomObj = {
+        calendar: {
+            inputType: "calendar"
+        },
+        radio: {
+            inputType: "radio"
+        },
+        checkbox: {
+            inputType: "checkbox"
+        },
+        input: {
+            inputType: "input"
+        },
+        select: {
+            inputType: "select",
+            options: {
+                viewType: "default"
+            },
+            itemSet: {
+                nodeset: "data:sel_sample",
+                label: "col1",
+                value: "col2"
+            }
+        }
+    };
+    //값 변경 시 col2의 inputType을 동적으로 변경한다.
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="gridView.setCellInputType();" id="" style="width: 500px;height: 30px;font-size:200%;padding:5px;"></w2:textbox>
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" setCellInputTypeCustom = "true" 
+    		scrollByColumnAdaptive="false" id="grd" style="width: 500px;height: 150px;" ignoreCellClick="false" syncScroll="false"
+    		ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true" ev:onviewchange="scwin.grd_onviewchange">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="select" width="70" value="" displayMode="label"
+    					allOption="" chooseOption="" ref="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dlt_select">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="code"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="custom" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="custom" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

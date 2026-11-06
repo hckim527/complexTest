@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_menu" baseNode="list" saveRemovedData="true" repeatNode="map" ev:ondataload="scwin.dlt_menu_ondataload">
+					<w2:columnInfo>
+						<w2:column id="MENU_CD" name="메뉴코드" dataType="text"></w2:column>
+						<w2:column id="MENU_NM" name="메뉴명" dataType="text"></w2:column>
+						<w2:column id="SRC_PATH" name="메뉴경로" dataType="text"></w2:column>
+						<w2:column id="MENU_LEVEL" name="메뉴레벨" dataType="text"></w2:column>
+						<w2:column id="PARENT_MENU_CD" name="부모메뉴코드" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<MENU_CD><![CDATA[001000000]]></MENU_CD>
+							<MENU_NM><![CDATA[샘플]]></MENU_NM>
+							<MENU_LEVEL><![CDATA[1]]></MENU_LEVEL>
+						</w2:row>
+						<w2:row>
+							<MENU_CD><![CDATA[001001000]]></MENU_CD>
+							<MENU_NM><![CDATA[샘플1]]></MENU_NM>
+							<SRC_PATH><![CDATA[windowContainer2_index_WESD-94_(WSQ-4256)_sub1.xml]]></SRC_PATH>
+							<MENU_LEVEL><![CDATA[2]]></MENU_LEVEL>
+							<PARENT_MENU_CD><![CDATA[001000000]]></PARENT_MENU_CD>
+						</w2:row>
+						<w2:row>
+							<MENU_CD><![CDATA[001002000]]></MENU_CD>
+							<MENU_NM><![CDATA[샘플2]]></MENU_NM>
+							<SRC_PATH><![CDATA[windowContainer2_index_WESD-94_(WSQ-4256)_sub2.xml]]></SRC_PATH>
+							<MENU_LEVEL><![CDATA[2]]></MENU_LEVEL>
+							<PARENT_MENU_CD><![CDATA[001000000]]></PARENT_MENU_CD>
+						</w2:row>
+						<w2:row>
+							<MENU_CD><![CDATA[001003000]]></MENU_CD>
+							<MENU_NM><![CDATA[샘플3]]></MENU_NM>
+							<SRC_PATH><![CDATA[windowContainer2_index_WESD-94_(WSQ-4256)_sub3.xml]]></SRC_PATH>
+							<MENU_LEVEL><![CDATA[2]]></MENU_LEVEL>
+							<PARENT_MENU_CD><![CDATA[001000000]]></PARENT_MENU_CD>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trv_menu_onclick = function() {
+    // treeview 클릭 시 신규 탭 추가closeSettingPopup
+    if (trv_menu.isLeaf()) { // 트리뷰에 자식노드가 없으면 실행
+        var tLabel = trv_menu.getSelectedLabel(); // 선택된 노드 label값을 가져와서 변수에 담는다.
+        var tCode = trv_menu.getSelectedValue(); // 선택된 노드 value값을 가져와서 변수에 담는다.
+        var idx = trv_menu.getSelectedIndex() - 1;
+        var tURL = dlt_menu.getCellData(idx, "SRC_PATH");
+        if (tURL.trim() !== "") {
+            scwin.setMenuRelation(tLabel, tURL, tCode, "Tree");
+        }
+    }
+}
+scwin.setMenuRelation = function(menuNm, menuUrl, menuCode, skipType) {
+    scwin._menuRelation = {
+        "menuNm": menuNm,
+        "menuUrl": menuUrl,
+        "menuCode": menuCode,
+        "skipType": skipType
+    };
+    var menuList = dlt_menu.getMatchedJSON("MENU_CD", menuCode, true);
+    if (menuList && menuList.length > 0) {
+        scwin.openMenu(scwin._menuRelation["menuNm"], scwin._menuRelation["menuUrl"], scwin._menuRelation["menuCode"]);
+        if (!skipType || skipType !== "Tree") {
+            trv_menu.findNodeByValue(scwin._menuRelation["menuCode"], true);
+        }
+        delete scwin._menuRelation;
+    }
+}
+scwin.openMenu = function(menuNm, url, menuCode, paramObj, menuType) {
+    var data = {
+        "menuNm": menuNm,
+        "menuCode": menuCode || "",
+        "menuType": menuType
+    };
+    var options = {
+        title: menuNm,
+        src: url,
+        windowTitle: menuNm,
+        windowId: menuCode,
+        openAction: "existWindow",
+        frameMode: "wframe",
+        dataObject: {
+            type: "json",
+            name: "param",
+            data: data
+        }
+    }
+    wdc_main.createWindow(options);
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /**
+     * 메뉴 클릭 이벤트 발생 시
+     */
+    /**
+     * 메뉴를 open할 때 관련된 기능들을 경우에 따라 처리해준다.
+     * @lastUpdate 2016.08.28
+     * @param <String> menuNm 메뉴 명
+     * @param <String> menuUrl 메뉴 URL
+     * @param <String> menuCode 메뉴 코드
+     * @param <String> skipType Tree Node 선택 여부 ("Tree" || null) 
+     * @author InswaveSystems
+     * @since 2016.08.28
+     * @example
+     * scwin.setMenuRelation("인사조회", "/tmp/tmp01.xml", "010001");
+     * scwin.setMenuRelation("인사조회", "/tmp/tmp01.xml", "010001", "Tree");
+     */
+    /**
+     * 파라메터를 참조하여 화면을 연다. 
+     * 메뉴를 최근 작업 항목에 추가하거나 메뉴 트리를 선택하게 하려면 scwin.setMenuRelation를 사용한다.
+     * @lastUpdate 2018.04.10
+     * @param <String> menuNm 메뉴명 - 단위화면에서 해당 값으로 title을 설정한다.
+     * @param <String> url 화면 파일 경로
+     * @param <String> menuCode 메뉴코드 - DB에 저장되어있는 메뉴 코드
+     * @author InswaveSystems
+     * @since 2016.08.28
+     * @example
+     * scwin.openMenu("인사조회","/tmp/tmp01.xml","010001");
+     */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:treeview id="trv_menu" dataType="listed" tooltipGroupClass="false" style="width:200px;height:395px;float:left;"
+			showTreeDepth="2" ev:onclick="scwin.trv_menu_onclick" toggleEvent="onclick">
+			<w2:itemset nodeset="data:dlt_menu">
+				<w2:label ref="MENU_NM"></w2:label>
+				<w2:value ref="MENU_CD"></w2:value>
+				<w2:depth ref="MENU_LEVEL"></w2:depth>
+			</w2:itemset>
+		</w2:treeview>
+		<!-- nameLayerMove="true" 옵션 설정으로 인해서 윈도우 탭 이동 시 Layer가 닫히지 않음 -->
+		<!-- Left Menu Tree 클릭 시 Layer가 닫히지 않는 현상은 계속 발생함 -->
+		<w2:windowContainer sequentialArrangeColNum="2" verticalArrangeNum="2" controlIconPosition="left"
+			windowMaximizeAll="false" id="wdc_main" useStatusMsg="true" hideTitleOnMaximize="false" spaInitCount="0" useNameContainer="false"
+			useControlIconTitle="false" tooltipDisplay="true" style="position: relative;width:828px;height:397px;" sequentialArrangeRowNum="2"
+			fixArrangeFullScreen="false" useFixButton="false" windowAutoResize="false" windowMaxNum="5" useCloseButton="false"
+			stopMinimizeOnNameLayer="false" toolbarPosition="top" class="" stopToggleOnLast="false" horizontalArrangeNum="2" useCustomMsg="false"
+			tooltipGroupClass="false" windowTooltipDisplay="true" nameLayerMove="true">
+			<w2:windowToolbar>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+	</body>
+</html>
+ 

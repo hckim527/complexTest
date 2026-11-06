@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="number"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                        <w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		var row = 320;
+		var col = 5;
+		var data = [];
+        var toq = new Array(20);
+		for(var i = 0; i < row; i++){
+			for(var j = 0; j < col; j++){
+                var ss = i * col + j;
+                if ( j === 0) {
+                    data.push(i + 1);
+                } else if (i % 5 === 0) {
+                    data.push(toq.join(ss + "\n"));
+                } else {
+                    data.push(ss);
+                }
+			}
+		}
+		dataList1.setData(data);
+
+        var xx = textbox1.id;
+        setInterval(function(){
+            if (window.N && window.NN) {
+                $p.getComponentById(xx).setLabel(window.N + "," + window.NN)
+            }
+            
+        }, 100)
+	};
+
+    scwin.btn_style_onclick = function() {
+        gridView1.setCellBackgroundColor(7,3, "red");
+        gridView1.setCellBackgroundColor(121,1, "black");
+    }
+
+    scwin.btn_merge_onclick = function() {
+        gridView1.mergeCell({
+            "rowIndex" : 1,
+            "colIndex" : 3,
+            "rowSpan" : 2,
+            "colSpan" : 2
+        });
+        gridView1.mergeCell({
+            "rowIndex" : 95,
+            "colIndex" : 1,
+            "rowSpan" : 15,
+            "colSpan" : 3
+        });
+    }
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+    scwin.gridView1_onscrolly = function(e) {
+        console.log(this.id + "_onscroll")
+    }
+
+    scwin.gridView1_onscrollend = function() {
+        console.log(this.id + "_onscrollend")
+    }
+	
+	scwin.checkVal = function() {
+		if(WebSquare.wUnit.getDomById('gridView1_cell_0_0').innerText == '1' 
+			&& document.getElementById('mf_gridView1_body_tbody').children[5].style.display != 'none'){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_scrollY_div').scrollTop = 30");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()		
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:textbox id="textbox1" label='gridView drawType="hybrid" test' style="position:relative;width:620px;height:30px;font-size:16px;font-weight:bold;"/>
+    	<w2:gridView dataList="data:dataList1" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="gridView1" style="position:relative;width:620px;height:350px; border:2px solid red;" useShiftKey="true" rowNumVisible="true" drawType="hybrid" useFilterList="true" sortable="true" ev:onscrolly="scwin.gridView1_onscrolly" ev:onscrollend="scwin.gridView1_onscrollend">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="110" value="col1" displayMode="label" useFilter="true" dataType="number"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="110" value="col2" displayMode="label" useFilter="true"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" width="110" inputType="text" value="col3" displayMode="label" useFilter="true"></w2:column>
+                    <w2:column blockSelect="false" id="column1" style="" width="110" inputType="text" value="col4" displayMode="label" useFilter="true"></w2:column>
+                    <w2:column blockSelect="false" id="column9" style="" width="110" inputType="text" value="col5" displayMode="label" useFilter="true"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="textarea" width="70" value="" displayMode="label" displayType="all"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+                    <w2:column blockSelect="false" id="col4" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+                    <w2:column blockSelect="false" id="col5" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+        <xf:group id="group_btn" style="position:relative;width:280px;">
+            <xf:trigger type="button" style="position:relative;width:270px;height:40px;" id="btn_style" ev:onclick="scwin.btn_style_onclick">
+                <xf:label><![CDATA[[style test] (7,3):red, (121,2):black]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="position:relative;width:270px;height:40px;" id="btn_merge" ev:onclick="scwin.btn_merge_onclick">
+                <xf:label><![CDATA[[merge test] (1,3):2x2, (95,1):15x3]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="position:relative;width:270px;height:40px;" id="btn_drilldown" ev:onclick="scwin.btn_drilldown_onclick" disabled="true">
+                <xf:label><![CDATA[drilldown test(작업중)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="position:relative;width:270px;height:40px;" id="btn_groupby" ev:onclick="scwin.btn_groupby_onclick" disabled="true">
+                <xf:label><![CDATA[groupby test(작업중)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="position:relative;width:270px;height:40px;" id="btn_filter" ev:onclick="scwin.btn_filter_onclick" disabled="true">
+                <xf:label><![CDATA[filter test(작업중)]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+    </body>
+</html>

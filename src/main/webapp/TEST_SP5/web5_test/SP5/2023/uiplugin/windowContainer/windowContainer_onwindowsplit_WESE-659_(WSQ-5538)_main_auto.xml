@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+	    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	scwin.openMenu("테스트1","windowContainer_onwindowsplit_WESE-659_(WSQ-5538)_menu1.xml","010001");
+	scwin.openMenu("테스트2","windowContainer_onwindowsplit_WESE-659_(WSQ-5538)_menu2.xml","010002"); 
+	scwin.openMenu("테스트3","windowContainer_onwindowsplit_WESE-659_(WSQ-5538)_menu3.xml","010003"); 
+	scwin.openMenu("테스트4","windowContainer_onwindowsplit_WESE-659_(WSQ-5538)_menu4.xml","010004"); 
+};
+
+scwin.windowContainer1_onwindowsplit = function(info, mouseX, mouseY) {
+
+    var options = {
+        top: mouseY + 'px',
+        left: mouseX + 'px',
+    };
+	console.log("windowContainer1_onwindowsplit");
+    //$p.openPopup(info.src, options);
+	localStorage.setItem('log', 'windowContainer1_onwindowsplit')	
+	return true; // true 리턴시 해당 윈도우 닫힘.
+}
+
+scwin.openMenu = function(menuNm, url, menuCode) {
+    if (url == "/") {
+		var url = document.location.href + "/";
+		window.open(url, "", "width=700, height=400, left=100, top=100");
+		return false;
+	} else {
+		menuCode = menuCode || "";
+		var layout = 'M';
+		var data = {};
+		var closable = true;
+		var fixed = false;
+
+		if (url.indexOf("/") !== 0) {
+			url = "/" + url;
+		}
+        var CONTEXT_PATH ="";
+
+		url = CONTEXT_PATH + url;
+		
+		data.menuInfo = {
+			menuNm : menuNm,
+			menuCode : menuCode,
+			src : url
+		};
+
+		var frameMode = "";
+
+		 if (layout == "M") {
+			var options = {
+				title : menuNm,
+				src : url,
+				windowTitle : menuNm,
+				windowId : menuCode,
+				openAction : "selectWindow",
+				frameMode : "wframe",
+				fixed : (fixed === true) ? true : false,
+				dataObject : { 
+					type : "json", 
+					name : "paramData", 
+					data : data
+				}
+			}
+			
+			return Promise.resolve().then(function() {
+				$p.top().windowContainer1.createWindow(options);
+				return options;
+			}).then(function(options) {
+				var winScope = $p.top().windowContainer1.getWindow(options.windowId);
+				winScope.scwin._closable = options._closable;	
+			});
+		} 
+	}
+	return false;
+};
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#windowContainer1_nameLayer_mf_windowContainer1_subWindow0', 'drag-n-drop', {
+			dx: 0,
+			dy: 100
+		});
+	}	
+	scwin.checkVal = function() {
+		return localStorage.getItem('log') == 'windowContainer1_onwindowsplit';
+	}		
+	scwin.unitTest = function() {
+		//noResult="previous"
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_nameLayer_mf_windowContainer1_subWindow0').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	localStorage.removeItem("log");
+		
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:windowContainer id="windowContainer1" style="position:relative;width:800px;height:600px;" defaultHeight="300"
+			nameLayerMove=""
+			useWindowSplit="true"
+			ev:onwindowsplit="scwin.windowContainer1_onwindowsplit">
+    		<w2:windowToolbar>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    	<xf:group class="tabbox" id="" style=""></xf:group>
+    </body>
+</html>

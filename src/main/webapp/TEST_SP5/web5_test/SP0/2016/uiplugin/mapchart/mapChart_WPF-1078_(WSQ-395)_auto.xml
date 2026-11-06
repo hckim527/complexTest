@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.simulateClick = function(el) {
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent("click", true, true, window,
+        0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    var node = document.getElementsByClassName(el)[0];
+    node.dispatchEvent(evt);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. 브라우저에서 충청북도를 클릭한다. (그림1 참고)
+    //1. In the browser, click on Chungcheongbuk-do. (See Figure 1)
+    //Verify step 1. The administrative district of Chungcheongbuk-do is expressed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_1').length == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.simulateClick('c33')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 지도에 표시되는 '제주특별자치도'를 마우스 좌클릭한다.
+    //2. Left click on 'Jeju Special Self-Governing Province' displayed on the map.
+    //Verify step 2. The 'Jeju Special Self-Governing Province' is expanded and the 'Jeju Special Self-Governing Province' map is shown as one. (Previously, it is shown as two regions of Jeju City and Seogwipo City)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_1_map text:first').text() == '충주시'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 27-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:mapchart style="position: absolute;width:875px;height:496px;" event_deselect="ondblclick" event_zoom="onzoom" event_drag="ondrag"></w2:mapchart>
+    </body>
+</html>
+ 

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[ 
+
+scwin.getType = function ( info ) {
+	
+	var rowIndex = info.rowIndex;
+	var colIndex = info.colIndex;
+	var returnInfo;
+		
+	if (dataList1.getCellData(rowIndex, "col2") == 1 | dataList1.getCellData(rowIndex, "col2") == 2 || dataList1.getCellData(rowIndex, "col2") == 3) {
+		returnInfo = {
+			id : "dynamic_trigger_" + rowIndex + "_" + colIndex,
+			inputType : "button",
+			options : {
+				viewType: "icon", 
+				chooseOption:"true"
+			}
+		};
+		
+	} else {
+		returnInfo = {
+               id : "dynamic_text_" + rowIndex + "_" + colIndex,
+			inputType : "text",
+			options : {
+			}
+		};
+	}
+              
+	if(returnInfo) {
+		//console.log( "[typeGetter] (" + rowIndex + ", " + colIndex + ") : " +returnInfo.inputType);
+	}
+	
+	return returnInfo;
+};
+
+       
+scwin.grd_onviewchange = function(info) {
+	console.log("---> onviewchange");
+	grd.refreshRow(info.rowIndex);
+};
+        
+scwin.onpageload = function() {
+	var jsonData = [
+		{
+			"col1": "value1",
+			"col2": "1"
+		},{
+			"col1": "value2",
+			"col2": "2"
+		},{
+			"col1": "value3",
+			"col2": "3"
+		},{
+			"col1": "value4",
+			"col2": "4"
+		}
+	];
+    dataList1.setJSON( jsonData );
+};
+
+scwin.onpageunload = function() {
+	
+};
+	
+scwin.trigger01_onclick = function (e) {
+	var options = {
+		inputType : "button"
+	}
+	dataList1.insertRow(0, options);
+};
+
+scwin.trigger02_onclick = function (e) {
+	dataList1.removeRow(0);
+};
+
+scwin.trigger03_onclick = function (e) {
+	var a = grd.getCellInfo(0,0)
+	console.log( a.cellManagerHashByID );
+};
+
+	scwin.checkVal = function() {
+		for (var key in grd.getCellInfo(0,0).cellManagerHashByID) {
+		  if (grd.getCellInfo(0,0).cellManagerHashByID.hasOwnProperty(key)) {
+			console.log(key + ': ' + grd.getCellInfo(0,0).cellManagerHashByID[key]);
+				if(grd.getCellInfo(0,0).cellManagerHashByID[key] === null)
+					return false;
+		  }
+		}
+		return true;
+	}
+	
+	scwin.checkVal2 = function() {
+		for (var key in grd.getCellInfo(0,0).cellManagerHashByID) {
+		  if (grd.getCellInfo(0,0).cellManagerHashByID.hasOwnProperty(key)) {
+			console.log(key + ': ' + grd.getCellInfo(0,0).cellManagerHashByID[key]);
+				if(grd.getCellInfo(0,0).cellManagerHashByID[key] === null)
+					return false;
+		  }
+		}
+		return true;
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger01').click()");
+		WebSquare.wUnit.addCommand("pause", "500");						
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger03').click()");
+		WebSquare.wUnit.addCommand("pause", "500");						
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger02').click()");
+		WebSquare.wUnit.addCommand("pause", "500");						
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger03').click()");
+		WebSquare.wUnit.addCommand("pause", "500");						
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="grd" setEmptyStringSortableOnSort="true"
+    		style="position:absolute;width:500px;height:306px;" fixedColumnWithHidden="true" useShiftKey="true"
+    		ev:onviewchange="scwin.grd_onviewchange" sortable="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="194" value="name1"
+    					filterDisplayMode="label" useFilter="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="custom" width="194" typeGetter="scwin.getType"
+    					filterDisplayMode="" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" inputType="text" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger01" style="position:absolute;width:155px;height:45px;left:26px;top:333px;"
+    		ev:onclick="scwin.trigger01_onclick">
+    		<xf:label><![CDATA[insertRow]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger02" style="position:absolute;width:167px;height:42px;left:208px;top:335px;"
+    		ev:onclick="scwin.trigger02_onclick">
+    		<xf:label><![CDATA[removeRow]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger03" style="position:absolute;width:101px;height:39px;left:393px;top:337px;" ev:onclick="scwin.trigger03_onclick">
+    		<xf:label><![CDATA[log]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

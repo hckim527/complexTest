@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dl_auto" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1.initGrid();
+    var jsonData2 = [{
+        "col1": "b1"
+    }, {
+        "col1": "b2"
+    }, {
+        "col1": "b3"
+    }];
+    dataList1.setJSON(jsonData2);
+};
+scwin._getData = function() {
+    var colDataArr = [];
+    for (var i = 0; i < gridView1.getRowCount(); i++) {
+        colDataArr.push(gridView1.getCellDisplayData(i, 'col2'));
+    }
+    return colDataArr;
+}
+scwin.__isChanged = function() {
+    return JSON.stringify(oldArr) != JSON.stringify(scwin._getData());
+}
+scwin._checkErr = function() {
+    var log = WebSquare.logger.getLog();
+    return log.indexOf("Cannot read property 'label' of undefined") == -1;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. Design 탭에서 name2 의 inputType 을 확인한다.
+    //1. In the Design tab, check the inputType of name2.
+    //Verify 1. inputType="autoComplete"
+    //Test step 2. 브라우저에서 name2 컬럼의 셀을 임의로 수정한다. (예 : '1' -> '2')
+    //2. Modify the cell of the name2 column in the browser arbitrarily. (Example: '1' -> '2')
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id + 'gridView1_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#gridView1_cell_0_1 td:last').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2input_table_sb_main td:last').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. '1' -> '2' 로 변경된다.
+    //2. Change from '1' to '2'.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_0_1').text() == '2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. init 후 gridView.setJSON 버튼을 클릭한다.
+    //3. After init, click the gridView.setJSON button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 데이터가 변경된다.
+    //3. The data is changed.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isChanged()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. 로그 (Alt + 마우스 오른쪽) 를 실행시켜 에러로그가 있는지 확인한다.
+    //4. Run the log (Alt + right mouse) to see if there is an error log.
+    WebSquare.wUnit.addCommand("assert", "scwin._checkErr()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "value": "1",
+        "label": "1"
+    }, {
+        "value": "2",
+        "label": "2"
+    }];
+    dl_auto.setJSON(jsonData);
+    window.jsonData2 = [{
+        "col1": "a1",
+        "col2": "1"
+    }, {
+        "col1": "a2",
+        "col2": "1"
+    }, {
+        "col1": "a3",
+        "col2": "1"
+    }];
+    dataList1.setJSON(jsonData2);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Feb-2018
+    window.oldArr = scwin._getData();
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: absolute ;left:21px;top:71px;width: 532px;height: 310px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true" disabledFontColor="" keyMoveEditMode="true" moveKeyEditMode="true" editModeEvent="onclick">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="autoComplete" width="70" displayMode="label"
+    					textAlign="left">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dl_auto">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left:245px;top:10px;width: 219px;height: 39px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[init 후 gridView.setJSON]]></xf:label>
+    	</xf:trigger>
+    	<w2:textbox label="1. name2 컬럼(autoComplete) 값 수정&lt;br/&gt;2. -&gt; 버튼 클릭&lt;br/&gt;3. 로그 확인" id="" style="position: absolute ;left: 28px;top: 10px;width:209px;height:56px;"></w2:textbox>
+    </body>
+</html>

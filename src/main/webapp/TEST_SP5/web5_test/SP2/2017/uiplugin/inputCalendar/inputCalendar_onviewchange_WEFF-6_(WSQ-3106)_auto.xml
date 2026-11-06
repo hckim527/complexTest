@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="label" name="name1" dataType="text"></w2:column>
+        				<w2:column id="value" name="name2" dataType="text"></w2:column>
+        				<w2:column id="depth" name="name3" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref='data:json,{"id":"dataList1","key":"test"}' target="" action="inputCalendar_onviewchange_WEFF-6_(WSQ-3106).json" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="" ev:submit="" ev:submitdone="scwin.submission1_submitdone" ev:submiterror="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.inputCalendar1_onviewchange = function(info) {
+    //debugger; 
+    //alert('onviewchange');
+    log = "onviewchange";
+    $p.executeSubmission('submission1');
+};
+scwin.submission1_submitdone = function(e) {
+    //debugger;
+    inputCalendar1.setValue('20170101');
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_calendar_cell_2_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "log == 'onviewchange'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "log = ''");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_input').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "log == 'onviewchange'", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.log = "";
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:inputCalendar weekStartsOn="0" rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar1"
+    		renderDiv="true" style="position: absolute;width:364px;height:52px;left:117px;top:107px;border: 1px solid #000;" focusOnDateSelect="false" footerDiv="false" ev:onviewchange="scwin.inputCalendar1_onviewchange">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

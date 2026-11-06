@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="expr" name="name1" dataType="text" importFormatter="test"></w2:column>
+            			<w2:column id="num" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="column4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	<w2:data use="true"></w2:data></w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.func = function(str, num, row) {
+    return row % 2 == 0 ? "a" : "b";
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.__isSorted = function(col_id) {
+    var arr = [];
+    WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not(".w2grid_hidedRow").find('td[col_id="' + col_id + '"]').each(function(i, el) {
+        arr.push(WebSquare.wUnit.getJq(el).text());
+    })
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. 브라우저에서 6번째 컬럼 expr 을 더블클릭하여 Sort 한다.
+    //3. In the browser, double-click the 6th column expr to sort.
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column2')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    // verify step 3. 6번째 컬럼 expression 이 Sort 된다.
+    //3. The sixth column expression is sorted.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isSorted('column4')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step
+    //
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column9')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step
+    //
+    WebSquare.wUnit.addCommand("assert", "scwin.__isSorted('num')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.data = [{
+            "col1": "삼림빵",
+            "num": 2,
+            "col3": 3,
+            "col4": 4,
+            "rowStatus": "R"
+        },
+        {
+            "col1": "마늘빵",
+            "num": 6,
+            "col3": 2,
+            "col4": 8,
+            "rowStatus": "R"
+        },
+        {
+            "col1": "모카빵",
+            "num": 5,
+            "col3": 1,
+            "col4": 2,
+            "rowStatus": "R"
+        }
+    ];
+    dataList1.setJSON(data);
+    /* importFormatter 함수를 아래와 같이 정의하면 정상동작하지 않음
+    scwin.test = function(row){
+    	return row.col1;
+    }
+    */
+    scwin.test = function(row) {
+        return row.col1;
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 09-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left: 27px;top: 35px;width:554px;height:153px;" ignoreCellClick="false" fixedColumnWithHidden="true"
+    		useShiftKey="true" sortable="true" showSortableImage="">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="70" value="상품명" sortable="true"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" inputType="text" width="70" value="상품명2" sortable="false"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" value="num" expression="scwin.func('MD', display('num'), rowIndex())&quot; "></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" value="sort"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" value="func"></w2:column>
+    				<w2:column blockSelect="false" id="column2" style="height:20px;" inputType="text" width="70" displayMode="label" value="expr"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" sortable=""></w2:column>
+    				<w2:column blockSelect="" id="expr" style="height:20px" inputType="text" width="70" displayFormat="" expression=""></w2:column>
+    				<w2:column blockSelect="false" id="num" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="select" width="70" allOption="" chooseOption=""
+    					viewType="" displayType="" imageHeight="" depthColumn="">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[가]]></w2:label>
+    							<w2:value><![CDATA[3]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[나]]></w2:label>
+    							<w2:value><![CDATA[1]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[다]]></w2:label>
+    							<w2:value><![CDATA[2]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="expression" expression="scwin.func('aa', display('num'), rowIndex())"  expressionSort="true"></w2:column>
+    				<w2:column blockSelect="false" id="column4" style="height:20px" inputType="expression" width="70" displayMode="label" expression="display('col1');" expressionSort="true"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

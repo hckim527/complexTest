@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1" defaultValue="">
+            		<w2:data></w2:data>
+            		<w2:keyInfo>
+            			<w2:key id="USER_YN" name="사용여부" dataType="text" defaultValue="Y"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    //alert(dataMap1.get("USER_YN"));
+    al = dataMap1.get("USER_YN");
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일 실행 후 DataMap.get 버튼을 클릭한다.
+    //1. After running the sample file, click the DataMap.get button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 1. Y 값을 리턴한다.
+    //1. Return the Y value.
+    WebSquare.wUnit.addCommand("assert", "al", "Y");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. data의 체크를 해제하고 DataMap.get 버튼을 클릭한다.
+    //2. Uncheck the data and click the DataMap.get button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('chk1_input_0').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 2. N 값을 리턴한다.(이전에는 Y 값을 리턴함)
+    //2. Return the value of N (previously it returns the value of Y)
+    WebSquare.wUnit.addCommand("assert", "al", "N");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.al = undefined;
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 09-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:select appearance="full" id="chk1" style="position: relative;width: 148px;height: 21px;" selectedindex="-1" cols="" rows=""
+    		ref="data:dataMap1.USER_YN" falseValue="N" ev:onchange="scwin.chk1_onchange" renderType="checkboxgroup">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[data]]></xf:label>
+    				<xf:value><![CDATA[Y]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[DataMap.get]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

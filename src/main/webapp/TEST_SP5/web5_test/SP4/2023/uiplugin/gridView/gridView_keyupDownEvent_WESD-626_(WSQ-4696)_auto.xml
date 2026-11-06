@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+	 	<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[col1]]></col1>
+            				<col2><![CDATA[col2]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[col3]]></col1>
+            				<col2><![CDATA[col4]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.gridView1_onkeydown = function(e) {
+    //첫번쨰 컬럼에 dataType = float 으로 설정 하고 keydown 이벤트를걸어줍니다.
+    //그다음 f1,f2,f3,f4,f5...에 대한 이벤트가 안됩니다.
+    //숫자랑 나머지 키는 이벤트가 되는데요 
+    //dataType 이 float인것만 안되는거 같네요
+    //따로 설정해야할것이있는건가요?
+    alert(1);
+    localStorage.setItem("log", 1);
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate = function() {
+    scwin.simulateWrapper('#gridView1_cell_0_0', 'key-combo', {
+        combo: 'F1'
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "300");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView id="gridView1" style="width: 500px;height: 150px;" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false"
+    		dataList="data:dataList1" ev:onkeydown="scwin.gridView1_onkeydown">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column1" value="컬럼1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="컬럼2" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label" dataType="float"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

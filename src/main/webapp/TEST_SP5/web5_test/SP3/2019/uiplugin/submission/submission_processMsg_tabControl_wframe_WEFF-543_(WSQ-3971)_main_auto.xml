@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.addTab = function(label, tabId, src) {
+    var tabOpt = {
+        label: label,
+        closable: true
+    };
+    var contOpt = {
+        frameMode: "wframe",
+        scope: true,
+        src: src,
+        alwaysDraw: false,
+        title: tabId,
+        processMsgFrame: scwin.tabIndex % 2 === 1
+    };
+    tac_main.addTab(tabId, tabOpt, contOpt);
+};
+scwin.btn_trigger1_onclick = function(e) {
+    var tabId = "sub" + scwin.tabIndex;
+    var label = scwin.tabIndex % 2 === 1 ? "내부" : "외부";
+    var src = "submission_processMsg_tabControl_wframe_WEFF-543_(WSQ-3971)_sub" + ".xml";
+    scwin.addTab(label, tabId, src);
+    scwin.tabIndex++;
+};
+scwin.__isCheck = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'tac_main_contents_sub1_body_'+$p.id+'tac_main_contents_sub1_body_wq_processMsgComp') != null;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'btn_trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'tac_main_contents_sub1_body_trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.tabIndex = 1;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group style="" id="" class="">
+			<w2:textbox label="process message test" style="height: 30px;font-size: 23px;margin:5px;font-weight:bold" id=""></w2:textbox>
+		</xf:group>
+		<!-- spaInitCount=""으로 수정하면 WFrame Mode로 AddTAb을 수행하면 정상적으로 WFrame Tab이 생성된다.  -->
+		<!-- spaInitCount="3"으로 설정하면 WFrame Mode로 AddTAb을 수행해도 IFrame Tab이 생성된다. -->
+		<w2:tabControl useTabKeyOnly="true" id="tac_main" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist"
+			confirmFalseAction="new" alwaysDraw="false" style="height: 320px; width:700px;" hiddenTab="false" processMsgFrame="true">
+		</w2:tabControl>
+		<xf:trigger type="button" style="width: 80px;height: 23px;margin-top:5px;margin-left:5px;" id="btn_trigger1" ev:onclick="scwin.btn_trigger1_onclick">
+			<xf:label><![CDATA[Add Tab]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    
+    	<!--//config.xml파일 적용-->
+        <w2:config>      
+            <WebSquare>
+                <checkbox>
+                    <useCheckboxTitle value="false"/>
+                </checkbox>
+            </WebSquare>
+        </w2:config>
+    
+    
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.select1_onchange = function() {
+    console.log(num1++);
+};
+scwin.select2_onviewchange = function(info) {
+    console.log(num2++);
+};
+scwin.select3_onlabelclick = function(index, checked, value) {
+    console.log(num3++);
+};
+scwin.select4_oncheckboxclick = function(index, checked, value) {
+    console.log(num4++);
+};
+scwin.onpageload = function() {
+    window.num1 = 0;
+    window.num2 = 0;
+    window.num3 = 0;
+    window.num4 = 0;
+}
+
+scwin.___fireOver = function(id) {
+    node = WebSquare.wUnit.getDomById($p.id + id);
+    if (document.createEventObject) {
+        node.fireEvent("onmouseover");
+    } else if (document.createEvent) {
+        var evt = document.createEvent("MouseEvents");
+        evt.initEvent("mouseover", true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == "function") {
+        node.onmouseover();
+    }
+}
+scwin.checkVal = function() {
+	return WebSquare.wUnit.getDomById('select1').getAttribute('useCheckboxTitle') === null;
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.___fireOver(('select1_input_0'))");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:select appearance="full" id="select1"
+    		style="position: relative;width: 148px;height: 21px;"
+    		selectedindex="-1" cols="" rows=""
+    		ev:onchange="scwin.select1_onchange" useCheckboxTitle="" toolTip="" escape="">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[checkBox]]></xf:label>
+    				<xf:value><![CDATA[1]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select>
+    </body>
+</html>
+ 

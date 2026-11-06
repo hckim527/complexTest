@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2006/xforms"
+      xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events">
+<head>
+    <w2:mfeSubmission>
+        <!--
+            [테스트 1] 정상 채널: mfeServer가 같은 channelId로 존재
+            → E1 → E3 → E4 → E6 → E8 정상 흐름
+        -->
+        <w2:mfeClient id="mfec_normal" channelId="ch_order"
+            ref="data:json,dma_request" topic="ORDER"
+            ev:onrequest="scwin.mfec_normal_onrequest"
+            ev:onerror="scwin.mfec_normal_onerror"
+            ev:onresponse="scwin.mfec_normal_onresponse"
+            ev:onresponseerror="scwin.mfec_normal_onresponseerror"
+            ev:onresponseall="scwin.mfec_normal_onresponseall">
+        </w2:mfeClient>
+
+        <!--
+            [테스트 2] 서버 부재 채널: channelId에 매칭되는 mfeServer 없음
+            → E1 → onerror (errorCode: E-NO-SERVER) → 종료 (E8 미호출)
+        -->
+        <w2:mfeClient id="mfec_noserver" channelId="ch_payment_not_loaded"
+            ref="data:json,dma_request" topic="PAYMENT"
+            ev:onrequest="scwin.mfec_noserver_onrequest"
+            ev:onerror="scwin.mfec_noserver_onerror"
+            ev:onresponseall="scwin.mfec_noserver_onresponseall">
+        </w2:mfeClient>
+
+        <!--
+            [테스트 3] E1 취소 + 서버 부재: onrequest에서 false 반환
+            → E1(false 반환) → 즉시 종료 (onerror 미발생)
+        -->
+        <w2:mfeClient id="mfec_cancel" channelId="ch_payment_not_loaded"
+            ref="data:json,dma_request" topic="CANCEL_TEST"
+            ev:onrequest="scwin.mfec_cancel_onrequest"
+            ev:onerror="scwin.mfec_cancel_onerror">
+        </w2:mfeClient>
+
+        <!--
+            [테스트 4] onerror에서 재시도: 서버 부재 → onerror 내에서 동적 서버 생성 후 재호출
+            → 1차: E-NO-SERVER → onerror에서 mfeServer 동적 생성 + 재호출
+            → 2차: 정상 흐름 (E4 → E6 → E8)
+        -->
+        <w2:mfeClient id="mfec_retry" channelId="ch_dynamic"
+            ref="data:json,dma_request" topic="DYNAMIC"
+            ev:onrequest="scwin.mfec_retry_onrequest"
+            ev:onerror="scwin.mfec_retry_onerror"
+            ev:onresponse="scwin.mfec_retry_onresponse"
+            ev:onresponseall="scwin.mfec_retry_onresponseall">
+        </w2:mfeClient>
+
+        <!-- 정상 채널의 서버 (테스트 1용) -->
+        <w2:mfeServer id="mfes_order" channelId="ch_order"
+            ev:onbeforeaction="scwin.mfes_order_onbeforeaction"
+            ev:onaction="scwin.mfes_order_onaction"
+            ev:onactionerror="scwin.mfes_order_onactionerror">
+        </w2:mfeServer>
+    </w2:mfeSubmission>
+
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataMap id="dma_request">
+                <w2:keyInfo>
+                    <w2:key id="orderId" name="주문번호" dataType="text"/>
+                    <w2:key id="amount" name="금액" dataType="number"/>
+                </w2:keyInfo>
+            </w2:dataMap>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="javascript"><![CDATA[
+        var log = function(msg) {
+            $p.top().scwin.log(msg);
+        };
+
+        scwin.onpageload = function() {
+            log("[Demo] 페이지 로드 완료");
+            // 샘플 데이터 설정
+            var dm = $p.getComponentById("dma_request");
+            dm.set("orderId", "ORD-2026-001");
+            dm.set("amount", "150000");
+        };
+
+        // =============================================
+        // [테스트 1] 정상 채널 이벤트
+        // =============================================
+        scwin.mfec_normal_onrequest = function(message) {
+            log("[T1-E1] onrequest: 메시지 전송 준비 (orderId=" + message.data.orderId + ")");
+            return message;
+        };
+        scwin.mfec_normal_onerror = function(error) {
+            log("[T1-E2] onerror: " + error.errorCode + " - " + error.message);
+        };
+        scwin.mfec_normal_onresponse = function(serverObj, response) {
+            log("[T1-E6] onresponse: " + serverObj.id + "에서 응답 수신");
+        };
+        scwin.mfec_normal_onresponseerror = function(errorPacket) {
+            log("[T1-E7] onresponseerror: " + JSON.stringify(errorPacket));
+        };
+        scwin.mfec_normal_onresponseall = function() {
+            log("[T1-E8] onresponseall: 전체 응답 완료 ✓");
+        };
+
+        // 서버 이벤트
+        scwin.mfes_order_onbeforeaction = function(message) {
+            log("[T1-E3] onbeforeaction: 사전 검증 (amount=" + message.data.amount + ")");
+            return true;
+        };
+        scwin.mfes_order_onaction = function(message) {
+            log("[T1-E4] onaction: 주문 처리 로직 실행");
+        };
+        scwin.mfes_order_onactionerror = function(error) {
+            log("[T1-E5] onactionerror: " + error.message);
+        };
+
+        // =============================================
+        // [테스트 2] 서버 부재 채널 이벤트
+        // =============================================
+        scwin.mfec_noserver_onrequest = function(message) {
+            log("[T2-E1] onrequest: 메시지 전송 준비 (서버 없는 채널)");
+            return message;
+        };
+        scwin.mfec_noserver_onerror = function(error) {
+            log("[T2-E2] onerror 발생!");
+            log("        errorCode = " + error.errorCode);
+            log("        channelId = " + error.channelId);
+            log("        message   = " + error.message);
+            if (error.errorCode === "E-NO-SERVER") {
+                log("        → 매칭 서버 없음: 후속 처리를 개발자가 자유롭게 구현");
+            }
+        };
+        scwin.mfec_noserver_onresponseall = function() {
+            // 이 이벤트는 E-NO-SERVER 시 호출되지 않아야 함
+            log("[T2-E8] onresponseall: (이 로그가 보이면 버그!)");
+        };
+
+        // =============================================
+        // [테스트 3] E1 취소 이벤트
+        // =============================================
+        scwin.mfec_cancel_onrequest = function(message) {
+            log("[T3-E1] onrequest: false 반환하여 전송 취소");
+            return false;
+        };
+        scwin.mfec_cancel_onerror = function(error) {
+            // E1에서 취소하면 onerror도 발생하지 않아야 함
+            log("[T3-E2] onerror: (이 로그가 보이면 버그!) " + error.errorCode);
+        };
+
+        // =============================================
+        // [테스트 4] onerror에서 동적 서버 생성 후 재시도
+        // =============================================
+        scwin._retryCount = 0;
+
+        scwin.mfec_retry_onrequest = function(message) {
+            scwin._retryCount++;
+            log("[T4-E1] onrequest: 시도 #" + scwin._retryCount);
+            return message;
+        };
+        scwin.mfec_retry_onerror = function(error) {
+            if (error.errorCode === "E-NO-SERVER" && scwin._retryCount < 2) {
+                log("[T4-E2] onerror: E-NO-SERVER → 동적 서버 생성 후 재시도");
+                // 동적으로 mfeServer 생성
+                $p.createMfeServer({
+                    "id": "mfes_dynamic",
+                    "channelId": "ch_dynamic",
+                    "ev:onaction": "scwin.mfes_dynamic_onaction"
+                });
+                // 재호출
+                $p.executeMfe("mfec_retry");
+            } else if (error.errorCode === "E-NO-SERVER") {
+                log("[T4-E2] onerror: 재시도 초과 — 최종 실패 처리");
+            } else {
+                log("[T4-E2] onerror: " + error.message);
+            }
+        };
+        scwin.mfec_retry_onresponse = function(serverObj, response) {
+            log("[T4-E6] onresponse: " + serverObj.id + " 응답 수신 (재시도 성공!)");
+        };
+        scwin.mfec_retry_onresponseall = function() {
+            log("[T4-E8] onresponseall: 전체 응답 완료 ✓ (재시도 성공!)");
+        };
+
+        // 동적 생성 서버 이벤트
+        scwin.mfes_dynamic_onaction = function(message) {
+            log("[T4-E4] onaction(동적 서버): 처리 완료");
+        };
+
+        // =============================================
+        // 버튼 핸들러
+        // =============================================
+        scwin.btn_t1_onclick = function() {
+            log("");
+            log("━━━ [테스트 1] 정상 채널 호출 (ch_order) ━━━");
+            $p.executeMfe("mfec_normal");
+        };
+        scwin.btn_t2_onclick = function() {
+            log("");
+            log("━━━ [테스트 2] 서버 부재 채널 호출 (ch_payment_not_loaded) ━━━");
+            $p.executeMfe("mfec_noserver");
+        };
+        scwin.btn_t3_onclick = function() {
+            log("");
+            log("━━━ [테스트 3] E1에서 전송 취소 (ch_payment_not_loaded) ━━━");
+            $p.executeMfe("mfec_cancel");
+        };
+        scwin.btn_t4_onclick = function() {
+            log("");
+            log("━━━ [테스트 4] onerror에서 동적 서버 생성 + 재시도 (ch_dynamic) ━━━");
+            scwin._retryCount = 0;
+            $p.executeMfe("mfec_retry");
+        };
+        scwin.btn_all_onclick = async function() {
+            log("");
+            log("════════════════════════════════════════");
+            log("  전체 테스트 순차 실행");
+            log("════════════════════════════════════════");
+
+            scwin.btn_t1_onclick();
+            // 비동기 이벤트 완료 대기
+            await new Promise(function(r) { setTimeout(r, 500); });
+
+            scwin.btn_t2_onclick();
+            await new Promise(function(r) { setTimeout(r, 500); });
+
+            scwin.btn_t3_onclick();
+            await new Promise(function(r) { setTimeout(r, 500); });
+
+            scwin.btn_t4_onclick();
+        };
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_desc" style="padding:10px;background:#fff8e1;border:1px solid #ffe082;margin:5px;">
+        <w2:textBox id="txt_desc" style="font-size:12px;color:#5d4037;line-height:1.6;"
+            value="MFEClient에서 channelId에 매칭되는 MFEServer가 없을 때 onerror(E-NO-SERVER)가 발생합니다. 개발자는 onerror 핸들러에서 errorCode를 확인하여 재시도, 대체 화면 표시 등 자유롭게 후속 처리할 수 있습니다."/>
+    </xf:group>
+    <xf:group id="grp_buttons" style="padding:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <xf:trigger type="button" id="btn_t1" ev:onclick="scwin.btn_t1_onclick"
+                    style="width:200px;height:35px;background:#4caf50;color:white;">
+            <xf:label><![CDATA[T1: 정상 채널 호출]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_t2" ev:onclick="scwin.btn_t2_onclick"
+                    style="width:200px;height:35px;background:#f44336;color:white;">
+            <xf:label><![CDATA[T2: 서버 부재 (E-NO-SERVER)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_t3" ev:onclick="scwin.btn_t3_onclick"
+                    style="width:200px;height:35px;background:#ff9800;color:white;">
+            <xf:label><![CDATA[T3: E1 취소 (false)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_t4" ev:onclick="scwin.btn_t4_onclick"
+                    style="width:200px;height:35px;background:#2196f3;color:white;">
+            <xf:label><![CDATA[T4: 재시도 (동적 서버)]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_all" ev:onclick="scwin.btn_all_onclick"
+                    style="width:200px;height:35px;background:#333;color:white;">
+            <xf:label><![CDATA[전체 순차 실행]]></xf:label>
+        </xf:trigger>
+    </xf:group>
+    <xf:group id="grp_info" style="padding:5px 10px;">
+        <w2:textBox id="txt_info" style="font-size:11px;color:#888;line-height:1.5;"
+            value="T1: 정상 흐름(E1→E3→E4→E6→E8) | T2: 서버 부재→onerror(E-NO-SERVER), E8 미호출 | T3: E1에서 false→즉시 종료 | T4: E-NO-SERVER→onerror에서 동적 서버 생성→재호출 성공"/>
+    </xf:group>
+</body>
+</html>

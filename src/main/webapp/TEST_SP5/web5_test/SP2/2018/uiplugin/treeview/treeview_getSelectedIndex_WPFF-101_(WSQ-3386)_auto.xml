@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dl_tree" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="menu_no" name="name1" dataType="number">
+						</w2:column>
+						<w2:column id="menu_nm" name="name2" dataType="text">
+						</w2:column>
+						<w2:column id="level" name="name3" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dl_tree1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="menu_no" name="name1" dataType="number">
+						</w2:column>
+						<w2:column id="menu_nm" name="name2" dataType="text">
+						</w2:column>
+						<w2:column id="level" name="name3" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="templist" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="menu_no" name="name1" dataType="text">
+						</w2:column>
+						<w2:column id="menu_nm" name="name2" dataType="text">
+						</w2:column>
+						<w2:column id="level" name="name3" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var focus_label = treeview1.getSelectedLabel();
+    var sel_idx = treeview1.getSelectedIndex();
+    //console.log( focus_label + "---" + sel_idx);
+    var aa = dl_tree1.getMatchedData("menu_nm", focus_label);
+    console.log("aa:" + aa);
+    if (aa.length > 0) {
+        return false;
+    } else {
+        var idx = dl_tree1.getRowCount();
+        //console.log("idx:"+idx + "--- sel_idx:"+(sel_idx-1));
+        var vobj = dl_tree.getRowJSON(sel_idx - 1);
+        vobj.menu_no = 3;
+        dl_tree1.setRowJSON(idx, vobj);
+    }
+};
+scwin.trigger2_onclick = function(e) {
+    var focus_label = treeview2.getSelectedLabel();
+    var sel_idx = treeview2.getSelectedIndex();
+    console.log("focus_label  " + focus_label);
+    console.log("sel_idx  " + sel_idx);
+    if (sel_idx == "") {
+        return false;
+    } else {
+        dl_tree1.removeRow(sel_idx - 1);
+    }
+};
+scwin.__isCheckLog = function() {
+    return WebSquare.logger.getErrorLog() == "";
+}
+scwin.checkVal = function() {
+    return typeof WebSquare.wUnit.getObjById('treeview2_label_3') == "object";
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('treeview1_label_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCheckLog()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('treeview2_label_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('treeview2').getSelectedLabel() == ''", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('treeview2').getSelectedIndex() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.jsonData1 = [{
+            "menu_no": 1,
+            "menu_nm": "공통",
+            "level": "1"
+        },
+        {
+            "menu_no": 2,
+            "menu_nm": "공통1",
+            "level": "2"
+        },
+        {
+            "menu_no": 3,
+            "menu_nm": "공통1-1",
+            "level": "3"
+        },
+        {
+            "menu_no": 4,
+            "menu_nm": "수신",
+            "level": "1"
+        },
+        {
+            "menu_no": 5,
+            "menu_nm": "수신1",
+            "level": "2"
+        },
+        {
+            "menu_no": 6,
+            "menu_nm": "여신",
+            "level": "1"
+        },
+        {
+            "menu_no": 7,
+            "menu_nm": "고객",
+            "level": "1"
+        }
+    ];
+    window.jsonData2 = [{
+            "menu_no": 1,
+            "menu_nm": "공통",
+            "level": "1"
+        },
+        {
+            "menu_no": 2,
+            "menu_nm": "고객",
+            "level": "1"
+        }
+    ];
+    dl_tree.setJSON(jsonData1);
+    dl_tree1.setJSON(jsonData2);
+    // 추가
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 17-July-2018
+    //End unitTest
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+
+
+		<xf:group id="" style="position: relative;width: 680px;height: 320px;" class="">
+			<w2:treeview useDrag="true" id="treeview1" style="position: relative;width:273px;height:300px;margin: 10px;float:left;clear:none;"
+				lineShow="" tooltipGroupClass="false" dataType="listed" dynamicAppend="true" ev:ondrop="scwin.treeview1_ondrop">
+				<w2:itemset nodeset="data:dl_tree">
+					<w2:label ref="menu_nm"></w2:label>
+					<w2:value ref="menu_no"></w2:value>
+					<w2:depth ref="level"></w2:depth>
+					<w2:folder ref=""></w2:folder>
+					<w2:checkbox ref=""></w2:checkbox>
+					<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+					<w2:image ref=""></w2:image>
+					<w2:iconImage ref=""></w2:iconImage>
+					<w2:selectedImage ref=""></w2:selectedImage>
+					<w2:expandedImage ref=""></w2:expandedImage>
+					<w2:leafImage ref=""></w2:leafImage>
+				</w2:itemset>
+			</w2:treeview>
+			<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;left:-1px;top:109px;" ev:onclick="scwin.trigger1_onclick">
+				<xf:label><![CDATA[>추가]]></xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="trigger2" style="position: relative;width: 80px;height: 23px;left:-81px;top:202px;" ev:onclick="scwin.trigger2_onclick">
+				<xf:label><![CDATA[<삭제]]></xf:label>
+			</xf:trigger>
+			<w2:treeview useDrag="true" id="treeview2" style="position: relative;width:273px;height:300px;left:91px;top:-12px;" lineShow=""
+				tooltipGroupClass="false" dataType="listed" dynamicAppend="true">
+				<w2:itemset nodeset="data:dl_tree1">
+					<w2:label ref="menu_nm"></w2:label>
+					<w2:value ref="menu_no"></w2:value>
+					<w2:depth ref="level"></w2:depth>
+					<w2:folder ref=""></w2:folder>
+					<w2:checkbox ref=""></w2:checkbox>
+					<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+					<w2:image ref=""></w2:image>
+					<w2:iconImage ref=""></w2:iconImage>
+					<w2:selectedImage ref=""></w2:selectedImage>
+					<w2:expandedImage ref=""></w2:expandedImage>
+					<w2:leafImage ref=""></w2:leafImage>
+				</w2:itemset>
+			</w2:treeview>
+		</xf:group>
+	</body>
+</html>
+ 

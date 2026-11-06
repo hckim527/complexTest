@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+        <script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+		inputCalendar1.setValue("20180505");
+		inputCalendar2.setValue("20180505");
+	}		
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper("#inputCalendar2_input", "key-sequence", {
+			sequence: "20180505"
+		});
+	}
+	
+	scwin.isInputTextSelected = function() {
+		var inputElem = WebSquare.wUnit.getDomById("inputCalendar1_input");
+		if (document.activeElement !== inputElem) {
+			return false;
+		}
+		// 선택 영역의 시작과 끝이 다르면 텍스트가 선택된 상태
+		return inputElem.selectionStart !== inputElem.selectionEnd;
+	}
+	
+	scwin.checkVal = function() {
+		return scwin.isInputTextSelected();
+	}
+	
+	scwin.unitTest = function() {
+		//Unit test
+		WebSquare.wUnit.start();
+		//Test step 1. 샘플실행 후 왼쪽의 inputCalendar를 클릭하고 8자리를 입력한다.
+		//1. After running the sample, click inputCalendar on the left and enter 8 digits.
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_input').focus()");
+		WebSquare.wUnit.addCommand("pause", "100");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_input').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "1000");
+
+		WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar1_input').hasClass('w2inputCalendar_focus')", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		//Run and Stop test
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:inputCalendar weekStartsOn="0" rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar2" renderDiv="true" style="width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false" editType="select" nextTabID="inputCalendar1" autoFocus="true" maxByteLength="8" useCalendarTabIndex="false"></w2:inputCalendar>
+    	<w2:inputCalendar weekStartsOn="0" rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar1" renderDiv="true" style="width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false" editType="select" useCalendarTabIndex="false"></w2:inputCalendar>
+    </body>
+</html>
+ 

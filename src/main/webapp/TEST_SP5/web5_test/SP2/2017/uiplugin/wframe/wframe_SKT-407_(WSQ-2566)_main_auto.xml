@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = async function() {
+	window.check_log = '';
+	window.check_log1 = false;
+
+    await WebSquare.util.dynamicCreate("wframe1", "wframe", {
+        style: "position: relative;width:auto;height:auto;",
+        scope: true,
+        src: "wframe_SKT-407_(WSQ-2566)_sub.xml",
+        mode: "sync"
+    }, grp_tdInt);
+    //alert(wframe1.getObj("ip1").getValue());
+    //alert(wframe1.getObj("scwin").form_onLoadCompleted);
+	check_log = WebSquare.wUnit.getObjById('wframe1').getObj("ip1").getValue();
+	const fun = wframe1.getObj("scwin").form_onLoadCompleted
+	check_log1 = fun.toString().indexOf('sub.xml');
+
+}
+
+scwin.checkVal1 = function() {
+    return check_log == 'sub_test';
+};
+scwin.checkVal2 = function() {
+    return check_log1 != -1;
+};
+scwin.checkVal3 = function() {
+    return WebSquare.wUnit.getObjById('wframe1_ip1').getValue() == 'sub_test';
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="grp_tdInt" style="position: relative;width:678px;height:376px;" class=""></xf:group>
+    </body>
+</html>
+ 

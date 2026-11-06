@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.focusHandler = function() {
+    window.focusedInput = this.id;
+}
+scwin.isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
+scwin.clickTrigger = function() {
+    if (scwin.isIE() == 10 || scwin.isIE() == 9) {
+        WebSquare.wUnit.getDomById('trigger1').click();
+    }
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#input1', 'key-sequence', {
+        sequence: '1'
+    });
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 2. top 에 input1 inputBox 에 1을 입력한다.
+    //2. Enter 1 in the top of the input1 inputBox.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. maxlength 이라 input3 으로 focus 된다.
+    //2. The maxlength is set to focus on input3.
+    WebSquare.wUnit.addCommand("set", "scwin.clickTrigger()");
+    WebSquare.wUnit.addCommand("assert", "document.activeElement.id", "mf_input3");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. input3 으로 focus 된 상태에서 Tab 키를 누르거나 focusNextTabOrder(); 버튼을 클릭한다.
+    //3. With the focus on input3, press Tab or focusNextTabOrder (); Click the button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. input2 로 focus 된다.
+    //3. Focused on input2.
+    WebSquare.wUnit.addCommand("assert", "document.activeElement.id", "mf_input2");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. input2 로 focus 된 상태에서 Tab 키를 누르거나 focusNextTabOrder(); 버튼을 클릭한다.
+    //4. Press the Tab key when focus is on input2 or focusNextTabOrder (); Click the button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. input4 로 focus 된다.
+    //4. Focused on input4.
+    WebSquare.wUnit.addCommand("assert", "document.activeElement.id", "mf_input4");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. input4 로 focus 된 상태에서 Tab 키를 누르거나 focusNextTabOrder(); 버튼을 클릭한다.
+    //5. Press the Tab key while focusing on input4 or use focusNextTabOrder (); Click the button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. input1 로 focus 된다.
+    //5. Focused on input1.
+    WebSquare.wUnit.addCommand("assert", "document.activeElement.id", "mf_input1");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. input1.setNextTabID('input1', 'wframe1') 버튼을 클릭하고 input1 로 focus 된 상태에서 Tab 키를 누르거나 focusNextTabOrder(); 버튼을 클릭한다. (기타 : focus 순서는 코멘트 확인)
+    //6. Click on the input1.setNextTabID ('input1', 'wframe1') button and press the Tab key while focusing on input1, or press the focusNextTabOrder (); Click the button. (Other: focus order check comment)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 6. wframe1 에 wframe1_input1 로 focus 된다.
+    //6. Focus on wframe1 as wframe1_input1.
+    WebSquare.wUnit.addCommand("assert", "document.activeElement.id == 'mf_wframe1_input1'", "true");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.focusedInput = null;
+    input1.setValue(input1.id);
+    input2.setValue(input2.id);
+    input3.setValue(input3.id);
+    input4.setValue(input4.id);
+
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+    		.focused {
+    			background-color : #ff6666;
+    		}
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="group1" style="position: relative;width: 600px;height: 600px;padding:20px;background-color:#99FFFF" class="">
+    		<w2:textbox label="top" id="textbox1"
+    			style="position: absolute;right: 0px;top:20px;width: 150px;height: 23px;font-size: 20px;font-weight: bold;">
+    		</w2:textbox>
+    		<xf:input id="input1" style="position: relative;height: 21px;width: 144px;display:block;font-weight:bold;"
+    			onFocusClass="focused" nextTabID="input3" maxByteLength="7" autoFocus="true" ev:onfocus="scwin.focusHandler">
+    		</xf:input>
+    		<xf:input id="input2" style="position: relative;height: 21px;width: 144px;display:block;font-weight:bold;"
+    			onFocusClass="focused" nextTabID="input4" ev:onfocus="scwin.focusHandler">
+    		</xf:input>
+    		<xf:input id="input3" style="position: relative;height: 21px;width: 144px;display:block;font-weight:bold;"
+    			onFocusClass="focused" nextTabID="input2" ev:onfocus="scwin.focusHandler">
+    		</xf:input>
+    		<xf:input id="input4" style="position: relative;height: 21px;width: 144px;display:block;font-weight:bold;"
+    			onFocusClass="focused" nextTabID="input1" nextTabScope="wframe1" ev:onfocus="scwin.focusHandler">
+    		</xf:input>
+    		<w2:wframe id="wframe1" style="position: relative;margin-top:20px;width:560px;height:488px;" src="wframe_autoFoucs_SKT-346_(WSQ-978)_sub1.xml"
+    			scope="true">
+    		</w2:wframe>
+    	</xf:group>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;height:23px;width:230px;display:block;">
+    		<xf:label><![CDATA[focusNextTabOrder();]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[
+    			var component = WebSquare.wUnit.getObjById(window.focusedInput);
+    			component.focusNextTabOrder();
+    		 ]]></script>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;height:23px;width:230px;display:block;">
+    		<xf:label><![CDATA[focusPreTabOrder();]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[
+    			var component = WebSquare.wUnit.getObjById(window.focusedInput);
+    			component.focusPreTabOrder();
+    		 ]]></script>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3" style="position: relative;height:23px;width:230px;display:block;">
+    		<xf:label><![CDATA[input1.setNextTabID("input1", "wframe1")]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[
+    			input1.setNextTabID("input1", "wframe1")
+    		 ]]></script>
+    	</xf:trigger>
+    </body>
+</html>
+ 

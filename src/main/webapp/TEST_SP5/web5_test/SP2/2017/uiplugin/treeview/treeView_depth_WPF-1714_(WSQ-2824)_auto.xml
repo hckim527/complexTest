@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+            <w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            	<w2:columnInfo>
+            		<w2:column id="value" name="value" dataType="text"></w2:column>
+            		<w2:column id="label" name="label" dataType="text"></w2:column>
+            		<w2:column id="depth" name="depth" dataType="text"></w2:column>
+            		<w2:column id="chk" name="chk" dataType="text"></w2:column>
+            	</w2:columnInfo>
+            </w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger2_onclick = function(e) {
+    treeview1.spanNode(2);
+};
+scwin.trigger4_onclick = function(e) {
+    treeview1.spanNode({
+        index: 2
+    });
+};
+scwin.trigger3_onclick = function(e) {
+    treeview1.spanNode({
+        depth: 2
+    });
+};
+scwin.trigger5_onclick = function(e) {
+    treeview1.spanNode(1, false, true);
+};
+scwin.trigger6_onclick = function(e) {
+    treeview1.spanNode({
+        index: 1,
+        applyChildNodes: true
+    }, true);
+};
+scwin.trigger7_onclick = function(e) {
+    treeview1.spanNode({
+        depth: 2
+    }, false);
+};
+scwin.trigger8_onclick = function(e) {
+    treeview1.spanNode({
+        depth: 2
+    }, true);
+};
+scwin.isClosed = function(id) {
+    return WebSquare.wUnit.getJq("#" + id).hasClass('w2treeview_close_child');
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일 실행 후 3번을 클릭한다. 
+    //1. After executing the sample file, click 3 times.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 1. a1-1노드가 접혀진다.(기능추가)
+    //1. a1-1 node is collapsed (add function)
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 3번 클릭 상태에서 4번을 클릭한다.
+    //2. In the third click state, click 4 times.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 2. a1-1노드가 펼쳐진다.(기능추가)
+    //2. The a1-1 node is expanded (add function).
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. 4번 클릭 상태에서 5번을 클릭한다.
+    //3. In the fourth click state, click 5 times.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 3. a1하위노드가 모두 접혀진다.(기능추가)(첨부이미지참고)
+    //3. All the a1 child nodes are collapsed (additional function) (see attached image)
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_6')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_10')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_14')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 4. 5번 클릭 상태에서 7번을 클릭한다.
+    //4. In the 5th click state, click 7 times.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 4. a1하위노드가 모두 펼쳐진다.(기능추가)    
+    //4. All a1 subnodes are expanded (add function).
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "false");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_6')", "false");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_10')", "false");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_14')", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 5. 7번 클릭 상태에서 6번을 클릭한다.
+    //5. In the 7th click state, click 6 times.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 5. a1하위노드가 모두 접혀진다.(기능추가)
+    //5. All the a1 child nodes are collapsed (add function)
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_6')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_10')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_14')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.sample = {
+        setDataList1: function() {
+            window.data = [{
+                "value": "a1",
+                "label": "a1",
+                "depth": "1"
+            }, {
+                "value": "a1-1",
+                "label": "a1-1",
+                "depth": "2"
+            }, {
+                "value": "a1-1-1",
+                "label": "a1-1-1",
+                "depth": "3"
+            }, {
+                "value": "a1-1-2",
+                "label": "a1-1-2",
+                "depth": "3"
+            }, {
+                "value": "a1-1-3",
+                "label": "a1-1-3",
+                "depth": "3"
+            }, {
+                "value": "a1-2",
+                "label": "a1-2",
+                "depth": "2"
+            }, {
+                "value": "a1-2-1",
+                "label": "a1-2-1",
+                "depth": "3"
+            }, {
+                "value": "a1-2-2",
+                "label": "a1-2-2",
+                "depth": "3"
+            }, {
+                "value": "a1-2-3",
+                "label": "a1-2-3",
+                "depth": "3"
+            }, {
+                "value": "a1-3",
+                "label": "a1-3",
+                "depth": "2"
+            }, {
+                "value": "a1-3-1",
+                "label": "a1-3-1",
+                "depth": "3"
+            }, {
+                "value": "a1-3-2",
+                "label": "a1-3-2",
+                "depth": "3"
+            }, {
+                "value": "a1-3-3",
+                "label": "a1-3-3",
+                "depth": "3"
+            }, {
+                "value": "a1-4",
+                "label": "a1-4",
+                "depth": "2"
+            }, {
+                "value": "a1-4-1",
+                "label": "a1-4-1",
+                "depth": "3"
+            }, {
+                "value": "a1-4-2",
+                "label": "a1-4-2",
+                "depth": "3"
+            }, {
+                "value": "a1-4-3",
+                "label": "a1-4-3",
+                "depth": "3"
+            }];
+            dataList1.setJSON(data);
+        }
+    };
+    sample.setDataList1();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 26-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:treeview useDrag="" id="treeview1"
+    		style="position: relative ;width:19.88701%;height:100.0%;float:left;margin-left:20px;margin-top:10px;" lineShow=""
+    		tooltipGroupClass="false" dataType="listed" showCheckbox="false" hierarchy="true" checkAllChildNodes="true" toggleEvent="onclick"
+    		tooltipDisplay="true" tooltipTime="1" dynamicAppend="true" ev:onclick="scwin.treeview1_onclick" showTreeDepth="">
+    		<w2:itemset nodeset="data:dataList1">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="value"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref=""></w2:folder>
+    			<w2:checkbox ref='chk'></w2:checkbox>
+    			<w2:checkboxDisabled ref=''></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=''></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2"
+    		style="position: relative;width:118px;height:31px;margin-left:5px;margin-top:10px;" type="button">
+    		<xf:label><![CDATA[1. spanNode(2)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger5_onclick" id="trigger5"
+    		style="position: relative;width:178px;height:31px;margin-left:5px;margin-top:10px;" type="button">
+    		<xf:label><![CDATA[2. spanNode(1, false, true)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger4_onclick" id="trigger4"
+    		style="position: relative;width:152px;height:31px;margin-left:5px;margin-top:10px;" type="button">
+    		<xf:label><![CDATA[3. spanNode({index:2})]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger6_onclick" id="trigger6"
+    		style="position: relative;width:262px;height:31px;margin-left:5px;margin-top:10px;" type="button">
+    		<xf:label><![CDATA[4. spanNode({index:1, applyChildNodes:true})]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3"
+    		style="position: relative;width:176px;height:31px;margin-left:5px;margin-top:10px;" type="button">
+    		<xf:label><![CDATA[5. spanNode({depth:2})]]></xf:label>
+    	</xf:trigger>
+
+
+
+    	<xf:trigger ev:onclick="scwin.trigger7_onclick" id="trigger7"
+    		style="position: relative;width:176px;height:31px;margin-left:5px;margin-top:10px;" type="button">
+    		<xf:label><![CDATA[6. spanNode({depth:2}, false);]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger8_onclick" id="trigger8"
+    		style="position: relative;width:176px;height:31px;margin-left:5px;margin-top:10px;" type="button">
+    		<xf:label><![CDATA[7. spanNode({depth:2}, true);]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

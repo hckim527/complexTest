@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dlt_dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="sChk" dataType="text"></w2:column>
+    					<w2:column id="col1" dataType="text"></w2:column>
+    					<w2:column id="col2" dataType="text"></w2:column>
+    					<w2:column id="col3" dataType="text"></w2:column>
+    					<w2:column id="sRowStatus" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    				<w2:data use="true">
+    					<w2:row>
+    						<col1><![CDATA[11]]></col1>
+    						<col2><![CDATA[12]]></col2>
+    						<col3><![CDATA[13]]></col3>
+    						<sRowStatus><![CDATA[R]]></sRowStatus>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[21]]></col1>
+    						<col2><![CDATA[22]]></col2>
+    						<col3><![CDATA[23]]></col3>
+    						<sRowStatus><![CDATA[R]]></sRowStatus>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[31]]></col1>
+    						<col2><![CDATA[32]]></col2>
+    						<col3><![CDATA[23]]></col3>
+    						<sRowStatus><![CDATA[R]]></sRowStatus>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[41]]></col1>
+    						<col2><![CDATA[42]]></col2>
+    						<col3><![CDATA[33]]></col3>
+    						<sRowStatus><![CDATA[R]]></sRowStatus>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[51]]></col1>
+    						<col2><![CDATA[52]]></col2>
+    						<col3><![CDATA[33]]></col3>
+    						<sRowStatus><![CDATA[R]]></sRowStatus>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[61]]></col1>
+    						<col2><![CDATA[62]]></col2>
+    						<col3><![CDATA[53]]></col3>
+    						<sRowStatus><![CDATA[U]]></sRowStatus>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[71]]></col1>
+    						<col2><![CDATA[72]]></col2>
+    						<col3><![CDATA[73]]></col3>
+    						<sRowStatus><![CDATA[R]]></sRowStatus>
+    					</w2:row>
+    				</w2:data>
+    			</w2:dataList>
+    			<w2:linkedDataList id="ldt_dataList1" bind="dlt_dataList1" style="" keyNode="" valueAttribute="" idAttribute="">
+    				<w2:condition type="filter"><![CDATA[sRowStatus == "R"]]></w2:condition>
+    			</w2:linkedDataList>
+    			<w2:linkedDataList id="linkedDataList1" style="" bind="dlt_dataList1">
+    				<w2:condition type="filter"><![CDATA[col3=='13' || sRowStatus == 'U' || col3 =='33']]></w2:condition>
+    				<w2:condition type="sort"><![CDATA[]]></w2:condition>
+    			</w2:linkedDataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_update_onclick = function() {
+    var grdObj = $w.comp[$p.id+'grd_dataList1'];
+    var checkData = grdObj.getCheckedIndex(0);
+    for (var idx = 0; idx < checkData.length; idx++) {
+        var gridIndex = checkData[idx];
+        checkData[idx] = grdObj.getRealRowIndex(gridIndex);
+    }
+    for (var idx = 0; idx < checkData.length; idx++) {
+        var rowIndex = checkData[idx];
+        $w.data[$p.id+'dlt_dataList1'].modifyRowStatus(rowIndex, "U");
+        $w.data[$p.id+'dlt_dataList1'].setCellData(rowIndex, "sRowStatus", "U");
+        grdObj.setCellChecked(rowIndex, 0, false);
+    }
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 임의로 몇개의 row 를 체크한 후 update 버튼을 클릭한다.
+    //Check any row in your browser and click the update button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_dataList1_cell_0_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#btn_update a')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 임의로 체크한 row 가 필터조건에서 제외된다.
+    //Randomly checked rows are excluded from filter conditions.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd_dataList1_cell_0_1').text() == '21'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd_dataList1_cell_0_2').text() == '22'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd_dataList1_cell_0_3').text() == '23'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 전체체크 아이콘을 클릭한다.
+    //Click the Check All icon.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_dataList1_column3').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 남겨진 row 항목들이 전체체크된다.
+    //The remaining row items are checked in full.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_dataList1_cell_0_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_dataList1_cell_1_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_dataList1_cell_2_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_dataList1_cell_3_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_dataList1_cell_4_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 26-Jan-2018       
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+.btn_tcm{position:relative;display:inline-block;padding:0 2px 0 0;margin:0 0 0 3px;background:url(/images/btn/bg_btn_in.gif) no-repeat 100% 0;vertical-align:middle}
+.btn_tcm a{position:relative;display:inline-block;padding:0 5px 0 7px;height:22px;line-height:22px;text-align:center;font-weight:bold;color:#3b3b3b;background:url(/images/btn/bg_btn_in.gif) no-repeat}
+.btn_tcm:hover,.btn_tcm:focus{position:relative;display:inline-block;padding:0 2px 0 0;margin:0 0 0 3px;background:url(/images/btn/bg_btn_in_hover.gif) no-repeat 100% 0;vertical-align:middle}
+.btn_tcm a:hover,.btn_tcm a:focus{position:relative;display:inline-block;padding:0 5px 0 7px;height:22px;line-height:22px;text-align:center;font-weight:bold;color:#3b3b3b;background:url(/images/btn/bg_btn_in_hover.gif) no-repeat}
+.btn_tcm:active{position:relative;display:inline-block;padding:0 2px 0 0;margin:0 0 0 3px;background:url(/images/btn/bg_btn_in_select.gif) no-repeat 100% 0;vertical-align:middle}
+.btn_tcm a:active{position:relative;display:inline-block;padding:0 5px 0 7px;height:22px;line-height:22px;text-align:center;font-weight:bold;color:#3b3b3b;background:url(/images/btn/bg_btn_in_select.gif) no-repeat}
+    	
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="ldt_dataList1" scrollByColumn="false" id="grd_dataList1" style="position: relative;width:317px;height:261px;"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="checkbox" value=""
+    					allOption="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" value="열1"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" value="열2"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="70" value="열3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="sChk" style="height:20px" width="70" inputType="checkbox"></w2:column>
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:anchor class="btn_tcm" id="btn_update" outerDiv="true" style="left:360px;top:-151px;width:100px;height:50px;background-color:yellow;"
+    		ev:onclick="scwin.btn_update_onclick">
+    		<xf:label><![CDATA[update]]></xf:label>
+    	</w2:anchor>
+    </body>
+</html>
+ 

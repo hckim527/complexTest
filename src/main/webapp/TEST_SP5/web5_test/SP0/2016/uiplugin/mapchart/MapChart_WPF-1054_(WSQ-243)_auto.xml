@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireClick = function(node) {
+    if (document.createEventObject || document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('click', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onclick == 'function') {
+        node.onclick();
+    }
+}
+scwin.click = function(cl) {
+    var el = document.getElementsByClassName(cl)[0];
+    scwin.fireClick(el);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 1. MapChart_WPF-1054_(WSQ-243).xml 실행한다.
+    //1. Run MapChart_WPF-1054_ (WSQ-243) .xml.
+    //Verify step 1. MapChart_WPF-1054_ (WSQ-243) .xml is executed.
+    WebSquare.wUnit.addCommand('assert', 'WebSquare.wUnit.getJq("#wq_uuid_1").length == 1', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 2. 지도에 표시되는 "제주특별자치도"를 마우스 좌클릭한다.
+    //2. Left click on "Jeju Special Self-Governing Province" displayed on the map.
+    //Verify step 2. The "Jeju Special Self-Governing Province" is expanded and the "Jeju Special Self-Governing Province" map is shown as one. (Previously, it is shown as two regions of Jeju City and Seogwipo City)
+    WebSquare.wUnit.addCommand('set', 'scwin.click("c39")');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'WebSquare.wUnit.getJq("text").length == 1', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'WebSquare.wUnit.getJq("text").text() == "제주특별자치도"', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 27-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:mapchart style="position: absolute;width:875px;height:496px;" event_deselect="ondblclick"></w2:mapchart>
+    </body>
+</html>
+ 

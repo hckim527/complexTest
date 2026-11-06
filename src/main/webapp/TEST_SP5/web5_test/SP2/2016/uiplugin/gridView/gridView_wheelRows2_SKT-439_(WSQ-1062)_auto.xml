@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+            xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data/>
+            </xf:instance>
+            <w2:dataCollection>
+
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+
+						<w2:column dataType="text" id="han_nm" name="" />
+					
+					</w2:columnInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.rgb2hex = function(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}
+scwin._checkRgb = function(id, hexa) {
+    var rgb = WebSquare.wUnit.getJq("#" + id).css("background-color");
+    var color;
+    if (rgb.indexOf("rgb") != -1) {
+        color = scwin.rgb2hex(rgb);
+        return color == hexa;
+    }
+    return rgb == hexa;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일 실행 후 12번째 row에 마우스를 포커스한다.
+    //1. After executing the sample file, focus the mouse on the 12th row.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_4_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 12번째 row에 마우스가 포커스되어진다.
+    //1. The mouse is focused on the 12th row.
+    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'gridView1_cell_4_0', '#fca73c')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 마우스스크롤을 위로 올린다.
+    //2. Raise the mouse scroll.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1').setTopRowIndex(6)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 11번째 row가 보여진다.(이전에는 포커스가 11번째로 따라왔음)
+    //2. The eleventh row is shown (previously the focus was followed by eleventh)
+    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'gridView1_cell_4_0', '#fca73c')", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    gridView1.setSize("height", 138);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 28-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView id="gridView1" style="height:137px;" class="grid_01" dataList="dataList1" wheelRows="1" wheelStop="true" rowNumVisible="true">
+			<w2:header>
+				<w2:row>
+	
+					<w2:column id="hanNm" dataType="text" width="58" value="상담사"></w2:column>
+
+				</w2:row>
+			</w2:header>
+			<w2:gBody>
+				<w2:row>
+				
+					<w2:column id="han_nm" dataType="text" width="58" textAlign="center"></w2:column>
+
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>		
+    </body>
+</html>
+ 

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+        "col1": "test1",
+        "col2": "가"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.btn_onclick = function(e) {
+    vl = grd.getColumnOrder();
+    //alert(grd.getColumnOrder());
+};
+scwin.btn2_onclick = function(e) {
+    vl1 = grd.getColumnOrder(true);
+    //alert(grd.getColumnOrder(true));
+};
+scwin.btn3_onclick = function(e) {
+    grd.setColumnOrder(["1", "2", "0"]);
+};
+scwin.btn4_onclick = function(e) {
+    grd.setColumnOrder(["col1", "col2"]);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 get Number 버튼을 클릭한다.
+    //1. Click the get Number button in your browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. '0,1,2' 팝업이 생성된다.
+    // 1. '0,1,2' popup is generated.
+    WebSquare.wUnit.addCommand("assert", "vl.toString() == '0,1,2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. get Name 버튼을 클릭한다.
+    //2. Click the get Name button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 'col1,col2' 팝업이 생성된다. (그전버전에서는 'col1,col2,col2' 라고 생성되었음) 
+    //2. A popup 'col1, col2' is created. (Previous versions generated 'col1, col2, col2')
+    WebSquare.wUnit.addCommand("assert", "vl1.toString() == 'col1,col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. setColimnOrder(Number) 버튼을 클릭한다.
+    //3. Click the setColimnOrder (Number) button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. name2 / name1 으로 정렬된다.
+    //3. It is sorted by name2 / name1.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_column3').nextElementSibling.id == $p.id+'grd_column5'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. get Number 버튼을 클릭한다.
+    //4. Click the get Number button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. '1,2,0' 팝업이 생성된다.
+    //4. A pop-up of '1,2,0' is created.
+    WebSquare.wUnit.addCommand("assert", "vl.toString() == '1,2,0'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. get Name 버튼을 클릭한다.
+    //5. Click the get Name button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. 'col2,col1' 팝업이 생성된다.
+    //5. The 'col2, col1' popup is created.
+    WebSquare.wUnit.addCommand("assert", "vl1.toString() == 'col2,col1'", "true");
+    //Test step 6. setColimnOrder(Name) 버튼을 클릭한다.
+    //6. Click the setColimnOrder (Name) button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 6. 다시 name1 / name2 으로 정렬된다.
+    //6. It is sorted by name1 / name2 again.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_column5').nextElementSibling.id == $p.id+'grd_column3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 7. get Number 버튼을 클릭한다.
+    //7. Click the get Number button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 7. '0,1,2' 팝업이 생성된다.
+    //7. '0,1,2' popup is generated.
+    WebSquare.wUnit.addCommand("assert", "vl.toString() == '0,1,2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 8. get Name 버튼을 클릭한다.
+    //8. Click the get Name button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 8. 'col1,col2' 팝업이 생성된다.
+    //8. A popup 'col1, col2' is created.
+    WebSquare.wUnit.addCommand("assert", "vl1.toString() == 'col1,col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    var vl, vl1;
+    window.vl = undefined;
+    window.vl1 = undefined;
+    scwin.init();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 07-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="grd"
+    		style="position: relative;width: 500px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="140" displayMode="label"
+    					value="name2" colSpan="2" rowSpan="">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px;" inputType="text" width="140" displayMode="label"
+    					colSpan="2" rowSpan="">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="btn" style="position: relative;width: 80px;height: 23px;margin-top:20px;"
+    		ev:onclick="scwin.btn_onclick">
+    		<xf:label><![CDATA[get Number]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="btn2" style="position: relative;width: 80px;height: 23px;margin-top:20px;"
+    		ev:onclick="scwin.btn2_onclick">
+    		<xf:label><![CDATA[get Name]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.btn3_onclick" id="btn3"
+    		style="position: relative;width:178px;height:23px;margin-top:20px;margin-left:0px;" type="button">
+    		<xf:label><![CDATA[setColumnOrder(Number)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.btn4_onclick" id="btn4"
+    		style="position: relative;width:170px;height:23px;margin-top:20px;margin-left:0px;" type="button">
+    		<xf:label><![CDATA[setColumnOrder(Name)]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

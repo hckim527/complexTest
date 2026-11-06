@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_vertical_guides="" meta_horizontal_guides="504">
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="submission1" ref="" target="" action="tabcontrol_wframe_submission_WESD-249_(WSQ-4424)_sJsonData.jsp" method="post" mediatype="application/json" encoding="UTF-8"
+				instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone=""
+				ev:submiterror="" abortTrigger="">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.btn_search_onclick = function() {
+    $p.top().scwin.openMenu("테스트", "tabcontrol_wframe_submission_WESD-273_(WSQ-4444)_sub1.xml", "999999999")
+};
+scwin.openMenu = function(menuNm, url, menuCode, paramObj, menuType) {
+    // client에서 url 숨기기 메뉴일 경우에는 새 창으로 띄우기 적용 
+    if (url == "/") {
+        var url = document.location.href + "/";
+        window.open(url, "", "width=1200, height=700, left=450, top=100");
+    } else {
+        menuCode = menuCode || "";
+        var layout = "T";
+        var tmpUrl;
+        var menuCodeParm = menuCode;
+        var frameMode; // "wframe", "iframe"
+        var favStatus;
+        var data;
+        if (url.indexOf("/") !== 0) {
+            url = url;
+        }
+        //url = gcm.CONTEXT_PATH + url;
+        //즐겨찾기가 추가 여부 확인하여 flag 붙임.
+        favStatus = "T";
+        if ((typeof paramObj !== "undefined") && (paramObj !== null)) {
+            data = paramObj;
+        } else {
+            data = {};
+        }
+        data.menuNm = menuNm;
+        data.menuCode = menuCode;
+        data.favStatus = favStatus;
+        data.menuType = menuType;
+        var frameMode = "";
+        if (layout == "T") {
+            var tabObj = {
+                closable: true, //탭 닫기 기능 제공
+                openAction: "exist", // exist 는 기존 탭을 갱신, new 는 항상 새로, select는 동일 id 가 존재하면 선택, last: 기존 tab을 마지막 tab으로 이동후 선택
+                //							   openAction : "select", // exist 는 기존 탭을 갱신, new 는 항상 새로, select는 동일 id 가 존재하면 선택, last: 기존 tab을 마지막 tab으로 이동후 선택
+                label: menuNm
+            };
+            //if (com.getFrameMode()  === "wframe") {
+            frameMode = "wframePreload";
+            //} else {
+            //	frameMode = "iframe";
+            //}
+            var contObj = {
+                frameMode: frameMode,
+                scope: true,
+                src: url,
+                alwaysDraw: false,
+                title: menuNm,
+                dataObject: {
+                    type: "json",
+                    name: "param",
+                    data: data
+                }
+            };
+            var tabComp = $w.getComponentById("tac1");
+            tabComp.addTab(menuCode, tabObj, contObj);
+            // tabObj의 openAction의 last값의 동작 특이 사항으로 선택이 되지 않은 경우 선택하는 로직 추가
+            if (tabComp.getSelectedTabID() !== menuCode) {
+                var tabIndex = tabComp.getTabIndex(menuCode);
+                if (tabIndex) {
+                    tabComp.setSelectedTabIndex(tabIndex);
+                }
+            }
+        } else if (layout == "M") {
+            if (com.getFrameMode() === "wframe") {
+                frameMode = "wframe";
+            } else {
+                frameMode = "iframe";
+            }
+            var options = {
+                title: menuNm,
+                src: url,
+                windowTitle: menuNm,
+                windowId: menuCode,
+                openAction: "existWindow",
+                frameMode: frameMode,
+                dataObject: {
+                    type: "json",
+                    name: "param",
+                    data: data
+                }
+            }
+            var wdcComp = $w.getComponentById("wdc_main");
+            wdcComp.createWindow(options);
+        }
+    }
+};
+scwin.btn_anchor2_onclick = function() {
+    WebSquare.wUnit.getObjById('tac1_contents_999999999_body_wfm_wframe2').showProcessMessage("1111111")
+};
+scwin.btn_anchor3_onclick = function() {
+    WebSquare.wUnit.getObjById('tac1_contents_999999999_body_wfm_wframe3').showProcessMessage("2222222")
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_search').getElementsByTagName('a')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_anchor2').getElementsByTagName('a')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_anchor3').getElementsByTagName('a')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('tac1_contents_999999999_body_wfm_wframe2_mf_tac1_contents_999999999_body_wfm_wframe2_wq_processMsgComp').style.left == '114px'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('tac1_contents_999999999_body_wfm_wframe2_mf_tac1_contents_999999999_body_wfm_wframe2_wq_processMsgComp').style.top == '125px'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:anchor class="" ev:onclick="scwin.btn_search_onclick" id="btn_search" outerDiv="true"
+			style="left:0px;top:0px;margin-right: 5px;">
+			<xf:label><![CDATA[tab wframe 호출]]></xf:label>
+		</w2:anchor>
+
+		<w2:anchor class="" ev:onclick="scwin.btn_anchor2_onclick" id="btn_anchor2" outerDiv="true"
+			style="left:0px;top:0px;margin-right: 5px;">
+			<xf:label><![CDATA[--wframe 1번재--]]></xf:label>
+		</w2:anchor><w2:anchor class="" ev:onclick="scwin.btn_anchor3_onclick" id="btn_anchor3" outerDiv="true" style="left:0px;top:0px;margin-right: 5px;">
+			<xf:label><![CDATA[--wframe 2번재--]]></xf:label>
+		</w2:anchor>
+		<w2:wframe style="width:800px;height:100px;border:1px solid red;" id=""></w2:wframe>
+		<xf:group id="">
+			<w2:wframe style="width:100px;height:800px;float:left;border:1px solid red;" id=""></w2:wframe>
+			<xf:group id="" style="float:left;">
+				<w2:tabControl useTabKeyOnly="true" id="tac1" useMoveNextTabFocus="false" useConfirmMessage="false"
+					confirmTrueAction="exist" confirmFalseAction="new" alwaysDraw="false" style="width:1300px;height:800px;">
+					<!--					<w2:tabs disabled="false" style="width:70px;height:30px;" id="tabs1" label="tab1"></w2:tabs>-->
+					<!--					<w2:content alwaysDraw="false" style="height:707px;" id="content1" src="tabcontrol_wframe_submission_WESD-249_(WSQ-4424)_content.xml" frameMode="wframePreload" processMsgFrame="true"></w2:content>-->
+				</w2:tabControl>
+			</xf:group>
+
+		</xf:group>
+
+		
+	</body>
+</html>
+ 

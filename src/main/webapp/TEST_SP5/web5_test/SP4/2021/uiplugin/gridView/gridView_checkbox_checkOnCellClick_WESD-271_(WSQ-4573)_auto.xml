@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="chkYn" name="체크박스" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+};
+scwin.onpageunload = function() {};
+scwin.gridView_onviewchange = function(info) {
+    //debugger; 
+    console.log("gridView_onviewchange");
+    localStorage.setItem("log", 'gridView_onviewchange');
+};
+scwin.__isCheckVal = function() {
+    return localStorage.getItem('log') == 'gridView_onviewchange';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCheckVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1" checkOnCellClick="true" ev:onviewchange="scwin.gridView_onviewchange"
+            style="position: absolute ;left: 57px;top: 52px;width: 514px;height: 304px;">
+            <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header1" style="">
+                <w2:row id="row1" style="">
+                    <w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="" inputType="checkbox" width="70"
+                        value="체크박스" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column1" removeBorderStyle="false" style="" width="70" inputType="text" value="name2"
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1" style="">
+                <w2:row id="row2" style="">
+                    <w2:column blockSelect="true" id="chkYn" removeBorderStyle="false" style="" inputType="checkbox" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>
+ 

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkcombobox1_oncheckboxclick = function(index, isChecked, value) {
+    log = "index=" + index + " , checked=" + isChecked + " , value=" + value;
+    //alert("index=" + index + " , checked=" + isChecked + " , value=" + value);
+}
+scwin.checkcombobox2_oncheckboxclick = function(index, isChecked, value) {
+    //alert("index=" + index + " , checked=" + isChecked + " , value=" + value);
+    log1 = "index=" + index + " , checked=" + isChecked + " , value=" + value;
+}
+scwin.checkVal1 = function() {
+    return log == 'index=2 , checked=true , value=3';
+}
+scwin.checkVal2 = function() {
+    return log == 'index=2 , checked=false , value=3';
+}
+scwin.checkVal3 = function() {
+    return log1 == 'index=1 , checked=true , value=2';
+}
+scwin.checkVal4 = function() {
+    return log1 == 'index=1 , checked=false , value=2';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 3. 브라우저에서 첫번째 CheckCombobox 에서 임의로 체크를 한다. (예 : 3)
+    //3. Check randomly in the first CheckCombobox in the browser. (Example: 3)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox1_itemTable_2_checkbox').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 'index=2, checked=true, value=3' 팝업이 생성된다.
+    //3. 'index = 2, checked = true, value = 3' Popup is created.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log == ''");
+    //Test step 4. 체크한 데이터를 체크해제한다.
+    //4. Uncheck the checked data.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox1_itemTable_2_checkbox').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. 'index=2, checked=false, value=3' 팝업이 생성된다.
+    //4. 'index = 2, checked = false, value = 3' Popup is generated.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. 두번째 CheckCombobox 에서 임의로 체크를 한다. (예 : 2)
+    //5. Check randomly in the second CheckCombobox. (Example: 2)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox2_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log == ''");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox2_itemTable_1_checkbox').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. 'index=1, checked=true, value=2' 팝업이 생성된다.
+    //5. 'index = 1, checked = true, value = 2' Popup is generated.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log == ''");
+    //Test step 6. 체크한 데이터를 체크해제한다.
+    //6. Uncheck the checked data.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox2_itemTable_1_checkbox').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 6. 'index=1, checked=false, value=2' 팝업이 생성된다. 
+    //6. 'index = 1, checked = false, value = 2' Popup is generated.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setData([1, 1, 2, 2, 3, 3, 4, 4]);
+    window.log = "";
+    window.log1 = "";
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 27-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:checkcombobox navBtnPosition="bottom" appearance="minimal" direction="auto" chooseOption="" id="checkcombobox1"
+    		style="position: relative;width:288px;height:89px;" displayMode="label" displayAllOptionLabel="false" allOption="" disabled="false"
+    		submenuSize="auto" ev:oncheckboxclick="scwin.checkcombobox1_oncheckboxclick">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dataList1">
+    				<xf:label ref="col1"></xf:label>
+    				<xf:value ref="col2"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:checkcombobox>
+    	<xf:checkcombobox allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" displayAllOptionLabel="false"
+    		displayMode="label" id="checkcombobox2" navBtnPosition="bottom" style="position: relative;width:288px;height:89px;"
+    		submenuSize="auto" ev:oncheckboxclick="scwin.checkcombobox2_oncheckboxclick">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[1]]></xf:label>
+    				<xf:value><![CDATA[1]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[2]]></xf:label>
+    				<xf:value><![CDATA[2]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[3]]></xf:label>
+    				<xf:value><![CDATA[3]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:checkcombobox>
+    </body>
+</html>
+ 

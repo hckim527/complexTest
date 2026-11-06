@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map"></w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="data:json" target="data:json" action="workflow_executeSerial_WPF-1846_(WSQ-2940)1.json" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="a" ev:submit="" ev:submitdone="" ev:submiterror="">
+        	</xf:submission>
+        	<xf:submission id="submission2" ref="" target="" action="workflow_executeSerial_WPF-1846_(WSQ-2940)2.json" method="post" mediatype="application/json" encoding="UTF-8"
+        		instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="b" ev:submit="" ev:submitdone=""
+        		ev:submiterror="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    $p.executeSerial(["submission1", "submission2"]);
+};
+scwin.__isShowLogNormal = function() {
+    var err = WebSquare.logger.getErrorLog();
+    return !err;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 executeSerial 버튼을 클릭 후 ctrl+마우스우클릭 > 로그보기를 실행한다.
+    //1. After executing the sample file, click the executeSerial button, and then right-click on ctrl + right-click> View log.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    // verify step 1. 로그에 오류가 없이 정상적으로 보여진다.(이전에는 Cannot read property "useModal" of null로그오류가 보여짐)
+    //1. The log is displayed normally without errors.(Previously Can not read property "useModal" of null log error is shown) 
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowLogNormal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 12-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 69px;top: 51px;width: 178px;height: 48px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[executeSerial]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

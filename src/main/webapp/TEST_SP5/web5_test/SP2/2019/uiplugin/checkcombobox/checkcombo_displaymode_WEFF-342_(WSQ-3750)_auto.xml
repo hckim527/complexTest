@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="key" name="name1" dataType="text"></w2:column>
+        				<w2:column id="value" name="name2" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="data:json"
+        		target='data:json,{"id":"dataList1","key":"combolist"}'
+        		action="../../data/checkcombo.json" method="post" mediatype="application/json"
+        		encoding="UTF-8" instance="" replace="" errorHandler=""
+        		customHandler="" mode="asynchronous" processMsg=""
+        		ev:submit="" ev:submitdone="" ev:submiterror="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.ccb_checkcombobox1_oncheckboxclick = function(index, isChecked, value) {
+    debugger;
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 필터를 적용하기위해 항목의 header를 클릭하여 필터값을 제외한다
+    //2. To apply the filter, click the header of the entry to exclude the filter value.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('ccb_checkcombobox1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2table_ccb_col_label')[0].innerText == 'valuetest'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "key": "test",
+        "value": "valuetest"
+    }, {
+        "key": "test1",
+        "value": "valuetest1"
+    }, {
+        "key": "test2",
+        "value": "valuetest2"
+    }];
+    dataList1.setJSON(jsonData);
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:checkcombobox appearance="minimal" direction="auto" chooseOption="" id="ccb_checkcombobox1"
+    		style="position: relative;width: 148px;height: 21px;" displayMode="value" allOption="" submenuSize="auto" disabled="false"
+    		ev:oncheckboxclick="scwin.ccb_checkcombobox1_oncheckboxclick" ref="">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dataList1">
+    				<xf:label ref="key"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:checkcombobox>
+    </body>
+</html>
+ 

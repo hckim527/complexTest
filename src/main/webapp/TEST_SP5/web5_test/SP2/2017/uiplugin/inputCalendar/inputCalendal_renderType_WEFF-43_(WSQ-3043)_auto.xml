@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.fn_openPopup = function() {
+    var options = {
+        id: "popup1",
+        type: "layer",
+        width: "300px",
+        height: "300px",
+        popupName: "TestPage",
+        resizable: false,
+        status: false,
+        menubar: false,
+        scrollbars: false,
+        title: true,
+        xml: "<FORM>한글입니다</FORM>",
+        dataObject: {
+            type: "json",
+            data: dataList1,
+            name: "param1"
+        }
+    };
+    pop = $w.openPopup("", options);
+};
+scwin.trigger1_onclick = function(e) {
+    debugger;
+    calendar1.setDisabled(true);
+};
+scwin.trigger2_onclick = function(e) {
+    debugger;
+    calendar1.setDisabled(false);
+};
+scwin.trigger3_onclick = function(e) {
+    calendar2.setDisabled(true);
+};
+scwin.trigger4_onclick = function(e) {
+    calendar2.setDisabled(false);
+};
+scwin.trigger5_onclick = function(e) {
+    $w.showModal();
+};
+scwin.trigger6_onclick = function(e) {
+    $w.showModal();
+};
+scwin.__checkErr = function() {
+    return temp = WebSquare.logger.getErrorLog();
+}
+scwin.getToday = function() {
+    var date = new Date();
+    dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
+    mm = date.getMonth() > 8 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1);
+    yy = date.getFullYear();
+    var today = yy + '-' + mm + '-' + dd;
+    return today;
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById('inputCalendar2_input').value == scwin.getToday();
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 상단의 캘린더(달력아이콘) 클릭 후 날짜를 입력한다.
+    //1. After running the sample, click the calendar at the top (calendar icon) and enter the date.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_img').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_calendar_cell_1_6').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_selected')[2].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_input').blur()");
+    //Verify 1. renderTpe=native 옆에 날짜가 입력된다.
+    //1. The date is entered next to renderTpe = native.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 후 '$w.showModal()'버튼을 클릭 후 로그보기를 수행한다.
+    //2. After clicking '$ w.showModal ()' button, execute log view.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. Modal처리가 되고 정상적인 로그가 보여진다. (이전에는 로그오류발생)
+    //2. Modal processing is performed and a normal log is displayed. (Previously a log error occurred)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('_modal').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkErr() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    if(WebSquare._xv !== "SP5"){requires("uiplugin.popup");}
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Feb-2018
+    //End unitTest
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id=""
+			style="position:absolute;top:457px;left:183px;width:1006px;height:378px;border-top:1pt solid #000000;border-bottom:1pt solid #000000;border-left:1pt solid #000000;border-right:1pt solid #000000;">
+			<w2:calendar id="calendar1" footerDiv="false" style="position: absolute;width: 100px;height: 100px;left:401px;top:171px;"
+				weekStartsOn="0">
+			</w2:calendar>
+			<xf:trigger id="trigger1" style="position: absolute;width:266px;height:73px;left:663px;top:179px;font-size:13pt;"
+				ev:onclick="scwin.trigger1_onclick" type="button">
+				<xf:label><![CDATA[calendar1.setDisabled(true)]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="trigger2" style="position: absolute;width:267px;height:70px;left:664px;top:295px;font-size:13pt;"
+				ev:onclick="scwin.trigger2_onclick" type="button">
+				<xf:label><![CDATA[caledar1.setDisabled(false)]]></xf:label>
+			</xf:trigger>
+			<w2:inputCalendar id="inputCalendar1" renderType="component" footerDiv="false" renderDiv="true"
+				calendarValueType="yearMonthDate" style="position: absolute;width:352px;height:79px;left:244px;top:15px;" rightAlign="false"
+				weekStartsOn="0" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<w2:textbox id="" style="position: absolute;width:222px;height:30px;left:0px;top:-2px;font-size:14pt;background-color: skyblue;padding-top:11px;padding-bottom:0px;text-align:center;"
+				label='renderType = "component"'>
+			</w2:textbox>
+			<xf:trigger id="trigger6" style="position: absolute;width:344px;height:77px;left:661px;top:14px;font-size:14pt;" type="button" ev:onclick="scwin.trigger6_onclick">
+				<xf:label><![CDATA[$w.showModal()]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group id=""
+			style="position:absolute;top:53px;left:174px;width:1004px;height:341px;border-top:1pt solid #000000;border-bottom:1pt solid #000000;border-left:1pt solid #000000;border-right:1pt solid #000000;">
+			<w2:calendar renderType="native" id="calendar2" footerDiv="false"
+				style="position: absolute;width: 100px;height: 100px;left:397px;top:133px;" weekStartsOn="0">
+			</w2:calendar>
+			<xf:trigger id="trigger3" style="position: absolute;width:273px;height:71px;left:648px;top:137px;font-size:13pt;"
+				ev:onclick="scwin.trigger3_onclick" type="button">
+				<xf:label><![CDATA[calendar2.setDisabled(true)]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="trigger4" style="position: absolute;width:275px;height:67px;left:650px;top:262px;font-size:13pt;"
+				ev:onclick="scwin.trigger4_onclick" type="button">
+				<xf:label><![CDATA[calendar2.setDisabled(false)]]></xf:label>
+			</xf:trigger>
+			<w2:inputCalendar id="inputCalendar2" renderType="native" footerDiv="false" renderDiv="true" calendarValueType="yearMonthDate"
+				style="position: absolute;width:356px;height:74px;left:241px;top:13px;" rightAlign="false" weekStartsOn="0" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<xf:trigger id="trigger5" style="position: absolute;width:355px;height:77px;left:647px;top:15px;font-size:14pt;"
+				ev:onclick="scwin.trigger5_onclick" type="button">
+				<xf:label><![CDATA[$w.showModal()]]></xf:label>
+			</xf:trigger>
+			<w2:textbox id="" style="position: absolute;width:222px;height:31px;left:0px;top:-1px;font-size:14pt;background-color:skyblue;padding-top:13px;padding-bottom:0px;text-align:center;"
+				label='renderType = "native"'>
+			</w2:textbox>
+		</xf:group>
+	</body>
+</html>
+ 

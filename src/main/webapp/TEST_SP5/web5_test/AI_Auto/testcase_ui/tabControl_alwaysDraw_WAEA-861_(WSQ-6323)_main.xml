@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:w2="http://www.inswave.com/websquare"
+      xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <w2:type>DEFAULT</w2:type>
+    <w2:buildDate/>
+    <xf:model>
+        <xf:instance>
+            <data xmlns=""/>
+        </xf:instance>
+        <w2:dataCollection baseNode="map">
+            <w2:dataMap baseNode="map" id="dataMap1">
+                <w2:keyInfo>
+                    <w2:key name="logBuf" defaultValue=""></w2:key>
+                </w2:keyInfo>
+            </w2:dataMap>
+        </w2:dataCollection>
+        <w2:workflowCollection/>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.log("[main] onpageload fired");
+};
+
+// 모든 wframe 자식이 호출하는 공용 로깅 함수.
+// txa_log 가 아직 없으면 window.__pendingLog 큐에 쌓고, 추후 txa_log init 후 flush.
+window.__pendingLog = window.__pendingLog || [];
+scwin.log = function(msg) {
+    var ts = new Date().toISOString().substring(11, 23);
+    var line = ts + "  " + msg;
+    var t = (typeof txa_log !== "undefined") ? txa_log : null;
+    if (t && typeof t.getValue === "function") {
+        // pending 먼저 flush
+        if (window.__pendingLog.length) {
+            var pre = window.__pendingLog.join("\n") + "\n";
+            window.__pendingLog.length = 0;
+            t.setValue((t.getValue() || "") + pre);
+        }
+        t.setValue((t.getValue() || "") + line + "\n");
+    } else {
+        window.__pendingLog.push(line + "  (queued; txa_log not ready)");
+    }
+};
+
+scwin.btn_clearLog_onclick = function() {
+    txa_log.setValue("");
+    window.__pendingLog.length = 0;
+};
+
+scwin.btn_dumpPending_onclick = function() {
+    if (!window.__pendingLog.length) {
+        scwin.log("[main] __pendingLog 비어있음 (즉 모든 onpageload 가 txa_log init 후 호출됐거나, 아예 호출되지 않았음)");
+        return;
+    }
+    var snap = window.__pendingLog.slice();
+    window.__pendingLog.length = 0;
+    snap.forEach(function(l) {
+        txa_log.setValue((txa_log.getValue() || "") + "[PENDING] " + l + "\n");
+    });
+};
+
+scwin.btn_selectOuter2_onclick = async function() {
+    scwin.log("[main] outer tab[1] select 호출");
+    await tabControl_outer.setSelectedTabIndex(1);
+    scwin.log("[main] outer tab[1] select 완료");
+};
+
+scwin.btn_selectOuter1_onclick = async function() {
+    scwin.log("[main] outer tab[0] select 호출");
+    await tabControl_outer.setSelectedTabIndex(0);
+    scwin.log("[main] outer tab[0] select 완료");
+};
+]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+
+    <w2:textbox label="중첩 tabControl + alwaysDraw='true' + content scwin.onpageload 재현"
+                style="position:relative;display:block;font-size:14px;font-weight:bold;margin-bottom:6px;"></w2:textbox>
+
+    <xf:group style="position:relative;margin-bottom:6px;">
+        <xf:trigger type="button" id="btn_selectOuter1" ev:onclick="scwin.btn_selectOuter1_onclick"
+                    style="position:relative;width:160px;height:24px;">
+            <xf:label><![CDATA[Outer Tab[0] 선택]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_selectOuter2" ev:onclick="scwin.btn_selectOuter2_onclick"
+                    style="position:relative;width:160px;height:24px;">
+            <xf:label><![CDATA[Outer Tab[1] 선택]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_clearLog" ev:onclick="scwin.btn_clearLog_onclick"
+                    style="position:relative;width:100px;height:24px;">
+            <xf:label><![CDATA[로그 초기화]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_dumpPending" ev:onclick="scwin.btn_dumpPending_onclick"
+                    style="position:relative;width:160px;height:24px;">
+            <xf:label><![CDATA[pending 큐 확인]]></xf:label>
+        </xf:trigger>
+    </xf:group>
+
+    <w2:tabControl id="tabControl_outer"
+                   style="width:1000px;height:420px;"
+                   useTabKeyOnly="false" useMoveNextTabFocus="false"
+                   useBackbridge="true" useConfirmMessage="false"
+                   confirmTrueAction="exist" confirmFalseAction="new"
+                   tabScroll="true">
+        <w2:tabs id="outer_tab1" label="Outer Tab 1 (중첩 안쪽)"
+                 style="width:200px;height:30px;" disabled="false"></w2:tabs>
+        <w2:tabs id="outer_tab2" label="Outer Tab 2 (단일 leaf)"
+                 style="width:200px;height:30px;" disabled="false"></w2:tabs>
+
+        <w2:content id="content_outer1" alwaysDraw="true" frameMode="wframe"
+                    style="height:380px;" src="tabControl_alwaysDraw_WAEA-861_(WSQ-6323)_middle.xml"></w2:content>
+        <w2:content id="content_outer2" alwaysDraw="true" frameMode="wframe"
+                    style="height:380px;" src="tabControl_alwaysDraw_WAEA-861_(WSQ-6323)_leaf_other.xml"></w2:content>
+    </w2:tabControl>
+
+    <w2:textbox label="로그 (각 페이지의 scwin.onpageload 가 fire 되면 한 줄 추가됨)"
+                style="position:relative;display:block;font-size:12px;margin-top:8px;"></w2:textbox>
+    <w2:textarea id="txa_log" style="position:relative;width:1000px;height:200px;font-family:monospace;font-size:12px;"></w2:textarea>
+
+</body>
+</html>

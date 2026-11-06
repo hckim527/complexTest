@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="comboA" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="code" name="code"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="value" name="value"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="comboB" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="code" name="code"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="value" name="value"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="filter" name="filter"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList id="select_link" bind="comboB">
+            		<w2:condition type="filter"><![CDATA[filter == val("sel1")]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            	<w2:linkedDataList id="linkedDataList2" bind="comboB">
+            		<w2:condition type="filter"><![CDATA[filter == val("sel3")]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var select1 = [{
+            "code": "1",
+            "value": "korea"
+        },
+        {
+            "code": "2",
+            "value": "japan"
+        }
+    ];
+    var select2 = [{
+            "code": "3",
+            "value": "seoul",
+            "filter": "1"
+        },
+        {
+            "code": "4",
+            "value": "pusan",
+            "filter": "1"
+        },
+        {
+            "code": "5",
+            "value": "tokyo",
+            "filter": "2"
+        },
+        {
+            "code": "6",
+            "value": "kyoto",
+            "filter": "2"
+        }
+    ];
+    comboA.setJSON(select1);
+    comboB.setJSON(select2);
+};
+scwin.trigger1_onclick = function(e) {
+    //submission 예시
+    var sampleResData = {
+        "sel1": "2",
+        "sel2": "5"
+    };
+    sel1.setValue("2");
+    sel2.setValue("6");
+    //debugger;
+    sel3.setValue("2");
+    sel4.setValue("6");
+};
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('sel4').getValue()", "6");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="" style="height:23px;">
+    		<xf:select1 disabledClass="w2selectbox_disabled"
+    			appearance="minimal" chooseOptionLabel="- 선택 -" direction="auto"
+    			chooseOption="true" displayMode="label" selectedData="true"
+    			optionOrder="false" id="sel1"
+    			style="position: relative;width: 148px;height: 21px;"
+    			allOption="" disabled="false" submenuSize="auto">
+    			<xf:choices>
+    				<xf:itemset nodeset="data:comboA">
+    					<xf:label ref="value"></xf:label>
+    					<xf:value ref="code"></xf:value>
+    				</xf:itemset>
+    			</xf:choices>
+    		</xf:select1>
+    		<xf:select1 disabledClass="w2selectbox_disabled"
+    			appearance="minimal" chooseOptionLabel="- 선택 - " direction="auto"
+    			chooseOption="true" displayMode="label" selectedData="true"
+    			optionOrder="false" id="sel2"
+    			style="position: relative;width: 148px;height: 21px;"
+    			allOption="" disabled="false" submenuSize="auto">
+    			<xf:choices>
+    				<xf:itemset nodeset="data:select_link">
+    					<xf:label ref="value"></xf:label>
+    					<xf:value ref="code"></xf:value>
+    				</xf:itemset>
+    			</xf:choices>
+    		</xf:select1>
+    		<xf:trigger id="trigger1"
+    			style="position: relative;width: 80px;height: 25px;"
+    			ev:onclick="scwin.trigger1_onclick" type="button">
+    			<xf:label><![CDATA[search]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<w2:autoComplete visibleRowNum="5" chooseOption="true" id="sel3"
+    		style="position: relative;width: 148px;height: 21px;"
+    		search="start" interactionMode="" displayMode="label"
+    		useKeywordHighlight="false" submenuSize="auto" editType="select"
+    		allOption="" chooseOptionLabel="- 선택 - ">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:comboA">
+    				<w2:label ref="value"></w2:label>
+    				<w2:value ref="code"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<w2:autoComplete visibleRowNum="5" chooseOption="true" id="sel4"
+    		style="position: relative;width: 148px;height: 21px;"
+    		search="start" interactionMode="" displayMode="label"
+    		useKeywordHighlight="false" submenuSize="auto" editType="select"
+    		allOption="" chooseOptionLabel="- 선택 - ">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:linkedDataList2">
+    				<w2:label ref="value"></w2:label>
+    				<w2:value ref="code"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    </body>
+</html>
+ 

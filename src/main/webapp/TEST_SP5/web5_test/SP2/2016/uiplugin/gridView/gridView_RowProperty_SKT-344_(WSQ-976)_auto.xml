@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list"
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1"
+							dataType="text">
+						</w2:column>
+						<w2:column id="col2" name="name2"
+							dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[a]]></col1>
+							<col2><![CDATA[a1]]></col2>
+
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[b]]></col1>
+							<col2><![CDATA[b1]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[c]]></col1>
+							<col2><![CDATA[c1]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[d]]></col1>
+							<col2><![CDATA[d1]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list"
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1"
+							dataType="text">
+						</w2:column>
+						<w2:column id="col2" name="name2"
+							dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[1]]></col1>
+							<col2><![CDATA[a1]]></col2>
+
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[2]]></col1>
+							<col2><![CDATA[a2]]></col2>
+
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[3]]></col1>
+							<col2><![CDATA[a3]]></col2>
+
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[4]]></col1>
+							<col2><![CDATA[a4]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.doInit = function() {
+    grid.setCellReadOnly(3, 0, false);
+    grid.setCellBackgroundColor(3, 0, "#ff0000");
+    grid1.setCellDisabled(3, 0, false);
+    grid1.setCellBackgroundColor(3, 0, "#ff0000");
+}
+scwin.trigger2_onclick = function(e) {
+    dataList1.setRowJSON(
+        4, {
+            "col1": "e",
+            "col2": "e1"
+        }
+    );
+    grid.setCellReadOnly(4, 1, false);
+    grid.setCellBackgroundColor(4, 1, "#0000ff");
+};
+scwin.trigger3_onclick = function(e) {
+    dataList1.removeRow(3);
+};
+scwin.trigger5_onclick = function(e) {
+    dataList2.setRowJSON(
+        4, {
+            "col1": "5",
+            "col2": "a5"
+        }
+    );
+    grid1.setCellDisabled(4, 1, false);
+    grid1.setCellBackgroundColor(4, 1, "#0000ff");
+};
+scwin.trigger6_onclick = function(e) {
+    dataList2.removeRow(3);
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById(id);
+    scwin.fireDbClick(el);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid_body_tbody tr').not('.w2grid_hidedRow').length == 6", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid_cell_3_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid_cell_3_0').innerText != 'd'", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grid_cell_3_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_grid__col2').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_grid__col2').value = 'e2'");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid_cell_4_0').click()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid_cell_3_1').innerText == 'e2'", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_body_tbody tr').not('.w2grid_hidedRow').length == 6", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_3_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_body_tbody tr').not('.w2grid_hidedRow').length == 5", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grid1_cell_3_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_grid1__col2').css('display')", "block");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_grid1__col2').value = 'a6'");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_4_0').click()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_cell_3_1').innerText == 'a6'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    scwin.doInit();
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" style="height:23px;padding:10px;">
+			<w2:textbox id=""
+				style="width: 100%;height: 23px;font-size:20px;font-style:bold;"
+				label="SKT-344 행삭제 시.. 삭제된 행의 property가 다음 행에 자동 적용되는 현상 문의">
+			</w2:textbox>
+		</xf:group>
+		<xf:group id="" style="height:215px;">
+			<xf:group id="" style="height:150px;padding:10px;">
+				<w2:textbox id=""
+					style="width: 250px;height: 23px;font-size:20px;font-style:bold;"
+					label="ReadOnly,CellStyle">
+				</w2:textbox>
+				<w2:gridView dataList="dataList1" id="grid"
+					ignoreCellClick="false" ignoreToggleOnDisabled="false"
+					autoFit="allColumn" readOnly="" style="width: 500px;height: 150px;"
+					scrollByColumn="false" useShiftKey="true" columnMove="true"
+					fixedColumnWithHidden="true">
+					<w2:header id="header1" style="">
+						<w2:row id="row2" style="">
+							<w2:column id="column7" blockSelect="false"
+								style="height:20px" width="70" inputType="text" value="name1"
+								displayMode="label">
+							</w2:column>
+							<w2:column id="column3" blockSelect="false"
+								style="height:20px" inputType="text" width="70" value="name2"
+								displayMode="label">
+							</w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody4" style="">
+						<w2:row id="row5" style="">
+							<w2:column id="col1" blockSelect="false"
+								readOnly="true" style="height:20px" width="70" inputType="text"
+								displayMode="label">
+							</w2:column>
+							<w2:column id="col2" blockSelect="false"
+								readOnly="true" style="height:20px" inputType="text" width="70"
+								displayMode="label">
+							</w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+			<xf:group id=""
+				style="width: 100%;height: 25px;padding:10px;">
+				<xf:trigger id="trigger2"
+					style="position: relative;width: 80px;height: 23px;"
+					ev:onclick="scwin.trigger2_onclick" type="button">
+					<xf:label><![CDATA[insertRow(4)]]></xf:label>
+				</xf:trigger>
+				<xf:trigger id="trigger3"
+					style="position: relative;width: 80px;height: 23px;"
+					ev:onclick="scwin.trigger3_onclick" type="button">
+					<xf:label><![CDATA[deleteRow(3)]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+		<xf:group id="" style="height:215px;">
+			<xf:group id="" style="height:150px;padding:10px;">
+				<w2:textbox id="" label="disabled"
+					style="width: 250px;height: 23px;font-size:20px;font-style:bold;">
+				</w2:textbox>
+				<w2:gridView autoFit="allColumn" columnMove="true"
+					dataList="dataList2" fixedColumnWithHidden="true" id="grid1"
+					ignoreCellClick="false" ignoreToggleOnDisabled="false" readOnly=""
+					scrollByColumn="false" style="width: 500px;height: 150px;"
+					useShiftKey="true">
+					<w2:header id="header11" style="">
+						<w2:row id="row12" style="">
+							<w2:column blockSelect="false" id="column17"
+								style="height:20px" inputType="text" width="70"
+								displayMode="label" value="name1">
+							</w2:column>
+							<w2:column blockSelect="false" id="column13"
+								style="height:20px" width="70" inputType="text"
+								displayMode="label" value="name2">
+							</w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody14" style="">
+						<w2:row id="row15" style="">
+							<w2:column blockSelect="false" id="col1"
+								style="height:20px" inputType="text" width="70"
+								displayMode="label" disabled="true">
+							</w2:column>
+							<w2:column blockSelect="false" id="col2"
+								style="height:20px" width="70" inputType="text"
+								displayMode="label" disabled="true">
+							</w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+			<xf:group id=""
+				style="width: 100%;height: 25px;padding:10px;">
+				<xf:trigger ev:onclick="scwin.trigger5_onclick"
+					id="trigger5" style="position: relative;width: 80px;height: 23px;"
+					type="button">
+					<xf:label><![CDATA[insertRow(4)]]></xf:label>
+				</xf:trigger>
+				<xf:trigger ev:onclick="scwin.trigger6_onclick"
+					id="trigger6" style="position: relative;width: 80px;height: 23px;"
+					type="button">
+					<xf:label><![CDATA[deleteRow(3)]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+ 

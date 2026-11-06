@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+	
+	    <!-- config.xml 설정
+		 화면의 xml을 loading하는 시점보다 늦어서 해당 config.xml속성인 <scriptPrecedence value="true"/>은  불가능함
+		 완전자동화는 불가능하고 반자동화(config.xml은 수동으로 변경)는 가능-->
+		<w2:config>
+			<WebSquare>
+				<scriptPrecedence value="true"/>
+			</WebSquare>
+		</w2:config>
+	
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" src="wframe_scope_WEFF-59_(WSQ-3228)_main.js"/>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+    $w.log("main" + "_initScript");
+}
+scwin.test2 = function() {
+    $w.log("main" + "_initScript2");
+}
+scwin.post1 = function() {
+    $w.log("main" + "_postScript1");
+}
+scwin.post2 = function() {
+    $w.log("main" + "_postScript2");
+}
+scwin.onpageload = function() {
+    $w.log("main" + "_onpageload");
+    if (console.log) {
+        console.log("main" + "_onpageload");
+    }
+}
+scwin.checkLog = function() {
+    var log = WebSquare.logger.getLog();
+    var check = true;
+    // Check step7 : initScript -> step8 : onpageload -> step9 : postScript 순으로 이벤트가 실행되어진다.
+    check = check && (log.indexOf("[STEP7][EVENT]") < log.indexOf("w2_w2_initScript"));
+    check = check && (log.indexOf("w2_w2_initScript") < log.indexOf("[STEP8][INITSCRIPT]"));
+    check = check && (log.indexOf("[STEP7][EVENT]") < log.indexOf("w1_w1_onpageload"));
+    check = check && (log.indexOf("[STEP8][INITSCRIPT]") < log.indexOf("w1_w1_onpageload"));
+    check = check && (log.indexOf("w1_w1_onpageload") < log.indexOf("[STEP9][ONPAGELOAD]"));
+    check = check && (log.indexOf("[STEP8][INITSCRIPT]") < log.indexOf("w2_w2_postScript2"));
+    check = check && (log.indexOf("[STEP9][ONPAGELOAD]") < log.indexOf("w2_w2_postScript2"));
+    return check;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "3000");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkLog()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 05-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="main" id="textbox1" style="position: relative;width: 250px;height: 40px;font-size:24px;"></w2:textbox>
+    	<w2:wframe id="w1" style="position: relative;width:750px;height:800px;" src="wframe_scope_WEFF-59_(WSQ-3228)_sub.xml" scope="true" initScript="console.log('w1_initscript');if(scwin.test){scwin.test();}" postScript="scwin.post1();"></w2:wframe>
+        <w2:wframe id="w2" style="position: relative;width:750px;height:800px;" src="wframe_scope_WEFF-59_(WSQ-3228)_sub.xml" scope="true" initScript="console.log('w2_initscript');if(scwin.test2){scwin.test2();}" postScript="scwin.post2();"></w2:wframe>
+    </body>
+</html>
+ 

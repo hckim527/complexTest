@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.tabCnt = 0;
+    scwin.onpageload = function() {
+        tab1_textbox1.setValue("AAAA");
+        tab1_textbox2.setValue("BBBB");
+    };
+    scwin.onpageunload = function() {
+        
+    };
+    scwin.trigger1_onclick = function() {
+        scwin.tabCnt++;
+        var tabId = "tab_dynamic_" + scwin.tabCnt;
+        var src = "WAEA_21_tabControl.xml";
+        var tabOpt = {
+            label: "pf" + scwin.tabCnt,
+            closable: true
+        };
+        var contOpt = {
+            frameMode: "wframe",
+            src: src,
+            alwaysDraw: false
+        };
+        tabControl1.addTab(tabId, tabOpt, contOpt);
+    };
+	
+	scwin.checkVal = function() {
+		const temp = WebSquare.logger.getLog();
+		return temp.indexOf("Cannot set properties of null") == -1;
+	}
+	scwin.unitTest = function(){
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tab_dynamic_1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+	
+	
+    ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group style="position:relative;width: 900px;height: 520px;">
+            <w2:tabControl useTabKeyOnly="true" id="tabControl1" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist" confirmFalseAction="new" alwaysDraw="false" style="position:relative;width:900px;height:500px;">
+                <w2:tabs disabled="false" style="width:70px;height:30px;" id="tabs1"></w2:tabs>
+                <w2:tabs disabled="false" style="width:70px;height:30px" id="tabs2"></w2:tabs>
+                <w2:tabs disabled="false" style="width:70px;height:30px" id="tabs3"></w2:tabs>
+                <w2:content alwaysDraw="false" style="height:450px;" id="content1">
+                    <w2:textbox id="tab1_textbox1" style="width:300px;height:30px;"/>
+                    <w2:textbox id="tab1_textbox2" style="width:300px;height:30px;"/>
+                </w2:content>
+                <w2:content alwaysDraw="false" style="height:450px;" id="content2" frameMode="pageFrame" src="tabControl_content_onpageload_WAEA-21_(WSQ-5759)_sub.xml"></w2:content>
+                <w2:content alwaysDraw="false" style="height:450px;" id="content3">
+                    <w2:textbox id="tab3_textbox1" style="width:300px;height:30px;"/>
+                </w2:content>
+            </w2:tabControl>
+        </xf:group>
+        <xf:group style="position:relative;width: 900px;height: 70px;">
+            <xf:trigger type="button" style="position:relative;width: 180px;height: 30px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+                <xf:label>
+                    <![CDATA[addTab]]>
+                </xf:label>
+            </xf:trigger>
+        </xf:group>
+</body>
+</html>

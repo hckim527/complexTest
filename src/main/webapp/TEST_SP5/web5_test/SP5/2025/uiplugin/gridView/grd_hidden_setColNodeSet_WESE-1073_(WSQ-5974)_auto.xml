@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[a]]></col2>
+                            <col3><![CDATA[1]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[b]]></col2>
+                            <col3><![CDATA[2]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            				<col2><![CDATA[c]]></col2>
+                            <col3><![CDATA[3]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<label><![CDATA[aa]]></label>
+            				<value><![CDATA[1]]></value>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[bb]]></label>
+            				<value><![CDATA[2]]></value>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[cc]]></label>
+            				<value><![CDATA[3]]></value>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+
+};
+
+scwin.onpageunload = function () {
+
+};
+
+scwin.trigger1_onclick = function (e) {
+    gridView1.hide();
+};
+
+scwin.trigger2_onclick = function (e) {
+	gridView1.setColumnNodeSet(2, "data:dataList2", "label", "value");
+};
+
+scwin.trigger3_onclick = function (e) {
+    var label = gridView1.getCellDisplayData(0, 2);
+    console.log("col3 = " + label);
+	window.check_label = label
+};
+
+
+	scwin.checkVal = function() {
+		return window.check_label == 'aa';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand('pause', '500');
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group>      
+            <xf:trigger type="button" id="trigger1" style="width: 180px;height: 25px;" ev:onclick="scwin.trigger1_onclick">
+                <xf:label><![CDATA[gridView1 hide]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="trigger2" style="margin-left:10px;width: 180px;height: 25px;" ev:onclick="scwin.trigger2_onclick">
+                <xf:label><![CDATA[setColumnNodeSet]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="trigger3" style="margin-left:10px;width: 180px;height: 25px;" ev:onclick="scwin.trigger3_onclick">
+                <xf:label><![CDATA[getCellDisplayData(0,2)]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <xf:group tagname="fieldset" style="margin-top:10px;height:200px;border:1px solid red;">
+            <legend>gridView</legend>
+            <w2:gridView id="gridView1" style="width: 500px;height: 150px;" dataList="data:dataList1">
+                <w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+                <w2:header style="" id="header2">
+                    <w2:row style="" id="row3">
+                        <w2:column width="70" inputType="text" id="column5" value="name1"></w2:column>
+                        <w2:column width="70" inputType="text" id="column4" value="name2"></w2:column>
+                        <w2:column width="70" inputType="text" id="column3" value="name3"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody style="" id="gBody2">
+                    <w2:row style="" id="row4">
+                        <w2:column width="70" inputType="text" id="col1"></w2:column>
+                        <w2:column width="70" inputType="text" id="col2"></w2:column>
+                        <w2:column width="70" inputType="select" id="col3"></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>        
+    </body>
+</html>

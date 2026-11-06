@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" style="" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="sDate" name="name1" dataType="text"></w2:column>
+            			<w2:column id="nDateType" name="name2" dataType="number"></w2:column>
+            			<w2:column id="sDesc" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" style="" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="sDate" name="name1" dataType="text"></w2:column>
+            			<w2:column id="nDateType" name="name2" dataType="number"></w2:column>
+            			<w2:column id="sDesc" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1["setDataDrag" + selectbox1.getValue()](true);
+};
+scwin.trigger2_onclick = function(e) {
+    gridView1["setDataDrag" + selectbox1.getValue()](false);
+};
+scwin.onpageload = function() {
+    window.jsonData = [{
+            "sDate": "20010101",
+            "nDateType": "",
+            "sDesc": "신정"
+        },
+        {
+            "sDate": "20010121",
+            "nDateType": "1",
+            "sDesc": "설날"
+        },
+        {
+            "sDate": "20010122",
+            "nDateType": "11111",
+            "sDesc": "설날"
+        },
+        {
+            "sDate": "20010123",
+            "nDateType": "1",
+            "sDesc": "설날"
+        },
+        {
+            "sDate": "20010301",
+            "nDateType": "12222",
+            "sDesc": "삼일절"
+        }, {
+            "sDate": "20010405",
+            "nDateType": "1",
+            "sDesc": "식목일"
+        },
+        {
+            "sDate": "20010501",
+            "nDateType": "1",
+            "sDesc": "근로자의날"
+        }, {
+            "sDate": "20010505",
+            "nDateType": "1",
+            "sDesc": "어린이날"
+        }, {
+            "sDate": "20010526",
+            "nDateType": "1",
+            "sDesc": "석가탄신일"
+        }, {
+            "sDate": "20010606",
+            "nDateType": "1",
+            "sDesc": "현충일"
+        }
+    ];
+    dataList1.setJSON(jsonData, true);
+    dataList2.insertRow();
+};
+scwin.selectbox1_onchange = function(info) {
+    var callFuncName = "gridView1.setDataDrag" + selectbox1.getValue();
+    trigger1.setLabel(callFuncName + "(true)");
+    trigger2.setLabel(callFuncName + "(false)");
+};
+
+	
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#gridView1_cell_0_0', 'drag-n-drop', {
+			dx: 0,
+			dy: 70
+		});
+	}
+	scwin.checkVal = function() {
+		let element = WebSquare.wUnit.getDomById('mf_gridView2_body_tbody');
+		let check_str = element.querySelectorAll('tr')[1].innerText.includes('20010101')
+		return !check_str;
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectbox1_button').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectbox1_itemTable_4').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest();
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group style="display:flex;align-items:center;">
+            <xf:group style="width:400px;">
+            	<w2:gridView dataDragDrop="true" dataList="data:dataList1" id="gridView1" style="width:365px;height:102px;" useShiftKey="false" rowNumVisible="true">
+            		<w2:header id="header1" style="">
+            			<w2:row id="row1" style="">
+            				<w2:column id="column5" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+            				<w2:column id="column3" style="height:20px" inputType="expression" width="70"
+            					expression="SUM('nDateType')" value="name2">
+            				</w2:column>
+            				<w2:column id="column1" style="height:20px" width="70" inputType="text" value="name3"></w2:column>
+            			</w2:row>
+            		</w2:header>
+            		<w2:gBody id="gBody1" style="">
+            			<w2:row id="row2" style="">
+            				<w2:column id="sDate" style="height:20px" inputType="text" width="70"></w2:column>
+            				<w2:column id="nDateType" style="height:20px" inputType="text" width="70" dataType="number"
+            					displayFormat="#,##0">
+            				</w2:column>
+            				<w2:column id="sDesc" style="height:20px" width="70" inputType="text" textAlign="right"></w2:column>
+            			</w2:row>
+            		</w2:gBody>
+            	</w2:gridView>
+            </xf:group>
+            <xf:group style="width:600px;display:flex;flex-direction: column;align-items:left;">
+                <xf:select1 id="selectbox1" style="width: 100px;height: 21px;" submenuSize="auto" direction="auto" appearance="minimal" ev:onchange="scwin.selectbox1_onchange">
+                <xf:choices>
+                    <xf:item>
+                        <xf:label><![CDATA[Drop]]></xf:label>
+                        <xf:value><![CDATA[Drop]]></xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label><![CDATA[DropSelf]]></xf:label>
+                        <xf:value><![CDATA[DropSelf]]></xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label><![CDATA[DropOther]]></xf:label>
+                        <xf:value><![CDATA[DropOther]]></xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label><![CDATA[DropCell]]></xf:label>
+                        <xf:value><![CDATA[DropCell]]></xf:value>
+                    </xf:item>
+                    <xf:item>
+                        <xf:label><![CDATA[Select]]></xf:label>
+                        <xf:value><![CDATA[Select]]></xf:value>
+                    </xf:item>
+                </xf:choices>
+            </xf:select1>
+                <xf:trigger type="button" id="trigger1" style="width: 240px;height: 34px;" ev:onclick="scwin.trigger1_onclick">
+                    <xf:label><![CDATA[gridView1.setDataDragDrop(true)]]></xf:label>
+                </xf:trigger>
+                <xf:trigger type="button" id="trigger2" style="width: 240px;height: 34px;" ev:onclick="scwin.trigger2_onclick">
+                    <xf:label><![CDATA[gridView1.setDataDragDrop(false)]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+        </xf:group>
+    	<w2:gridView dataDragDrop="true" dataList="data:dataList2" fixedColumnWithHidden="true" id="gridView2"
+    		style="width:365px;height:102px;" useShiftKey="false" rowNumVisible="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column id="column5" inputType="text" style="height:20px" value="name1" width="70"></w2:column>
+    				<w2:column expression="SUM('nDateType')" id="column3" inputType="expression" style="height:20px" width="70" value="name2">
+    				</w2:column>
+    				<w2:column id="column1" inputType="text" style="height:20px" value="name3" width="70"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column id="sDate" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column dataType="number" displayFormat="#,##0" id="nDateType" inputType="text"
+    					style="height:20px" width="70">
+    				</w2:column>
+    				<w2:column id="sDesc" inputType="text" style="height:20px" textAlign="right" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

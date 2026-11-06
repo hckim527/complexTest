@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="btn_err">
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+
+};
+
+scwin.btn1_onkeydown = function (e) {
+    console.log("tab test!");
+};
+
+scwin.auto1_oneditenter = function () {
+    console.log("tab next!");
+};
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#btn1', 'key-combo', {
+			combo: 'TAB'
+		});
+	}	
+	scwin.checkVal = function() {
+		console.log(WebSquare.wUnit.getDomById('ipt1').classList.contains('w2input_focus'))
+		return WebSquare.wUnit.getDomById('ipt1').classList.contains('w2input_focus');
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:button style="width:80px; height:23px; " id="btn1" nextTabID="ipt1" ev:onkeydown="scwin.btn1_onkeydown" label="btn1"></w2:button>
+    	<w2:autoComplete editType="select" id="auto1" style="width:148px; height:21px; " submenuSize="auto" search="start" nextTabID="ipt1"
+    		ev:oneditenter="scwin.auto1_oneditenter">
+    	</w2:autoComplete>
+    	<w2:button style="width:80px; height:23px; " id="btn2" nextTabID="ipt1"></w2:button>
+    	<w2:calendar style="width:280px; height:300px; " id="cal1"></w2:calendar>
+    	<w2:button style="width:80px; height:23px; " id="btn3" nextTabID="ipt1"></w2:button>
+    	<w2:button style="width:80px; height:23px; " id="btn4"></w2:button>
+    	<xf:input id="ipt1" style="width:144px; height:21px; "></xf:input>
+    </body>
+</html>

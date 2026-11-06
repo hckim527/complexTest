@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>UDC</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<!--w2:require src="udc_WPF-1532_(WSQ-2548)_dragDrop.xml"></w2:require-->
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<!--/** WEBSQUARE UDC */
+    		{
+    		"componentName": "dragDrop_udc",
+    		"pluginName": "dragDrop_udc",
+    		"company": "",
+    		"developer": "",
+    		"notSupportBrowser": "",
+    		"version": "",
+    		"htmlRender": "",
+    		"icon": "",
+    		"disableIcon": "",
+    		"description": "",
+    		"width": "300px",
+    		"height": "250px",
+    		"properties": [
+    		{
+    		"name": "id",
+    		"default": "",
+    		"type": "string",
+    		"option": "",
+    		"necessary": "Y",
+    		"hidden": "N",
+    		"description": "desc"
+    		},
+    		{
+    		"name": "style",
+    		"default": "",
+    		"type": "string",
+    		"option": "",
+    		"necessary": "N",
+    		"hidden": "N",
+    		"description": "desc"
+    		},
+    		{
+    		"name": "class",
+    		"default": "",
+    		"type": "string",
+    		"option": "",
+    		"necessary": "N",
+    		"hidden": "N",
+    		"description": "desc"
+    		},
+    		{
+    		"name": "diabled",
+    		"default": "",
+    		"type": "combobox",
+    		"option": "[true,false]",
+    		"necessary": "N",
+    		"hidden": "N",
+    		"description": "desc"
+    		}
+    		],
+    		"events": [],
+    		"apis": []
+    		}
+    	-->
+    	<xf:group id="uploadGrp1" style="position:relative;height:250px;margin:0px 30px;" pluginName="dragDrop_udc">
+    		<xf:group id="btnGrp1" style="position:absolute;top:40px;left:0px;height:23px;">
+    			<w2:anchor id="anchor1" style="float:left;" class="btn_rblack" label="" ev:onclick="scwin.anchor1_onclick">
+    				<xf:label>전송</xf:label>
+    				<script ev:event="onclick" type="javascript"><![CDATA[
+    					var dlt_id = udc_obj.id + "_dataList1";
+    					var dltObj = WebSquare.wUnit.getObjById(dlt_id); 
+    					for(var i = 0; i < udc_obj.fileArr.length; i++){
+		                    var files = udc_obj.fileArr[i];
+		                    for (var j = 0; j < files.length; j++) {
+		                        for( var k = 0; k < dltObj.getRowCount(); k++){
+		                            var xml = dltObj.getRowXML(k);
+		                            var name = WebSquare.xml.getValue(xml,"map/name");
+		                            
+		                            if( name == files[j].name ){
+		                                var c_chkVal = dltObj.getCellData(k, "chk");
+		                                if(c_chkVal == 1){
+		                                	gridView1.setUserData("curIdx", k);
+		                                	udc_obj.upload(files[j]);
+		                                }
+		                                
+		                            }
+		                            else {
+		                                // 파일 삭제.
+		                            }
+		                        } 
+		                    }
+		                }
+		                
+		              	window.fileArr = [];
+    				 ]]></script>
+    			</w2:anchor>
+    			<w2:anchor id="anchor2" style="float:left;" class="btn_rblack" label="">
+    				<xf:label>삭제</xf:label>
+    				<script ev:event="onclick" type="javascript"><![CDATA[ 
+		                var dlt_id = udc_obj.id + "_dataList1";
+    					var dltObj = WebSquare.wUnit.getObjById(dlt_id);
+    					
+    					var _dragGrp = WebSquare.wUnit.getObjById(udc_obj.id + "_dragGrp");
+    					
+		                var chkArr = gridView1.getCheckedIndex( "chk" );
+		                
+		                dltObj.removeRows( chkArr );
+		                if( dltObj.getRowCount() == 0){
+		                    _dragGrp.show();
+		                    udc_obj.upload_result_cnt = false;
+		                    udc_obj.statusIdx = 0;
+		                }
+		            ]]></script>
+    			</w2:anchor>
+    		</xf:group>
+    		<xf:group id="dropbox" style="position:absolute;top:65px;left:0px;width:700px;height:170px;">
+    			<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    				style="position: absolute ;width:600px;height:170px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    				fixedColumnWithHidden="true" useShiftKey="true" ev:oncellclick="scwin.gridView1_oncellclick" noResultMessageVisible="false">
+    				<w2:header id="header1" style="">
+    					<w2:row id="row2" style="">
+    						<w2:column blockSelect="false" id="column15" style="height:20px;" inputType="checkbox" width="50"
+    							displayMode="label" value="chk">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column13" style="height:20px;" inputType="text" width="70"
+    							displayMode="label" value="파일명">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="100"
+    							displayMode="label" value="업로드 상태">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" displayMode="label"
+    							value="용량">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" displayMode="label"
+    							value="타입">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" displayMode="label"
+    							value="다운로드">
+    						</w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody4" style="">
+    					<w2:row id="row5" style="">
+    						<w2:column blockSelect="false" id="chk" style="height:20px" inputType="checkbox" width="70"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="name" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    						<w2:column blockSelect="false" id="status" style="height:20px" inputType="text" width="70"
+    							displayMode="label">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="size" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    						<w2:column blockSelect="false" id="type" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    						<w2:column blockSelect="false" id="download" style="height:20px" width="70" inputType="text"
+    							displayMode="label">
+    						</w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    				<script ev:event="oncellclick(row,col)" type="javascript"><![CDATA[
+    					var dlt_id = udc_obj.id + "_dataList1";
+    					var dltObj = WebSquare.wUnit.getObjById(dlt_id);
+    					
+    					var colId = dltObj.getColumnID(col);
+		                if( colId == "download"){
+		                    var filename = dltObj.getCellData(row, "name" );
+		                    var en_filename = WebSquare.text.BASE64Encoder(filename);
+		                    var str_filename = encodeURIComponent( en_filename );
+		                    var en_local = WebSquare.text.BASE64Encoder(filename);
+		                    var str_local = encodeURIComponent( en_local );
+		                    var en_DFILEPATH = WebSquare.text.BASE64Encoder("/Users/kimkeonsik/Documents/tempUpload/");
+		                       
+		                    var str_DFILEPATH = encodeURIComponent( en_DFILEPATH );   
+		                    var uri = "/websquare5/download.jsp"
+		                           + "?filename=" + str_filename 
+		                           + "&filename_local=" + str_local 
+		                           + "&filepath=" + str_DFILEPATH;
+		
+		                    var temp;
+		                    WebSquare.net.download(uri, temp , "post");
+		                }
+    				 ]]></script>
+    			</w2:gridView>
+    			<xf:group id="dragGrp" style="position: absolute ;left:175px;top:80px;color:#999;" class="">
+    				<xf:image id="image1" style="float:left;" src="/CJOS/images/etc/fileAdd.png" />
+    				<w2:textbox id="textbox1" style="float:left;height:15px;padding-top:5px;padding-left:5px;"
+    					label="파일을 마우스로 선택한 후 끌어서 이곳에 놓으세요.">
+    				</w2:textbox>
+    			</xf:group>
+    		</xf:group>
+    		<script ev:event="oncreated(options)" type="javascript"><![CDATA[
+    		
+				/**
+				* //property handling
+				* $w.log("id:" + options.id);
+				* $w.log("style:" + options.style);
+				* $w.log("class:" + options.class);
+				* $w.log("diabled:" + options.diabled);
+				*
+				* //event trigger
+				*/
+				var dlt_id = udc_obj.org_id + "_dataList1";
+				//var dlt_id = udc_obj.id + "_dataList1";
+				var option = {"id" :dlt_id ,
+                            "type" : "dataList" ,
+                           "option":{ "baseNode": "list", "repeatNode": "map"},
+                       "columnInfo":[{"id":"chk", "name":"확인", "dataType":"text", "ignoreStatus":"true"},
+                                     {"id":"name", "name":"파일", "dataType":"text"},
+                                     {"id":"status", "name":"업로드상태", "dataType":"text"},
+                                     {"id":"size", "name":"용량", "dataType":"text"},
+                                     {"id":"type", "name":"타입", "dataType":"text"},
+                                     {"id":"download", "name":"다운로드", "dataType":"text"}
+                                    ]
+                 };
+
+    			$p.data.create(option);
+						
+				udc_obj.upload_result_cnt;
+				udc_obj.statusIdx = 0;
+				udc_obj.dropStatus = WebSquare.wUnit.getDomById($p.id+"dropStatus");
+	            udc_obj.dropfile = WebSquare.wUnit.getDomById($p.id+"dropfile");
+	            udc_obj.fileArr = [];
+	            udc_obj.statusArr = [];
+	            
+	            
+	            var dltObj = WebSquare.util.getComponentById( dlt_id );
+	            
+	            this.dropUpload = function(e) {
+				    WebSquare.event.preventDefault(e);
+				    var files = e.dataTransfer.files;
+				    
+				    udc_obj.fileArr.push(files);
+				    if( !udc_obj.upload_result_cnt ){
+				    	dragGrp.hide();
+				    }
+				    var upComplete = gridView1.getUserData("complete");
+				    if( upComplete == true){
+				    	dltObj.setJSON(files,false);
+				    	gridView1.setUserData("complete", false);
+				    	udc_obj.statusIdx = 0;
+				    }else{
+				    	dltObj.setJSON(files,true);
+				    }
+				    udc_obj.upload_result_cnt = true;
+				};
+				
+				this.upload = function(file){
+					var formData = new FormData();
+				    formData.append("file", file);
+				    var xhr = new XMLHttpRequest();
+				    xhr.upload.addEventListener("progress", udc_obj.uploadProgress, false);
+				    xhr.addEventListener("load", udc_obj.uploadComplete, false);
+				    xhr.open("POST", "/websquare5/dragdrop.jsp", true); // If async=false, then you'll miss progress bar support.
+				    xhr.send(formData);
+				};
+				
+				this.uploadProgress = function(e) {
+				    // Note: doesn't work with async=false.
+					var progress = Math.round(e.loaded / e.total * 100);
+				    //dropStatus.innerHTML = "Progress " + progress + "%";
+				    var progressStr = "" + progress + "%";
+				    dltObj.setCellData(udc_obj.statusIdx, "status", progressStr);
+				};
+				
+				this.uploadComplete = function(e) {
+					dltObj.setCellData(udc_obj.statusIdx, "status", "100%");
+					udc_obj.statusIdx++;
+					if (statusIdx == dltObj.getRowCount()){
+						gridView1.setUserData("complete", true);
+						gridView1.setColumnDisabled("download", false);
+					}
+					if (udc_obj.upload_result_cnt) {
+						//dropStatus.innerHTML = e.target.responseText;
+						udc_obj.upload_result_cnt = false;
+					} else {
+					   // dropStatus.innerHTML = dropStatus.innerHTML+"\n"+e.target.responseText;
+					   // dropfile.innerHTML = "";
+					}
+				};
+				
+				WebSquare.event.addListener( dropbox.render , "ondragenter" , function(e){WebSquare.event.stopEvent(e);}, false);
+            	WebSquare.event.addListener( dropbox.render , "ondragend" , function(e){WebSquare.event.stopEvent(e);}, false);
+            	WebSquare.event.addListener( dropbox.render , "ondragover" , function(e){WebSquare.event.stopEvent(e);}, false);
+            	WebSquare.event.addListener( dropbox.render, "ondrop" , udc_obj.dropUpload, false);
+            	
+            	/*
+            	 * 그 외 사용자 정의 함수 
+            	 */ 
+            	 
+            	// 데이터리스트를 반환한다. 
+            	this.getDataList = function(){
+            		return WebSquare.wUnit.getObjById( dlt_id );
+            	};
+			]]></script>
+    		<w2:style type="text/css"><![CDATA[ ]]></w2:style>
+    	</xf:group>
+    </body>
+</html>
+ 

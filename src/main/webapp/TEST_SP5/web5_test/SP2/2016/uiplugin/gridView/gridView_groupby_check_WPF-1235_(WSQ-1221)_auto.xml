@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            			<w2:column id="col6" name="name6" dataType="text"></w2:column>
+            			<w2:column id="col7" name="name7" dataType="text"></w2:column>
+            			<w2:column id="col8" name="name8" dataType="text"></w2:column>
+            			<w2:column id="col9" name="name9" dataType="text"></w2:column>
+            			<w2:column id="col10" name="name10" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test_expression = function(value) {
+    return value + "_test";
+};
+scwin.gridView1_ongroupby = function(options) {
+    var flag = true;
+    if (flag) {
+        options.closeGroup = false;
+        options.groupbyHeader = [{
+            colSpan: "10",
+            inputType: "expression",
+            expression: " toggle() + depthStr() + ' [ '+ SUM('col3') +',' + count() + ' 건 ] ' ",
+            align: "left"
+        }];
+        options.groupbyFooter = [{
+                colSpan: "7"
+            },
+            {
+                colSpan: "3",
+                inputType: "expression",
+                expression: " SUM('col3')",
+                displayFormatter: "countFormatFunction",
+                align: "center"
+            }
+        ];
+        gridView1.groupby(options); //실제 groupby 실행
+    } else {
+        return false;
+    }
+};
+scwin.countFormatFunction = function(value) {
+    return "총판매수량 : " + value + " 개 ";
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setVal = function() {
+    scwin.simulateWrapper('#gridView1_column23', 'drag-n-drop', {
+        dx: 0,
+        dy: -60
+    });
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').length == 1;
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value').text() == 'select';
+}
+scwin.checkVal3 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_1_1 input:checked').length == 1;
+}
+scwin.checkVal4 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_4_1 input:checked').length == 1;
+}
+scwin.checkVal5 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_7_1 input:checked').length == 1;
+}
+scwin.checkVal6 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_10_1 input:checked').length == 1;
+}
+scwin.checkVal7 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_1_1 input:checked').length == 0;
+}
+scwin.checkVal8 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_4_1 input:checked').length == 0;
+}
+scwin.checkVal9 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_7_1 input:checked').length == 0;
+}
+scwin.checkVal10 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_10_1 input:checked').length == 0;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. 샘플파일 실행 후 select컬럼을 마우스로 드래그하여 상단으로 이동시킨다.
+    //1. After running the sample file, drag the select column to the top by dragging it with the mouse.
+    //Verify step 1. A groupby is created based on the select column.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 헤더의 전체선택박스를 체크한다.
+    //2. Check the Full Selection box in the header.
+    //Verify step 2. The entire item is selected (previously the second row item is not selected).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#gridView1_column1944 input').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal5()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal6()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 헤더의 전체해제를 선택한다.
+    //3. Select Release entire header.
+    //Verify step 3. The entire item is released.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#gridView1_column1944 input').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal7()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal8()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal9()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal10()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "col1": "a1",
+        "col3": "10"
+    }, {
+        "col1": "a2",
+        "col3": "20"
+    }, {
+        "col1": "a3",
+        "col3": "30"
+    }, {
+        "col1": "a4",
+        "col3": "40"
+    }];
+    dataList1.setJSON(jsonData);
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 26-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" scrollByColumnAdaptive="false" id="gridView1" groupbyZone="true"
+    		contextMenu="true" style="position: absolute ;left:10px;top:82px;width:843px;height:495px;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" ev:ongroupby="scwin.gridView1_ongroupby"
+    		rowStatusVisible="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column23" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="select">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1944" style="height:20px;" inputType="checkbox" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column19" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column17" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name4">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column15" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name5">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column13" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name6">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name7">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name8">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name9">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" displayMode="label"
+    					value="name10">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="select" width="70" displayMode="label"
+    					allOption="" chooseOption="" readOnly="">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[label_a1]]></w2:label>
+    							<w2:value><![CDATA[a1]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[label_a2]]></w2:label>
+    							<w2:value><![CDATA[a2]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[label_a3]]></w2:label>
+    							<w2:value><![CDATA[a3]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="checkbox" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70" displayMode="label"
+    					userData1="aaa" readOnly="">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col5" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col6" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col7" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col8" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col9" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col10" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

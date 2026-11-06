@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1"
+            				dataType="text">
+            			</w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+        col1: "sample"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.grd_oncellclick = function(row, col) { //debugger;
+    //console.log(`oncellclick ${row} , ${col}`);
+    //alert("oncellclick######" +row+"#######"+col );
+};
+scwin.grd_oncelldblclick = function(row, col) { //debugger;
+    //console.log(`oncelldblclick ${row} , ${col}`);
+    //alert("oncelldblclick######" +row+"#######"+col );
+    log = row;
+    log1 = col;
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 name2항목의 컬럼을 마우스로 더블클릭한다.
+    //1. After running the sample, double-click the column of name2 item with the mouse.
+    //Verify step 1. The oncelldblclick 0, 0 value is displayed in the notification window.
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grd_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log == '0'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log1 == '1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = ""; window.log1 = "";
+    scwin.init();
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 02-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" summaryAuto="false"
+    		useFilterList="false" scrollByColumn="false"
+    		showSortableUseFilter="false" scrollByColumnAdaptive="false"
+    		id="grd" style="position: relative;width: 500px;height: 150px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" useShiftKey="true" ev:oncellclick="scwin.grd_oncellclick" ev:oncelldblclick="scwin.grd_oncelldblclick" readOnly="true">
+    		<w2:caption id="caption1" style=""
+    			value="this is a grid caption.">
+    		</w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="true" id="col2"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="true" id="col3"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

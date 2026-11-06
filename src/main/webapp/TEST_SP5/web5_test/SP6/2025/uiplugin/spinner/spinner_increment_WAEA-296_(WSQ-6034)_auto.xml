@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+    scwin.button1_onclick = function() {
+        spinner1.setIncrement(0.1);
+    }
+    scwin.button2_onclick = function() {
+        var val = spinner1.getIncrement();
+        console.log(val);
+		window.checkLog = val;
+    }
+	
+
+	scwin.checkVal1 = function() {
+		return window.checkLog == '0.1';
+	}		
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('spinner1___input').value == '100.1';
+	}			
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('button1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('button2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('spinner1_upButton_image').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+
+
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:spinner initValue="100" skin="type1" buttonSize="30" inputReadOnly="false" 
+            id="spinner1" style="position: relative;width: 200px;margin: 100px;height: 40px;"
+            increment="1">
+        </w2:spinner>
+
+        <w2:button type="" style="width:250px;height:40px;display:block;margin: 20px;" 
+            id="button1" ev:onclick="scwin.button1_onclick" 
+            label='setIncrement(0.1)'>
+        </w2:button>
+        <w2:button type="" style="width:250px;height:40px;display:block;margin: 20px;" 
+            id="button2" ev:onclick="scwin.button2_onclick" 
+            label='getIncrement()'>
+        </w2:button>
+    </body>
+</html>

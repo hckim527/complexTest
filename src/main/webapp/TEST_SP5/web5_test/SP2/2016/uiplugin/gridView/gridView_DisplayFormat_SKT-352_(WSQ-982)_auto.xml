@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="number">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="number">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="number">
+            			</w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1.59595]]></col1>
+            				<col2><![CDATA[5659.3633669]]></col2>
+            				<col3><![CDATA[1.23]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[262.26565]]></col1>
+            				<col2><![CDATA[565.3365]]></col2>
+            				<col3><![CDATA[3263.3696]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[553366.3333]]></col1>
+            				<col2><![CDATA[1542.4877]]></col2>
+            				<col3><![CDATA[654.32154]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.setPoint = function(grid, num, info, col) {
+    var colID = grid.getColumnID(info.colIndex);
+    var dataType = grid.getColumnOption(colID, "dataType");
+    var e = event || window.event;
+    var keyID = (e.which) ? e.which : e.keyCode;
+    //var reg = /^\d*[.]\d{2}$/;
+    var reg = new RegExp("^\\d*[.]\\d{" + num + "}$");
+    var dom = e.target;
+    var value = dom.value;
+    var selectedValue = value.substring(dom.selectionStart, dom.selectionEnd)
+    if (colID == col && dataType == "number") {
+        if ((keyID >= 48 && keyID <= 57) || (keyID >= 96 && keyID <= 105) || (keyID == 190 || keyID == 110)) {
+            if (selectedValue == "" && reg.test(value)) {
+                e.returnValue = false;
+            }
+        }
+    }
+}
+scwin.gridView1_oneditkeydown = function(info) {
+    //setPoint(this,2,info,"col3");
+    var colID = this.getColumnID(info.colIndex);
+    var dataType = this.getColumnOption(colID, "dataType");
+    var e = event || window.event;
+    var keyID = (e.which) ? e.which : e.keyCode;
+    // 수소점 2제자리 이후
+    var reg = /^\d*[.]\d{2}$/;
+    // 소수점체크
+    var reg1 = /^\d*[.]\d*$/;
+    var dom = e.target;
+    var value = dom.value;
+    var selectedValue = value.substring(dom.selectionStart, dom.selectionEnd)
+    if (colID == "col3" && dataType == "number") {
+        if ((keyID >= 48 && keyID <= 57) || (keyID >= 96 && keyID <= 105) || (keyID == 190 || keyID == 110)) {
+            if (reg1.test(value)) {
+                if (keyID == 46 || keyID == 190 || keyID == 110) {
+                    console.log(keyID);
+                    e.returnValue = false;
+                }
+            }
+            if (selectedValue != value && reg.test(value)) {
+                e.returnValue = false;
+            }
+        }
+    }
+};
+
+scwin.checkVal = function(param_str) {
+    if (!param_str) return false; 
+
+    // 1. 콤마(,)를 모두 제거하여 순수 숫자 문자열로 변환
+    var pureNumStr = param_str.toString().replace(/,/g, "");
+
+    // 2. 정규표현식 검사
+    // ^\d+ : 시작은 숫자
+    // (\.\d{1,2})? : 소수점 1~2자리가 올 수도 있고 안 올 수도 있음
+    // $ : 문자열 끝
+    var isUpToTwoDecimal = /^\d+(\.\d{1,2})?$/.test(pureNumStr);
+
+    if (isUpToTwoDecimal) {
+        console.log("검사 통과 (ok): " + param_str);
+    } else {
+        console.log("검사 실패 (fail): " + param_str);
+    }
+    
+    return isUpToTwoDecimal;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal(WebSquare.wUnit.getDomById('gridView1_cell_0_0').innerText)", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal(WebSquare.wUnit.getDomById('gridView1_cell_1_0').innerText)", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal(WebSquare.wUnit.getDomById('gridView1_cell_2_0').innerText)", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal(WebSquare.wUnit.getDomById('gridView1_cell_0_2').innerText)", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal(WebSquare.wUnit.getDomById('gridView1_cell_1_2').innerText)", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal(WebSquare.wUnit.getDomById('gridView1_cell_2_2').innerText)", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 16-Mar-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="height:250px;padding:10px;"><xf:group id="" style="height:30px;"><w2:textbox id="" style="font-size:20px;font-style:bold;width: 100%;height: 30px;" label="SKT-352 : (UI0434) 입력항목에서 소수점 이하 자리수 제한하여 입력하는 방법">
+    	</w2:textbox></xf:group>
+    	<xf:group id="" style="height:150px;padding:5px;"><xf:group id="" style="height:23px;margin-bottom:5px;"><w2:textbox id="" style="width: 100%;height: 23px;font-size:20px;font-style:bold;" label="col3 = MaxLength:8, gridView : oneditKeydown">
+    		</w2:textbox></xf:group><w2:gridView dataList="dataList1" id="gridView1"
+    			ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    			autoFit="allColumn"
+    			style="position: relative;width: 500px;height: 150px;"
+    			scrollByColumn="false" useShiftKey="true"
+    			ev:oneditkeydown="scwin.gridView1_oneditkeydown"
+    			fixedColumnWithHidden="true">
+    			<w2:header id="header1" style="">
+    				<w2:row id="row2" style="">
+    					<w2:column blockSelect="false" id="column9"
+    						style="height:20px" inputType="text" width="70" value="name1"
+    						displayMode="label">
+    					</w2:column>
+    					<w2:column blockSelect="false" id="column7"
+    						style="height:20px" inputType="text" width="70" value="name2"
+    						displayMode="label">
+    					</w2:column>
+    					<w2:column blockSelect="false" id="column3"
+    						style="height:20px" width="70" inputType="text" value="name3"
+    						displayMode="label">
+    					</w2:column>
+    				</w2:row>
+    			</w2:header>
+    			<w2:gBody id="gBody4" style="">
+    				<w2:row id="row5" style="">
+    					<w2:column blockSelect="false" id="col1"
+    						style="height:20px" maxLength="" inputType="text" width="70"
+    						displayMode="label" displayFormat="#,###.##">
+    					</w2:column>
+    					<w2:column blockSelect="false" id="col2"
+    						style="height:20px" maxLength="" inputType="text" width="70"
+    						displayMode="label" displayFormat="#.####.##">
+    					</w2:column>
+    					<w2:column blockSelect="false" id="col3"
+    						style="height:20px" maxLength="8" width="70" inputType="text"
+    						displayMode="label" displayFormat="#,###.##"
+    						displayFormatter="">
+    					</w2:column>
+    				</w2:row>
+    			</w2:gBody>
+    		</w2:gridView>
+    		
+    	</xf:group></xf:group></body>
+</html>
+ 

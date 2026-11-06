@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map" />
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+// [ISSUE 재현 샘플]
+// wframe.setReadOnly(true) 호출 시 wframe 자체에는 readonly 속성이 적용되지만,
+// 내부에 로드된 WebSquare XML 페이지의 자식 input 컴포넌트에는 readonly 가 전파되지 않음.
+//
+// 재현 절차:
+//   1. "setReadOnly(true)" 버튼 클릭
+//   2. "DOM 상태 확인" 버튼 클릭
+//
+// 기대 결과:
+//   - wframe (target1)                : readonly = "readonly"
+//   - 자식 input (target1_child_input) : readonly = "readonly"
+//
+// 실제 결과 (이슈):
+//   - wframe (target1)                : readonly = "readonly"       (정상)
+//   - 자식 input (target1_child_input) : readonly 속성 없음, el.readOnly=false  ← 미전파
+
+scwin.onpageload = function () {};
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+
+scwin.btn_setReadOnlyTrue_onclick = function () {
+    target1.setReadOnly(true);
+    scwin.setReturnValue("target1.setReadOnly(true) 호출 완료");
+};
+
+scwin.btn_setReadOnlyFalse_onclick = function () {
+    target1.setReadOnly(false);
+    scwin.setReturnValue("target1.setReadOnly(false) 호출 완료");
+};
+
+scwin.btn_check_onclick = function () {
+    const targets = [
+        { label: 'wframe       (target1)',              sel: '#mf_target1'                          },
+        { label: 'input        (target1_child_input)',     sel: '#mf_target1_child_input'              },
+        { label: 'textarea     (target1_child_textarea)',  sel: '#mf_target1_child_textarea'           },
+        { label: 'selectbox    (target1_child_selectbox)', sel: '#mf_target1_child_selectbox'          },
+        { label: 'inputCalendar(target1_child_calendar)',  sel: '#mf_target1_child_calendar_input'     }
+    ];
+
+    scwin.setReturnValue("=== DOM readonly 상태 ===");
+    targets.forEach(t => {
+        const el = document.querySelector(t.sel);
+        if (el) {
+            scwin.setReturnValue(t.label + ' : readonly=' + el.getAttribute('readonly') + ', el.readOnly=' + el.readOnly);
+        } else {
+            scwin.setReturnValue(t.label + ' : DOM 미존재');
+        }
+    });
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="tc_body_main" id="" style="display: flex;">
+			<xf:group class="tc_body_right" id="body_right" style="">
+				<xf:group style="" id="grp_sample">
+					<w2:textbox style="" id="" label="■ wframe.setReadOnly 자식 컴포넌트 미전파 이슈 재현" class="tc_tbx_label_1" escape="false"></w2:textbox>
+					<xf:group style="" id="grp_comp" class="tc_group_basic">
+						<w2:wframe id="target1" src="wframe_setReadOnly_childPropagation_WAEA-774_(WSQ-6371)_link.xml" style="width:500px; background-color:silver;"></w2:wframe>
+					</xf:group>
+				</xf:group>
+				<xf:group id="grp_parameter">
+					<xf:group style="" id="grp_etc">
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_setReadOnlyTrue_onclick"  id="btn_setReadOnlyTrue"  label="setReadOnly(true)"></w2:button>
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_setReadOnlyFalse_onclick" id="btn_setReadOnlyFalse" label="setReadOnly(false)"></w2:button>
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_check_onclick" id="btn_check" label="DOM 상태 확인"></w2:button>
+					</xf:group>
+				</xf:group>
+				<xf:group class="" id="grp_bottom" style="">
+					<w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+					<xf:group id="" style="display: flex;justify-content: flex-end">
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+					</xf:group>
+					<xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 120px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

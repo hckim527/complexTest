@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="number"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.__isInteger = function() {
+    var num = +(WebSquare.wUnit.getObjById('gridView1_column11').innerText.replace(',', ''));
+    return num == 50100.94;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. Property 탭 또는 Source 탭에서 column11 의 expression 부분을 확인한다.
+    //1. In the Property tab or Source tab, check the expression part of column11.
+    // verify step 1. expression="SUM("col2")"
+    //1. expression = "SUM ("col2")"
+    // Test step 2. column11 의 dataType 부분을 확인한다.
+    //2. Check the dataType part of column11.
+    // verify step 2. dataType="number" 
+    //2. dataType = "number"
+    // Test step 3. displayFormat 부분을 확인한다.
+    //3. Check the displayFormat section.
+    // verify step 3. displayFormat="#,##0.00"
+    //3. displayFormat = "#, ## 0.00"
+    // Test step 4. 브라우저에서 Footer 부분을 확인한다.
+    //4. Check the Footer section in your browser.
+    // verify step 4. 정확하게 소수점까지 계산된다. (그전버전에서는 그림1처럼 정수로 올림되는 현상이 발생함)
+    //4. Accurate to the decimal point. (In previous versions, the result is raised to an integer as shown in Figure 1.)
+    WebSquare.wUnit.addCommand("assert", "scwin.__isInteger()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.str = '{"col1":"a1", "col2":"10.00"}';
+    window.temp = new Array();
+    temp.push('{"col1":"a1", "col2":"100.94"}');
+    for (var i = 0; i < 5000; i++) {
+        temp.push(str);
+    }
+    window.tempData = "[";
+    tempData += temp.join(",");
+    tempData += "]";
+    window.jsonData = JSON.parse(tempData);
+    dataList1.setJSON(jsonData);
+    txt1.setValue("Row Count : " + dataList1.getRowCount());
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 25-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" summaryAuto="false" scrollByColumn="false" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: absolute ;left:32px;top:89px;width: 545px;height: 235px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" fixedColumnWithHidden="true" useShiftKey="true" rowNumVisible="true" sortable="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="155" inputType="text" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="155" inputType="text" displayMode="label"
+    					dataType="number" displayFormat="#,##0.00">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:footer id="footer9" style="">
+    			<w2:row id="row10" style="">
+    				<w2:column blockSelect="false" id="column12" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px" width="155" inputType="expression" displayMode="label"
+    					dataType="number" expression="SUM('col2')" displayFormat="#,##0.00">
+    				</w2:column>
+    			</w2:row>
+    		</w2:footer>
+    	</w2:gridView>
+    	<w2:textbox label="" id="txt1" style="position: absolute ;left: 42px;top: 27px;width: 218px;height: 39px;"></w2:textbox>
+    </body>
+</html>
+ 

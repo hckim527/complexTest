@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <script type="text/javascript"><![CDATA[
+        /*
+         * [이슈] input onEditKeyUp 이벤트 시 oldValue / newValue 오류
+         * 증상: 숫자를 빠르게 연속으로 입력할 경우, oldValue 와 newValue 모두
+         *      마지막으로 입력된 값만 표시되는 현상이 발생.
+         *
+         * 재현 절차
+         *  1) 아래 input 에 숫자를 빠르게 연타 입력 (예: 12345)
+         *  2) output textarea 의 로그에서 oldValue / newValue 비교
+         *     정상: oldValue 는 직전 값, newValue 는 현재 값 이어야 함
+         *     버그: 두 값이 마지막으로 입력된 값으로 동일하게 표시됨
+         */
+
+        scwin.onpageload = function() {
+            output1.setValue("");
+        };
+
+        scwin.input1_oneditkeyup = function(info, e) {
+            var logStr = "[" + new Date().toLocaleTimeString() + "] "
+                       + "keyCode=" + info.keyCode
+                       + ", oldValue=\"" + info.oldValue + "\""
+                       + ", newValue=\"" + info.newValue + "\"";
+            console.log(logStr);
+            var prev = output1.getValue() || "";
+            output1.setValue(prev + logStr + "\n");
+        };
+
+        scwin.trigger_clear_onclick = function() {
+            input1.setValue("");
+            output1.setValue("");
+        };
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="margin:20px;">
+            <w2:textbox style="font-weight:bold;font-size:14px;"
+                label="input oneditkeyup - oldValue / newValue 확인"/>
+            <br/><br/>
+            <xf:input id="input1" style="width:300px;height:28px;"
+                ev:oneditkeyup="scwin.input1_oneditkeyup"
+                editFormat="" />
+            <xf:trigger id="trigger1" ev:onclick="scwin.trigger_clear_onclick">
+                <xf:label>Clear</xf:label>
+            </xf:trigger>
+            <br/><br/>
+            <xf:textarea id="output1" style="width:700px;height:260px;font-family:monospace;"/>
+        </xf:group>
+    </body>
+</html>

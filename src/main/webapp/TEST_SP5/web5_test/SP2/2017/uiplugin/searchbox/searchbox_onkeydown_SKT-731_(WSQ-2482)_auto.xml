@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.searchbox1_onkeydown = function(e) {
+    console.log(e.keyCode);
+    log++;
+};
+scwin.setSimulate1 = function() {
+    WebSquare.wUnit.getJq('#searchbox1___input').simulate('key-sequence', {
+        sequence: '1'
+    });
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 및 개발자모드(F12)실행 후 searchbox의 입력부분에 키보드의 값(예 : 1)을 입력한다.
+    //1. Execute the sample file and execute developer mode (F12) and enter the value of the keyboard (for example, 1) in the input part of searchbox.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('searchbox1___input').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. consone영역에 값('49')이 1번만 보여진다. (이전에는 2번씩 2번이 실행되어 보여짐)
+    //1. The value ('49s) is shown only once in the consone area. (Previously, two runs were performed twice)
+    WebSquare.wUnit.addCommand("assert", "log == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.log = 0;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Mar-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:searchbox id="searchbox1" style="position: absolute;width: 150px;height: 21px;" ev:onkeydown="scwin.searchbox1_onkeydown"></w2:searchbox>
+    </body>
+</html>
+ 

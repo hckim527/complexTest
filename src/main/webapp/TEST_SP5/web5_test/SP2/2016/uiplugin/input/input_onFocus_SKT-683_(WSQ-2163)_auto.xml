@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.input1_onclick = function(e) {
+    //alert("click");
+    debugger;
+    log = "click";
+    console.log("click");
+    localStorage.setItem("log", "click");
+};
+scwin.input1_onfocus = function(e) {
+    //alert("focus");
+    log1 = "focus";
+    console.log("focus");
+    localStorage.setItem("log2", "focus");
+};
+scwin.input1_onblur = function(e) {
+    //alert("focus");
+    log2 = "onblur";
+    console.log("onblur");
+    localStorage.setItem("log3", "onblur");
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').focus()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. console창에 focus, click 보여진다.
+    //1. The console window shows focus, click.
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'click'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log2') == 'focus'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 다시 마우스를 inputbox 밖의 영역을 클릭한다.
+    //2. Click the mouse again outside the input box area.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. onblur 보여진다.
+    //2. onblur is shown.
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log3') == 'onblur'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    localStorage.removeItem("log2");
+    localStorage.removeItem("log3");
+    window.log = undefined;
+    window.log1 = undefined;
+    window.log2 = undefined;
+    window.log3 = undefined;
+    window.log4 = undefined;
+    window.log5 = undefined;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:input adjustMaxLength="false" id="input1" style="width: 144px;height: 21px;" 
+		readOnly="true" ev:onclick="scwin.input1_onclick" ev:onfocus="scwin.input1_onfocus" ev:onblur="scwin.input1_onblur" readOnlyFocusEvent ="true"></xf:input>
+    </body>
+</html>
+ 

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text"></w2:column>
+						<w2:column id="name" name="FileName" dataType="text"></w2:column>
+						<w2:column id="displaySize" name="Size" dataType="text"></w2:column>
+						<w2:column id="Status" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false">
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.selectCallback = function() {
+    var fileInfos = tobe.getFileInfos();
+    dataList1.setJSON(fileInfos);
+}
+scwin.tobe_onprogress = function(info) {
+    console.log(info.fileName + "(" + info.percentData + "%)");
+    var rowidx = dataList1.getMatchedIndex("name", info.fileName);
+    WebSquare.wUnit.getJq("td[colindex='3']:eq(" + rowidx + ") .w2grid_input").text(info.percentData + "%");
+    WebSquare.wUnit.getJq("td[colindex='3']:eq(" + rowidx + ") .w2grid_input").css("width", info.percentData + "%");
+};
+scwin.multiupload10_ondone = function(data) {
+    console.log(JSON.stringify(data));
+    setTimeout(clearUpload, "3000");
+};
+scwin.clearUpload = function() {
+    dataList1.removeAll();
+}
+scwin.textbox4_onclick = function(e) {
+    var idxArr = gridView1.getCheckedJSON("chk");
+    var idxArr1 = gridView1.getCheckedIndex("chk");
+    for (var i = 0; i < idxArr.length; i++) {
+        var fileName = idxArr[i].name;
+        tobe.removeFile(fileName);
+    }
+    dataList1.removeRows(idxArr1);
+};
+scwin.textbox5_onclick = function(e) {
+    tobe.startUpload();
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[ 
+			* {font-family: tahoma}
+		
+			.w2multiupload_uploader {
+				background:url(/TEST/WS5_AT/multiupload.jpg);
+			}
+			
+			.delete_ing {
+				background:url(/TEST/WS5_AT/multiupload.jpg);
+			}
+			
+			.start {
+				background:url(/TEST/WS5_AT/multiupload.jpg);
+			}
+			
+			
+			td[colindex='3'] .w2grid_input {
+				display: block;
+				text-align: right;
+				background-color: yellow;
+				width: 0%;
+			}
+		]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="group2" style="padding:10px;">
+			<w2:textbox id="textbox1" style="position: relative;" label="HTML5 MultiUpload Sample" tagname="h1"></w2:textbox>
+			<w2:gridView ignoreCellClick="false" id="gridView1" dataList="dataList1" style="position: relative;height: 200px;"
+				useShiftKey="true" scrollByColumn="false" fixedColumnWithHidden="true" autoFit="allColumn">
+				<w2:header id="header1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="checkbox" width="27" value="chk"></w2:column>
+						<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="422" value="FileName"></w2:column>
+						<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="133" value="Size"></w2:column>
+						<w2:column blockSelect="false" id="column3" style="height:20px;" width="197" inputType="text" value="Status"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody4" style="">
+					<w2:row id="row5" style="">
+						<w2:column blockSelect="false" id="chk" style="height:20px;" inputType="checkbox" width="27"></w2:column>
+						<w2:column blockSelect="false" id="name" style="height:20px;" inputType="text" width="422" textAlign="left"></w2:column>
+						<w2:column blockSelect="false" id="displaySize" style="height:20px;" inputType="text" width="133"></w2:column>
+						<w2:column blockSelect="false" id="Status" style="height:20px;" width="197" inputType="text" value="Ready.."></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<xf:group id="group1" style="overflow:hidden;margin-top:5px;">
+				<w2:multiupload maxcount="3" id="tobe" clearOnError="false" maxsize="10000000" ev:ondone="multiupload10_ondone"
+					style="position:relative;height:34px;width:111px;float:left;" ev:onprogress="scwin.tobe_onprogress" action="" uploadButton=""
+					wmode="false" filter="한글파일:*.doc;*.hwp;*.docx" mode="html5_transparent" selectCallback="scwin.selectCallback">
+				</w2:multiupload>
+				<w2:textbox label="" id="textbox4" style="position: relative;height: 34px;width: 84px;float:left;margin-left:5px;"
+					class="delete_ing" ev:onclick="scwin.textbox4_onclick">
+				</w2:textbox>
+				<w2:textbox id="textbox5" label="" style="position: relative;height: 34px;width: 121px;float:left;margin-left:5px;"
+					class="start" ev:onclick="scwin.textbox5_onclick">
+				</w2:textbox>
+			</xf:group>
+		</xf:group>
+	</body>
+</html> 

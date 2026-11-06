@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+scwin.trigger1_onclick = function(e) {
+    calendar1.setDisabled(true);
+};
+
+scwin.checkVal = function() {
+	var log = WebSquare.logger.getLog();
+	return log.indexOf('Cannot read properties of null') == -1;
+}
+scwin.checkVal2 = function() {
+	return WebSquare.wUnit.getJq('#calendar1').hasClass('w2calendar_disabled');
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");	
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest()
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:calendar footerDiv="false" id="calendar1" style="width: 200px;height: 200px;" renderType="native" pickerType = "dynamic"></w2:calendar>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick" >
+    		<xf:label><![CDATA[setDisabled]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

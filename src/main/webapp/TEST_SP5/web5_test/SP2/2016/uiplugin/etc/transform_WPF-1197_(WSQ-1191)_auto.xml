@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    if (myNav.indexOf("msie") != -1) {
+        return parseInt(myNav.split("msie")[1]);
+    } else if (myNav.indexOf("rv") != -1) {
+        return parseInt(myNav.slice(myNav.indexOf(":") + 1, myNav.indexOf(".0)")));
+    }
+    return false;
+}
+scwin.__checkAlert = function() {
+    if (scwin.isIE()) {
+        return window.alertMsg == '<?xml version="1.0" encoding="UTF-16"?><root></root>';
+    } else {
+        return window.alertMsg == "<root/>";
+    }
+}
+scwin.checkVal = function() {
+    return scwin.__checkAlert() == true;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. IE 브라우저에서 생성되는 팝업창을 확인한다.
+    //3. chrome, opera에서는 결과값이 <root/>로 보여지는지 확인한다.
+    //1.
+    //WebSquare.wUnit.addCommand("set", "");
+    // verify step 2. <? Xml version = '1.0' encoding = 'UTF-16'?> <Root> </ root>
+    //3. In chrome and opera, the result is shown as <root />.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //check for IE browser
+    window.fpath = '';
+    if (location.host.indexOf("192.168.1") < 0) {
+        //fpath = "/TEST_SP5/web5_test/SP2/2016/uiplugin/etc";
+    }
+    if (WebSquare._xv) {
+        WebSquare.xml.transform("<root>test1</root>", "http://" + location.host + fpath + "/TEST_SP5/web5_test/SP2/2016/uiplugin/etc/transform_WPF-1197_(WSQ-1191)_oz.xsl")
+        .then (function(resolve, reject){
+            window.alertMsg = resolve;
+        });
+    } else {
+        window.alertMsg = WebSquare.xml.transform("<root>test1</root>", "http://" + location.host + fpath + "/TEST_SP5/web5_test/SP2/2016/uiplugin/etc/transform_WPF-1197_(WSQ-1191)_oz.xsl");
+    }
+    
+    //alert(WebSquare.xml.transform("<root>test1</root>", "http://" + location.host + fpath + "/transform_WPF-1197_(WSQ-1191)_oz.xsl"));
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 16-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload"></body>
+</html>
+ 

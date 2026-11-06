@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+            	<w2:dataList id="dataList1" baseNode="list" style="" repeatNode="map" keepFilter="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    scwin.setColumnID(window.jsonData1);
+};
+scwin.makeDataList = function(id, obj) {
+    if (WebSquare.wUnit.getObjById(id) != undefined) {
+        $p.data.remove(id);
+    }
+    // dataList1 = $p.data.create : SP5에서 해결해야 할 문제 (scope에 dynamic 적용) 
+    $p.data.create({
+        "id": id,
+        "type": "dataList",
+        "option": {
+            "useData": false
+        },
+        "columnInfo": obj
+    });
+}
+scwin.setColumnID = function(obj) {
+    //		dataList1.setJSON(obj);
+    //debugger;
+    var column = {};
+    var columnArr = [];
+    var gridHeader = "",
+        gridBody = "";
+    //json의 첫번째 데이터에서 컬럼의 id와 개수 정보 확
+    for (var k in obj[0]) {
+        //dataList를 동적으로 만들기 위한 컬럼 정
+        column = {};
+        column["id"] = k;
+        column["dataType"] = "text";
+        columnArr.push(column);
+        //gridView의 컬럼 정보 정의
+        gridHeader += '<w2:column blockSelect="false" id="' + 'h' + k + '" style="height:20px" inputType="text" width="70" value="' + k + '" useFilter="true"></w2:column>';
+        gridBody += '<w2:column blockSelect="false" id="' + k + '" style="height:20px" inputType="text" width="70"></w2:column>'
+    }
+    scwin.makeDataList('dataList1', columnArr);
+    //gridView 정보 정의 
+    //xml 형식을 정의 하면 <w2:gridView 에 xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" 포함 합니다.
+    var gridStr = '<w2:gridView xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" dataList="dataList1" scrollByColumn="false" id="gridView1" style="width: 500px;height: 350px;" fixedColumnWithHidden="true" useShiftKey="false" autoFit="allColumn" groupbyZone="true" groupbyFilterBox="true" customFilterBox="true" useFilterList="true" >' +
+        '<w2:header id="header1" style="">' +
+        '<w2:row id="row1" style="">' +
+        gridHeader +
+        '</w2:row>' +
+        '</w2:header>' +
+        '<w2:gBody id="gBody1" style="">' +
+        '<w2:row id="row2" style="">' +
+        gridBody +
+        '</w2:row>' +
+        '</w2:gBody>' +
+        '</w2:gridView>';
+    gridView1.setGridStyle(WebSquare.xml.parse(gridStr, true));
+    dataList1.setJSON(obj);
+}
+scwin.setColumnID2 = function() {
+    console.log('setColumnID2');
+    var gridStr = '<w2:gridView xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" dataList="dataList1" scrollByColumn="false" id="gridView1" style="width: 500px;height: 350px;" fixedColumnWithHidden="true" useShiftKey="false" autoFit="allColumn" groupbyZone="true" groupbyFilterBox="true" customFilterBox="true" useFilterList="true" ><w2:header id="header1" style=""><w2:row id="row1" style=""><w2:column blockSelect="false" id="hcol0" style="height:20px" inputType="text" width="70" value="col0" useFilter="true"></w2:column><w2:column blockSelect="false" id="hcol1" style="height:20px" inputType="text" width="70" value="col1" useFilter="true"></w2:column><w2:column blockSelect="false" id="hcol2" style="height:20px" inputType="text" width="70" value="col2" useFilter="true"></w2:column><w2:column blockSelect="false" id="hcol3" style="height:20px" inputType="text" width="70" value="col3" useFilter="true"></w2:column></w2:row></w2:header><w2:gBody id="gBody1" style=""><w2:row id="row2" style=""><w2:column blockSelect="false" id="col0" style="height:20px" inputType="text" width="70"></w2:column><w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column><w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70"></w2:column><w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70"></w2:column></w2:row></w2:gBody></w2:gridView>';
+    gridView1.setGridStyle(WebSquare.xml.parse(gridStr, true));
+}
+scwin.trigger1_onclick = function(e) {
+    scwin.setColumnID2();
+};
+scwin.checkEl = function(id) {
+    if (WebSquare.wUnit.getDomById($p.id + id)) {
+        return true;
+    }
+    return false;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step  1. 샘플실행 후 col0 항목의 값을 필터링한다.(역삼각형모양 클릭 후 필터를 1로 설정)
+    //After running the sample, filter the value of the col0 item (click on the inverted triangle and set the filter to 1)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('gridView1_hcol0_filter')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('gridView1_groupbyFilterBox_select_label')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_hcol0_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listRow')[2].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_hcol0_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. col0항목의 값이 1로 필터링되고 하단의 groupbyFilterbox의 값이 보여진다. ((col0 = 1))
+    //The value of the col0 entry is filtered to 1 and the value of the groupbyFilterbox at the bottom is shown. ((col0 = 1))
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText", "1");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_0').innerText", "1");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_2_0').innerText", "1");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_groupbyFilterBox_select_label').innerText", "((col0 = 1))");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step2. 좌측상단의 'setGridStyle'버튼을 클릭한다.
+    //Click the 'setGridStyle' button in the upper left corner.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify2. gridView의 col0항목의 필터가 유지되고 하단의 groupbyFilterbox의 값도 유지되어 보여진다.(이전에는 유지 되지 않음)
+    //The filter of the col0 item of the gridView is maintained and the value of the groupbyFilterbox at the bottom is also maintained.(Previously not retained)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText", "1");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_0').innerText", "1");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_2_0').innerText", "1");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_groupbyFilterBox_select_label').innerText", "((col0 = 1))");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_customFilter_filter').length == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //동적으로 datList 생성
+    window.jsonData1 = [{
+        "col0": "0",
+        "col1": "test",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "1",
+        "col1": "test",
+        "col2": "test2",
+        "col3": "test"
+    }, {
+        "col0": "1",
+        "col1": "test",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "1",
+        "col1": "test",
+        "col2": "test",
+        "col3": "test"
+    }];
+    //dataList 에 넣을 json
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 27-Jan-2018
+    //End unitTest
+    scwin.init();
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="width:489px;height:500px;"
+    		fixedColumnWithHidden="true" useShiftKey="false">
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px" width="70" inputType="text" value="name1"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;float : left;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setGridStyle]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

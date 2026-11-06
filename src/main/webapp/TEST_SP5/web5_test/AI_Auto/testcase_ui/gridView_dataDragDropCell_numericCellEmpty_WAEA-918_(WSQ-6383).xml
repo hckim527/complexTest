@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <!-- 소스 DataList : col1(text), col2(number), col3(float), col4(bigDecimal) -->
+                <w2:dataList baseNode="list" id="dlt_src" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="col1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="col2" dataType="number"></w2:column>
+                        <w2:column id="col3" name="col3" dataType="float"></w2:column>
+                        <w2:column id="col4" name="col4" dataType="bigDecimal"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true"></w2:data>
+                </w2:dataList>
+                <!-- 대상 DataList : colA(text), colB(number), colC(float), colD(bigDecimal) -->
+                <w2:dataList baseNode="list" id="dlt_dst" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="colA" name="colA" dataType="text"></w2:column>
+                        <w2:column id="colB" name="colB" dataType="number"></w2:column>
+                        <w2:column id="colC" name="colC" dataType="float"></w2:column>
+                        <w2:column id="colD" name="colD" dataType="bigDecimal"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true"></w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// ===== 리턴 값 출력 영역 (body_bottom.xml inline 복사) =====
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+
+
+scwin.onpageload = function () {
+    // 결함 트리거 핵심 : setJSON 으로 col2(number)/col3(float)/col4(bigDecimal) 에 '숫자(number primitive)' 를 적재한다.
+    //  (정적 XML/CDATA 로 적재하면 dataType 이 숫자형이라도 '문자열'로 저장되어 결함이 재현되지 않음)
+    dlt_src.setJSON([
+        { col1: "행1", col2: 100, col3: 12.5, col4: 100.99 },
+        { col1: "행2", col2: 200, col3: 25.75, col4: 200.5 },
+        { col1: "행3", col2: 300, col3: 38.25, col4: 300.12 },
+        { col1: "행4", col2: 400, col3: 41.4, col4: 400.4 },
+        { col1: "행5", col2: 500, col3: 52.5, col4: 500.55 }
+    ], false);
+    dlt_dst.setJSON([
+        { colA: "대상1", colB: 11, colC: 1.1, colD: 11.11 },
+        { colA: "대상2", colB: 22, colC: 2.2, colD: 22.22 },
+        { colA: "대상3", colB: 33, colC: 3.3, colD: 33.33 },
+        { colA: "대상4", colB: 44, colC: 4.4, colD: 44.44 },
+        { colA: "대상5", colB: 55, colC: 5.5, colD: 55.55 }
+    ], false);
+};
+
+
+// [재현 버튼] 양 그리드 전체 데이터 출력
+scwin.btn_dump_onclick = function () {
+    scwin.setReturnValue("===== [양 그리드 데이터 출력] =====");
+    var srcCnt = dlt_src.getRowCount();
+    scwin.setReturnValue("[소스(target1)/dlt_src] " + srcCnt + "행 (col1=text, col2=number, col3=float, col4=bigDecimal)");
+    for (var i = 0; i < srcCnt; i++) {
+        scwin.setReturnValue("  행" + i + " : col1=" + dlt_src.getCellData(i, "col1") + ", col2=" + dlt_src.getCellData(i, "col2") + ", col3=" + dlt_src.getCellData(i, "col3") + ", col4=" + dlt_src.getCellData(i, "col4"));
+    }
+    var dstCnt = dlt_dst.getRowCount();
+    scwin.setReturnValue("[대상(target2)/dlt_dst] " + dstCnt + "행 (colA=text, colB=number, colC=float, colD=bigDecimal)");
+    for (var j = 0; j < dstCnt; j++) {
+        scwin.setReturnValue("  행" + j + " : colA=" + dlt_dst.getCellData(j, "colA") + ", colB=" + dlt_dst.getCellData(j, "colB") + ", colC=" + dlt_dst.getCellData(j, "colC") + ", colD=" + dlt_dst.getCellData(j, "colD"));
+    }
+    scwin.setReturnValue("");
+};
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding: 10px;" id="grp_root">
+            <w2:textbox style="" id="" label="[FAIL] gridView dataDragDropCell=true 환경에서 셀에 저장된 값이 JS 숫자(number primitive)인 Cell(number/float/bigDecimal)을 Drag&amp;Drop 하면 소스/대상 셀이 모두 빈값이 되는(데이터 유실 + 콘솔 TypeError) 결함 재현 (문자열로 저장된 셀은 정상)" class="" escape="false"></w2:textbox>
+
+            <w2:textbox style="margin-top:8px;" id="" label="onpageload 에서 setJSON 으로 col2(number)/col3(float)/col4(bigDecimal)에 숫자를 적재. col1(text)은 정상 이동, 나머지 3개 숫자형은 이동 시 빈값. 가이드 @spec2·@spec3 에는 값 타입 제한이 없음." class="" escape="false"></w2:textbox>
+
+            <xf:group style="margin-top:10px;display:flex;gap:24px;" id="grp_grids">
+                <xf:group id="grp_src" style="">
+                    <w2:textbox style="margin-bottom:4px;" id="" label="◆ 소스 그리드 (target1) - dataDragDropCell=true" class="" escape="false"></w2:textbox>
+                    <w2:gridView id="target1" style="width:620px;height:320px;" dataList="data:dlt_src" dataDragDropCell="true" rowNumVisible="true" rowStatusVisible="true">
+                        <w2:caption style="" id="cap_src" value="소스"></w2:caption>
+                        <w2:header style="" id="hdr_src">
+                            <w2:row style="" id="hrow_src">
+                                <w2:column width="130" inputType="text" id="hcol1" value="col1 (text)"></w2:column>
+                                <w2:column width="130" inputType="text" id="hcol2" value="col2 (number)"></w2:column>
+                                <w2:column width="130" inputType="text" id="hcol3" value="col3 (float)"></w2:column>
+                                <w2:column width="150" inputType="text" id="hcol4" value="col4 (bigDecimal)"></w2:column>
+                            </w2:row>
+                        </w2:header>
+                        <w2:gBody style="" id="gbody_src">
+                            <w2:row style="" id="brow_src">
+                                <w2:column width="130" inputType="text" dataType="text" id="col1" dataList="col1"></w2:column>
+                                <w2:column width="130" inputType="text" dataType="number" displayFormat="#,###" id="col2" dataList="col2"></w2:column>
+                                <w2:column width="130" inputType="text" dataType="float" displayFormat="#,##0.00" id="col3" dataList="col3"></w2:column>
+                                <w2:column width="150" inputType="text" dataType="bigDecimal" displayFormat="#,##0.00" id="col4" dataList="col4"></w2:column>
+                            </w2:row>
+                        </w2:gBody>
+                    </w2:gridView>
+                </xf:group>
+
+                <xf:group id="grp_dst" style="">
+                    <w2:textbox style="margin-bottom:4px;" id="" label="◆ 대상 그리드 (target2) - dataDragDropCell=true" class="" escape="false"></w2:textbox>
+                    <w2:gridView id="target2" style="width:620px;height:320px;" dataList="data:dlt_dst" dataDragDropCell="true" rowNumVisible="true" rowStatusVisible="true">
+                        <w2:caption style="" id="cap_dst" value="대상"></w2:caption>
+                        <w2:header style="" id="hdr_dst">
+                            <w2:row style="" id="hrow_dst">
+                                <w2:column width="130" inputType="text" id="hcolA" value="colA (text)"></w2:column>
+                                <w2:column width="130" inputType="text" id="hcolB" value="colB (number)"></w2:column>
+                                <w2:column width="130" inputType="text" id="hcolC" value="colC (float)"></w2:column>
+                                <w2:column width="150" inputType="text" id="hcolD" value="colD (bigDecimal)"></w2:column>
+                            </w2:row>
+                        </w2:header>
+                        <w2:gBody style="" id="gbody_dst">
+                            <w2:row style="" id="brow_dst">
+                                <w2:column width="130" inputType="text" dataType="text" id="colA" dataList="colA"></w2:column>
+                                <w2:column width="130" inputType="text" dataType="number" displayFormat="#,###" id="colB" dataList="colB"></w2:column>
+                                <w2:column width="130" inputType="text" dataType="float" displayFormat="#,##0.00" id="colC" dataList="colC"></w2:column>
+                                <w2:column width="150" inputType="text" dataType="bigDecimal" displayFormat="#,##0.00" id="colD" dataList="colD"></w2:column>
+                            </w2:row>
+                        </w2:gBody>
+                    </w2:gridView>
+                </xf:group>
+            </xf:group>
+
+            <xf:group style="margin-top:10px;display:flex;gap:6px;" id="grp_buttons">
+                <w2:button class="" ev:onclick="scwin.btn_dump_onclick" id="btn_dump" label="양 그리드 데이터 출력" style=""></w2:button>
+            </xf:group>
+
+            <xf:group class="" id="grp_bottom" style="margin-top:10px;">
+                <w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+                <xf:group id="" style="display: flex;justify-content: flex-end">
+                    <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+                </xf:group>
+                <xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 320px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    widgetContainer.addWidgets([{
+            id: "widget1",
+            title: "위젯1",
+            src: "widgetContainer_Titlebar_WPF-1558_(WSQ-2558)_content.xml",
+            scope: true,
+            x: 0,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget2",
+            title: "위젯2",
+            src: "widgetContainer_Titlebar_WPF-1558_(WSQ-2558)_content.xml",
+            scope: true,
+            x: 1,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget3",
+            title: "위젯3",
+            src: "widgetContainer_Titlebar_WPF-1558_(WSQ-2558)_content.xml",
+            scope: true,
+            hasTitleBar: false,
+            x: 2,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        }
+    ]);
+}
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 위젯1의 상단의 TitleBar를 마우스로 더블클릭한다.
+    //1. Run the sample file and double-click the TitleBar at the top of Widget 1.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick('widgetContainer_widget1_title_text')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 위젯1의 창이 최대화로 보여진다.
+    //1. Widget 1"s window is shown as maximized.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer_widget1').hasClass('w2widget_maximized w2widget_fixed')", "true");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.height == '495px'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.width == '100%'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 최대화상태에서 위젯1의 상단의 TitleBar를 마우스로 더블클릭한다.
+    //2. In the maximized state, double-click the TitleBar at the top of Widget 1 with your mouse.
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick('widgetContainer_widget1_title_text')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 위젯1의 창이 원래대로(최소화) 보여진다.
+    //2. The window of widget 1 is displayed as original (minimized).
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer_widget1').hasClass('w2widget_maximized w2widget_fixed')", "false");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.height == '300px'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.width != '100%'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 05-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:widgetContainer id="widgetContainer" widgetMove="true" minUnitWidth="1" cols="3" horizontalMargin="0" verticalMargin="0"
+    		params="false" widgetResize="true" maxUnitWidth="1" threshold="null" mode="pushpull"
+    		style="position: absolute;width:100%;height:495px;border: 1px solid #000000;" minUnitHeight="1" maxUnitHeight="1"
+    		unitHeightPixel="300">
+    	</w2:widgetContainer>
+    </body>
+</html>
+ 

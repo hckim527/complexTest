@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) { //debugger;
+    /*
+    	dataListAutoRefresh default 값은 false 이나
+    	dataListAutoRefresh="true" 를 권장하여 config.xml 에
+    	기본으로 dataListAutoRefresh="true" 설정이 되어 있으며
+    	
+    	addItem, deleteItem 의 refresh 인자를 주지 않을 경우 dataListAutoRefresh 값을 우선한다
+    	
+    	refreshFlag = true 인 경우 dataList 갱신
+    	refreshFlag = false 인 경우 dataList 미갱신
+    	
+    */
+    var refreshFlag = radio1.getValue();
+    //selectbox.addItem : function(value, label, idx, refresh) 
+    //selectbox.deleteItem : function(idx, refresh)
+    if (refreshFlag == "true") {
+        selectbox1.addItem("444", "ddd", 4, true);
+    } else if (refreshFlag == "false") {
+        selectbox1.addItem("444", "ddd", 4, false);
+    } else {
+        selectbox1.addItem("444", "ddd", 4);
+    }
+    textarea2.setValue(WebSquare.xml.indent(dataList1.getAllXML()));
+};
+
+scwin.checkVal = function() {
+	let ccc = WebSquare.wUnit.getDomById('textarea2').value.indexOf('ccc');
+	let ddd = WebSquare.wUnit.getDomById('textarea2').value.indexOf('ddd');
+	console.log('ccc : ' + ccc);
+	console.log('ddd : ' + ddd);
+    return ccc < ddd;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('radio1').querySelectorAll('input')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");	
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+
+scwin.onpageload = function() {
+    dataList1.setData(['aaa', '111', 'bbb', '222', 'ccc', '333']);
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="group1" style="height:71px;"><xf:select1 id="radio1" cols="" selectedIndex="1" appearance="full" style="width:229px;height:51px;" rows="">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[Refresh true]]></xf:label>
+    				<xf:value><![CDATA[true]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[Refresh false]]></xf:label>
+    				<xf:value><![CDATA[false]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select1>
+    	<xf:trigger id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick" type="button" >
+    		<xf:label><![CDATA[addItem]]></xf:label>
+    	</xf:trigger>
+    	</xf:group>
+    	<xf:group id="group2" style="height:23px;"><xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" displayMode="label" selectedData="true" optionOrder="false" id="selectbox1" style="width: 148px;height: 21px;" allOption="" disabled="false" submenuSize="auto">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dataList1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:select1></xf:group><xf:textarea id="textarea2" style="width:341px;height:323px;"></xf:textarea>
+    </body>
+</html>
+ 

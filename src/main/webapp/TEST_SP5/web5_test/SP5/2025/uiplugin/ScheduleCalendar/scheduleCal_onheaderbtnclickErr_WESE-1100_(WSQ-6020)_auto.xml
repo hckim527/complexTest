@@ -1,0 +1,144 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+        
+    <head meta_screenName="calender">
+            	
+        <w2:type>COMPONENT</w2:type>
+            	
+        <w2:buildDate/>
+            	
+        <w2:MSA/>
+            	
+        <xf:model>
+                		
+            <w2:dataCollection baseNode="map"/>
+                		
+            <w2:workflowCollection/>
+                	
+        </xf:model>
+            	
+        <w2:layoutInfo/>
+            	
+        <w2:publicInfo method=""/>
+            	
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+
+};
+
+scwin.trigger1_onclick = function (e) {
+    scheduleCalendar1.gotoCalendar("20250501", { noSelectable: true });
+};
+
+scwin.trigger2_onclick = function (e) {
+    scheduleCalendar1.gotoCalendar("20250101", { noSelectable: true });
+};
+
+
+scwin.trigger3_onclick = function (e) {
+    scheduleCalendar1.gotoCalendar("20250301", { noSelectable: true });
+};
+
+scwin.scheduleCalendar1_onheaderbtnclick = function (buttonInfo) {
+	console.log("버튼 종류: " + buttonInfo.buttonType);
+	console.log("view 종류: " + buttonInfo.viewType);
+	window.buttonType = buttonInfo.buttonType;
+	window.viewType = buttonInfo.viewType;
+	if (buttonInfo.buttonType == "next" || buttonInfo.buttonType == "prev" || buttonInfo.buttonType == "today"){
+		console.log("날짜 정보: " + buttonInfo.date);
+		window.date = buttonInfo.date;
+	}
+
+};
+
+	scwin.getCurrentDate = function() {	
+		const today = new Date(); // 현재 날짜를 가져옵니다.
+
+		// 연도, 월, 일 추출
+		const year = today.getFullYear(); // 4자리 연도
+		const month = String(today.getMonth() + 1).padStart(2, '0'); // 1부터 12까지의 월
+		const day = String(today.getDate()).padStart(2, '0'); // 1부터 31까지의 일
+
+		// 원하는 형식으로 날짜를 반환합니다.
+		return `${year}${month}${day}`;
+	}
+	scwin.checkVal1 = function() {
+		const check1 = document.querySelectorAll('.fc-toolbar-title')[0].innerText == '2025년 5월'
+		const check2 = document.querySelectorAll('.fc-highlight')[0].parentElement.parentElement.parentElement.innerText == '1일';
+		
+		return check1 && check2;
+	}
+	scwin.checkVal2 = function() {
+		const check1 = window.buttonType == 'today';
+		const check2 = window.viewType == 'dayGridMonth';
+		const check3 = window.date == scwin.getCurrentDate();
+		return check1 && check2 && check3;
+	}
+		
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");
+				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('scheduleCalendar1').getElementsByTagName('button')[2].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()","true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+        }
+	scwin.unitTest()	
+
+
+]]></script>
+            
+    </head>
+        
+    <body ev:onpageload="scwin.onpageload">
+            	
+        <xf:group class="sub_contents" id="" style="">
+                		
+            <xf:group class="etcbox" id="">
+                    			
+                <w2:scheduleCalendar dataList="" defaultDate="" editable="true" endColumn="end" eventLimit="true" eventOrderColumn="" headerLeftBtn="true" headerRightBtn="true" headerTitle="true" id="scheduleCalendar1" idColumn="id" includeScheduleEnd="false" ioFormat="yyyyMMdd" lang="ko" locale="ko" nextDayThreshold="" selectable="true" startColumn="start" style="width: 50%;height: 400px;" themeColumn="" timeFormat="CalendarTest" titleColumn='' tooltipDisplay="" version="6.1.11" ev:onheaderbtnclick="scwin.scheduleCalendar1_onheaderbtnclick">
+    			</w2:scheduleCalendar>
+                    		
+            </xf:group>
+                		
+            <xf:group class="btnbox" id="" style="">
+                    			
+                <xf:group class="rt" id="" style="padding-top:100px;">
+
+                	<xf:trigger class="btn_cm" id="trigger1" style="" type="button" ev:onclick="scwin.trigger1_onclick">
+
+                		<xf:label><![CDATA[2025-05-01로 이동]]></xf:label>
+
+                	</xf:trigger>
+
+                	<w2:textbox class="bar_btndiv" id="" label="" style="" />
+
+                	<xf:trigger class="btn_cm pt" id="trigger3" style="" type="button" ev:onclick="scwin.trigger3_onclick">
+
+                		<xf:label><![CDATA[2025-03-01로 이동]]></xf:label>
+
+                	</xf:trigger>
+
+                	<xf:trigger class="btn_cm" ev:onclick="scwin.trigger2_onclick" id="trigger2" style="" type="button">
+                		<xf:label><![CDATA[2025-01-01로 이동]]></xf:label>
+                	</xf:trigger>
+                </xf:group>
+
+            </xf:group>
+                	
+        </xf:group>
+            
+    </body>
+    
+</html>

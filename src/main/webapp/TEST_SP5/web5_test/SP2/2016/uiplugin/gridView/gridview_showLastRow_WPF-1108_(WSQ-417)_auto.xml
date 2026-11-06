@@ -1,0 +1,1233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+				<w2:dataList id="dtlHR_MASTXM" baseNode="list" style="" saveRemovedData="true" repeatNode="map" valueAttribute=""
+					rowNumData="">
+					<w2:columnInfo>
+						<w2:column id="FILE_PATH" name="사진" dataType="text"></w2:column>
+						<w2:column id="EMPL_NUMB" name="사원번호" dataType="text"></w2:column>
+						<w2:column id="EMPL_NAME" name="성명" dataType="text"></w2:column>
+						<w2:column id="GNDR_CODE" name="성별" dataType="text"></w2:column>
+						<w2:column id="CPOS_CODE" name="직급" dataType="text"></w2:column>
+						<w2:column id="OPOS_CODE" name="직위" dataType="text"></w2:column>
+						<w2:column id="DUTY_CODE" name="직무" dataType="text"></w2:column>
+						<w2:column id="ENCO_DATE" name="입사일자" dataType="text"></w2:column>
+						<w2:column id="PRON_DATE" name="승진일자" dataType="text"></w2:column>
+						<w2:column id="DEPT_CODE" name="부서코드" dataType="text"></w2:column>
+						<w2:column id="DEPT_NAME" name="부서명" dataType="text"></w2:column>
+						<w2:column id="EMPL_BIRT" name="생년월일" dataType="text"></w2:column>
+						<w2:column id="EMPL_AGEX" name="나이(만)" dataType="text"></w2:column>
+						<w2:column id="RARS_DATE" name="퇴직예정일" dataType="text"></w2:column>
+						<w2:column id="GRDN_CODE" name="최종학력" dataType="text"></w2:column>
+						<w2:column id="BRAD_NAME" name="BRAND UNIT" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>            
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.__isShowLastData = function() {
+    var tds = WebSquare.wUnit.getJq("#gridView1_body_tbody .grid_body_row").not('.w2grid_hidedRow').last().find('td');
+    var count = 0;
+    tds.each(function(index, el) {
+        if (index > 1 && (WebSquare.wUnit.getJq(el).text() != "")) {
+            count++;
+        }
+    });
+    return count == tds.length - 2;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. 샘플화면을 실행 후왼쪽 gridView의 스크롤을 빠르게 내린다.
+    //3. Run the sample screen and quickly scroll down the left gridview.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1').setTopRowIndex(45)");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 3. 마지막 row data도 정상적으로 갱신된다.(이전에는 잘못 갱신되거나 일부 값이 보이지 않았음)
+    //3. The last row data is also updated normally (previously incorrectly updated or not showing some values).
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowLastData()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /*
+    for(var i =0;i<50;i++) {
+
+
+    window.tmpData = [{
+            "FILE_PATH": "",
+            "EMPL_NUMB": "",
+            "EMPL_NAME": "",
+            "GNDR_CODE": "",
+            "CPOS_CODE": "",
+            "OPOS_CODE": "",
+            "DUTY_CODE": "",
+            "ENCO_DATE": "",
+            "PRON_DATE": "",
+            "DEPT_CODE": "",
+            "DEPT_NAME": "",
+            "EMPL_BIRT": "",
+            "EMPL_AGEX": "",
+            "RARS_DATE": "",
+            "GRDN_CODE": "",
+            "BRAD_NAME": ""
+    }];
+
+    tmpData[0].FILE_PATH=i+"_FILE_PATH";
+    tmpData[0].EMPL_NUMB=i+"_EMPL_NUMB";
+    tmpData[0].EMPL_NAME=i+"_EMPL_NAME";
+    tmpData[0].GNDR_CODE=i+"_GNDR_CODE";
+    tmpData[0].CPOS_CODE=i+"_CPOS_CODE";
+    tmpData[0].OPOS_CODE=i+"_OPOS_CODE";
+    tmpData[0].DUTY_CODE=i+"_DUTY_CODE";
+    tmpData[0].ENCO_DATE=i+"_ENCO_DATE";
+    tmpData[0].PRON_DATE=i+"_PRON_DATE";
+    tmpData[0].DEPT_CODE=i+"_DEPT_CODE";
+    tmpData[0].DEPT_NAME=i+"_DEPT_NAME";
+    tmpData[0].EMPL_BIRT=i+"_EMPL_BIRT";
+    tmpData[0].EMPL_AGEX=i+"_EMPL_AGEX";
+    tmpData[0].RARS_DATE=i+"_RARS_DATE";
+    tmpData[0].GRDN_CODE=i+"_GRDN_CODE";
+    tmpData[0].BRAD_NAME=i+"_BRAD_NAME";
+
+    dtlHR_MASTXM.insertJSON(dtlHR_MASTXM.getRowCount(),tmpData);
+
+    }
+    */
+    window.json1 = [{
+            "FILE_PATH": "0_FILE_PATH",
+            "EMPL_NUMB": "0_EMPL_NUMB",
+            "EMPL_NAME": "0_EMPL_NAME",
+            "GNDR_CODE": "0_GNDR_CODE",
+            "CPOS_CODE": "0_CPOS_CODE",
+            "OPOS_CODE": "0_OPOS_CODE",
+            "DUTY_CODE": "0_DUTY_CODE",
+            "ENCO_DATE": "0_ENCO_DATE",
+            "PRON_DATE": "0_PRON_DATE",
+            "DEPT_CODE": "0_DEPT_CODE",
+            "DEPT_NAME": "0_DEPT_NAME",
+            "EMPL_BIRT": "0_EMPL_BIRT",
+            "EMPL_AGEX": "0_EMPL_AGEX",
+            "RARS_DATE": "0_RARS_DATE",
+            "GRDN_CODE": "0_GRDN_CODE",
+            "BRAD_NAME": "0_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "1_FILE_PATH",
+            "EMPL_NUMB": "1_EMPL_NUMB",
+            "EMPL_NAME": "1_EMPL_NAME",
+            "GNDR_CODE": "1_GNDR_CODE",
+            "CPOS_CODE": "1_CPOS_CODE",
+            "OPOS_CODE": "1_OPOS_CODE",
+            "DUTY_CODE": "1_DUTY_CODE",
+            "ENCO_DATE": "1_ENCO_DATE",
+            "PRON_DATE": "1_PRON_DATE",
+            "DEPT_CODE": "1_DEPT_CODE",
+            "DEPT_NAME": "1_DEPT_NAME",
+            "EMPL_BIRT": "1_EMPL_BIRT",
+            "EMPL_AGEX": "1_EMPL_AGEX",
+            "RARS_DATE": "1_RARS_DATE",
+            "GRDN_CODE": "1_GRDN_CODE",
+            "BRAD_NAME": "1_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "2_FILE_PATH",
+            "EMPL_NUMB": "2_EMPL_NUMB",
+            "EMPL_NAME": "2_EMPL_NAME",
+            "GNDR_CODE": "2_GNDR_CODE",
+            "CPOS_CODE": "2_CPOS_CODE",
+            "OPOS_CODE": "2_OPOS_CODE",
+            "DUTY_CODE": "2_DUTY_CODE",
+            "ENCO_DATE": "2_ENCO_DATE",
+            "PRON_DATE": "2_PRON_DATE",
+            "DEPT_CODE": "2_DEPT_CODE",
+            "DEPT_NAME": "2_DEPT_NAME",
+            "EMPL_BIRT": "2_EMPL_BIRT",
+            "EMPL_AGEX": "2_EMPL_AGEX",
+            "RARS_DATE": "2_RARS_DATE",
+            "GRDN_CODE": "2_GRDN_CODE",
+            "BRAD_NAME": "2_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "3_FILE_PATH",
+            "EMPL_NUMB": "3_EMPL_NUMB",
+            "EMPL_NAME": "3_EMPL_NAME",
+            "GNDR_CODE": "3_GNDR_CODE",
+            "CPOS_CODE": "3_CPOS_CODE",
+            "OPOS_CODE": "3_OPOS_CODE",
+            "DUTY_CODE": "3_DUTY_CODE",
+            "ENCO_DATE": "3_ENCO_DATE",
+            "PRON_DATE": "3_PRON_DATE",
+            "DEPT_CODE": "3_DEPT_CODE",
+            "DEPT_NAME": "3_DEPT_NAME",
+            "EMPL_BIRT": "3_EMPL_BIRT",
+            "EMPL_AGEX": "3_EMPL_AGEX",
+            "RARS_DATE": "3_RARS_DATE",
+            "GRDN_CODE": "3_GRDN_CODE",
+            "BRAD_NAME": "3_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "4_FILE_PATH",
+            "EMPL_NUMB": "4_EMPL_NUMB",
+            "EMPL_NAME": "4_EMPL_NAME",
+            "GNDR_CODE": "4_GNDR_CODE",
+            "CPOS_CODE": "4_CPOS_CODE",
+            "OPOS_CODE": "4_OPOS_CODE",
+            "DUTY_CODE": "4_DUTY_CODE",
+            "ENCO_DATE": "4_ENCO_DATE",
+            "PRON_DATE": "4_PRON_DATE",
+            "DEPT_CODE": "4_DEPT_CODE",
+            "DEPT_NAME": "4_DEPT_NAME",
+            "EMPL_BIRT": "4_EMPL_BIRT",
+            "EMPL_AGEX": "4_EMPL_AGEX",
+            "RARS_DATE": "4_RARS_DATE",
+            "GRDN_CODE": "4_GRDN_CODE",
+            "BRAD_NAME": "4_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "5_FILE_PATH",
+            "EMPL_NUMB": "5_EMPL_NUMB",
+            "EMPL_NAME": "5_EMPL_NAME",
+            "GNDR_CODE": "5_GNDR_CODE",
+            "CPOS_CODE": "5_CPOS_CODE",
+            "OPOS_CODE": "5_OPOS_CODE",
+            "DUTY_CODE": "5_DUTY_CODE",
+            "ENCO_DATE": "5_ENCO_DATE",
+            "PRON_DATE": "5_PRON_DATE",
+            "DEPT_CODE": "5_DEPT_CODE",
+            "DEPT_NAME": "5_DEPT_NAME",
+            "EMPL_BIRT": "5_EMPL_BIRT",
+            "EMPL_AGEX": "5_EMPL_AGEX",
+            "RARS_DATE": "5_RARS_DATE",
+            "GRDN_CODE": "5_GRDN_CODE",
+            "BRAD_NAME": "5_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "6_FILE_PATH",
+            "EMPL_NUMB": "6_EMPL_NUMB",
+            "EMPL_NAME": "6_EMPL_NAME",
+            "GNDR_CODE": "6_GNDR_CODE",
+            "CPOS_CODE": "6_CPOS_CODE",
+            "OPOS_CODE": "6_OPOS_CODE",
+            "DUTY_CODE": "6_DUTY_CODE",
+            "ENCO_DATE": "6_ENCO_DATE",
+            "PRON_DATE": "6_PRON_DATE",
+            "DEPT_CODE": "6_DEPT_CODE",
+            "DEPT_NAME": "6_DEPT_NAME",
+            "EMPL_BIRT": "6_EMPL_BIRT",
+            "EMPL_AGEX": "6_EMPL_AGEX",
+            "RARS_DATE": "6_RARS_DATE",
+            "GRDN_CODE": "6_GRDN_CODE",
+            "BRAD_NAME": "6_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "7_FILE_PATH",
+            "EMPL_NUMB": "7_EMPL_NUMB",
+            "EMPL_NAME": "7_EMPL_NAME",
+            "GNDR_CODE": "7_GNDR_CODE",
+            "CPOS_CODE": "7_CPOS_CODE",
+            "OPOS_CODE": "7_OPOS_CODE",
+            "DUTY_CODE": "7_DUTY_CODE",
+            "ENCO_DATE": "7_ENCO_DATE",
+            "PRON_DATE": "7_PRON_DATE",
+            "DEPT_CODE": "7_DEPT_CODE",
+            "DEPT_NAME": "7_DEPT_NAME",
+            "EMPL_BIRT": "7_EMPL_BIRT",
+            "EMPL_AGEX": "7_EMPL_AGEX",
+            "RARS_DATE": "7_RARS_DATE",
+            "GRDN_CODE": "7_GRDN_CODE",
+            "BRAD_NAME": "7_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "8_FILE_PATH",
+            "EMPL_NUMB": "8_EMPL_NUMB",
+            "EMPL_NAME": "8_EMPL_NAME",
+            "GNDR_CODE": "8_GNDR_CODE",
+            "CPOS_CODE": "8_CPOS_CODE",
+            "OPOS_CODE": "8_OPOS_CODE",
+            "DUTY_CODE": "8_DUTY_CODE",
+            "ENCO_DATE": "8_ENCO_DATE",
+            "PRON_DATE": "8_PRON_DATE",
+            "DEPT_CODE": "8_DEPT_CODE",
+            "DEPT_NAME": "8_DEPT_NAME",
+            "EMPL_BIRT": "8_EMPL_BIRT",
+            "EMPL_AGEX": "8_EMPL_AGEX",
+            "RARS_DATE": "8_RARS_DATE",
+            "GRDN_CODE": "8_GRDN_CODE",
+            "BRAD_NAME": "8_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "9_FILE_PATH",
+            "EMPL_NUMB": "9_EMPL_NUMB",
+            "EMPL_NAME": "9_EMPL_NAME",
+            "GNDR_CODE": "9_GNDR_CODE",
+            "CPOS_CODE": "9_CPOS_CODE",
+            "OPOS_CODE": "9_OPOS_CODE",
+            "DUTY_CODE": "9_DUTY_CODE",
+            "ENCO_DATE": "9_ENCO_DATE",
+            "PRON_DATE": "9_PRON_DATE",
+            "DEPT_CODE": "9_DEPT_CODE",
+            "DEPT_NAME": "9_DEPT_NAME",
+            "EMPL_BIRT": "9_EMPL_BIRT",
+            "EMPL_AGEX": "9_EMPL_AGEX",
+            "RARS_DATE": "9_RARS_DATE",
+            "GRDN_CODE": "9_GRDN_CODE",
+            "BRAD_NAME": "9_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "10_FILE_PATH",
+            "EMPL_NUMB": "10_EMPL_NUMB",
+            "EMPL_NAME": "10_EMPL_NAME",
+            "GNDR_CODE": "10_GNDR_CODE",
+            "CPOS_CODE": "10_CPOS_CODE",
+            "OPOS_CODE": "10_OPOS_CODE",
+            "DUTY_CODE": "10_DUTY_CODE",
+            "ENCO_DATE": "10_ENCO_DATE",
+            "PRON_DATE": "10_PRON_DATE",
+            "DEPT_CODE": "10_DEPT_CODE",
+            "DEPT_NAME": "10_DEPT_NAME",
+            "EMPL_BIRT": "10_EMPL_BIRT",
+            "EMPL_AGEX": "10_EMPL_AGEX",
+            "RARS_DATE": "10_RARS_DATE",
+            "GRDN_CODE": "10_GRDN_CODE",
+            "BRAD_NAME": "10_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "11_FILE_PATH",
+            "EMPL_NUMB": "11_EMPL_NUMB",
+            "EMPL_NAME": "11_EMPL_NAME",
+            "GNDR_CODE": "11_GNDR_CODE",
+            "CPOS_CODE": "11_CPOS_CODE",
+            "OPOS_CODE": "11_OPOS_CODE",
+            "DUTY_CODE": "11_DUTY_CODE",
+            "ENCO_DATE": "11_ENCO_DATE",
+            "PRON_DATE": "11_PRON_DATE",
+            "DEPT_CODE": "11_DEPT_CODE",
+            "DEPT_NAME": "11_DEPT_NAME",
+            "EMPL_BIRT": "11_EMPL_BIRT",
+            "EMPL_AGEX": "11_EMPL_AGEX",
+            "RARS_DATE": "11_RARS_DATE",
+            "GRDN_CODE": "11_GRDN_CODE",
+            "BRAD_NAME": "11_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "12_FILE_PATH",
+            "EMPL_NUMB": "12_EMPL_NUMB",
+            "EMPL_NAME": "12_EMPL_NAME",
+            "GNDR_CODE": "12_GNDR_CODE",
+            "CPOS_CODE": "12_CPOS_CODE",
+            "OPOS_CODE": "12_OPOS_CODE",
+            "DUTY_CODE": "12_DUTY_CODE",
+            "ENCO_DATE": "12_ENCO_DATE",
+            "PRON_DATE": "12_PRON_DATE",
+            "DEPT_CODE": "12_DEPT_CODE",
+            "DEPT_NAME": "12_DEPT_NAME",
+            "EMPL_BIRT": "12_EMPL_BIRT",
+            "EMPL_AGEX": "12_EMPL_AGEX",
+            "RARS_DATE": "12_RARS_DATE",
+            "GRDN_CODE": "12_GRDN_CODE",
+            "BRAD_NAME": "12_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "13_FILE_PATH",
+            "EMPL_NUMB": "13_EMPL_NUMB",
+            "EMPL_NAME": "13_EMPL_NAME",
+            "GNDR_CODE": "13_GNDR_CODE",
+            "CPOS_CODE": "13_CPOS_CODE",
+            "OPOS_CODE": "13_OPOS_CODE",
+            "DUTY_CODE": "13_DUTY_CODE",
+            "ENCO_DATE": "13_ENCO_DATE",
+            "PRON_DATE": "13_PRON_DATE",
+            "DEPT_CODE": "13_DEPT_CODE",
+            "DEPT_NAME": "13_DEPT_NAME",
+            "EMPL_BIRT": "13_EMPL_BIRT",
+            "EMPL_AGEX": "13_EMPL_AGEX",
+            "RARS_DATE": "13_RARS_DATE",
+            "GRDN_CODE": "13_GRDN_CODE",
+            "BRAD_NAME": "13_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "14_FILE_PATH",
+            "EMPL_NUMB": "14_EMPL_NUMB",
+            "EMPL_NAME": "14_EMPL_NAME",
+            "GNDR_CODE": "14_GNDR_CODE",
+            "CPOS_CODE": "14_CPOS_CODE",
+            "OPOS_CODE": "14_OPOS_CODE",
+            "DUTY_CODE": "14_DUTY_CODE",
+            "ENCO_DATE": "14_ENCO_DATE",
+            "PRON_DATE": "14_PRON_DATE",
+            "DEPT_CODE": "14_DEPT_CODE",
+            "DEPT_NAME": "14_DEPT_NAME",
+            "EMPL_BIRT": "14_EMPL_BIRT",
+            "EMPL_AGEX": "14_EMPL_AGEX",
+            "RARS_DATE": "14_RARS_DATE",
+            "GRDN_CODE": "14_GRDN_CODE",
+            "BRAD_NAME": "14_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "15_FILE_PATH",
+            "EMPL_NUMB": "15_EMPL_NUMB",
+            "EMPL_NAME": "15_EMPL_NAME",
+            "GNDR_CODE": "15_GNDR_CODE",
+            "CPOS_CODE": "15_CPOS_CODE",
+            "OPOS_CODE": "15_OPOS_CODE",
+            "DUTY_CODE": "15_DUTY_CODE",
+            "ENCO_DATE": "15_ENCO_DATE",
+            "PRON_DATE": "15_PRON_DATE",
+            "DEPT_CODE": "15_DEPT_CODE",
+            "DEPT_NAME": "15_DEPT_NAME",
+            "EMPL_BIRT": "15_EMPL_BIRT",
+            "EMPL_AGEX": "15_EMPL_AGEX",
+            "RARS_DATE": "15_RARS_DATE",
+            "GRDN_CODE": "15_GRDN_CODE",
+            "BRAD_NAME": "15_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "16_FILE_PATH",
+            "EMPL_NUMB": "16_EMPL_NUMB",
+            "EMPL_NAME": "16_EMPL_NAME",
+            "GNDR_CODE": "16_GNDR_CODE",
+            "CPOS_CODE": "16_CPOS_CODE",
+            "OPOS_CODE": "16_OPOS_CODE",
+            "DUTY_CODE": "16_DUTY_CODE",
+            "ENCO_DATE": "16_ENCO_DATE",
+            "PRON_DATE": "16_PRON_DATE",
+            "DEPT_CODE": "16_DEPT_CODE",
+            "DEPT_NAME": "16_DEPT_NAME",
+            "EMPL_BIRT": "16_EMPL_BIRT",
+            "EMPL_AGEX": "16_EMPL_AGEX",
+            "RARS_DATE": "16_RARS_DATE",
+            "GRDN_CODE": "16_GRDN_CODE",
+            "BRAD_NAME": "16_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "17_FILE_PATH",
+            "EMPL_NUMB": "17_EMPL_NUMB",
+            "EMPL_NAME": "17_EMPL_NAME",
+            "GNDR_CODE": "17_GNDR_CODE",
+            "CPOS_CODE": "17_CPOS_CODE",
+            "OPOS_CODE": "17_OPOS_CODE",
+            "DUTY_CODE": "17_DUTY_CODE",
+            "ENCO_DATE": "17_ENCO_DATE",
+            "PRON_DATE": "17_PRON_DATE",
+            "DEPT_CODE": "17_DEPT_CODE",
+            "DEPT_NAME": "17_DEPT_NAME",
+            "EMPL_BIRT": "17_EMPL_BIRT",
+            "EMPL_AGEX": "17_EMPL_AGEX",
+            "RARS_DATE": "17_RARS_DATE",
+            "GRDN_CODE": "17_GRDN_CODE",
+            "BRAD_NAME": "17_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "18_FILE_PATH",
+            "EMPL_NUMB": "18_EMPL_NUMB",
+            "EMPL_NAME": "18_EMPL_NAME",
+            "GNDR_CODE": "18_GNDR_CODE",
+            "CPOS_CODE": "18_CPOS_CODE",
+            "OPOS_CODE": "18_OPOS_CODE",
+            "DUTY_CODE": "18_DUTY_CODE",
+            "ENCO_DATE": "18_ENCO_DATE",
+            "PRON_DATE": "18_PRON_DATE",
+            "DEPT_CODE": "18_DEPT_CODE",
+            "DEPT_NAME": "18_DEPT_NAME",
+            "EMPL_BIRT": "18_EMPL_BIRT",
+            "EMPL_AGEX": "18_EMPL_AGEX",
+            "RARS_DATE": "18_RARS_DATE",
+            "GRDN_CODE": "18_GRDN_CODE",
+            "BRAD_NAME": "18_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "19_FILE_PATH",
+            "EMPL_NUMB": "19_EMPL_NUMB",
+            "EMPL_NAME": "19_EMPL_NAME",
+            "GNDR_CODE": "19_GNDR_CODE",
+            "CPOS_CODE": "19_CPOS_CODE",
+            "OPOS_CODE": "19_OPOS_CODE",
+            "DUTY_CODE": "19_DUTY_CODE",
+            "ENCO_DATE": "19_ENCO_DATE",
+            "PRON_DATE": "19_PRON_DATE",
+            "DEPT_CODE": "19_DEPT_CODE",
+            "DEPT_NAME": "19_DEPT_NAME",
+            "EMPL_BIRT": "19_EMPL_BIRT",
+            "EMPL_AGEX": "19_EMPL_AGEX",
+            "RARS_DATE": "19_RARS_DATE",
+            "GRDN_CODE": "19_GRDN_CODE",
+            "BRAD_NAME": "19_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "20_FILE_PATH",
+            "EMPL_NUMB": "20_EMPL_NUMB",
+            "EMPL_NAME": "20_EMPL_NAME",
+            "GNDR_CODE": "20_GNDR_CODE",
+            "CPOS_CODE": "20_CPOS_CODE",
+            "OPOS_CODE": "20_OPOS_CODE",
+            "DUTY_CODE": "20_DUTY_CODE",
+            "ENCO_DATE": "20_ENCO_DATE",
+            "PRON_DATE": "20_PRON_DATE",
+            "DEPT_CODE": "20_DEPT_CODE",
+            "DEPT_NAME": "20_DEPT_NAME",
+            "EMPL_BIRT": "20_EMPL_BIRT",
+            "EMPL_AGEX": "20_EMPL_AGEX",
+            "RARS_DATE": "20_RARS_DATE",
+            "GRDN_CODE": "20_GRDN_CODE",
+            "BRAD_NAME": "20_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "21_FILE_PATH",
+            "EMPL_NUMB": "21_EMPL_NUMB",
+            "EMPL_NAME": "21_EMPL_NAME",
+            "GNDR_CODE": "21_GNDR_CODE",
+            "CPOS_CODE": "21_CPOS_CODE",
+            "OPOS_CODE": "21_OPOS_CODE",
+            "DUTY_CODE": "21_DUTY_CODE",
+            "ENCO_DATE": "21_ENCO_DATE",
+            "PRON_DATE": "21_PRON_DATE",
+            "DEPT_CODE": "21_DEPT_CODE",
+            "DEPT_NAME": "21_DEPT_NAME",
+            "EMPL_BIRT": "21_EMPL_BIRT",
+            "EMPL_AGEX": "21_EMPL_AGEX",
+            "RARS_DATE": "21_RARS_DATE",
+            "GRDN_CODE": "21_GRDN_CODE",
+            "BRAD_NAME": "21_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "22_FILE_PATH",
+            "EMPL_NUMB": "22_EMPL_NUMB",
+            "EMPL_NAME": "22_EMPL_NAME",
+            "GNDR_CODE": "22_GNDR_CODE",
+            "CPOS_CODE": "22_CPOS_CODE",
+            "OPOS_CODE": "22_OPOS_CODE",
+            "DUTY_CODE": "22_DUTY_CODE",
+            "ENCO_DATE": "22_ENCO_DATE",
+            "PRON_DATE": "22_PRON_DATE",
+            "DEPT_CODE": "22_DEPT_CODE",
+            "DEPT_NAME": "22_DEPT_NAME",
+            "EMPL_BIRT": "22_EMPL_BIRT",
+            "EMPL_AGEX": "22_EMPL_AGEX",
+            "RARS_DATE": "22_RARS_DATE",
+            "GRDN_CODE": "22_GRDN_CODE",
+            "BRAD_NAME": "22_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "23_FILE_PATH",
+            "EMPL_NUMB": "23_EMPL_NUMB",
+            "EMPL_NAME": "23_EMPL_NAME",
+            "GNDR_CODE": "23_GNDR_CODE",
+            "CPOS_CODE": "23_CPOS_CODE",
+            "OPOS_CODE": "23_OPOS_CODE",
+            "DUTY_CODE": "23_DUTY_CODE",
+            "ENCO_DATE": "23_ENCO_DATE",
+            "PRON_DATE": "23_PRON_DATE",
+            "DEPT_CODE": "23_DEPT_CODE",
+            "DEPT_NAME": "23_DEPT_NAME",
+            "EMPL_BIRT": "23_EMPL_BIRT",
+            "EMPL_AGEX": "23_EMPL_AGEX",
+            "RARS_DATE": "23_RARS_DATE",
+            "GRDN_CODE": "23_GRDN_CODE",
+            "BRAD_NAME": "23_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "24_FILE_PATH",
+            "EMPL_NUMB": "24_EMPL_NUMB",
+            "EMPL_NAME": "24_EMPL_NAME",
+            "GNDR_CODE": "24_GNDR_CODE",
+            "CPOS_CODE": "24_CPOS_CODE",
+            "OPOS_CODE": "24_OPOS_CODE",
+            "DUTY_CODE": "24_DUTY_CODE",
+            "ENCO_DATE": "24_ENCO_DATE",
+            "PRON_DATE": "24_PRON_DATE",
+            "DEPT_CODE": "24_DEPT_CODE",
+            "DEPT_NAME": "24_DEPT_NAME",
+            "EMPL_BIRT": "24_EMPL_BIRT",
+            "EMPL_AGEX": "24_EMPL_AGEX",
+            "RARS_DATE": "24_RARS_DATE",
+            "GRDN_CODE": "24_GRDN_CODE",
+            "BRAD_NAME": "24_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "25_FILE_PATH",
+            "EMPL_NUMB": "25_EMPL_NUMB",
+            "EMPL_NAME": "25_EMPL_NAME",
+            "GNDR_CODE": "25_GNDR_CODE",
+            "CPOS_CODE": "25_CPOS_CODE",
+            "OPOS_CODE": "25_OPOS_CODE",
+            "DUTY_CODE": "25_DUTY_CODE",
+            "ENCO_DATE": "25_ENCO_DATE",
+            "PRON_DATE": "25_PRON_DATE",
+            "DEPT_CODE": "25_DEPT_CODE",
+            "DEPT_NAME": "25_DEPT_NAME",
+            "EMPL_BIRT": "25_EMPL_BIRT",
+            "EMPL_AGEX": "25_EMPL_AGEX",
+            "RARS_DATE": "25_RARS_DATE",
+            "GRDN_CODE": "25_GRDN_CODE",
+            "BRAD_NAME": "25_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "26_FILE_PATH",
+            "EMPL_NUMB": "26_EMPL_NUMB",
+            "EMPL_NAME": "26_EMPL_NAME",
+            "GNDR_CODE": "26_GNDR_CODE",
+            "CPOS_CODE": "26_CPOS_CODE",
+            "OPOS_CODE": "26_OPOS_CODE",
+            "DUTY_CODE": "26_DUTY_CODE",
+            "ENCO_DATE": "26_ENCO_DATE",
+            "PRON_DATE": "26_PRON_DATE",
+            "DEPT_CODE": "26_DEPT_CODE",
+            "DEPT_NAME": "26_DEPT_NAME",
+            "EMPL_BIRT": "26_EMPL_BIRT",
+            "EMPL_AGEX": "26_EMPL_AGEX",
+            "RARS_DATE": "26_RARS_DATE",
+            "GRDN_CODE": "26_GRDN_CODE",
+            "BRAD_NAME": "26_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "27_FILE_PATH",
+            "EMPL_NUMB": "27_EMPL_NUMB",
+            "EMPL_NAME": "27_EMPL_NAME",
+            "GNDR_CODE": "27_GNDR_CODE",
+            "CPOS_CODE": "27_CPOS_CODE",
+            "OPOS_CODE": "27_OPOS_CODE",
+            "DUTY_CODE": "27_DUTY_CODE",
+            "ENCO_DATE": "27_ENCO_DATE",
+            "PRON_DATE": "27_PRON_DATE",
+            "DEPT_CODE": "27_DEPT_CODE",
+            "DEPT_NAME": "27_DEPT_NAME",
+            "EMPL_BIRT": "27_EMPL_BIRT",
+            "EMPL_AGEX": "27_EMPL_AGEX",
+            "RARS_DATE": "27_RARS_DATE",
+            "GRDN_CODE": "27_GRDN_CODE",
+            "BRAD_NAME": "27_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "28_FILE_PATH",
+            "EMPL_NUMB": "28_EMPL_NUMB",
+            "EMPL_NAME": "28_EMPL_NAME",
+            "GNDR_CODE": "28_GNDR_CODE",
+            "CPOS_CODE": "28_CPOS_CODE",
+            "OPOS_CODE": "28_OPOS_CODE",
+            "DUTY_CODE": "28_DUTY_CODE",
+            "ENCO_DATE": "28_ENCO_DATE",
+            "PRON_DATE": "28_PRON_DATE",
+            "DEPT_CODE": "28_DEPT_CODE",
+            "DEPT_NAME": "28_DEPT_NAME",
+            "EMPL_BIRT": "28_EMPL_BIRT",
+            "EMPL_AGEX": "28_EMPL_AGEX",
+            "RARS_DATE": "28_RARS_DATE",
+            "GRDN_CODE": "28_GRDN_CODE",
+            "BRAD_NAME": "28_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "29_FILE_PATH",
+            "EMPL_NUMB": "29_EMPL_NUMB",
+            "EMPL_NAME": "29_EMPL_NAME",
+            "GNDR_CODE": "29_GNDR_CODE",
+            "CPOS_CODE": "29_CPOS_CODE",
+            "OPOS_CODE": "29_OPOS_CODE",
+            "DUTY_CODE": "29_DUTY_CODE",
+            "ENCO_DATE": "29_ENCO_DATE",
+            "PRON_DATE": "29_PRON_DATE",
+            "DEPT_CODE": "29_DEPT_CODE",
+            "DEPT_NAME": "29_DEPT_NAME",
+            "EMPL_BIRT": "29_EMPL_BIRT",
+            "EMPL_AGEX": "29_EMPL_AGEX",
+            "RARS_DATE": "29_RARS_DATE",
+            "GRDN_CODE": "29_GRDN_CODE",
+            "BRAD_NAME": "29_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "30_FILE_PATH",
+            "EMPL_NUMB": "30_EMPL_NUMB",
+            "EMPL_NAME": "30_EMPL_NAME",
+            "GNDR_CODE": "30_GNDR_CODE",
+            "CPOS_CODE": "30_CPOS_CODE",
+            "OPOS_CODE": "30_OPOS_CODE",
+            "DUTY_CODE": "30_DUTY_CODE",
+            "ENCO_DATE": "30_ENCO_DATE",
+            "PRON_DATE": "30_PRON_DATE",
+            "DEPT_CODE": "30_DEPT_CODE",
+            "DEPT_NAME": "30_DEPT_NAME",
+            "EMPL_BIRT": "30_EMPL_BIRT",
+            "EMPL_AGEX": "30_EMPL_AGEX",
+            "RARS_DATE": "30_RARS_DATE",
+            "GRDN_CODE": "30_GRDN_CODE",
+            "BRAD_NAME": "30_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "31_FILE_PATH",
+            "EMPL_NUMB": "31_EMPL_NUMB",
+            "EMPL_NAME": "31_EMPL_NAME",
+            "GNDR_CODE": "31_GNDR_CODE",
+            "CPOS_CODE": "31_CPOS_CODE",
+            "OPOS_CODE": "31_OPOS_CODE",
+            "DUTY_CODE": "31_DUTY_CODE",
+            "ENCO_DATE": "31_ENCO_DATE",
+            "PRON_DATE": "31_PRON_DATE",
+            "DEPT_CODE": "31_DEPT_CODE",
+            "DEPT_NAME": "31_DEPT_NAME",
+            "EMPL_BIRT": "31_EMPL_BIRT",
+            "EMPL_AGEX": "31_EMPL_AGEX",
+            "RARS_DATE": "31_RARS_DATE",
+            "GRDN_CODE": "31_GRDN_CODE",
+            "BRAD_NAME": "31_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "32_FILE_PATH",
+            "EMPL_NUMB": "32_EMPL_NUMB",
+            "EMPL_NAME": "32_EMPL_NAME",
+            "GNDR_CODE": "32_GNDR_CODE",
+            "CPOS_CODE": "32_CPOS_CODE",
+            "OPOS_CODE": "32_OPOS_CODE",
+            "DUTY_CODE": "32_DUTY_CODE",
+            "ENCO_DATE": "32_ENCO_DATE",
+            "PRON_DATE": "32_PRON_DATE",
+            "DEPT_CODE": "32_DEPT_CODE",
+            "DEPT_NAME": "32_DEPT_NAME",
+            "EMPL_BIRT": "32_EMPL_BIRT",
+            "EMPL_AGEX": "32_EMPL_AGEX",
+            "RARS_DATE": "32_RARS_DATE",
+            "GRDN_CODE": "32_GRDN_CODE",
+            "BRAD_NAME": "32_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "33_FILE_PATH",
+            "EMPL_NUMB": "33_EMPL_NUMB",
+            "EMPL_NAME": "33_EMPL_NAME",
+            "GNDR_CODE": "33_GNDR_CODE",
+            "CPOS_CODE": "33_CPOS_CODE",
+            "OPOS_CODE": "33_OPOS_CODE",
+            "DUTY_CODE": "33_DUTY_CODE",
+            "ENCO_DATE": "33_ENCO_DATE",
+            "PRON_DATE": "33_PRON_DATE",
+            "DEPT_CODE": "33_DEPT_CODE",
+            "DEPT_NAME": "33_DEPT_NAME",
+            "EMPL_BIRT": "33_EMPL_BIRT",
+            "EMPL_AGEX": "33_EMPL_AGEX",
+            "RARS_DATE": "33_RARS_DATE",
+            "GRDN_CODE": "33_GRDN_CODE",
+            "BRAD_NAME": "33_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "34_FILE_PATH",
+            "EMPL_NUMB": "34_EMPL_NUMB",
+            "EMPL_NAME": "34_EMPL_NAME",
+            "GNDR_CODE": "34_GNDR_CODE",
+            "CPOS_CODE": "34_CPOS_CODE",
+            "OPOS_CODE": "34_OPOS_CODE",
+            "DUTY_CODE": "34_DUTY_CODE",
+            "ENCO_DATE": "34_ENCO_DATE",
+            "PRON_DATE": "34_PRON_DATE",
+            "DEPT_CODE": "34_DEPT_CODE",
+            "DEPT_NAME": "34_DEPT_NAME",
+            "EMPL_BIRT": "34_EMPL_BIRT",
+            "EMPL_AGEX": "34_EMPL_AGEX",
+            "RARS_DATE": "34_RARS_DATE",
+            "GRDN_CODE": "34_GRDN_CODE",
+            "BRAD_NAME": "34_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "35_FILE_PATH",
+            "EMPL_NUMB": "35_EMPL_NUMB",
+            "EMPL_NAME": "35_EMPL_NAME",
+            "GNDR_CODE": "35_GNDR_CODE",
+            "CPOS_CODE": "35_CPOS_CODE",
+            "OPOS_CODE": "35_OPOS_CODE",
+            "DUTY_CODE": "35_DUTY_CODE",
+            "ENCO_DATE": "35_ENCO_DATE",
+            "PRON_DATE": "35_PRON_DATE",
+            "DEPT_CODE": "35_DEPT_CODE",
+            "DEPT_NAME": "35_DEPT_NAME",
+            "EMPL_BIRT": "35_EMPL_BIRT",
+            "EMPL_AGEX": "35_EMPL_AGEX",
+            "RARS_DATE": "35_RARS_DATE",
+            "GRDN_CODE": "35_GRDN_CODE",
+            "BRAD_NAME": "35_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "36_FILE_PATH",
+            "EMPL_NUMB": "36_EMPL_NUMB",
+            "EMPL_NAME": "36_EMPL_NAME",
+            "GNDR_CODE": "36_GNDR_CODE",
+            "CPOS_CODE": "36_CPOS_CODE",
+            "OPOS_CODE": "36_OPOS_CODE",
+            "DUTY_CODE": "36_DUTY_CODE",
+            "ENCO_DATE": "36_ENCO_DATE",
+            "PRON_DATE": "36_PRON_DATE",
+            "DEPT_CODE": "36_DEPT_CODE",
+            "DEPT_NAME": "36_DEPT_NAME",
+            "EMPL_BIRT": "36_EMPL_BIRT",
+            "EMPL_AGEX": "36_EMPL_AGEX",
+            "RARS_DATE": "36_RARS_DATE",
+            "GRDN_CODE": "36_GRDN_CODE",
+            "BRAD_NAME": "36_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "37_FILE_PATH",
+            "EMPL_NUMB": "37_EMPL_NUMB",
+            "EMPL_NAME": "37_EMPL_NAME",
+            "GNDR_CODE": "37_GNDR_CODE",
+            "CPOS_CODE": "37_CPOS_CODE",
+            "OPOS_CODE": "37_OPOS_CODE",
+            "DUTY_CODE": "37_DUTY_CODE",
+            "ENCO_DATE": "37_ENCO_DATE",
+            "PRON_DATE": "37_PRON_DATE",
+            "DEPT_CODE": "37_DEPT_CODE",
+            "DEPT_NAME": "37_DEPT_NAME",
+            "EMPL_BIRT": "37_EMPL_BIRT",
+            "EMPL_AGEX": "37_EMPL_AGEX",
+            "RARS_DATE": "37_RARS_DATE",
+            "GRDN_CODE": "37_GRDN_CODE",
+            "BRAD_NAME": "37_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "38_FILE_PATH",
+            "EMPL_NUMB": "38_EMPL_NUMB",
+            "EMPL_NAME": "38_EMPL_NAME",
+            "GNDR_CODE": "38_GNDR_CODE",
+            "CPOS_CODE": "38_CPOS_CODE",
+            "OPOS_CODE": "38_OPOS_CODE",
+            "DUTY_CODE": "38_DUTY_CODE",
+            "ENCO_DATE": "38_ENCO_DATE",
+            "PRON_DATE": "38_PRON_DATE",
+            "DEPT_CODE": "38_DEPT_CODE",
+            "DEPT_NAME": "38_DEPT_NAME",
+            "EMPL_BIRT": "38_EMPL_BIRT",
+            "EMPL_AGEX": "38_EMPL_AGEX",
+            "RARS_DATE": "38_RARS_DATE",
+            "GRDN_CODE": "38_GRDN_CODE",
+            "BRAD_NAME": "38_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "39_FILE_PATH",
+            "EMPL_NUMB": "39_EMPL_NUMB",
+            "EMPL_NAME": "39_EMPL_NAME",
+            "GNDR_CODE": "39_GNDR_CODE",
+            "CPOS_CODE": "39_CPOS_CODE",
+            "OPOS_CODE": "39_OPOS_CODE",
+            "DUTY_CODE": "39_DUTY_CODE",
+            "ENCO_DATE": "39_ENCO_DATE",
+            "PRON_DATE": "39_PRON_DATE",
+            "DEPT_CODE": "39_DEPT_CODE",
+            "DEPT_NAME": "39_DEPT_NAME",
+            "EMPL_BIRT": "39_EMPL_BIRT",
+            "EMPL_AGEX": "39_EMPL_AGEX",
+            "RARS_DATE": "39_RARS_DATE",
+            "GRDN_CODE": "39_GRDN_CODE",
+            "BRAD_NAME": "39_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "40_FILE_PATH",
+            "EMPL_NUMB": "40_EMPL_NUMB",
+            "EMPL_NAME": "40_EMPL_NAME",
+            "GNDR_CODE": "40_GNDR_CODE",
+            "CPOS_CODE": "40_CPOS_CODE",
+            "OPOS_CODE": "40_OPOS_CODE",
+            "DUTY_CODE": "40_DUTY_CODE",
+            "ENCO_DATE": "40_ENCO_DATE",
+            "PRON_DATE": "40_PRON_DATE",
+            "DEPT_CODE": "40_DEPT_CODE",
+            "DEPT_NAME": "40_DEPT_NAME",
+            "EMPL_BIRT": "40_EMPL_BIRT",
+            "EMPL_AGEX": "40_EMPL_AGEX",
+            "RARS_DATE": "40_RARS_DATE",
+            "GRDN_CODE": "40_GRDN_CODE",
+            "BRAD_NAME": "40_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "41_FILE_PATH",
+            "EMPL_NUMB": "41_EMPL_NUMB",
+            "EMPL_NAME": "41_EMPL_NAME",
+            "GNDR_CODE": "41_GNDR_CODE",
+            "CPOS_CODE": "41_CPOS_CODE",
+            "OPOS_CODE": "41_OPOS_CODE",
+            "DUTY_CODE": "41_DUTY_CODE",
+            "ENCO_DATE": "41_ENCO_DATE",
+            "PRON_DATE": "41_PRON_DATE",
+            "DEPT_CODE": "41_DEPT_CODE",
+            "DEPT_NAME": "41_DEPT_NAME",
+            "EMPL_BIRT": "41_EMPL_BIRT",
+            "EMPL_AGEX": "41_EMPL_AGEX",
+            "RARS_DATE": "41_RARS_DATE",
+            "GRDN_CODE": "41_GRDN_CODE",
+            "BRAD_NAME": "41_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "42_FILE_PATH",
+            "EMPL_NUMB": "42_EMPL_NUMB",
+            "EMPL_NAME": "42_EMPL_NAME",
+            "GNDR_CODE": "42_GNDR_CODE",
+            "CPOS_CODE": "42_CPOS_CODE",
+            "OPOS_CODE": "42_OPOS_CODE",
+            "DUTY_CODE": "42_DUTY_CODE",
+            "ENCO_DATE": "42_ENCO_DATE",
+            "PRON_DATE": "42_PRON_DATE",
+            "DEPT_CODE": "42_DEPT_CODE",
+            "DEPT_NAME": "42_DEPT_NAME",
+            "EMPL_BIRT": "42_EMPL_BIRT",
+            "EMPL_AGEX": "42_EMPL_AGEX",
+            "RARS_DATE": "42_RARS_DATE",
+            "GRDN_CODE": "42_GRDN_CODE",
+            "BRAD_NAME": "42_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "43_FILE_PATH",
+            "EMPL_NUMB": "43_EMPL_NUMB",
+            "EMPL_NAME": "43_EMPL_NAME",
+            "GNDR_CODE": "43_GNDR_CODE",
+            "CPOS_CODE": "43_CPOS_CODE",
+            "OPOS_CODE": "43_OPOS_CODE",
+            "DUTY_CODE": "43_DUTY_CODE",
+            "ENCO_DATE": "43_ENCO_DATE",
+            "PRON_DATE": "43_PRON_DATE",
+            "DEPT_CODE": "43_DEPT_CODE",
+            "DEPT_NAME": "43_DEPT_NAME",
+            "EMPL_BIRT": "43_EMPL_BIRT",
+            "EMPL_AGEX": "43_EMPL_AGEX",
+            "RARS_DATE": "43_RARS_DATE",
+            "GRDN_CODE": "43_GRDN_CODE",
+            "BRAD_NAME": "43_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "44_FILE_PATH",
+            "EMPL_NUMB": "44_EMPL_NUMB",
+            "EMPL_NAME": "44_EMPL_NAME",
+            "GNDR_CODE": "44_GNDR_CODE",
+            "CPOS_CODE": "44_CPOS_CODE",
+            "OPOS_CODE": "44_OPOS_CODE",
+            "DUTY_CODE": "44_DUTY_CODE",
+            "ENCO_DATE": "44_ENCO_DATE",
+            "PRON_DATE": "44_PRON_DATE",
+            "DEPT_CODE": "44_DEPT_CODE",
+            "DEPT_NAME": "44_DEPT_NAME",
+            "EMPL_BIRT": "44_EMPL_BIRT",
+            "EMPL_AGEX": "44_EMPL_AGEX",
+            "RARS_DATE": "44_RARS_DATE",
+            "GRDN_CODE": "44_GRDN_CODE",
+            "BRAD_NAME": "44_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "45_FILE_PATH",
+            "EMPL_NUMB": "45_EMPL_NUMB",
+            "EMPL_NAME": "45_EMPL_NAME",
+            "GNDR_CODE": "45_GNDR_CODE",
+            "CPOS_CODE": "45_CPOS_CODE",
+            "OPOS_CODE": "45_OPOS_CODE",
+            "DUTY_CODE": "45_DUTY_CODE",
+            "ENCO_DATE": "45_ENCO_DATE",
+            "PRON_DATE": "45_PRON_DATE",
+            "DEPT_CODE": "45_DEPT_CODE",
+            "DEPT_NAME": "45_DEPT_NAME",
+            "EMPL_BIRT": "45_EMPL_BIRT",
+            "EMPL_AGEX": "45_EMPL_AGEX",
+            "RARS_DATE": "45_RARS_DATE",
+            "GRDN_CODE": "45_GRDN_CODE",
+            "BRAD_NAME": "45_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "46_FILE_PATH",
+            "EMPL_NUMB": "46_EMPL_NUMB",
+            "EMPL_NAME": "46_EMPL_NAME",
+            "GNDR_CODE": "46_GNDR_CODE",
+            "CPOS_CODE": "46_CPOS_CODE",
+            "OPOS_CODE": "46_OPOS_CODE",
+            "DUTY_CODE": "46_DUTY_CODE",
+            "ENCO_DATE": "46_ENCO_DATE",
+            "PRON_DATE": "46_PRON_DATE",
+            "DEPT_CODE": "46_DEPT_CODE",
+            "DEPT_NAME": "46_DEPT_NAME",
+            "EMPL_BIRT": "46_EMPL_BIRT",
+            "EMPL_AGEX": "46_EMPL_AGEX",
+            "RARS_DATE": "46_RARS_DATE",
+            "GRDN_CODE": "46_GRDN_CODE",
+            "BRAD_NAME": "46_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "47_FILE_PATH",
+            "EMPL_NUMB": "47_EMPL_NUMB",
+            "EMPL_NAME": "47_EMPL_NAME",
+            "GNDR_CODE": "47_GNDR_CODE",
+            "CPOS_CODE": "47_CPOS_CODE",
+            "OPOS_CODE": "47_OPOS_CODE",
+            "DUTY_CODE": "47_DUTY_CODE",
+            "ENCO_DATE": "47_ENCO_DATE",
+            "PRON_DATE": "47_PRON_DATE",
+            "DEPT_CODE": "47_DEPT_CODE",
+            "DEPT_NAME": "47_DEPT_NAME",
+            "EMPL_BIRT": "47_EMPL_BIRT",
+            "EMPL_AGEX": "47_EMPL_AGEX",
+            "RARS_DATE": "47_RARS_DATE",
+            "GRDN_CODE": "47_GRDN_CODE",
+            "BRAD_NAME": "47_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "48_FILE_PATH",
+            "EMPL_NUMB": "48_EMPL_NUMB",
+            "EMPL_NAME": "48_EMPL_NAME",
+            "GNDR_CODE": "48_GNDR_CODE",
+            "CPOS_CODE": "48_CPOS_CODE",
+            "OPOS_CODE": "48_OPOS_CODE",
+            "DUTY_CODE": "48_DUTY_CODE",
+            "ENCO_DATE": "48_ENCO_DATE",
+            "PRON_DATE": "48_PRON_DATE",
+            "DEPT_CODE": "48_DEPT_CODE",
+            "DEPT_NAME": "48_DEPT_NAME",
+            "EMPL_BIRT": "48_EMPL_BIRT",
+            "EMPL_AGEX": "48_EMPL_AGEX",
+            "RARS_DATE": "48_RARS_DATE",
+            "GRDN_CODE": "48_GRDN_CODE",
+            "BRAD_NAME": "48_BRAD_NAME",
+            "rowStatus": "C"
+        },
+        {
+            "FILE_PATH": "49_FILE_PATH",
+            "EMPL_NUMB": "49_EMPL_NUMB",
+            "EMPL_NAME": "49_EMPL_NAME",
+            "GNDR_CODE": "49_GNDR_CODE",
+            "CPOS_CODE": "49_CPOS_CODE",
+            "OPOS_CODE": "49_OPOS_CODE",
+            "DUTY_CODE": "49_DUTY_CODE",
+            "ENCO_DATE": "49_ENCO_DATE",
+            "PRON_DATE": "49_PRON_DATE",
+            "DEPT_CODE": "49_DEPT_CODE",
+            "DEPT_NAME": "49_DEPT_NAME",
+            "EMPL_BIRT": "49_EMPL_BIRT",
+            "EMPL_AGEX": "49_EMPL_AGEX",
+            "RARS_DATE": "49_RARS_DATE",
+            "GRDN_CODE": "49_GRDN_CODE",
+            "BRAD_NAME": "49_BRAD_NAME",
+            "rowStatus": "C"
+        }
+    ];
+    dtlHR_MASTXM.setJSON(json1);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 07-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dtlHR_MASTXM" scrollByColumn="false" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position:relative;top:0px;left:0px;right:0px;bottom:0px;height: 670px;width:600px;float: left;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" rowNumVisible="true" 
+    		showLastRow="true" fastScroll="false">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column35" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="사진">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column33" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="사원번호">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column31" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="성명">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column29" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="성별">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column27" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="직급">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column25" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="직위">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column23" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="직무">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column21" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="입사일자">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column19" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="승진일자">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column17" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="부서코드">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column15" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="부서명">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column13" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="생년월일">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="나이(만)">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="퇴직예정일">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="최종학력">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="BRAND UNIT">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="FILE_PATH" style="height:20px" inputType="image" width="70" displayMode="label"
+    					imageHeight="110" imageWidth="90">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="EMPL_NUMB" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="EMPL_NAME" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="GNDR_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="CPOS_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="OPOS_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="DUTY_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="ENCO_DATE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="PRON_DATE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="DEPT_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="DEPT_NAME" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="EMPL_BIRT" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="EMPL_AGEX" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="RARS_DATE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="GRDN_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="BRAD_NAME" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView dataList="dtlHR_MASTXM" scrollByColumn="false" scrollByColumnAdaptive="false" id="gridView2"
+    		style="position: relative;width: 600px;height: 150px;float : left;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true" visibleRowNum="all" rowNumVisible="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column35" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="사진">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column33" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="사원번호">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column31" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="성명">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column29" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="성별">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column27" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="직급">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column25" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="직위">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column23" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="직무">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column21" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="입사일자">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column19" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="승진일자">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column17" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="부서코드">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column15" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="부서명">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column13" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="생년월일">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="나이(만)">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="퇴직예정일">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="최종학력">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="BRAND UNIT">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="FILE_PATH" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="EMPL_NUMB" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="EMPL_NAME" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="GNDR_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="CPOS_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="OPOS_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="DUTY_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="ENCO_DATE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="PRON_DATE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="DEPT_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="DEPT_NAME" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="EMPL_BIRT" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="EMPL_AGEX" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="RARS_DATE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="GRDN_CODE" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="BRAD_NAME" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

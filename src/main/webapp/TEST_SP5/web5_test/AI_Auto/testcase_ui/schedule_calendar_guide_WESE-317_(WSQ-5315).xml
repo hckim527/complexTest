@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+      <w2:type>COMPONENT</w2:type>
+      <w2:buildDate />
+      <w2:MSA />
+      <xf:model>
+        <w2:dataCollection baseNode="map">
+        	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true" ev:onbeforecelldatachange="scwin.dataList1_onbeforecelldatachange" ev:oncelldatachange="scwin.dataList1_oncelldatachange">
+            <w2:columnInfo>
+              <w2:column id="start" name="name1" dataType="text"></w2:column>
+              <w2:column id="end" name="name2" dataType="text"></w2:column>
+              <w2:column id="id" name="name3" dataType="text"></w2:column>
+              <w2:column id="title" name="name4" dataType="text"></w2:column>
+              <w2:column id="gubun" name="name5" dataType="text"></w2:column>
+              <w2:column id="theme" name="name6" dataType="text"></w2:column>
+            </w2:columnInfo>
+          </w2:dataList>
+        </w2:dataCollection>
+        <w2:workflowCollection />
+      </xf:model>
+      <w2:layoutInfo />
+      <w2:publicInfo method="" />
+      
+      <script lazy="false" type="text/javascript"><![CDATA[
+
+scwin.onpageload = function() {
+     dataList1.insertJSON(0, [{"start":"20230126", "end":"20230126", "id":"test", "title":"test", "theme":{ "color":"yellow", "textColor":"#000000" } }])
+     dataList1.insertJSON(0, [{"start":"20230125", "end":"20230125", "id":"test2", "title":"test2", "theme":{ "color":"sky", "textColor":"#000000" } }])
+};
+
+/**
+ * 상단 오른쪽 버튼 클릭 이벤트
+ */
+scwin.sch_cal_onheaderbtnclick = function(retObj) {
+    if (retObj.viewType == 'basicDay') {
+      sch_cal.changeView("agendaDay");  
+    }
+};
+
+/**
+ * 일정 추가 이벤트
+ */
+scwin.sch_cal_onclick = function(retObj) {
+
+    console.log(retObj);
+    
+    var data = {
+        userYn : "Y",
+        viewYn : "N",
+        startDate: WebSquare.date.getFormattedDate(retObj.start, "yyyy-MM-dd"),
+        callbackFn : "scwin.fn_Callback" };
+    var options = {
+        id : "schedulePopup",
+        title : "schedulePopup",
+        height : "500px",
+        width: "800px",
+        modal : true,
+        popupName : "일정등록팝업"
+    };
+    //com.win.openPopup("/ui/sample/scheduleCalendarPopup.xml", options, data);
+};
+scwin.titleFormatter = function (info) {
+    console.log("titleFormatter");
+    if (info.title) {
+        return "<span>구분</span> " + info.title;
+    }
+}
+scwin.fn_Callback = function (res) {
+    var gubunStr = "";
+    if (res.gubun == "1") {
+        gubunStr = "휴가";
+    } else if (res.gubun == "2") {
+        gubunStr = "출장";
+    } else if (res.gubun == "6") {
+        gubunStr = "당직";
+    } else if (res.gubun == "7") {
+        gubunStr = "공가";
+    } else if (res.gubun == "8") {
+        gubunStr = "임원";
+    } else if (res.gubun == "10") {
+        gubunStr = "입사";
+    } else if (res.gubun == "11") {
+        gubunStr = "퇴사";
+    }
+
+    var formatTitle = "<span>" + gubunStr + "</span> " + res.title;
+
+    dataList1.insertJSON(0, [{"start":res.sdate, "end":res.sdate, "id":res.id, "title":formatTitle, "theme":{ "color":"yellow", "textColor":"#000000" } }])
+};
+
+/**
+ * 일정추가 이벤트
+ */
+scwin.sch_cal_onaddschedule = function(retObj) {
+debugger;
+    // console.log(retObj);
+    // console.log("rowIndex :: " + retObj.rowIndex);
+};
+
+scwin.sch_cal_oneventafterallrender = function() {
+    // var day = "2023-01-11";
+    // $('td').find("[data-date='" + day + "']").css("color", "red");
+};]]></script>
+      <style type="text/css"><![CDATA[ ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="" class="sub_contents" style="">
+    		<xf:group style="" id="" class="box p30">
+    			<w2:scheduleCalendar 
+    			  selectable="true" 
+    			  ioFormat="yyyyMMdd" 
+    			  eventLimit="false" 
+    			  id="sch_cal" 
+    			  lang="ko" 
+    			  defaultDate="" 
+    			  editable="false"
+                  titleFormatter="scwin.titleFormatter" 
+    				headerRightBtn="true" 
+    				titleColumn="title" 
+    				idColumn="id"
+    				startColumn="start" 
+    				endColumn="end"
+    				themeColumn="theme"
+    				dataList="data:dataList1" 
+    				style="height:100%;" 
+    				headerLeftBtn="true" 
+    				headerTitle="true" version="3.6" class="calendar_full" 
+    				ev:onclick="scwin.sch_cal_onclick" 
+    				ev:onaddschedule="scwin.sch_cal_onaddschedule" 
+    				ev:onheaderbtnclick="scwin.sch_cal_onheaderbtnclick"
+    				ev:oneventafterallrender="scwin.sch_cal_oneventafterallrender"
+    				defaultView="month" escape="false">
+    			</w2:scheduleCalendar>
+    		<xf:select1 id="" chooseOption="" style="width:120px;" submenuSize="auto" allOption="" disabled="false" direction="auto" appearance="minimal" disabledClass="w2selectbox_disabled" renderType="native" ref="" class="type_select">
+    			<xf:choices>
+    				<xf:item>
+    					<xf:label><![CDATA[타입선택]]></xf:label>
+    					<xf:value><![CDATA[]]></xf:value>
+    				</xf:item>
+    			</xf:choices>
+    		</xf:select1></xf:group>
+    		
+    	</xf:group>
+    </body>
+</html>

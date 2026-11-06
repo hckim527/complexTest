@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="WAEA_967_pivot_pivotExcelDownload_dialogTitle_guide">
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="region" name="지역" dataType="text"></w2:column>
+                        <w2:column id="industry" name="업종" dataType="text"></w2:column>
+                        <w2:column id="amount" name="금액" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:mfeSubmission/>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css"><![CDATA[
+.guide-row { margin: 8px 0 8px 0; }
+#txtLog { width:940px; height:300px; font-family:Consolas,'Courier New',monospace; font-size:13px; }
+]]></style>
+        <script lazy="false" type="text/javascript"><![CDATA[
+/*
+ * WAEA-967 검증 샘플 - Pivot pivotExcelDownload dialogTitle
+ *
+ * [엔진 전송 구조]
+ *   pivotExcelDownload(options) 내부에서
+ *     - dialogTitle 정규화: 값이 있으면 String으로, undefined/null/"" 이면 delete
+ *     - sheetInfo.options = options  ->  JSON.stringify  ->  pivotToExcel.wq 로 POST
+ *   즉 전송 payload JSON의 options.dialogTitle 위치로 전달된다.
+ *
+ * [Gear 없이 검증하는 방법]
+ *   Gear 에이전트는 실물 환경이 없으면 Dialog Title 표시를 확인할 수 없다.
+ *   대신 이 샘플은 getPivotSheetData(options) 를 감싸 "실제 전송 직전의 정규화된 options"를
+ *   가로채 로그로 출력한다. 여기서 dialogTitle 키의 존재 여부/타입/값을 확인하면
+ *   엔진 몫(요청 데이터 전달)은 검증된다. Dialog 표시 자체는 고객사 Gear 환경 몫.
+ *
+ * [주의] 버튼을 누르면 실제 pivotToExcel.wq 요청이 함께 발생한다.
+ */
+scwin.captured = null;
+
+scwin.onpageload = function() {
+    dataList1.setJSON([
+        { region:"서울", industry:"제조",   amount:100 },
+        { region:"서울", industry:"서비스", amount:30  },
+        { region:"부산", industry:"제조",   amount:200 },
+        { region:"부산", industry:"서비스", amount:70  }
+    ]);
+    scwin.installCapture();
+};
+
+// 전송 직전 정규화된 options 를 가로챈다.
+scwin.installCapture = function() {
+    if (typeof pivotTable1.getPivotSheetData !== "function") {
+        scwin.log("[전제 실패] pivotTable1.getPivotSheetData 미제공. 엔진 구조가 달라 캡처 불가.");
+        scwin.log("  -> 개발자도구 Network 탭에서 pivotToExcel 요청 payload를 직접 확인하세요.");
+        return;
+    }
+    var original = pivotTable1.getPivotSheetData;
+    pivotTable1.getPivotSheetData = function(options) {
+        scwin.captured = options;
+        return original.apply(this, arguments);
+    };
+    scwin.log("payload 캡처 준비 완료. 1~6번 버튼을 눌러 결과를 확인하세요.");
+    scwin.log("(버튼 클릭 시 실제 pivotToExcel.wq 다운로드 요청도 함께 발생합니다)");
+    scwin.log("");
+};
+
+scwin.log = function(msg) {
+    txtLog.setValue(txtLog.getValue() + msg + "\n");
+};
+
+// options 를 넘겨 다운로드를 실행하고, 캡처된 dialogTitle 상태를 기대값과 함께 출력한다.
+scwin.run = function(step, options, expectPresent, expectValue) {
+    scwin.captured = null;
+    try {
+        pivotTable1.pivotExcelDownload(options);
+    } catch (e) {
+        scwin.log("[" + step + "] 호출 예외: " + (e && e.message ? e.message : String(e)));
+        return;
+    }
+
+    var opts = scwin.captured;
+    if (!opts) {
+        scwin.log("[" + step + "] FAIL - options 캡처 실패 (getPivotSheetData 미호출)");
+        return;
+    }
+
+    var present = Object.prototype.hasOwnProperty.call(opts, "dialogTitle");
+    var actualValue = present ? opts.dialogTitle : "(키 없음)";
+    var actualType = present ? typeof opts.dialogTitle : "-";
+
+    var pass = (present === expectPresent) && (!expectPresent || (actualValue === expectValue && actualType === "string"));
+
+    scwin.log("[" + step + "] " + (pass ? "PASS" : "FAIL"));
+    scwin.log("  전달 위치 : payload JSON 의 options.dialogTitle");
+    scwin.log("  키 존재   : " + present + " (기대 " + expectPresent + ")");
+    scwin.log("  값        : " + JSON.stringify(actualValue) + " / typeof=" + actualType);
+    if (expectPresent) {
+        scwin.log("  기대 값   : " + JSON.stringify(expectValue) + " / typeof=string");
+    }
+    scwin.log("");
+};
+
+// 1) 기본 - 문자열 지정
+scwin.btn1 = function() {
+    scwin.run("1 기본 문자열",
+        { fileName:"WAEA_967_1.xlsx", dialogTitle:"저장할 위치를 선택하세요" },
+        true, "저장할 위치를 선택하세요");
+};
+
+// 2) 미지정 - 하위호환 (키 자체가 없어야 함)
+scwin.btn2 = function() {
+    scwin.run("2 미지정",
+        { fileName:"WAEA_967_2.xlsx" },
+        false);
+};
+
+// 3) 특수문자 - 이스케이프 없이 원문 유지
+scwin.btn3 = function() {
+    var v = "A&B <저장> \"경로\" '선택'";
+    scwin.run("3 특수문자", { fileName:"WAEA_967_3.xlsx", dialogTitle:v }, true, v);
+};
+
+// 4) falsy 숫자 0 - 삭제되지 않고 문자열 "0" 으로 정규화되어야 함
+scwin.btn4 = function() {
+    scwin.run("4 falsy 숫자 0",
+        { fileName:"WAEA_967_4.xlsx", dialogTitle:0 },
+        true, "0");
+};
+
+// 5) 빈 문자열 - 키 삭제 (하위호환)
+scwin.btn5 = function() {
+    scwin.run("5 빈 문자열",
+        { fileName:"WAEA_967_5.xlsx", dialogTitle:"" },
+        false);
+};
+
+// 6) null - 키 삭제 (하위호환)
+scwin.btn6 = function() {
+    scwin.run("6 null",
+        { fileName:"WAEA_967_6.xlsx", dialogTitle:null },
+        false);
+};
+
+scwin.btnClear = function() {
+    txtLog.setValue("");
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <h3>WAEA-967 Pivot pivotExcelDownload dialogTitle 검증 샘플</h3>
+        <p>전송 직전의 정규화된 options 를 가로채 <b>options.dialogTitle</b> 의 키 존재 여부/타입/값을 확인합니다.
+           Gear 파일 선택 Dialog 의 실제 Title 표시는 Gear 에이전트 환경에서만 확인 가능하며, 이 샘플은 엔진이 값을 요청 데이터로 올바르게 전달하는지까지 검증합니다.</p>
+
+        <w2:pivot id="pivotTable1" editablePivotMode="true" dataList="dataList1" style="position:relative;width:800px;height:340px;" aggregatorName="Sum"
+            showGrandTotal="true" sortFunction="" rows="region" cols="industry" vals="amount" numberFormatter="" valuesAxis="row" class="" renderMode="full" grandTotalName="총합계" valueDataType="number">
+                <w2:fieldInfo>
+                    <w2:field id="region" name="지역" dataType="text"></w2:field>
+                    <w2:field id="industry" name="업종" dataType="text"></w2:field>
+                    <w2:field id="amount" name="금액" dataType="number"></w2:field>
+                </w2:fieldInfo>
+            </w2:pivot>
+
+        <div class="guide-row">
+            <xf:trigger id="btn1" type="button" style="width:170px;height:26px;" ev:onclick="scwin.btn1">
+                <xf:label>1) 기본 문자열</xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn2" type="button" style="width:170px;height:26px;" ev:onclick="scwin.btn2">
+                <xf:label>2) 미지정 (하위호환)</xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn3" type="button" style="width:170px;height:26px;" ev:onclick="scwin.btn3">
+                <xf:label>3) 특수문자</xf:label>
+            </xf:trigger>
+        </div>
+        <div class="guide-row">
+            <xf:trigger id="btn4" type="button" style="width:170px;height:26px;" ev:onclick="scwin.btn4">
+                <xf:label>4) falsy 숫자 0</xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn5" type="button" style="width:170px;height:26px;" ev:onclick="scwin.btn5">
+                <xf:label>5) 빈 문자열</xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn6" type="button" style="width:170px;height:26px;" ev:onclick="scwin.btn6">
+                <xf:label>6) null</xf:label>
+            </xf:trigger>
+            <xf:trigger id="btnClear" type="button" style="width:100px;height:26px;" ev:onclick="scwin.btnClear">
+                <xf:label>로그 지움</xf:label>
+            </xf:trigger>
+        </div>
+
+        <w2:textarea id="txtLog" readOnly="true"
+            style="width:940px;height:300px;font-family:Consolas,'Courier New',monospace;font-size:13px;"></w2:textarea>
+    </body>
+</html>

@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:ev='http://www.w3.org/2001/xml-events'
+    xmlns:w2='http://www.inswave.com/websquare' xmlns:xf='http://www.w3.org/2002/xforms'>
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns='' />
+        	</xf:instance>
+        	<xf:submission id='submission1' ref='' target='' action='submission_SPA_SKT-768_(WSQ-2667)after.jsp' method='post' mediatype='text/xml'
+        		encoding='' instance='' replace='instance' errorHandler='' customHandler='' mode='asynchronous' ev:submitdone='window.submission1_submitdone' processMsg='통 신 중'>
+        	</xf:submission>
+        </xf:model>
+        <script type='text/javascript' lazy='false'><![CDATA[
+scwin.init = function() {
+console.log('init')
+    scwin.trigger2_onclick();
+    setTimeout('mf_scwin.trigger1_onclick();', 200);
+}
+scwin.onpageload = function() {
+console.log('onpageload')
+    window.submission1_submitdone = function() {
+        document.body.innerHTML = location.href.toString();
+        setTimeout('WebSquare.layer.showProcessMessage(\'통 신 완 료\')', 600);
+    }
+	scwin.init();
+}	
+scwin.trigger1_onclick = function() {
+console.log('trigger1_onclick')
+    $p.url('submission_SPA_SKT-768_(WSQ-2667)after.xml', {
+        'spa': true
+    });
+}
+scwin.trigger2_onclick = function() {
+console.log('trigger2_onclick')
+    $p.executeSubmission('submission1');
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "2000");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#textbox1').text() == 'after.xml'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#___processbar2_i').length == 0", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload='scwin.onpageload'>
+    	<xf:trigger id='trigger1' style='position: relative;width:340px;height:25px;' type='button' ev:onclick='scwin.trigger1_onclick'>
+    		<xf:label>move page (after.xml) </xf:label>
+    	</xf:trigger>
+    	<xf:trigger id='trigger2' style='position: relative;width:340px;height:25px;' type='button' ev:onclick='scwin.trigger2_onclick'>
+    		<xf:label>$w.executeSubmission(&quot;submission1&quot;)</xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

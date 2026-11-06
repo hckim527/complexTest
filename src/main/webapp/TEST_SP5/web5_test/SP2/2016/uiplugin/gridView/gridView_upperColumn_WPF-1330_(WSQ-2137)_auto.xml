@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col4" name="name4"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+            "col1": "sample1",
+            "col2": "sample2_1",
+            "col3": "sample3_1",
+            "col4": "sample4_1"
+        },
+        {
+            "col1": "sample1",
+            "col2": "sample2_1",
+            "col3": "sample3_1",
+            "col4": "sample4_1"
+        },
+        {
+            "col1": "sample1",
+            "col2": "sample2_2",
+            "col3": "sample3_1",
+            "col4": "sample4_1"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+};
+scwin.__isMerged = function() {
+    var rows = WebSquare.wUnit.getJq(".grid_body_row").not(".w2grid_hidedRow");
+    return scwin.__isMergedRow(rows, 0) && scwin.__isMergedRow(rows, 1) && !scwin.__isMergedRow(rows, 2);
+}
+scwin.__isMergedRow = function(rows, index) {
+    var count = 0;
+    var tds = WebSquare.wUnit.getJq(rows[index]).find('td');
+    var dataColmerged = WebSquare.util.getDataPrefix("colmerged");
+    for (var i = 0; i < tds.length; i++) {
+        var colMerged = parseInt(WebSquare.wUnit.getJq(tds[i]).attr(dataColmerged));
+        if (!index) {
+            var hasBB = WebSquare.wUnit.getJq(tds[i]).css("border-bottom-width");
+            if (hasBB != "0px") {
+                return false;
+            }
+        } else if (index == 1) {
+            if (!colMerged) {
+                return false;
+            }
+        } else {
+            if (colMerged) {
+                count++;
+            }
+        }
+    }
+    if (index == 2) {
+        return count != 0;
+    }
+    return true;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일 실행 후 결과를 확인한다.
+    //1. Execute the sample file and check the result.
+    //WebSquare.wUnit.addCommand("set", "");
+    // verify step 1. 그리드뷰의 첫번째 row와 두번째 row가 Merge되어 보여진다.(이전에는 각 컬럼의 값이 같으면 Merge됨)
+    //1. The first row and the second row of the grid view are merged (previously merged if the values of each column are the same)
+    WebSquare.wUnit.addCommand("assert", "scwin.__isMerged()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 07-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false"
+    		summaryAuto="false" scrollByColumnAdaptive="false" id="grd"
+    		style="position: absolute ;left: 3px;top: 11px;width: 553px;height: 275px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true" colMergeAnd="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column7"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" value="name4">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" colMerge="true" colMergeEdit="true" >
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label"  colMerge="true" colMergeEdit="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" colMerge="true"  colMergeEdit="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" colMerge="true"  colMergeEdit="true">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

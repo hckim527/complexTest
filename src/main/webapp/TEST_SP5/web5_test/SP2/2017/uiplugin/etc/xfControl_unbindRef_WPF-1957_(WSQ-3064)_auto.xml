@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="col1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataMap1.setJSON({
+        'col1': 'test22'
+    });
+};
+scwin.trigger2_onclick = function(e) {
+    input.unbindRef();
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step  1. 샘플 실행 후 "input1.unbindRef()"버튼을 클릭 후 "dataMap1.setJSON()"버튼을 클릭한다.
+    //After running the sample, click the "input1.unbindRef ()" button and then the "dataMap1.setJSON ()" button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify  1. 'test'값에 변화가 없다(정상)바인딩이 해제되어 set값이 적용되지 않는다.(이전에는 기능이 없었음)
+    //There is no change in the 'test' value (normal)The binding is turned off and the set value is not applied.(Previously no functionality)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input').getValue() == 'test'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataMap1.setJSON({
+        "col1": "test"
+    });
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 25-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:input id="input" style="position: absolute;width:423px;height:110px;left:136px;top:131px;" ref="data:dataMap1.col1"></xf:input>
+    	<xf:trigger type="button" id="trigger2" style="position: absolute;width:195px;height:38px;left:610px;top:131px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[input1.unbindRef()]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger1" style="position: absolute;width:195px;height:38px;left:610px;top:180px;" type="button" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[dataMap1.setJSON()]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dl_gridViewData" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dl_select1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dl_select2" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="useYn" name="useYn" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		var jsonData = [{},{},{}];
+		dl_gridViewData.setJSON(jsonData);
+		
+		var selData1 = [{"col1":"상품","col2":"md"},{"col1":"주문","col2":"or"},{"col1":"채널","col2":"ch"}];
+		dl_select1.setJSON(selData1);
+		
+		var selData2 = [{"col1":"상품","col2":"itm","col3":"md"}
+						,{"col1":"협력사","col2":"ptn","col3":"md"}
+						,{"col1":"대형제휴","col2":"b2b","col3":"md"}
+						,{"col1":"프로모션","col2":"pmt","col3":"md"}
+						,{"col1":"매퍼","col2":"map","col3":"md"}
+						
+						,{"col1":"고객","col2":"cst","col3":"or"}
+						,{"col1":"주문","col2":"ord","col3":"or"}
+						,{"col1":"결제","col2":"pay","col3":"or"}
+						
+						,{"col1":"방송","col2":"bcs","col3":"ch"}
+						,{"col1":"온에어","col2":"bom","col3":"ch"}
+						,{"col1":"타사모니터","col2":"bcm","col3":"ch"}
+						,{"col1":"매체","col2":"pfm","col3":"ch"}];
+		dl_select2.setJSON(selData2);
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.gridView1_onbeforeedit = function(row,col,value) {
+		
+	};
+	
+	scwin.gridView1_onafteredit = function(row,col,value) {
+		var colId = gridView1.getColumnID(col);
+		//시스템서비스구분은 시스템구분에 따라 변경
+		if(colId == "col3") {
+			var cnt = dl_select2.getRowCount();
+			var sysGbCd = dl_gridViewData.getCellData(row, "col3");
+			for(var i = 0 ; i < cnt ; i++){
+				var cdGrp = dl_select2.getCellData(i, "col3");
+				dl_select2.setCellData(i, "useYn", (sysGbCd == cdGrp) ? true : false);
+			}
+			
+			console.log( dl_gridViewData.getCellData(row, "col3") );
+			var temp = dl_select2.getMatchedJSON("useYn", true);
+			console.dir( temp );
+			
+			dl_gridViewData.setCellData(row, "col4", temp[0].col2);
+			gridView1.setColumnVisibleColumn("col4", "useYn", false);
+		}
+	};
+	
+	scwin.Dbclick = function(id) {
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick(el);
+	}
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#G_gridView1___selectbox_col4_itemTable').height() > 0;
+	}
+	scwin.unitTest = function() {
+		//Unit test
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_0_2')");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_gridView1___selectbox_col3_itemTable_1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");			
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_0_3')");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "300");
+		//Run and Stop test
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView id="gridView1" style="width: 500px;height: 150px;" checkAllType="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" dataList="data:dl_gridViewData" ev:onbeforeedit="scwin.gridView1_onbeforeedit" ev:onafteredit="scwin.gridView1_onafteredit">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column7" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column6" value="name2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column5" value="select1" displayMode="label"></w2:column>
+    				<w2:column width="199" inputType="text" style="height:20px" id="column4" value="setColumnVisibleColumn"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="name5" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="70" inputType="text" style="height:20px" id="col1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="select" style="height:20px" id="col3" displayMode="label">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dl_select1">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column width="199" inputType="select" style="height:20px" id="col4" displayMode="label" selectedIndex="-1">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dl_select2">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col5" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

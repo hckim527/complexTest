@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="code" name="코드" dataType="text"></w2:column>
+            			<w2:column id="label" name="코드명" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<code><![CDATA[C0001_2]]></code>
+            				<label><![CDATA[TYPE1_2]]></label>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[C0002_2]]></code>
+            				<label><![CDATA[TYPE2_2]]></label>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="lang" name="언어코드" dataType="text"></w2:key>
+            			<w2:key id="output" name="출력값" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<lang><![CDATA[ko_2]]></lang>
+            			<output><![CDATA[한국어_2]]></output>
+            		</w2:data>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+
+};
+//===================================================================================================================
+/**
+ * $p.data.get
+ */
+scwin.btn_1_1_onclick = function (e) {
+    // 예시 1) 단건 - 두 번째 인자(dcOptions)에 반환 받을 DataList 또는 DataMap의 ID만 지정한 경우.    
+    var jsnData = $p.data.get("JSON", ["dataMap1"]);
+    // return 예시) {"dataMap1":{"lang":"ko","output":"한국어"}}
+
+    console.log(jsnData);
+    console.log(JSON.stringify(jsnData));
+};
+
+scwin.btn_1_2_onclick = function (e) {
+    // 예시 2) 다건 - 두 번째 인자(dcOptions)에 반환 받을 DataList 또는 DataMap의 ID만 지정한 경우.
+    var jsnData = $p.data.get("JSON", ["dataMap1", "dataList1"]);
+    // return 예시) 
+    // {
+    //     "dataMap1": { "lang": "ko", "output": "한국어" },
+    //     "dataList1": [{ "code": "C0001", "label": "TYPE1", "rowStatus": "R" }, { "code": "C0002", "label": "TYPE2", "rowStatus": "R" }]
+    // }
+
+    console.log(jsnData);
+    console.log(JSON.stringify(jsnData));
+};
+
+scwin.btn_1_3_onclick = function (e) {
+    // 예시 3) id 'dataMap1'를 'dma_exam1'로 변경하여 반환. 'id' : DataList 또는 DataMap의 ID. 'key' : 반환될 데이터의 'id'를 지정한 값으로 변경합니다.
+    var jsnData = $p.data.get("JSON", [{ id: "dataMap1", key: "dma_exam1" }]);
+    // return 예시) 
+    // {"dma_exam1":{"lang":"ko","output":"한국어"}}
+
+    console.log(jsnData);
+    console.log(JSON.stringify(jsnData));
+};
+
+scwin.btn_1_4_onclick = function (e) {
+    // 예시 4) id를 제외하고 반환. 세 번째 인자(returnOptions)의 속성 "singleMode"를 true로 설정
+    var jsnData = $p.data.get("JSON", ["dataMap1"], { "singleMode": true });
+    // return 예시) 
+    // {"lang":"ko","output":"한국어"}
+
+    console.log(jsnData);
+    console.log(JSON.stringify(jsnData));
+};
+
+scwin.btn_1_5_onclick = function (e) {
+    // 예시 5) 다건 - 배열유형
+    var arrayData = $p.data.get("ARRAY", ["dataMap1", "dataList1"]);
+    // return 예시) 
+
+    console.log(arrayData);
+};
+
+scwin.btn_1_6_onclick = function (e) {
+    // 예시 6) 다건 - XML 유형
+    var xmlData = $p.data.get("XML", ["dataMap1", "dataList1"]);
+    // return 예시) 
+
+    console.log(WebSquare.xml.indent(xmlData));
+
+    // <map>
+    //     <map id="mf_dataMap1">
+    //         <lang>ko</lang>
+    //         <output>한국어</output>
+    //     </map>
+    //     <list id="dataList1">
+    //         <map index="0">
+    //             <code>C0001</code>
+    //             <label>TYPE1</label>
+    //             <rowStatus statusValue="0">R</rowStatus>
+    //         </map>
+    //         <map index="1">
+    //             <code>C0002</code>
+    //             <label>TYPE2</label>
+    //             <rowStatus statusValue="0">R</rowStatus>
+    //         </map>
+    //     </list>
+    // </map>
+};
+
+scwin.btn_1_7_onclick = function (e) {
+    // 예시 7) 데이터에 필터 적용 - 수정 상태(삽입, 삭제, 수정)의 데이터만 추출
+    var jsnData = $p.data.get("JSON", [{ id: "dataList1", action: "modified" }]);
+    // return 예시) 
+
+    console.log(jsnData);
+    console.log(JSON.stringify(jsnData));
+};
+
+//===================================================================================================================
+/**
+ * $p.data.getAllDataCollection
+ */
+scwin.btn_2_1_onclick = function (e) {
+    // 예시 1) 이 함수를 호출한 화면의 Window 객체에 속한 모든 데이터컬렉션의 '아이디'를 반환
+    // 실행 화면에 WFrame 컴포넌트가 구성되어 있고 아이디가 'wfm_exam1'인 경우
+    // 실행 화면에 정의된 "dataList1"와 WFrame 소스 화면에 정의된 "dataList1_w"와 "dataMap1_w"의 실행 시점의 아이디가 반환된 예시
+    var arrResult = $p.data.getAllDataCollection();
+    // 반환 값 예시) ["mf_dataList1","mf_wfm_exam1_dataList1_w","mf_wfm_exam1_dataMap1_w"]
+
+    console.log(arrResult);
+};
+
+scwin.btn_2_2_onclick = function (e) {
+    // 예시 2) 이 함수를 호출한 화면의 Window 객체에 속한 모든 데이터컬렉션의 '객체'를 반환
+    var arrResult = $p.data.getAllDataCollection("object");
+    // 반환 값 예시)
+    // [
+    //     {id: 'mf_dataList1', element: {…}, …}, 
+    //     {id: 'mf_wfm_exam1_dataList1_w', element: {…}, …},
+    //     {id: 'mf_wfm_exam1_dataMap1_w', element: {…}, …}
+    // ]
+
+    console.log(arrResult);
+};
+
+//===================================================================================================================
+/**
+ * $p.data.getBroadcast
+ */
+scwin.btn_3_1_onclick = function (e) {
+    // 예시) 전체 데이터컬렉션의 Broadcast 기능의 활성화 여부 반환
+    var blnResult = $p.data.getBroadcast();
+    // 반환 값 예시 - 활성화된 경우) true
+    // 반환 값 예시 - 비활성화된 경우) false
+
+    console.log(blnResult);
+};
+
+/**
+ * $p.data.setBroadcast
+ */
+scwin.btn_3_2_onclick = function (e) {
+    // 모든 화면의 모든 데이터컬렉션의 Broadcast를 비활성화 함
+    $p.data.setBroadcast(false);
+
+    //데이터 객체 제어(삽입, 수정, 삭제) 로직 수행
+
+    // 모든 화면의 모든 데이터컬렉션의 Broadcast를 활성화 함 - 데이터 객체와 연결된 컴포넌트가 동기화 됨
+    //$p.data.setBroadcast(true);
+};
+scwin.btn_3_3_onclick = function (e) {
+    // 모든 화면의 모든 데이터컬렉션의 Broadcast를 비활성화 함
+    //$p.data.setBroadcast(false);
+
+    //데이터 객체 제어(삽입, 수정, 삭제) 로직 수행
+
+    // 모든 화면의 모든 데이터컬렉션의 Broadcast를 활성화 함 - 데이터 객체와 연결된 컴포넌트가 동기화 됨
+    $p.data.setBroadcast(true);
+};
+//===================================================================================================================
+/**
+ * $p.data.getInfo
+ */
+ scwin.btn_4_1_onclick = function (e) {
+    // 예시) 모든 데이터컬렉션의 상세정보 조회
+    var info = $p.data.getInfo();
+
+    console.log(info);
+};
+ scwin.btn_4_2_onclick = function (e) {
+    // 예시) dataList1, dataMap1에 대한 상세정보 조회
+    //var info = $p.data.getInfo(["dataList1", "dataMap1"]); // 이렇게 하니까 안됨
+    var info = $p.data.getInfo(["mf_dataList1", "mf_dataMap1"]); // 이렇게 런타임아이디로 해야함
+    //var info = $p.data.getInfo(["mf_dataList1", "mf_dataMap1", "mf_wframe1_dataList1"]);
+
+    console.log(info);
+};
+//===================================================================================================================
+/**
+ * $p.data.set
+ */
+// 예시 1) 첫 번째 인자(dataType)별
+scwin.btn_5_1_onclick = function (e) {
+    // 예시 1-1) JSON 유형
+    // 두 번째 인자 값의 데이터는 JSON 유형으로 정의되어 있으며, 총 3개의 KEY("dataList1", "dataMap1", "undefined_data")로 구성되어 있음
+    $p.data.set(
+        "JSON",
+        {
+            "dataList1": [
+                { "code": "C0001", "label": "CODE1" }
+            ],
+            "dataMap1": {
+                "lang": "en", 
+                "output": "WebSquare"
+            },
+            "undefined_data": { "code": "C0001", "label": "CODE1" }
+        }
+    );
+    // 예시 1-1) JSON 유형 - 실행 결과
+    // KEY가 "dataList1"와 "dataMap1"은 화면에 정의된 데이터 객체와 아이디가 동일하기 때문에 값이 할당됨
+    // 반면, "undefined_data"는 화면에 정의된 데이터 객체의 아이디가 일치하는 객체가 없기 때문에 무시 됨
+};
+scwin.btn_5_2_onclick = function (e) {
+    // 예시 1-2) ARRAY 유형
+    // 두 번째 인자 값의 데이터는 JSON 유형으로 정의되어 있으며, 총 3개의 KEY("dataList1", "dataMap1", "undefined_data")로 구성되어 있음
+    $p.data.set(
+        "ARRAY",
+        {
+            "dataList1": {
+                "columnInfo": [
+                    "code",
+                    "label"
+                ],
+                "data": ["C0001", "CODE1", "C0002", "CODE2"]
+            },
+            "dataMap1": ["en", "WebSquare"],
+            "undefined_data": ["C0001", "CODE1"]
+        }
+    );
+    // 예시 1-2) ARRAY 유형 - 실행 결과
+    // KEY가 "dataList1"와 "dataMap1"은 화면에 정의된 데이터 객체와 아이디가 동일하기 때문에 값이 할당됨
+    // 반면, "undefined_data"는 화면에 정의된 데이터 객체의 아이디가 일치하는 객체가 없기 때문에 무시 됨
+};
+scwin.btn_5_3_onclick = function (e) {
+    // 예시 1-3) XML 유형
+    let strXML = '' +
+        '<map>' +
+        '    <list id="dataList1">' +
+        '        <map>' +
+        '            <code>C0001</code>' +
+        '            <label>CODE1</label>' +
+        '        </map>' +
+        '        <map>' +
+        '            <code>C0002</code>' +
+        '            <label>CODE2</label>' +
+        '        </map>' +
+        '    </list>' +
+        '    <map id="dataMap1">' +
+        '        <lang>en</lang>' +
+        '        <output>WebSquare</output>' +
+        '    </map>' +
+        '    <map id="undefined_data">' +
+        '        <code>C0001</code>' +
+        '        <label>CODE1</label>' +
+        '    </map>' +
+        '</map>';
+    // 예시 1-3) XML 유형 - 실행 결과
+    // XML 경로 "map/list/@id"에 정의된 "dataList1"와 XML 경로 "map/map[1]/@id"에 정의된 "dataMap1"은 화면에 정의된 데이터 객체와 아이디가 동일하기 때문에 값이 할당됨
+    // 반면, XML 경로 "map/map[2]/@id"에 정의된 "undefined_data"는 화면에 정의된 데이터 객체의 아이디가 일치하는 객체가 없기 때문에 무시 됨
+};
+
+// 예시 2) 세 번째 인자(idArray)
+scwin.btn_5_4_onclick = function (e) {
+    // 예시 2-1) 아이디 문자열
+    // 두 번째 인자 값의 데이터는 JSON 유형으로 정의되어 있으며, 총 2개의 키("dataList1", "undefined_data")로 구성되어 있음
+    $p.data.set(
+        "JSON",
+        {
+            "dataList1": [
+                { "code": "C0001", "label": "CODE1" }
+            ],
+            "undefined_data": { "code": "C0001", "label": "CODE1" }
+        }, 
+        ["dataList1", "dataMap1", "undefined_data", "undefined_id"]
+    );
+    // 예시 2-1) 아이디 문자열 - 실행 결과
+    // 세 번째 인자에 정의된 아이디 문자열 중에 유효한 값은 화면에 정의된 데이터 객체와 아이디가 일치하는 "dataList1", "dataMap1" 임
+    // 두 번째 인자 값에서 "dataList1" 키를 추출하여 할당 함
+    // 반면, 두 번째 인자 값에 dataMap1" 키는 정의되지 않았기 때문에 할당되지 않음
+};
+scwin.btn_5_5_onclick = function (e) {
+    // 예시 2-2) 조건이 정의된 JSON 형식
+    // 두 번째 인자 값의 데이터는 JSON 유형으로 정의되어 있으며, 총 2개의 키("dataList1", "user_dataMap1", "undefined_data")로 구성되어 있음
+    $p.data.set(
+        "JSON",
+        {
+            "dataList1": [
+                { "code": "C0001_condition", "label": "CODE1" }
+            ],
+            "user_dataMap1": {
+                "lang": "en",
+                "output": "WebSquare_condition"
+            },
+            "undefined_data": { "code": "C0001", "label": "CODE1" }
+        },
+        [{ "id": "dataMap1", "key": "user_dataMap1" }, "dataList1", "undefined_data", "undefined_id"]
+    );
+    // 예시 2-2) 조건이 정의된 JSON 형식 - 실행 결과
+    // 세 번째 인자에 정의된 유효한 인자 값은 다음의 2가지 임
+    // 1. 배열의 0번째에 정의된 JSON 객체의 "id"에 정의된 "dataMap1"(화면에 정의된 데이터 객체의 아이디와 JSON 객체의 "id"에 할당된 값이 일치)
+    // JSON 객체의 "key"에 정의된 "user_dataMap1"를 두 번째 인자 값에서 추출하여 데이터 객체 "dataMap1"에 할당 함
+    // 2. 배열의 1번째에 정의된 "dataList1"(화면에 정의된 데이터 객체의 아이디와 일치)
+    // 두 번째 인자 값에서 "dataList1"를 추출하여 데이터 객체 "dataList1"에 할당 함
+};
+
+//===================================================================================================================
+
+]]></script>
+<style type="text/css"><![CDATA[
+.w2group {
+    background-color: unset;
+}
+]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+
+        <xf:group id="" style="padding: 6px;">
+
+            <xf:group id="" style="padding: 6px;">
+                <w2:textbox escape="false" id="" label="wframe2" style=""></w2:textbox>
+            </xf:group>
+
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger ev:onclick="scwin.btn_1_1_onclick" id="btn_1_1"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button">
+    				<xf:label><![CDATA[get("JSON", ["dataMap1"])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger ev:onclick="scwin.btn_1_2_onclick" id="btn_1_2"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button">
+    				<xf:label><![CDATA[get("JSON", ["dataMap1", "dataList1"])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_1_3" style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button"
+    				ev:onclick="scwin.btn_1_3_onclick">
+    				<xf:label><![CDATA[get("JSON", [{ id: "dataMap1", key: "dma_exam1" }])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_1_4" style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button"
+    				ev:onclick="scwin.btn_1_4_onclick">
+    				<xf:label><![CDATA[get("JSON", ["dataMap1"], { "singleMode": true })]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_1_5"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button" ev:onclick="scwin.btn_1_5_onclick">
+    				<xf:label><![CDATA[get("ARRAY", ["dataMap1", "dataList1"])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_1_6"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button" ev:onclick="scwin.btn_1_6_onclick">
+    				<xf:label><![CDATA[get("XML", ["dataMap1", "dataList1"])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_1_7"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button" ev:onclick="scwin.btn_1_7_onclick">
+    				<xf:label><![CDATA[get("JSON", [{ id: "dataList1", action: "modified" }])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_2_1"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;color:blue;" type="button" ev:onclick="scwin.btn_2_1_onclick">
+    				<xf:label><![CDATA[getAllDataCollection()]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_2_2"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;color:blue;" type="button" ev:onclick="scwin.btn_2_2_onclick">
+    				<xf:label><![CDATA[getAllDataCollection("object")]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_3_1"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;color:blue;" type="button" ev:onclick="scwin.btn_3_1_onclick">
+    				<xf:label><![CDATA[getBroadcast()]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_3_2"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;color:blue;" type="button" ev:onclick="scwin.btn_3_2_onclick">
+    				<xf:label><![CDATA[setBroadcast(false)]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+            <xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_3_3"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;color:blue;" type="button" ev:onclick="scwin.btn_3_3_onclick">
+    				<xf:label><![CDATA[setBroadcast(true)]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_4_1"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;color:blue;" type="button" ev:onclick="scwin.btn_4_1_onclick">
+    				<xf:label><![CDATA[getInfo()]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_4_2"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;color:blue;" type="button" ev:onclick="scwin.btn_4_2_onclick">
+    				<xf:label><![CDATA[getInfo(["mf_dataList1","mf_dataMap1"])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+
+            <xf:group id="" style="padding: 6px;">
+    			<xf:trigger ev:onclick="scwin.btn_5_1_onclick" id="btn_5_1"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button">
+    				<xf:label><![CDATA[set("JSON", ...)]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger ev:onclick="scwin.btn_5_2_onclick" id="btn_5_2"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button">
+    				<xf:label><![CDATA[set("ARRAY", ...)]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_5_3" style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button"
+    				ev:onclick="scwin.btn_5_3_onclick">
+    				<xf:label><![CDATA[set("XML", ...)]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_5_4" style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button"
+    				ev:onclick="scwin.btn_5_4_onclick">
+    				<xf:label><![CDATA[set("JSON", ..., ["dataList1", "dataMap1"])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="padding: 6px;">
+    			<xf:trigger id="btn_5_5"
+    				style="min-width: 60px;height: 23px;padding: 0px 6px;margin-right: 6px;" type="button" ev:onclick="scwin.btn_5_5_onclick">
+    				<xf:label><![CDATA[get("ARRAY", [{ "id": "dataMap1", "key": "user_dataMap1" }])]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+
+    	</xf:group>
+
+    </body>
+</html>

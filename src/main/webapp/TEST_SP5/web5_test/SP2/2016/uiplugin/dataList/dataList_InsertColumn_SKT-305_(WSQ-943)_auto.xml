@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map"></w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList1.insertColumn("col1", {
+        "name": "column1",
+        "dataType": "text"
+    }); //동적으로 컬럼추가 
+    //alert(dataList1.getTotalCol()); 
+    log = dataList1.getTotalCol();
+};
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 웹스퀘어에서 빈 xml 을 생성한다.
+    //1. Create a blank xml in WebSquare.
+    //Verify step 1. xml is created.
+    //Test step 2. Component 창에서 head -> Model -> DataCollection 에서 마우스 오른쪽 -> DataList 를 클릭한다.
+    //2. In the Component window, head -> Model -> DataCollection, right -> DataList.
+    //Verify step 2. A data list is created.
+    //Test step 3. 브라우저에서 insertColumn 버튼을 클릭한다. 
+    //3. In the browser, click the insertColumn button.
+    //Verify step 3. Pop-up the number of generated columns.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log == '1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = undefined;
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 02-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:93px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[insertColumn]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+		<w2:config>
+			<WebSquare>
+				<gridView>
+					<focusFlow value="linear"/>
+				</gridView>
+			</WebSquare>
+		</w2:config>	
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true" ev:onbeforerowpositionchange="scwin.dataList1_onbeforerowpositionchange">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="체크박스" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var arr = [1, 1, "인천", "20200101",
+        0, 0, "인천", "19880201",
+        0, 0, "서울", "20210128",
+        0, 0, "뉴욕", "20201231"
+    ];
+    dataList1.setData(arr, "append");
+    gridView1.setFocusedCell(0, 0, false);
+    gridView1.S
+};
+scwin.trigger1_onclick = function(e) {
+    var options = {
+        fileName: "test_maxCellCount.xlsx",
+        sheetName: "sheet1",
+        type: "1",
+        //showProcess : false, //다운로드 시 프로세스 창을 보여줄지 여부 (true:보임)
+        //showConfirm : true, //다운로드 확인창을 띄울지 여부 (false:미확인)
+        useHeaderCheckBoxLabel: true, //사용가능하게 수정됨 20190621엔진
+        //useHeaderCheckBoxLabel : "true", //사용가능하게 수정됨 20190621엔진
+        useStyle: "true" //화면의 그리드 스타일을 엑셀파일로 내려받음
+    };
+    gridView1.advancedExcelDownload(options);
+};
+scwin.dataList1_onbeforerowpositionchange = function(info) {
+    console.log("onbeforerowpositionchange 발생");
+    console.log(info.oldRowIndex + " -> " + info.newRowIndex);
+    if (dataList1.getRowJSON(info.oldRowIndex).col3 == "ERROR") {
+        //alert("aaa");
+        return false;
+    };
+};
+scwin.trigger2_onclick = function(e) {
+    console.log("oncellclick");
+    //WebSquare.util.setDisabled({"componentId":"", "disabled":true});        //전체 disabled
+};
+scwin.gridView1_oncellclick = function(row, col) {};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" fixedColumnWithHidden="true" id="gridView1" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		keyMoveEditMode="true" rowNumVisible="" scrollByColumn="false" sortable="true"
+    		style="position:relative;left:21px;top:22px;width:502px;height:173px;" useShiftKey="true" senseReader="false" hideHeader="" ev:oncellclick="scwin.gridView1_oncellclick" preventAddRowOnPaste="false" evenRowBackgroundColor="" oddRowBackgroundColor="#FFFFFF" preventDuplicateFocusedCell="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" checkboxlabel="체크박스" displayMode="label" id="column11" inputType="checkbox"
+    					style="height:25px" width="120" checkboxLabel="123" checkboxLabelColumn="" value="체크박스" checkboxLabelPosition="" chooseOption="" validator="">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column9" inputType="radio" style="height:25px" value="radio"
+    					width="120" checkboxLabel="456" hideCustomFilter="">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:25px" value="text"
+    					width="120" hideCustomFilter="" hideThreshold="">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:25px" value="calendar"
+    					width="120">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="col1" inputType="checkbox" style="height:25px" width="153"
+    					checkboxLabel="체크박스(라벨)">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="radio" style="height:25px" width="106"
+    					checkboxLabel="" radioLabel="라디오(라벨)" value="">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:25px" width="93"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col4" inputType="calendar" style="height:25px" width="70"
+    					displayFormat="">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger ev:onclick="scwin.trigger1_onclick" id="trigger1" style="position:absolute;left:22px;top:320px;width:176px;height:56px;"
+    		type="button">
+    		<xf:label><![CDATA[엑셀다운로드]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="position:absolute;width:80px;height:23px;left:21px;top:201px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[버튼1]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

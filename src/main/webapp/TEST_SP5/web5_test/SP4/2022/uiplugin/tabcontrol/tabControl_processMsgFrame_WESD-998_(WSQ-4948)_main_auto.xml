@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.btn_menuOpen_onclick = function(e) {
+		var menuId = "A00001";
+		var menuNm = "업무화면1";
+		var menuUrl = "tabControl_processMsgFrame_WESD-998_(WSQ-4948)_tab1.xml";		
+		
+		var tabObj = { 
+			closable		: true,	
+			openAction	: "exist",	
+			label			: menuNm 
+		};
+					   
+		var contObj = {
+			frameMode	: "wframePreload",
+			scope			: true,
+			src			: menuUrl,
+			alwaysDraw	: false,
+			title			: menuNm,
+			dataObject : { 
+				type	: "json", 
+				name	: "param", 
+				data	: {}
+			}
+		};
+		
+		//content 탭 생성 (생성 탭에 포커스는 별도)  
+		var result = tac_layout.addTab(menuId, tabObj, contObj);
+
+		//동일 menuId 의 화면을 new로 생성 할수 있기에, 생성된 tab select 처리 필요함
+		//var tabIndex = tac_layout.getTabIndex( result );
+		//tac_layout.setSelectedTabIndex( tabIndex );		
+	};
+	
+
+	scwin.checkVal = function() {
+		return !document.getElementById('tac_layout_contents_A00001_body_tac_layout_contents_A00001_body_wq_processMsgComp')
+	}
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_menuOpen').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	
+		
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group style="width: 100%;height: 100%;" id="">
+    		<xf:group style="width: 100px;height: 100%;float: left;" id="">
+    			<xf:trigger type="button" style="position: absolute;top: 100px;left: 10px;width: 80px;height: 23px;" id="btn_menuOpen" ev:onclick="scwin.btn_menuOpen_onclick">
+    				<xf:label><![CDATA[메뉴오픈]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group style="width: 900px;height: 100%;float: left;" id="">
+    			<!-- processMsgFrame="true" 일 경우 생성 tab의 하위 wfarme 2번 호출 되는 현상 -->
+    			<w2:tabControl useTabKeyOnly="true" id="tac_layout" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist"
+    				confirmFalseAction="new" alwaysDraw="false" style="width: 100%;height: 100%;" processMsgFrame="true">
+    			</w2:tabControl>
+    		</xf:group>
+    	</xf:group>
+    </body>
+</html>

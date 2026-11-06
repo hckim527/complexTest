@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[111]]></col1>
+            				<col2><![CDATA[555]]></col2>
+            				<col3><![CDATA[333]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[222]]></col1>
+            				<col2><![CDATA[444]]></col2>
+            				<col3><![CDATA[222]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[333]]></col1>
+            				<col2><![CDATA[333]]></col2>
+            				<col3><![CDATA[555]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[444]]></col1>
+            				<col2><![CDATA[111]]></col2>
+            				<col3><![CDATA[111]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[555]]></col1>
+            				<col2><![CDATA[222]]></col2>
+            				<col3><![CDATA[444]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 gridView header부분의 'name3'항목에는 정렬아이콘(상,하 화살표)표시여부를 확인한다.
+    //1. After executing the sample, check whether the sort icon (up and down arrow) is displayed in the 'name3' item of the gridView header part.
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 1. 'name3'항목에는 정렬아이콘(상,하 화살표)이 표시되지 않는다. 정상(이전에는 표시되어 보여짐)
+    //1. The sort icon (up and down arrows) is not displayed in the 'name3' item. Normal (previously shown)
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_3_column1').children().hasClass('w2grid_head_sort_div_main') == false", "true");
+    //5.0_4.4420B.20210527.095308_1.5 이후변경
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_3_column1').children().hasClass('w2grid_head_sort_none') == false", "true");
+    //Test step 2. 'name1'항목을 더블클릭하여 sorting되는지 확인한다.
+    //2. Double-click on the 'name1' item to see if it is sorting.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'wq_uuid_3_column5')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'wq_uuid_3_column5')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. 'name1'항목이 정상적으로 sorting되어진다.
+    //2. The 'name1' item is normally sorted.
+    WebSquare.wUnit.addCommand("assert", "parseInt(WebSquare.wUnit.getObjById('wq_uuid_3_cell_0_0').innerText) > parseInt(WebSquare.wUnit.getObjById('wq_uuid_3_cell_1_0.innerText'))", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //showSortableImage = "true"
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 15-Jun-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" useFilterList="false" applyAllColumnStyle="false" scrollByColumn="false"
+    		showSortableUseFilter="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="" showSortableImage = "true"
+    		style="position: absolute;width: 500px;height: 150px;left:95px;top:134px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1" displayMode="label" sortable="true"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2" displayMode="label" sortable="true"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

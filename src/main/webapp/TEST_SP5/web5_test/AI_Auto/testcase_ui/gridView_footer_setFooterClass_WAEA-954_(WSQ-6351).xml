@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="item" name="항목" dataType="text"/>
+                        <w2:column id="qty"  name="수량" dataType="number"/>
+                        <w2:column id="amt"  name="금액" dataType="number"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dataList2" baseNode="list" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="item" name="항목" dataType="text"/>
+                        <w2:column id="qty"  name="수량" dataType="number"/>
+                        <w2:column id="amt"  name="금액" dataType="number"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:mfeSubmission/>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+/*
+ * WAEA-954 검증 샘플 - gridView footer setFooterClass / getFooterClass / removeFooterClass
+ *
+ * [전제] hotfix(2026_0701_hotfix_WAEA_954.js)가 config.js의 WebSquare.engine.module에 등록되어 있어야 한다.
+ *
+ * [필수 검증 4항목]
+ *   1. setFooterClass("fAmt", "classA classB")  -> footer cell td에 classA, classB 적용
+ *   2. getFooterClass("fAmt")                   -> 유지 중인 class 문자열 반환
+ *   3. removeFooterClass("fAmt", "classA")      -> classA만 제거, classB 유지
+ *   4. drawTypeX="hybrid" 그리드에서 footer redraw 후에도 동적 class 유지
+ */
+var FOOTER_ID = "fAmt";
+
+scwin.onpageload = function() {
+    var jsonData = [
+        {"item":"상품A", "qty":10, "amt":150000},
+        {"item":"상품B", "qty":5,  "amt":80000},
+        {"item":"상품C", "qty":8,  "amt":120000}
+    ];
+    dataList1.setJSON(jsonData);
+    dataList2.setJSON(jsonData);
+
+    if (typeof gridView1.setFooterClass !== "function") {
+        scwin.log("[전제 실패] gridView.setFooterClass 미제공. hotfix 미적용 상태입니다.");
+    } else {
+        scwin.log("hotfix 적용 확인됨. 1~4번 버튼을 순서대로 누르세요.");
+    }
+};
+
+scwin.log = function(msg) {
+    txtLog.setValue(txtLog.getValue() + msg + "\n");
+};
+
+// 그리드 DOM에서 해당 class를 가진 엘리먼트 개수를 센다.
+// 엔진 내부 렌더 클래스(.gridFooterTableDefault)에 의존하지 않기 위해 class 자체로 조회한다.
+scwin.countClass = function(gridId, className) {
+    var root = document.getElementById(gridId);
+    if (!root) return "(root 없음)";
+    return root.querySelectorAll("." + className).length;
+};
+
+scwin.dumpState = function(gridId, grid) {
+    scwin.log("  getFooterClass('" + FOOTER_ID + "') = '" + grid.getFooterClass(FOOTER_ID) + "'");
+    scwin.log("  DOM classA=" + scwin.countClass(gridId, "classA") +
+              ", classB=" + scwin.countClass(gridId, "classB"));
+};
+
+// 1. set
+scwin.btnSetFooterClass_onclick = function(e) {
+    gridView1.setFooterClass(FOOTER_ID, "classA classB");
+    scwin.log("[1] setFooterClass('" + FOOTER_ID + "', 'classA classB')");
+    scwin.dumpState("gridView1", gridView1);
+    scwin.log("  기대: classA=1, classB=1");
+};
+
+// 2. get
+scwin.btnGetFooterClass_onclick = function(e) {
+    scwin.log("[2] getFooterClass -> '" + gridView1.getFooterClass(FOOTER_ID) + "'");
+    scwin.log("  기대: classA classB");
+};
+
+// 3. remove (classA만)
+scwin.btnRemoveFooterClass_onclick = function(e) {
+    gridView1.removeFooterClass(FOOTER_ID, "classA");
+    scwin.log("[3] removeFooterClass('" + FOOTER_ID + "', 'classA')");
+    scwin.dumpState("gridView1", gridView1);
+    scwin.log("  기대: classA=0, classB=1 / getFooterClass='classB'");
+};
+
+// 4. hybrid redraw 후 class 유지
+scwin.btnHybridRedraw_onclick = function(e) {
+    gridView2.setFooterClass(FOOTER_ID, "classA classB");
+    scwin.log("[4] hybrid: setFooterClass 적용");
+    scwin.dumpState("gridView2", gridView2);
+
+    dataList2.setJSON([
+        {"item":"상품A", "qty":11, "amt":160000},
+        {"item":"상품B", "qty":6,  "amt":90000},
+        {"item":"상품C", "qty":9,  "amt":130000}
+    ]);
+    scwin.log("  데이터 재설정으로 footer redraw 발생");
+    scwin.dumpState("gridView2", gridView2);
+    scwin.log("  기대: redraw 후에도 classA=1, classB=1 유지");
+};
+
+scwin.btnClear_onclick = function(e) {
+    txtLog.setValue("");
+};
+]]></script>
+        <style type="text/css"><![CDATA[
+.guide { display:block; margin:10px 10px 4px; color:#0a7; font-size:13px; }
+.btns  { margin:10px; }
+#txtLog { width:900px; height:260px; margin:10px; font-family:Consolas,'Courier New',monospace; font-size:13px; }
+
+/* footer class 적용 여부를 눈으로 확인하기 위한 스타일 */
+.classA { background-color:#ffe08a !important; }
+.classB { font-weight:bold !important; color:#c00 !important; }
+]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+
+        <w2:textbox id="guide1" class="guide" style=""
+            label='WAEA-954 검증 샘플 - 1~4번 버튼을 순서대로 누르고 로그와 footer 셀(금액 합계) 색상을 확인'/>
+
+        <w2:textbox id="guide2" class="guide" style=""
+            label='classA=노란 배경 / classB=빨간 굵은 글씨. 대상 footer cell id = fAmt'/>
+
+        <w2:gridView id="gridView1" dataList="dataList1"
+            style="width:520px;height:180px;margin:10px;"
+            applyAllColumnStyle="false" scrollByColumn="false">
+            <w2:header id="header1">
+                <w2:row id="hrow1">
+                    <w2:column id="hItem" inputType="text" width="200" value="항목"/>
+                    <w2:column id="hQty"  inputType="text" width="150" value="수량"/>
+                    <w2:column id="hAmt"  inputType="text" width="170" value="금액"/>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="brow1">
+                    <w2:column id="item" inputType="text"   width="200" displayMode="label"/>
+                    <w2:column id="qty"  inputType="text"   width="150" displayMode="label" displayFormat="#,##0" dataType="number"/>
+                    <w2:column id="amt"  inputType="text"   width="170" displayMode="label" displayFormat="#,##0" dataType="number"/>
+                </w2:row>
+            </w2:gBody>
+            <w2:footer id="footer1">
+                <w2:row id="frow1">
+                    <w2:column id="fLabel" inputType="text" width="200" value="합계" textAlign="center"/>
+                    <w2:column id="fQty"  inputType="expression" width="150" expression="SUM('qty')" displayFormat="#,##0" dataType="number"/>
+                    <w2:column id="fAmt"  inputType="expression" width="170" expression="SUM('amt')" displayFormat="#,##0" dataType="number"/>
+                </w2:row>
+            </w2:footer>
+        </w2:gridView>
+
+        <w2:textbox id="guide3" class="guide" style=""
+            label='아래는 drawTypeX="hybrid" 그리드 (4번 버튼 대상)'/>
+
+        <w2:gridView id="gridView2" dataList="dataList2" drawTypeX="hybrid"
+            style="width:520px;height:180px;margin:10px;"
+            applyAllColumnStyle="false" scrollByColumn="false">
+            <w2:header id="header2">
+                <w2:row id="hrow2">
+                    <w2:column id="hItem" inputType="text" width="200" value="항목"/>
+                    <w2:column id="hQty"  inputType="text" width="150" value="수량"/>
+                    <w2:column id="hAmt"  inputType="text" width="170" value="금액"/>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody2">
+                <w2:row id="brow2">
+                    <w2:column id="item" inputType="text"   width="200" displayMode="label"/>
+                    <w2:column id="qty"  inputType="text"   width="150" displayMode="label" displayFormat="#,##0" dataType="number"/>
+                    <w2:column id="amt"  inputType="text"   width="170" displayMode="label" displayFormat="#,##0" dataType="number"/>
+                </w2:row>
+            </w2:gBody>
+            <w2:footer id="footer2">
+                <w2:row id="frow2">
+                    <w2:column id="fLabel" inputType="text" width="200" value="합계" textAlign="center"/>
+                    <w2:column id="fQty"  inputType="expression" width="150" expression="SUM('qty')" displayFormat="#,##0" dataType="number"/>
+                    <w2:column id="fAmt"  inputType="expression" width="170" expression="SUM('amt')" displayFormat="#,##0" dataType="number"/>
+                </w2:row>
+            </w2:footer>
+        </w2:gridView>
+
+        <xf:group class="btns">
+            <xf:trigger type="button" id="btnSetFooterClass" style="width:150px;height:28px;margin-right:6px;" ev:onclick="scwin.btnSetFooterClass_onclick">
+                <xf:label><![CDATA[1. setFooterClass]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btnGetFooterClass" style="width:150px;height:28px;margin-right:6px;" ev:onclick="scwin.btnGetFooterClass_onclick">
+                <xf:label><![CDATA[2. getFooterClass]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btnRemoveFooterClass" style="width:170px;height:28px;margin-right:6px;" ev:onclick="scwin.btnRemoveFooterClass_onclick">
+                <xf:label><![CDATA[3. removeFooterClass]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btnHybridRedraw" style="width:190px;height:28px;margin-right:6px;" ev:onclick="scwin.btnHybridRedraw_onclick">
+                <xf:label><![CDATA[4. hybrid redraw 유지]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btnClear" style="width:90px;height:28px;" ev:onclick="scwin.btnClear_onclick">
+                <xf:label><![CDATA[로그 지움]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <w2:textarea id="txtLog" readOnly="true"
+            style="width:900px;height:260px;margin:10px;font-family:Consolas,'Courier New',monospace;font-size:13px;"></w2:textarea>
+    </body>
+</html>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="">
+    				<res>
+    					<holiday>
+    						<date>20160727</date>
+    						<date>20160728</date>
+    						<date>20160729</date>
+    					</holiday>
+    				</res>
+    			</data>
+    		</xf:instance>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin._checkErr = function() {
+    var log = WebSquare.logger.getLog();
+    return log.indexOf("Cannot read property 'setValue' of null") == -1;
+}
+scwin._isDate = function() {
+    return date = WebSquare.wUnit.getDomById($p.id + 'calendar1_currentDate').innerText;
+}
+scwin.clickDate = function() {
+    var id = WebSquare.wUnit.getJq(".w2calendar_selected").attr("id");
+    WebSquare.wUnit.getJq("#" + id).prev().click();
+}
+scwin.check = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'calendar1_currentDate').innerText != date;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //WebSquare.wUnit.addCommand("set", "date = scwin._isDate()");
+    WebSquare.wUnit.addCommand("set", "scwin._isDate()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. 샘플파일을 실행 후 Ctrl+마우스우클릭 으로 로그보기를 클릭한다.
+    //1. Run the sample file and click View Log with Ctrl + Right Click.
+    //Verify 1. 로그가 오류없이 정상적으로 보여진다.(이전에는 로그보기에 오류메시지 발생함)
+    //1. The log is displayed normally without error (previously an error message appears in the log view)
+    WebSquare.wUnit.addCommand("assert", "scwin._checkErr()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 다른날짜를 클릭한다.
+    //2. Click a different date.
+    WebSquare.wUnit.addCommand("set", "scwin.clickDate()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 다른날짜가 정상적으로 업데이트된다.(이전에는 holiday에 설정한 날짜로 계속 고정됨)
+    //2. Other dates will be updated normally (previously fixed to the date set in holiday)
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('calendar1_currentDate').innerText != date","true");
+    WebSquare.wUnit.addCommand("assert", "scwin.check()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Feb-2018
+    var date;
+    //End unitTest
+    window.date = undefined;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="group1" class="mcal" style="">
+    		<w2:calendar id="calendar1" style="position: relative ;" weekStartsOn="0" holidayRef="res/holiday/date" ></w2:calendar>
+    		<w2:inputCalendar footerDiv="false" focusOnDateSelect="false" calendarValueType="yearMonthDate" rightAlign="false" id=""
+    			renderType="component" weekStartsOn="0" style="position: relative;width: 150px;height: 23px;" renderDiv="true" >
+    		</w2:inputCalendar>
+    	</xf:group>
+    </body>
+</html>
+ 

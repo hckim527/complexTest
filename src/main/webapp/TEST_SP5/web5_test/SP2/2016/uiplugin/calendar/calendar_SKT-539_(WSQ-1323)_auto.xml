@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.cal_onviewchange = function(info) {
+    cal2.focus();
+};
+scwin.cal_oniconclick = function() {
+    cal2.focus();
+};
+scwin.isFocus = function() {
+    return WebSquare.wUnit.getJq(WebSquare.wUnit.getDomById($p.id + 'cal2_input')).is(':focus');
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 왼쪽의 inputCalendar에서 날짜를 직접입력하고(20160822) 마우스를 Focusout시킨다.
+    //1. After running the sample file, input the date directly in the inputCalendar on the left (20160822) and focus the mouse.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_input').focus()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_input').value = '20160822'");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_input').blur()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. 날짜가 입력되어지고 Focus가 오른쪽의 inputCalendar로 이동되어진다.(이전에는 Focus가 이동되지 않음)
+    //1. The date is entered and the focus is moved to the inputCalendar on the right (previously Focus is not moved).
+    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 28-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="cal" renderDiv="true"
+    		style="position: absolute;width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false" calendarValueType="yearMonthDate"
+    		ev:onviewchange="scwin.cal_onviewchange" ev:oniconclick="scwin.cal_oniconclick">
+    	</w2:inputCalendar>
+    	<xf:input id="ip" style="position: absolute;width: 144px;height: 21px;left:349px;top:9px;" adjustMaxLength="false"></xf:input>
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="cal2" renderDiv="true"
+    		style="position: absolute;width: 150px;height: 23px;left:170px;top:4px;" focusOnDateSelect="false" footerDiv="false"
+    		calendarValueType="yearMonthDate">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

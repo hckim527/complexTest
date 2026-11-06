@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/ko/css/pop.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="">
+				</data>
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var id = "addTAB" + i;
+    var tabOptions = {
+        label: "addTab",
+        addTabIndex: 0
+    };
+    var contentsOptions = {
+        frameMode: "iframe",
+        src: WebSquare.net.getBlankXML()
+    };
+    tabControl1.addTab(id, tabOptions, contentsOptions);
+    i++;
+};
+scwin.imageExists = function(image_url) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', image_url, false);
+    http.send();
+    return http.status != 404;
+}
+scwin.getBaseUrl = function() {
+    var currentUrl = window.location.href;
+    return currentUrl.split("websquare/")[0] + "/websquare/uiplugin/tabControl/images/tab02_off.gif";
+}
+scwin.setVal1 = function() {
+    //localStorage.setItem('isRefresh', true);
+}
+scwin.setVal2 = function() {
+    //location.reload(true);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 0. IE는 IE11에서만 확인
+    //0. IE only checked in IE11
+    //Verify step 0. IE10,9,8,7,6은 제외
+    //0. Excluding IE10,9,8,7 and 6
+    //Test step 1. 샘플파일 실행 후 개발자모드 > network > img를 클릭 하고 실행화면의 addTAB버튼을 클릭한다.
+    //1. After executing the sample file, click the developer mode> network> img and click the addTAB button in the execution screen.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 1. 개발자모드의 네트워크환경이 보여진다.
+    //1. The network environment of developer mode is shown.
+    //Test step 2. 새로고침(F5)수행 후 개발자도구(img)에 있는 tab02_off.gif파일명을 클릭하여 Request Url을 확인한다.
+    //2. After refreshing (F5), check the request URL by clicking the tab02_off.gif file name in the developer"s tool (img).
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "localStorage.clear();");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.i = 0;
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 03-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[ ]]></style>
+	</head>
+
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+
+		<w2:tabControl id="tabControl1" style="position: absolute ;left:48px;top:76px;width: 394px;height:274px" alwaysDraw="false"
+			useATagBtn="true" closable="true">
+			<w2:tabs label="1" id="tabs3" closable="false" style="width:70px;height:30px;" disabled="false" tabType="image"
+				selectedImage="/workspace2/test/picture.png">
+			</w2:tabs>
+			<w2:tabs id="tabs4" style="width:70px;height:30px" closable="false" label="2" disabled="false"
+				selectedImage="/workspace2/test/picture.png">
+			</w2:tabs>
+			<w2:tabs id="tabs5" style="width:70px;height:30px" closable="false" label="3" disabled="false"></w2:tabs>
+
+			<w2:content id="content3" style="height:244px">
+				<w2:textbox label="첫번째 tab&lt;br/&gt;tabType : image" id="" style="position: absolute;width:201px;height:57px;left:29px;top:46px;"></w2:textbox>
+			</w2:content>
+			<w2:content id="content4" style="height:244px" src="/web5_test/uiplugin/wframe/output2.xml" alwaysDraw="true"
+				frameMode="wframe">
+			</w2:content>
+			<w2:content id="content5" style="height:244px" src="/web5_test/uiplugin/wframe/output1.xml" frameMode="wframe"></w2:content>
+		</w2:tabControl>
+		<xf:trigger type="button" id="trigger1" style="position: absolute;width:292px;height:99px;left:507px;top:114px;"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[addTAB]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

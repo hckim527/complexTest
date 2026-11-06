@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+    $w.log("main" + "_initScript");
+}
+scwin.test2 = function() {
+    $w.log("main" + "_initScript2");
+}
+scwin.post1 = function() {
+    $w.log("main" + "_postScript1");
+}
+scwin.post2 = function() {
+    $w.log("main" + "_postScript2");
+}
+scwin.onpageload = function() {
+    $w.log("main" + "_onpageload");
+    if (console.log) {
+        console.log("main" + "_onpageload");
+    }
+}
+scwin.trigger1_onclick = function() {
+    var tabNm = "iframe",
+        tabKey = "test_" + scwin.guid++;
+    var tabOptions = {
+        label: tabNm,
+        closable: true,
+        openAction: "select"
+    };
+    var contentsOptions = {
+        frameMode: "iframe",
+        src: "wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub.xml"
+    };
+    var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+    //선택한 tab 활성화.
+    if (ret) {
+        tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+    }
+};
+scwin.trigger2_onclick = function() {
+    scwin.guid++;
+    var tabNm = "wframe",
+        tabKey = "test_" + scwin.guid;
+    var tabOptions = {
+        label: tabNm,
+        closable: true,
+        openAction: "select"
+    };
+    var contentsOptions = {
+        wframe: true,
+        frameMode: "wframe",
+        src: "wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub.xml",
+        scope: true
+    };
+    var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+    //선택한 tab 활성화.
+    if (ret) {
+        tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+    }
+};
+scwin.trigger3_onclick = function() {
+    var tabNm = "wframePreload",
+        tabKey = "test_" + scwin.guid++;
+    var tabOptions = {
+        label: tabNm,
+        closable: true,
+        openAction: "select"
+    };
+    var contentsOptions = {
+        //wframe : true,
+        frameMode: "wframePreload",
+        src: "wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub.xml",
+        scope: true
+    };
+    var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+    //선택한 tab 활성화.
+    if (ret) {
+        tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+    }
+};
+scwin.checkVal = function() {
+    var temp = WebSquare.wUnit.getDomById($p.id + 'tabControl1_contents_test_1_body').className.includes('w2wframe');
+    return temp;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 개발자도구를 열고 main샘플 실행 후 'addTab(wframe)' 버튼 클릭 후 inspect를 확인하고 class로 시작하는 파일이 wframe로 보여지는지 확인한다.(이전에는 iframe로 보여짐)
+    //1. Open the developer tool, run the main sample, check the inspect after clicking the 'addTab (wframe)' button, and check that the file starting with class is shown as wframe (previously shown as iframe)
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. id='tabControl1_contents_test_1_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
+    //1. id='tabControl1_contents_test_1_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
+    //WebSquare.wUnit.addCommand("assert","WebSquare.wUnit.getDomById($p.id+'tabControl1_contents_test_1_body').className == 'w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Test step 2. 'addTab(wframePreload)' 버튼 클릭 후 inspect를 확인하고 class로 시작하는 파일이 wframe로 보여지는지 확인한다.(이전에는 iframe로 보여짐)
+    //2. Click on the 'addTab (wframePreload)' button to check inspect and check that the file starting with class is visible as a wframe (previously shown as iframe)
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. id='tabControl1_contents_test_2_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
+    //2. id='tabControl1_contents_test_2_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
+    //WebSquare.wUnit.addCommand("assert","WebSquare.wUnit.getDomById($p.id+'tabControl1_contents_test_1_body').className == 'w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.guid = 0;
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 20-Mar-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    <xf:group id="group2" style="height:400px;"><w2:tabControl id="tabControl1" style="width:622px;height:386px;" windowMaxNum="6" confirmTrueAction="exist" useConfirmMessage="false" confirmFalseAction="new" useTabKeyOnly="true" useMoveNextTabFocus="false" alwaysDraw="false" spaInitCount="4">
+            <w2:tabs id="tabs1" style="width:70px;height:30px;" label="" disabled="false"></w2:tabs>
+            <w2:tabs id="tabs2" style="width:70px;height:30px" label="" disabled="false"></w2:tabs>
+            <w2:content postScript="scwin.post1();" id="content1" frameMode="wframePreload" scope="true" style="height:356px;" initScript="console.log('ww1_initscript');if(scwin.test){scwin.test();}" src="wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub_tab.xml" alwaysDraw="true"></w2:content>
+            <w2:content postScript="scwin.post1();" id="content2" frameMode="wframePreload" scope="true" style="height:356px" initScript="console.log('ww2_initscript');if(scwin.test){scwin.test();}" src="wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub.xml" alwaysDraw="false"></w2:content>
+        </w2:tabControl></xf:group><xf:group id="group1" style="height:45px;"><xf:trigger id="trigger1" style="height:40px;width:200px;" ev:onclick="scwin.trigger1_onclick" type="button">
+            <xf:label>addTab(iframe)</xf:label>
+        </xf:trigger><xf:trigger id="trigger2" style="height:40px;width:200px;" ev:onclick="scwin.trigger2_onclick" type="button">
+            <xf:label>addTab(wframe)</xf:label>
+        </xf:trigger><xf:trigger id="trigger3" style="height:40px;width:200px;" ev:onclick="scwin.trigger3_onclick" type="button">
+            <xf:label>addTab(wframePreload)</xf:label>
+        </xf:trigger></xf:group></body>
+</html>
+ 

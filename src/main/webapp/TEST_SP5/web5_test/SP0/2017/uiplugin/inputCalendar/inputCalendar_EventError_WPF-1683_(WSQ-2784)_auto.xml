@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns=""></data>
+    		</xf:instance>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.enableDate = function() {
+    var date_enabled = ["20170608", "20170621", "20170629", "20170713", "20170721"]; // 활성화시킬 날짜 지정
+    WebSquare.wUnit.getJq(".w2calendar_col_date").addClass("date_diabled");
+    var cur_date = WebSquare.wUnit.getJq(".w2calendar_footer_date")[0].innerHTML.split("-");
+    var cur_year = cur_date[0];
+    var cur_month = cur_date[1];
+    for (var ix in date_enabled) {
+        var date = date_enabled[ix];
+        var year = date.substr(0, 4);
+        var month = date.substr(4, 2);
+        var day = date.substr(6, 2);
+        if (cur_year == year && cur_month == month) {
+            WebSquare.wUnit.getJq(".w2calendar_date_" + Number(day)).removeClass("date_diabled");
+        }
+    }
+}
+scwin.setVal_year = function() {
+    debugger;
+    var k = 0;
+    for (var k; k < WebSquare.wUnit.getDomById($p.id + 'inputCal1_calendar_selectbox_year').length; k++) {
+        if (WebSquare.wUnit.getDomById($p.id + 'inputCal1_calendar_selectbox_year')[k].selected == true) {
+            //alert(k)
+            break;
+        }
+    }
+    for (var i = 0; i < WebSquare.wUnit.getDomById($p.id + 'inputCal1_calendar_selectbox_year').length; i++) {
+        //inputCal1_calendar_last_year.click();
+        if (WebSquare.wUnit.getDomById($p.id + 'inputCal1_calendar_selectbox_year')[k--].innerText == "2018년")
+            return;
+        WebSquare.wUnit.getObjById($p.id+'inputCal1_calendar_last_year').click();
+    }
+}
+scwin.setVal_mon = function() {
+    var k = 11;
+    /*
+    for(var k; k<WebSquare.wUnit.getDomById($p.id+'inputCal1_calendar_selectbox_month').length; k++) {
+        if(WebSquare.wUnit.getDomById($p.id+'inputCal1_calendar_selectbox_month')[k].selected == true){
+            //alert(k)
+            break;
+        }
+        // 1. 활성화시킬 날짜 지정
+        // 2.inputCalendar에 이벤트 등
+        inputCal1.bind("oniconclick", function(e) {setTimeout(scwin.enableDate,10);});
+        inputCal1.bind("onmonthselect", function(e) {setTimeout(scwin.enableDate,10);});
+        inputCal1.bind("onyearselect", function(e) {setTimeout(scwin.enableDate,10);});
+
+    }
+    */
+    for (var i = 0; i < WebSquare.wUnit.getDomById($p.id + 'inputCal1_calendar_selectbox_month').length; i++) {
+        //inputCal1_calendar_last_year.click();
+        if (WebSquare.wUnit.getDomById($p.id + 'inputCal1_calendar_selectbox_month')[k--].innerText == "4월")
+            return;
+        document.getElementsByClassName('w2calendar_header_last_month')[0].click()
+    }
+}
+scwin.unitTest = function(){
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById($p.id + 'inputCal1_img').click()");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal_year()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal_mon()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'inputCal1_calendar_cell_1_4').getAttribute('class').indexOf('date_diabled') == -1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'inputCal1_calendar_cell_3_3').getAttribute('class').indexOf('date_diabled') == -1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'inputCal1_calendar_cell_4_4').getAttribute('class').indexOf('date_diabled') == -1", "true");
+
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+    	.date_diabled {
+		    pointer-events: none;
+			cursor: default;
+			opacity: 0.2;
+		}
+		
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar rightAlign="false"
+    		calendarValueType="yearMonthDate" renderType="native"
+    		id="inputCal1" renderDiv="true"
+    		style="position: absolute ;left: 20px;top: 20px;width: 150px;height: 23px;"
+    		focusOnDateSelect="false" footerDiv="false">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

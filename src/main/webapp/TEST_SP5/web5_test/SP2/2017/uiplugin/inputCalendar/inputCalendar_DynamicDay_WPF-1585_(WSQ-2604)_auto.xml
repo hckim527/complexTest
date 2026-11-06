@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.inputCalendar1_onviewchange = function(info) {
+    console.log(info.oldValue + " " + info.newValue);
+};
+scwin.inputCalendar1_ondateselect = function(dateStr, dateObj) {
+    console.log(dateStr);
+};
+scwin.inputCalendar2_onviewchange = function(info) {
+    console.log(info.oldValue + " " + info.newValue);
+};
+scwin.inputCalendar2_ondateselect = function(dateStr, dateObj) {
+    console.log(dateStr);
+};
+scwin.calendar2_onclick = function(e) {
+    console.log("click");
+};
+scwin.inputCalendar13_ondateselect = function(dateStr, dateObj) { //debugger;
+    if (dateStr) {
+        inputCalendar13.disableBeforeDate(dateStr);
+    }
+};
+scwin.inputCalendar14_ondateselect = function(dateStr, dateObj) {
+    if (dateStr) {
+        inputCalendar14.disableAfterDate(dateStr);
+    }
+};
+scwin.trigger1_onclick = function(e) { //debugger;
+    inputCalendar13.enableAllDate();
+    showAlertCal13 = true;
+    //alert("inputCalendar13 EnableAllDate");
+};
+scwin.trigger2_onclick = function(e) {
+    inputCalendar14.enableAllDate();
+    showAlertCal14 = true;
+    //alert("inputCalendar14 EnableAllDate");		
+};
+scwin.__isBeforeDisabled = function() {
+    var count = 0;
+    var el = WebSquare.wUnit.getJq("#inputCalendar13_calendar_cell_2_2").prevAll();
+    var length = el.length;
+    el.each(function() {
+        if (WebSquare.wUnit.getJq(this).hasClass("w2calendar_date_disable")) {
+            count++;
+        }
+    });
+    WebSquare.wUnit.getJq("#inputCalendar13_calendar_cell_2_2").parent().prevAll().each(function() {
+        WebSquare.wUnit.getJq(this).find("td").each(function() {
+            if (WebSquare.wUnit.getJq(this).hasClass("w2calendar_date_disable")) {
+                count++;
+            }
+            length++;
+        });
+    });
+    return length == count;
+}
+scwin.__isAfterDisabled = function() {
+    var count = 0;
+    var el = WebSquare.wUnit.getJq("#inputCalendar14_calendar_cell_2_2").nextAll();
+    var length = el.length;
+    el.each(function() {
+        if (WebSquare.wUnit.getJq(this).hasClass("w2calendar_date_disable")) {
+            count++;
+        }
+    });
+    WebSquare.wUnit.getJq("#inputCalendar14_calendar_cell_2_2").parent().nextAll().each(function() {
+        WebSquare.wUnit.getJq(this).find("td").each(function() {
+            if (WebSquare.wUnit.getJq(this).hasClass("w2calendar_date_disable")) {
+                count++;
+            }
+            length++;
+        });
+    });
+    return length == count;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 5. 브라우저에서 inputCalendar13 의 달력아이콘을 클릭후 임의의 날짜를 선택후 (예 : 2017-04-17) 다시 달력아이콘을 클릭해서 확인한다. 
+    //5. In your browser, click the calendar icon for inputCalendar13, select an arbitrary date (eg 2017-04-17), and click on the calendar icon again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar13_img').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar13_calendar_cell_2_2').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar13_input').blur()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar13_img').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 5. 2017-04-17 이전날짜들이 Disable 처리된다.
+    //5. The dates before 2017-04-17 are disabled.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isBeforeDisabled()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. inputCalendar13.enableAllDate() 버튼을 클릭한다.
+    //6. Click the inputCalendar13.enableAllDate () button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 6. 'inputCalendar13 EnableAllDate' 팝업이 생성되면서 동적으로 disable 처리된 날짜가 다시 enable 처리된다. 
+    //6. When the 'inputCalendar13 EnableAllDate' popup is generated, the dynamically disable date is re-enabled.
+    WebSquare.wUnit.addCommand("assert", "showAlertCal13", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isBeforeDisabled()", "false");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 7. inputCalendar14 의 달력아이콘을 클릭후 임의의 날짜를 선택후 (예 : 2017-04-17) 다시 달력아이콘을 클릭해서 확인한다. 
+    //7. Click on the calendar icon in inputCalendar14, select an arbitrary date (eg 2017-04-17) and click on the calendar icon again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar14_img').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar14_calendar_cell_2_2').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar14_input').blur()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar14_img').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 7. 2017-04-17 이후날짜들이 Disable 처리된다.
+    //7. The dates after 2017-04-17 are disabled.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isAfterDisabled()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 8. inputCalendar14.enableAllDate() 버튼을 클릭한다.기타. 임의로 5 ~ 8번 절차를 반복한다.
+    //8. Click the inputCalendar14.enableAllDate () button.Etc. Repeat steps 5 to 8 as required.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 8. 'inputCalendar14 EnableAllDate' 팝업이 생성되면서 동적으로 disable 처리된 날짜가 다시 enable 처리된다.
+    //8. When the 'inputCalendar14 EnableAllDate' popup is generated, the dynamically disable date is re-enabled.
+    WebSquare.wUnit.addCommand("assert", "showAlertCal13", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isBeforeDisabled()", "false");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.showAlertCal13 = false;
+    window.showAlertCal14 = false;
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 12-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<style>
+		.w2calendar_date_disable{
+		color:gray;
+		}
+	</style>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+		<xf:group id="" style="position:absolute;top:578px;left:41px;width:724px;height:404px;">
+			<w2:calendar disableBeforeToday="true" id="calendar1" footerDiv="false"
+				style="position: absolute;width: 100px;height: 100px;left:0px;top:0px;" disableDateClass="w2calendar_date_disable" weekStartsOn="0">
+			</w2:calendar>
+			<w2:calendar disableAfterToday="true" id="calendar2" footerDiv="false"
+				style="position: absolute;width: 100px;height: 100px;left:0px;top:208px;" disableDateClass="w2calendar_date_disable"
+				ev:onclick="scwin.calendar2_onclick" weekStartsOn="0">
+			</w2:calendar>
+			<w2:inputCalendar renderType="component" footerDiv="false" ev:ondateselect="scwin.inputCalendar1_ondateselect"
+				disableDateClass="w2calendar_date_disable" weekStartsOn="0" disableBeforeDate="20170403"
+				ev:onviewchange="scwin.inputCalendar1_onviewchange" id="inputCalendar1" renderDiv="true" calendarValueType="yearMonthDate"
+				style="position: absolute;width: 150px;height: 23px;left:298px;top:4px;" rightAlign="false" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<w2:inputCalendar renderType="component" footerDiv="false" ev:ondateselect="scwin.inputCalendar2_ondateselect"
+				disableDateClass="w2calendar_date_disable" weekStartsOn="0" disableAfterDate="20170418"
+				ev:onviewchange="scwin.inputCalendar2_onviewchange" id="inputCalendar2" renderDiv="true" calendarValueType="yearMonthDate"
+				style="position: absolute;width: 150px;height: 23px;left:298px;top:176px;" rightAlign="false" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<w2:inputCalendar renderType="component" ev:ondateselect="scwin.inputCalendar2_ondateselect" footerDiv="false"
+				disableDateClass="w2calendar_date_disable" weekStartsOn="0" disableBeforeDate="20170403" disableAfterDate="20170418"
+				ev:onviewchange="scwin.inputCalendar2_onviewchange" id="inputCalendar3" renderDiv="true" calendarValueType="yearMonthDate"
+				style="position: absolute;width: 150px;height: 23px;left:291px;top:380px;" rightAlign="false" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<w2:inputCalendar renderType="component" footerDiv="false" ev:ondateselect="scwin.inputCalendar1_ondateselect"
+				disableDateClass="w2calendar_date_disable" weekStartsOn="0" ev:onviewchange="scwin.inputCalendar1_onviewchange" id="inputCalendar1_1"
+				disableBeforeToday="true" renderDiv="true" calendarValueType="yearMonthDate"
+				style="position: absolute;width: 150px;height: 23px;left:557px;top:2px;" rightAlign="false" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<w2:inputCalendar renderType="component" ev:ondateselect="scwin.inputCalendar2_ondateselect" footerDiv="false"
+				disableDateClass="w2calendar_date_disable" weekStartsOn="0" disableAfterDate="" ev:onviewchange="scwin.inputCalendar2_onviewchange"
+				id="inputCalendar2_1" disableAfterToday="true" renderDiv="true" calendarValueType="yearMonthDate"
+				style="position: absolute;width: 150px;height: 23px;left:574px;top:175px;" rightAlign="false" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<w2:inputCalendar renderType="component" ev:ondateselect="scwin.inputCalendar2_ondateselect" footerDiv="false"
+				disableDateClass="w2calendar_date_disable" weekStartsOn="0" ev:onviewchange="scwin.inputCalendar2_onviewchange" id="inputCalendar2_2"
+				disableAfterToday="true" disableBeforeToday="true" renderDiv="true" calendarValueType="yearMonthDate"
+				style="position: absolute;width: 150px;height: 23px;left:558px;top:379px;" rightAlign="false" focusOnDateSelect="false">
+			</w2:inputCalendar>
+		</xf:group>
+	<xf:group id="" style="position:absolute;top:19px;left:26px;width:837px;height:239px;"><xf:group id="" style="position:absolute;top:77px;left:0px;width:818px;height:162px;">
+			<w2:inputCalendar renderType="component" id="inputCalendar13" renderDiv="true" footerDiv="false" ev:ondateselect="scwin.inputCalendar13_ondateselect" calendarValueType="yearMonthDate" style="position: absolute;width:369px;height:84px;left:0px;top:78px;" rightAlign="false" weekStartsOn="0" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<w2:inputCalendar id="inputCalendar14" renderType="component" ev:ondateselect="scwin.inputCalendar14_ondateselect" footerDiv="false" renderDiv="true" calendarValueType="yearMonthDate" style="position: absolute;width:369px;height:84px;left:449px;top:78px;" rightAlign="false" weekStartsOn="0" focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<xf:trigger id="trigger1" style="position: absolute;width:280px;height:47px;left:1px;top:0px;font-size:12pt;" ev:onclick="scwin.trigger1_onclick" type="button">
+				<xf:label><![CDATA[inputCalendar13.enableAllDate()]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="trigger2" style="position: absolute;width:275px;height:46px;left:449px;top:0px;font-size:12pt;" ev:onclick="scwin.trigger2_onclick" type="button">
+				<xf:label><![CDATA[inputCalendar14.enableAllDate()]]></xf:label>
+			</xf:trigger>
+		</xf:group><w2:textbox id="" style="position: absolute;width:390px;height:62px;left:0px;top:1px;font-size:12pt;" label="ID: inputCalendar13&lt;br/&gt;날짜 선택 시 해당 날짜 기준 이전날짜 Disable처리&lt;br/&gt;[disableBeforeDate API]">
+		</w2:textbox><w2:textbox id="" style="position: absolute;width:390px;height:62px;left:447px;top:0px;font-size:12pt;" label="ID: inputCalendar14&lt;br/&gt;날짜 선택 시 해당 날짜 기준 이후날짜 Disable처리&lt;br/&gt;[disableAfterDate API]">
+		</w2:textbox></xf:group></body>
+</html>
+ 

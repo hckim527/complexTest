@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[ 
+
+scwin.onpageload = function() {
+    inputCalendar1.setValue("20250815");
+}
+
+scwin.onpageunload = function() {
+    
+}
+
+scwin.trigger1_onclick = function() {
+    var date = inputCalendar1.getValue();
+    var rDate = WebSquare.date.toLunar(date);
+    input1.setValue(date);
+    input2.setValue(rDate);
+}
+
+scwin.trigger2_onclick = function() {
+    var date = inputCalendar1.getValue();
+    var rDate = WebSquare.date.toSolar(date);
+    input1.setValue(rDate);
+    input2.setValue(date);
+}
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('input1').value == '20251006';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+    ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:inputCalendar id="inputCalendar1" style="position:relative;width:250px;height:30px;"/>
+        <xf:group>
+            <xf:trigger type="button" id="trigger1" style="position:relative;width:250px;height:30px;"
+                ev:onclick="scwin.trigger1_onclick">
+                <xf:label><![CDATA[WebSquare.date.toLunar]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="trigger2" style="position:relative;width:250px;height:30px;"
+                ev:onclick="scwin.trigger2_onclick">
+                <xf:label><![CDATA[WebSquare.date.toSolar]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <xf:group>
+            <w2:textbox id="textbox1" label="solar date" style="position:relative;width:100px;height:30px;"/>
+            <xf:input id="input1" style="position:relative;width:250px;height:30px;" readOnly="true" placeholder="solar date"/>
+        </xf:group>
+        <xf:group>
+            <w2:textbox id="textbox2" label="lunar date" style="position:relative;width:100px;height:30px;"/>
+            <xf:input id="input2" style="position:relative;width:250px;height:30px;" readOnly="true" placeholder="lunar date"/>
+        </xf:group>
+    </body>
+</html>

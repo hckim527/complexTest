@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+	scwin.test = function() {
+		var z = gen_sbm.getChild(0, "udc_sbmMultiItem");
+		var w = gen_sbm.getChild(0, "udc_sbmMultiItem2");
+		console.log(z, w, z && w ? "success" : "fail");
+		window.result = z && w ? "success" : "fail";
+	}
+	
+	scwin.rolePopupObjMake = function(udc_multiItem) {
+		var roleObjArr = [];
+		var udcObj = udc_multiItem.getItemList();
+
+		for(var i=0; i<udcObj.length; i++) {
+			var idArr = udcObj[i].roleId.split(",");
+
+			var roleObj = { roleId : idArr[0],
+						    roleNm : udcObj[i].roleNm,
+						    aplyStrtDttm : idArr[1],
+						    aplyEndDttm : idArr[2],
+						    roleCdNm : idArr[3],
+						    useYn : idArr[4]};
+
+			roleObjArr.push(roleObj);
+		}
+
+		return roleObjArr;
+	};
+	
+	scwin.btn_actAdd_onclick = function(e) {
+		
+		gen_sbm.insertChild(gen_sbm.getChildrenCount());
+
+        scwin.test();
+	};
+	
+	scwin.btn_actPopup_onclick = function(e) {
+		var roleObj = scwin.rolePopupObjMake(gen_sbm.getChild(this.getGeneratedIndex(), "udc_sbmMultiItem"));
+
+		var data = {
+			roleCd : "A",
+			rolePgmRelCd : "A",
+			genIdx : this.getGeneratedIndex(),
+			role : roleObj,
+			callbackFn : "scwin.actPopupCallBack"
+		};
+
+		//scwin.btn_roleSearch_popup(data);
+	};
+
+	scwin.Dbclick = function(id) {
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick(el);
+	}
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}	
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('gen_sbm_0_wframe1').innerText == 'wframe';
+	}
+	scwin.checkVal2 = function() {
+		return window.result == 'success';
+	}	
+	scwin.unitTest = function(){
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_actAdd').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+	]]></script>
+	<w2:require src="wframe_generator_udc_WESD-1685_(WSQ-5737)_sub2.xml"></w2:require>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+   		<xf:group tagname="button" ev:onclick="scwin.btn_actAdd_onclick" style="" id="btn_actAdd" class="w2trigger btn_df btn_md">
+			<w2:attributes>
+				<w2:type>button</w2:type>
+			</w2:attributes>
+			<w2:textbox tagname="i" style="" id="" label="" class="fa fa-plus">
+				<w2:attributes>
+					<w2:aria-hidden>true</w2:aria-hidden>
+				</w2:attributes>
+			</w2:textbox>
+			<w2:textbox tagname="span" style="" id="" label="추가"></w2:textbox>
+		</xf:group>
+
+
+        <w2:generator id="gen_sbm">
+            <xf:group id="group1" style="width:200px;height:100px;border:2px solid black;">
+                <w2:udc_multiItem labelColId="roleNm" valueColId="roleId" ev:ondeleteItem="scwin.udc_sbmMultiItem_ondeleteItem"
+                    style="width:200px;height:70px;background-color:red;" id="udc_sbmMultiItem" class="last_mr"></w2:udc_multiItem>
+                <w2:textbox tagname="span" style="" id="textbox1" label="AAA"></w2:textbox>
+            </xf:group>
+            <w2:wframe id="wframe1" src="wframe_generator_udc_WESD-1685_(WSQ-5737)_sub1.xml" style="width:100px;height:100px;border: 1px solid red;"/>
+            <w2:udc_multiItem labelColId="roleNm" valueColId="roleId" ev:ondeleteItem="scwin.udc_sbmMultiItem_ondeleteItem"
+                    style="width:200px;height:100px;background-color:yellow;" id="udc_sbmMultiItem2" class="last_mr"></w2:udc_multiItem>
+            <w2:editor id="editor1" style="position:relative;width:200px;height:150px;"/>
+        </w2:generator>
+    </body>
+</html>

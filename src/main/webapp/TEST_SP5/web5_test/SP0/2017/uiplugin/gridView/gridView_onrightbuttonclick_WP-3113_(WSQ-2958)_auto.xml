@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            <w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col4" name="name4"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.gridView1_onrightbuttonclick = function(row, col) {
+    log = "gridView1_onrightbuttonclick call";
+    console.log("gridView1_onrightbuttonclick call");
+    WebSquare.logger.printLog("gridView1_onrightbuttonclick call");
+};
+scwin.gridView1_ontextimageclick = function(row, col) {
+    console.log("gridView1_ontextimageclick call");
+};
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.rightClick = function(id) {
+    var node = WebSquare.wUnit.getDomById($p.id + id);
+    if (document.createEventObject) {
+        node.fireEvent('oncontextmenu');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('contextmenu', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.oncontextmenu == 'function') {
+        node.oncontextmenu();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.checkVal = function(id) {
+    if (WebSquare.wUnit.getDomById($p.id + id)) {
+        return true;
+    }
+    return false;
+}
+scwin.checkLog = function(text) {
+    var str = WebSquare.logger.getLog();
+    if (str.indexOf(text) >= 0) {
+        return true;
+    } else return false;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+	WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('gridView1_cell_0_0')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('gridView1_cell_0_0')");
+    WebSquare.wUnit.addCommand("set", "scwin.rightClick('gridView1_cell_0_0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkLog('gridView1_onrightbuttonclick call')", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.jsonData = [{
+            "col1": "aaaa1",
+            "col2": "bbbb1",
+            "col3": "cccc1",
+            "col4": "dddd1"
+        },
+        {
+            "col1": "aaaa2",
+            "col2": "bbbb2",
+            "col3": "cccc2",
+            "col4": "dddd2"
+        },
+        {
+            "col1": "aaaa3",
+            "col2": "bbbb3",
+            "col3": "cccc3",
+            "col4": "dddd3"
+        },
+        {
+            "col1": "aaaa4",
+            "col2": "bbbb4",
+            "col3": "cccc4",
+            "col4": "dddd4"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+    window.log;
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" useFilterList="false" applyAllColumnStyle="false" scrollByColumn="false"
+    		showSortableUseFilter="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: relative;width: 500px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false"
+    		useShiftKey="true" ev:onrightbuttonclick="scwin.gridView1_onrightbuttonclick" ev:ontextimageclick="scwin.gridView1_ontextimageclick">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column9" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name3" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" width="70" inputType="text" value="name4" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="textImage" width="70" value="" displayMode="label" imageSrc="/TEST/WS5/images/f.png" viewType="icon" disabled="" readOnly="true"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" value="" displayMode="label" readOnly="true"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

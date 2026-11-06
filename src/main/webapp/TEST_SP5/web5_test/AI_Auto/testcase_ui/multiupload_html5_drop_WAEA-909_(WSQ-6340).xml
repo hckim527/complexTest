@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.findElementBySuffix = function(suffix) {
+    var nodes = document.querySelectorAll("[id$='" + suffix + "']");
+    return nodes.length > 0 ? nodes[0] : null;
+};
+
+scwin.runDropProbe = function() {
+    var tbody = scwin.findElementBySuffix("multiupload1_tbody");
+    var result = {
+        rowCount: 0,
+        fileCount: 0,
+        checked: false,
+        selected: false
+    };
+
+    multiupload1.html5Upload = true;
+    multiupload1.options.mode = "html5";
+    multiupload1.dom.tbody = tbody;
+    multiupload1.fileArray = [];
+    multiupload1.fileNameArr = [];
+    multiupload1._inx = 0;
+    if (tbody) {
+        tbody.innerHTML = "";
+    }
+
+    multiupload1._handleOndrop({
+        preventDefault: function() {},
+        stopPropagation: function() {},
+        dataTransfer: {
+            files: [
+                { name: "WAEA_909_drop_a.txt", size: 10 },
+                { name: "WAEA_909_drop_b.txt", size: 20 }
+            ]
+        }
+    });
+
+    if (tbody) {
+        var rows = tbody.querySelectorAll("tr");
+        result.rowCount = rows.length;
+        if (rows.length > 0) {
+            rows[0].click();
+            var checkbox = rows[0].querySelector("input[type='checkbox']");
+            result.checked = checkbox ? checkbox.checked : false;
+            result.selected = rows[0].classList.contains("w2multiupload_html5_uploader_selected");
+        }
+    }
+    result.fileCount = multiupload1.fileNameArr.length;
+    txtResult.setValue(
+        result.fileCount === 2 && result.rowCount === 2 && result.checked && result.selected ? "PASS" : "FAIL"
+    );
+    txtDetail.setValue(JSON.stringify(result));
+};
+
+scwin.onpageload = function() {
+    setTimeout(scwin.runDropProbe, 300);
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group id="grpMain" style="position:relative;width:780px;height:300px;">
+            <xf:output id="lblTitle" style="position:absolute;left:10px;top:10px;width:740px;height:24px;">
+                <xf:label>WAEA-909 multiupload _handleOndrop jQuery dependency removal sample</xf:label>
+            </xf:output>
+            <w2:multiupload id="multiupload1" uploadButton="true" wmode="false" mode="html5"
+                style="position:absolute;left:10px;top:44px;width:420px;height:170px;" filter="*:*.*"/>
+            <xf:trigger id="btnRun" type="button" style="position:absolute;left:450px;top:44px;width:140px;height:28px;" ev:onclick="scwin.runDropProbe">
+                <xf:label>run probe</xf:label>
+            </xf:trigger>
+            <xf:output id="lblResult" style="position:absolute;left:450px;top:86px;width:80px;height:24px;">
+                <xf:label>result</xf:label>
+            </xf:output>
+            <xf:output id="txtResult" style="position:absolute;left:540px;top:86px;width:120px;height:24px;border:1px solid #b7b7b7;">
+                <xf:label/>
+            </xf:output>
+            <xf:output id="lblDetail" style="position:absolute;left:450px;top:120px;width:80px;height:24px;">
+                <xf:label>detail</xf:label>
+            </xf:output>
+            <xf:output id="txtDetail" style="position:absolute;left:450px;top:150px;width:300px;height:64px;border:1px solid #b7b7b7;">
+                <xf:label/>
+            </xf:output>
+        </xf:group>
+    </body>
+</html>

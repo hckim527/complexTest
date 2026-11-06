@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            			<w2:key id="key2" name="name2" dataType="text"></w2:key>
+            			<w2:key id="key3" name="name3" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var data = [];
+    for (var i = 0; i < 6; i++) {
+        for (var j = 0; j < 3; j++) {
+            data.push((i * 3) + j);
+        }
+    }
+    dataList1.setData(data);
+    dataMap1.set("key1", "key1");
+    dataMap1.set("key2", "key2");
+    dataMap1.set("key3", "key3");
+};
+scwin.trigger1_onclick = function(e) {
+    textarea1.setValue(JSON.stringify(dataList1.getModifiedJSON()));
+    console.log("rowStatus : " + dataList1.getRowStatus(0, 0));
+};
+scwin.trigger2_onclick = function(e) {
+    dataList1.initRowStatus();
+    console.log("rowStatus : " + dataList1.getRowStatus(0, 0));
+};
+scwin.trigger3_onclick = function(e) {
+    textarea1.setValue(JSON.stringify(dataMap1.getModifiedJSON()));
+    console.log(dataMap1.getModifiedJSON());
+};
+scwin.trigger4_onclick = function(e) {
+    dataMap1.initRowStatus();
+    console.log(dataMap1.getModifiedJSON());
+};
+scwin.trigger5_onclick = function(e) {
+    dataMap1.modifyKeyStatus("key1", false);
+    //console.log(dataMap1.getModifiedJSON());
+};
+scwin.trigger6_onclick = function(e) {
+    dataMap1.modifyKeyStatus("key1", true);
+    console.log(dataMap1.getModifiedJSON());
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="gridView1" style="width:502px;height:203px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" useShiftKey="true" rowStatusVisible="true">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column11" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" width="70" inputType="text" value="name3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:group id="group1" style="height:34px;">
+    		<xf:input id="input1" ref="data:dataMap1.key1" style="width:164px;height:32px;" adjustMaxLength="false"></xf:input>
+    		<xf:input id="input2" ref="data:dataMap1.key2" style="width:164px;height:32px;" adjustMaxLength="false"></xf:input>
+    		<xf:input id="input3" ref="data:dataMap1.key3" style="width:164px;height:32px;" adjustMaxLength="false"></xf:input>
+    	</xf:group>
+    	<xf:group id="group2" style="height:80px;">
+    		<xf:trigger id="trigger1" style="width:180px;height:23px;" type="button" ev:onclick="scwin.trigger1_onclick">
+    			<xf:label><![CDATA[dataList1.getModifiedJSON()]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger2" style="width:160px;height:23px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    			<xf:label><![CDATA[dataList1.initRowStatus()]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger3" style="width:180px;height:23px;" type="button" ev:onclick="scwin.trigger3_onclick">
+    			<xf:label><![CDATA[dataMap1.getModifiedJSON()]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger4" style="width:160px;height:23px;" type="button" ev:onclick="scwin.trigger4_onclick">
+    			<xf:label><![CDATA[dataMap1.initRowStatus()]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger5" style="width:250px;height:23px;" type="button" ev:onclick="scwin.trigger5_onclick">
+    			<xf:label><![CDATA[dataMap1.modiyKeyStatus("key1", false)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger6" style="width:230px;height:23px;" type="button" ev:onclick="scwin.trigger6_onclick">
+    			<xf:label><![CDATA[dataMap1.initRowStatus("key1", true)]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<xf:textarea id="textarea1" style="width: 300px;height: 100px;"></xf:textarea>
+    	
+    </body>
+</html>
+ 

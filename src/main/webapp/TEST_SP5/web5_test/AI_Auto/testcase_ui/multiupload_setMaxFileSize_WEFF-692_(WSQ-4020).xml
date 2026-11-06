@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text"></w2:column>
+						<w2:column id="name" name="FileName" dataType="text"></w2:column>
+						<w2:column id="displaySize" name="Size" dataType="text"></w2:column>
+						<w2:column id="Status" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false">
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.selectCallback = function() {
+    //alert("aa");
+    debugger;
+    var fileInfos = tobe.getFileInfos();
+    dataList1.setJSON(fileInfos);
+    //alert("bb");
+    tobe.setMaxFileSize(5 * 1024);
+}
+scwin.tobe_onComplete = function() {
+    console.log("onComplete10");
+};
+scwin.multiupload10_ondone = function(data) {
+    setTimeout(clearUpload, "1000");
+};
+scwin.clearUpload = function() {
+    dataList1.removeAll();
+}
+scwin.textbox4_onclick = function(e) {
+    var idxArr = gridView1.getCheckedJSON("chk");
+    for (var i = 0; i < idxArr.length; i++) {
+        var fileName = idxArr[i].name;
+        tobe.removeFile(fileName);
+    }
+    var idxArr1 = gridView1.getCheckedIndex("chk");
+    dataList1.removeRows(idxArr1);
+};
+scwin.textbox5_onclick = function(e) {
+    tobe.startUpload();
+};
+scwin.doprogress = function(data) {
+    var rowIdx = -1;
+    for (var i = 0; i < dataList1.getRowCount(); i++) {
+        var fileName = dataList1.getCellData(i, 1);
+        if (fileName == data.fileName) {
+            rowIdx = i;
+            break;
+        }
+    }
+    dataList1.setCellData(rowIdx, 3, data.percentData);
+    WebSquare.wUnit.getJq("#gridView1_cell_" + rowIdx + "_3.progress nobr").css("width", data.percentData + "%");
+}
+scwin.trigger1_onclick = function(e) {
+    var filter = selectbox1.getValue();
+    var filterStr = filter.split(":");
+    tobe.setFilter(filterStr[0], filterStr[1]);
+};
+scwin.trigger3_onclick = function(e) {
+    var filter = selectbox3.getValue();
+    var filterStr = filter.split(":");
+    multiupload1.setFilter(filterStr[0], filterStr[1]);
+};
+scwin.trigger4_onclick = function(e) {
+    tobe.setMaxFileSize(1 * 1024); //setMaxFileSize 동작안됨 
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[ 
+			* {font-family: tahoma}
+		
+			.file {
+				background-color:#66ff66;
+			}
+			
+			.delete_ing {
+				background-color:#ff5050;
+			}
+			
+			.start {
+				background-color:#0066ff;
+			}
+			
+			.progress {padding:0 2px !important}
+			
+			.progress nobr {
+				display: block;background-color: #77E0FA;border-radius: 3px;padding: 0;width:0px;
+			}
+		]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="group2" style="padding:10px;border:1px solid black">
+			<w2:textbox id="textbox1" style="position: relative;" label="HTML5 MultiUpload Sample" tagname="h1"></w2:textbox>
+			<xf:group id="group3" style="height:200px;width:500px;">
+				<w2:gridView dataList="dataList1" id="gridView1" ignoreCellClick="false" autoFit="allColumn"
+					style="position: relative;height: 200px;" scrollByColumn="false" useShiftKey="true" fixedColumnWithHidden="true">
+					<w2:header id="header1" style="">
+						<w2:row id="row2" style="">
+							<w2:column id="column11" blockSelect="false" style="height:20px;" width="27" inputType="checkbox" value="chk"></w2:column>
+							<w2:column id="column9" blockSelect="false" style="height:20px;" width="422" inputType="text"
+								value="FileName">
+							</w2:column>
+							<w2:column id="column7" blockSelect="false" style="height:20px;" width="133" inputType="text" value="Size"></w2:column>
+							<w2:column id="column3" blockSelect="false" style="height:20px;" inputType="text" width="197" value="Status"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody4" style="">
+						<w2:row id="row5" style="">
+							<w2:column id="chk" blockSelect="false" style="height:20px;" width="27" inputType="checkbox"></w2:column>
+							<w2:column id="name" blockSelect="false" style="height:20px;" width="422" inputType="text" textAlign="left"></w2:column>
+							<w2:column id="displaySize" blockSelect="false" style="height:20px;" width="133" inputType="text"></w2:column>
+							<w2:column id="Status" blockSelect="false" dataType="text" style="height:20px;" inputType="text" width="197"
+								value="" displayFormat="### %" defaultValue="0" displayFormatter="" class="progress">
+							</w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+			<xf:group id="group1" style="overflow:hidden;margin-top:5px;">
+				<w2:textbox class="file" id="textbox6" label="+ Add files..."
+					style="position:relative;height:34px;width:111px;float:left;">
+					<script ev:event="onclick" type="javascript"><![CDATA[
+					 ]]></script>
+				</w2:textbox>
+				<w2:textbox label="Delete" id="textbox4" style="position: relative;height: 34px;width: 84px;float:left;margin-left:5px;"
+					class="delete_ing" ev:onclick="scwin.textbox4_onclick">
+				</w2:textbox>
+				<w2:textbox id="textbox5" label="Start upload"
+					style="position: relative;height: 34px;width: 121px;float:left;margin-left:5px;" class="start" ev:onclick="scwin.textbox5_onclick">
+				</w2:textbox>
+				<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectbox1"
+					style="position: relative;margin-left:100px;width: 148px;height: 21px;" displayMode="label" optionOrder="false" allOption=""
+					disabled="false" submenuSize="auto" ref="">
+					<xf:choices>
+						<xf:item>
+							<xf:label><![CDATA[all file]]></xf:label>
+							<xf:value><![CDATA[*:*.*]]></xf:value>
+						</xf:item>
+						<xf:item>
+							<xf:label><![CDATA[image(jpg, gif)]]></xf:label>
+							<xf:value><![CDATA[image:*.jpg;*.gif;]]></xf:value>
+						</xf:item>
+					</xf:choices>
+				</xf:select1>
+				<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;"
+					ev:onclick="scwin.trigger1_onclick">
+					<xf:label><![CDATA[setFilter]]></xf:label>
+				</xf:trigger>
+				<w2:multiupload maxcount="" id="tobe" maxsize="" ev:ondone="scwin.multiupload10_ondone" ev:onprogress="doprogress"
+					style="position:absolute;height:34px;width:111px;left:10px;top:276px;" ev:onComplete="scwin.tobe_onComplete" action="" uploadButton=""
+					wmode="true" filter="그림파일:*.jpg;*.gif;" mode="html5_transparent" selectCallback="selectCallback">
+				</w2:multiupload>
+				<xf:trigger ev:onclick="scwin.trigger4_onclick" id="trigger4" style="position: relative;width:103px;height:23px;"
+					type="button">
+					<xf:label><![CDATA[setMaxFileSize]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+		<xf:group id="" style="position: relative;padding:10px;border:1px solid black;" class="">
+			<w2:textbox id="textbox7" label="Flash MultiUpload Sample" style="position: relative;" tagname="h1"></w2:textbox>
+			<w2:multiupload maxcount="" wmode="false" mode="flash" id="multiupload1" maxsize="" style="position: relative;width: 500px;height: 150px;"
+				action="" uploadButton="" filter="">
+			</w2:multiupload>
+			<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false"
+				disabledClass="w2selectbox_disabled" displayMode="label" id="selectbox3" optionOrder="false" ref=""
+				style="position: relative;margin-left:100px;width: 148px;height: 21px;" submenuSize="auto">
+				<xf:choices>
+					<xf:item>
+						<xf:label><![CDATA[all file]]></xf:label>
+						<xf:value><![CDATA[*:*.*]]></xf:value>
+					</xf:item>
+					<xf:item>
+						<xf:label><![CDATA[image(jpg, gif)]]></xf:label>
+						<xf:value><![CDATA[image:*.jpg;*.gif;]]></xf:value>
+					</xf:item>
+				</xf:choices>
+			</xf:select1>
+			<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3" style="position: relative;width: 80px;height: 23px;"
+				type="button">
+				<xf:label><![CDATA[setFilter]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html> 

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="tabControl_gridView">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList2">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList3">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:mfeSubmission/>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	var jsonData = [{col1:"a", "col2":"1"},{col1:"b", "col2":"2"},{col1:"c", "col2":"3"},{col1:"d", "col2":"4"}
+                    ,{col1:"d", "col2":"5"},{col1:"d", "col2":"6"},{col1:"d", "col2":"7"},{col1:"d", "col2":"8"}
+                    ,{col1:"d", "col2":"9"},{col1:"a", "col2":"10"}];
+    dataList1.setJSON(jsonData);
+                    
+	var jsonData2 = [{col1:"a", "col2":"tab2_1"},{col1:"b", "col2":"2"},{col1:"c", "col2":"3"},{col1:"d", "col2":"4"}
+                    ,{col1:"d", "col2":"5"},{col1:"d", "col2":"6"},{col1:"d", "col2":"7"},{col1:"a", "col2":"8"}
+                    ,{col1:"d", "col2":"9"},{col1:"a", "col2":"10"}];
+    dataList2.setJSON(jsonData2);                
+	var jsonData3 = [{col1:"a", "col2":"tab3_1"},{col1:"b", "col2":"2"},{col1:"c", "col2":"3"},{col1:"d", "col2":"4"}
+                    ,{col1:"d", "col2":"5"},{col1:"d", "col2":"6"},{col1:"d", "col2":"7"},{col1:"d", "col2":"8"}
+                    ,{col1:"d", "col2":"9"},{col1:"a", "col2":"10"}];
+    dataList3.setJSON(jsonData3);
+};
+
+scwin.gridView1_customFormatter = function (data, formattedData, rowIndex, columnIndex) {
+    if(data == "a"){
+        gridView1.setRowClass(rowIndex, "test1");
+    }
+
+    return data;
+};
+scwin.gridView2_customFormatter = function (data, formattedData, rowIndex, columnIndex) {
+    if(data == "a"){
+        gridView2.setRowClass(rowIndex, "test1");
+    }
+    return data;
+};
+scwin.gridView3_customFormatter = function (data, formattedData, rowIndex, columnIndex) {
+	if(data == "a"){
+        gridView3.setRowClass(rowIndex, "test1");
+    }else if(data == "d"){
+        gridView3.setCellColor(rowIndex, 0, "blue")
+    }
+    return data;
+};
+
+
+scwin.trigger1_onclick = function(e){
+    var options = { 
+                
+                common: { 
+                    fileName : "multi_tabControl_gridView.xlsx", 
+                    showProcess : true, 
+                    rowsByN:"10000",
+                    printSet : { 
+                        landScape : "true", 
+                        fitToPage : "true", 
+                        fitWidth : "4", 
+                        fitHeight : "333", 
+                        scale : "222" 
+                    }
+                }, 
+                excelInfo: [ 
+                    { 
+                        gridId : "gridView1", 
+                        sheetName : "첫번째 sheet", 
+                        type : "1", 
+                        useClass : "true",
+                        useStyle : "true",
+                        removeColumns : "", 
+                        foldColumns : "", 
+                        startRowIndex : 6, 
+                        startColumnIndex : 0
+                    }, 
+                    { 
+                        gridId : "gridView2", 
+                        sheetName : "두번째 sheet", 
+                        type : "1", 
+                        useClass : "true",
+                        useStyle : "true",
+                        removeColumns : "", 
+                        foldColumns : "", 
+                        startRowIndex : 3, 
+                        startColumnIndex : 0
+                    }, 
+                    { 
+                        gridId : "gridView3", 
+                        sheetName : "sheet3", 
+                        type : "1", 
+                        useClass : "true",
+                        useStyle : "true",
+                        removeColumns : "", 
+                        foldColumns : "", 
+                        startRowIndex : 3, 
+                        startColumnIndex : 0
+                    } 
+                ] 
+            }; 
+            $p.multipleExcelDownload( options );
+        }
+]]></script>
+
+		<style type="text/css"><![CDATA[
+			.test1 { color:red; }
+		 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger style="width:181px;height:23px;" id="trigger1" type="button" 
+            ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[multiExcelDownload]]></xf:label>
+    	</xf:trigger>
+    	<w2:tabControl id="tabControl1" alwaysDraw="true" style="width:500px;height:200px;">
+    		<w2:tabs disabled="false" style="height:40px;" id="tabs1" label="Tabs1"></w2:tabs>
+    		<w2:tabs disabled="false" style="height:40px" id="tabs2" label="Tabs2"></w2:tabs>
+    		<w2:tabs disabled="false" style="height:40px" id="tabs3" label="Tabs3"></w2:tabs>
+    		<w2:content style="height:160px;" id="content1" alwaysDraw="true">
+    			<w2:gridView checkAllType="false" id="gridView1" style="width: 500px;height: 150px;" dataList="data:dataList1">
+    				<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    				<w2:header style="" id="header2">
+    					<w2:row style="" id="row3">
+    						<w2:column width="70" style="" inputType="text" id="column8" value="name1"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="column7" value="name2"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody style="" id="gBody2">
+    					<w2:row style="" id="row4">
+    						<w2:column width="70" style="" inputType="text" id="col1" value="" customFormatter="scwin.gridView1_customFormatter"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="col2" value=""></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    		<w2:content style="height:160px" id="content2" alwaysDraw="true">
+    			<w2:gridView checkAllType="false" id="gridView2" style="width: 500px;height: 150px;" dataList="data:dataList2">
+    				<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    				<w2:header style="" id="header2">
+    					<w2:row style="" id="row3">
+    						<w2:column width="70" style="" inputType="text" id="column5" value="name1"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="column4" value="name2"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="column3" value="name3"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody style="" id="gBody2">
+    					<w2:row style="" id="row4">
+    						<w2:column width="70" style="" inputType="text" id="col1" value=""  customFormatter="scwin.gridView2_customFormatter" ></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="col2" value=""></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="col3" value=""></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    		<w2:content style="height:160px" id="content3" alwaysDraw="true">
+    			<w2:gridView checkAllType="false" id="gridView3" style="width: 500px;height: 150px;" dataList="data:dataList3">
+    				<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    				<w2:header style="" id="header2">
+    					<w2:row style="" id="row3">
+    						<w2:column width="70" style="" inputType="text" id="column6" value="name1"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="column5" value="name2"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="column4" value="name3"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="column3" value="name4"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody style="" id="gBody2">
+    					<w2:row style="" id="row4">
+    						<w2:column width="70" style="" inputType="text" id="col1" value="" customFormatter="scwin.gridView3_customFormatter"></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="col2" value=""></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="col3" value=""></w2:column>
+    						<w2:column width="70" style="" inputType="text" id="col4" value=""></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    	</w2:tabControl>
+    </body>
+</html>

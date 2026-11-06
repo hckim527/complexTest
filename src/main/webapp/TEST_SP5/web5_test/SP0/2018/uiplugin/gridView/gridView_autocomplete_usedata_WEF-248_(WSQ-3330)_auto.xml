@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var row = 10;
+    var col = 3;
+    var data = [];
+    var data2 = [];
+    for (var i = 0; i < row; i++) {
+        for (var j = 0; j < col; j++) {
+            data.push(i * col + j);
+            data2.push(String(i * col + j));
+            data2.push(String(i * col + j));
+        }
+    }
+    dataList2.setData(data2);
+    dataList1.setData(data);
+};
+scwin.onpageunload = function() {};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#G_gridView1___autoComplete_0_col2_col2_input', 'keydown', {
+        keyCode: 13,
+        which: 13,
+        key: 'ENTER'
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. 샘플실행 후 'col2'항목의 첫번째 row('1'값)를 마우스로 더블클릭하여 edit모드로 진입한다.
+    //1. After executing the sample, double click the first row ('1' value) of 'col2' item to enter edit mode.
+    //Verify step 1. The first row enters edit mode.
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. '5'값으로 변경 후 EnterKey를 누른다.
+    //2. Change to the value '5' and press EnterKey.
+    //Verify step 2. Change to the value '5' (not previously changed to EnterKey).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val('5')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_0_1').text() == '5'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 다시 더블클릭하여 '50'을 입력하고 EnterKey를 누른다.
+    //3. Double click again to enter '50' and press EnterKey.
+    //Verify step 3. Change to the value '50' (not previously changed to EnterKey).
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val('50')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_0_1').text() == '50'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 30-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="gridView1" style="width:564px;height:272px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" useShiftKey="true">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="col1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="col2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" width="70" inputType="text" value="col3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="autoComplete" width="70" value="" displayMode="label"
+    					allOption="" chooseOption="" ref="" noResult="useData">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:autoComplete chooseOption="" search="start" displayMode="label" useKeywordHighlight="false" submenuSize="auto" visibleRowNum="5"
+    		id="autoComplete1" style="width:168px;height:44px;" interactionMode="" editType="select" allOption="" ref="" noResult="useData">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList2">
+    				<w2:label ref="col1"></w2:label>
+    				<w2:value ref="col2"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    </body>
+</html>
+ 

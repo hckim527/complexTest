@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map" id="w2:dataCollection">
+            	<w2:dataList id="PersonInfo" baseNode="list" style="" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="NAME" name="이름" dataType="date"></w2:column>
+            			<w2:column id="GENDER" name="성별" dataType="date"></w2:column>
+            			<w2:column id="BIRTH" name="생년월일" dataType="date"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<NAME><![CDATA[김유정]]></NAME>
+            				<GENDER><![CDATA[W]]></GENDER>
+            				<BIRTH><![CDATA[20020922]]></BIRTH>
+            			</w2:row>
+            			<w2:row>
+            				<NAME><![CDATA[이건]]></NAME>
+            				<GENDER><![CDATA[M]]></GENDER>
+            				<BIRTH><![CDATA[19871106]]></BIRTH>
+            			</w2:row>
+            			<w2:row>
+            				<NAME><![CDATA[이영재]]></NAME>
+            				<GENDER><![CDATA[M]]></GENDER>
+            				<BIRTH><![CDATA[19721229]]></BIRTH>
+            			</w2:row>
+            			<w2:row>
+            				<NAME><![CDATA[안영미]]></NAME>
+            				<GENDER><![CDATA[W]]></GENDER>
+            				<BIRTH><![CDATA[19530405]]></BIRTH>
+            			</w2:row>
+            			<w2:row>
+            				<NAME><![CDATA[박정우]]></NAME>
+            				<GENDER><![CDATA[M]]></GENDER>
+            				<BIRTH><![CDATA[19900217]]></BIRTH>
+            			</w2:row>
+            			<w2:row>
+            				<NAME><![CDATA[정은지]]></NAME>
+            				<GENDER><![CDATA[W]]></GENDER>
+            				<BIRTH><![CDATA[19770111]]></BIRTH>
+            			</w2:row>
+            			<w2:row>
+            				<NAME><![CDATA[이준혁]]></NAME>
+            				<GENDER><![CDATA[M]]></GENDER>
+            				<BIRTH><![CDATA[19761116]]></BIRTH>
+            			</w2:row>
+            			<w2:row>
+            				<NAME><![CDATA[정수인]]></NAME>
+            				<GENDER><![CDATA[W]]></GENDER>
+            				<BIRTH><![CDATA[19860621]]></BIRTH>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:linkedDataList id="Linked_PersonInfo" style="" bind="PersonInfo">
+            		<w2:condition type="filter"><![CDATA[BIRTH NOT LIKE val('input1')]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.isShowResult = function() {
+    var el = WebSquare.wUnit.getJq("#gridView2_body_tbody tr").not(".w2grid_hidedRow").find("td[col_id = BIRTH]")
+    for (var i = 0; i < el.length; i++) {
+        var year = el[i].innerText.slice(0, 4);
+        if (year < 2000) {
+            return false;
+        }
+    }
+    return true;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. gridView_LinkedDataList_WPF-1494_(WSQ-2467)_A.xml 의 DataCollection 에 filterCondition 부분을 확인한다. 
+    //1. Check the filterCondition part of the DataCollection of gridView_LinkedDataList_WPF-1494_ (WSQ-2467)_B.xml.
+    // verify step 1. filterCondition : col("BIRTH") NOT LIKE val("input1")
+    //1. filterCondition: col ("BIRTH") NOT LIKE val ("input1")
+    //Test step 2. 브라우저에서 생년월일을 편집해서 검색한다. (예 : 19%%%.%)
+    //2. Edit your birth date by browsing in your browser. (Example: 19 %%%.%)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input1').setValue('19%%%.%')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 2. 생년월일이 1900년에 해당하지 않는 데이터만 표시된다.
+    //2. Only data whose date of birth is not 1900 is displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.isShowResult()", "true");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    input1.setValue("19%1%.%");
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 31-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="" style="" class="wrap">
+    		<xf:group id="" style="" class="container">
+    			<xf:group id="" style="" class="contents">
+    				<w2:textbox class="titlebox" dataType="" id="textbox1" label="LinkedDataList Binding" style=""></w2:textbox><xf:group tagname="table" id="table2" style="position:relative;width:500.00px;" class="w2tb">
+    					<w2:attributes>
+    						<w2:summary></w2:summary>
+    					</w2:attributes>
+    					<xf:group tagname="colgroup">
+    						<xf:group style="width:15.00%;" tagname="col"></xf:group>
+    						<xf:group style="" tagname="col"></xf:group>
+    						<xf:group style="width:15%;" tagname="col"></xf:group>
+    						<xf:group style="" tagname="col"></xf:group>
+    					</xf:group>
+    					<xf:group tagname="tr" style="">
+    						<xf:group style="" class="w2tb_th" tagname="th">성별</xf:group>
+    						<xf:group style="" class="w2tb_td" tagname="td">
+    							<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption=""
+    								id="selectbox1" style="position:relative;width:98%;height:21px;" displayMode="label" allOption="true" submenuSize="auto"
+    								disabled="false" ref="">
+    								<xf:choices>
+    									<xf:item>
+    										<xf:label><![CDATA[남]]></xf:label>
+    										<xf:value><![CDATA[M]]></xf:value>
+    									</xf:item>
+    									<xf:item>
+    										<xf:label><![CDATA[여]]></xf:label>
+    										<xf:value><![CDATA[W]]></xf:value>
+    									</xf:item>
+    								</xf:choices>
+    							</xf:select1>
+    						</xf:group>
+    						<xf:group style="" class="w2tb_th" tagname="th">생년월일</xf:group>
+    						<xf:group style="" class="w2tb_td"
+    							tagname="td">
+    							<xf:input id="input1"
+    								style="">
+    							</xf:input>
+    						</xf:group>
+    					</xf:group>
+    				</xf:group>
+    				<xf:group id="group4" style="position:relative;width:250px;float:left;clear:none;">
+    					<w2:textbox id="textbox2" style="position:relative;padding:10px;font-size:11pt;text-align:left;" label="DataList"></w2:textbox>
+    					<w2:gridView id="gridView1" dataList="PersonInfo" style="position:relative;width:100%;height:220px;"
+    						useShiftKey="false" scrollByColumn="false" fixedColumnWithHidden="true">
+    						<w2:header id="header1" style="">
+    							<w2:row id="row1" style="">
+    								<w2:column blockSelect="false" id="column5" style="height:23px" inputType="text" width="70"
+    									value="이름">
+    								</w2:column>
+    								<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70"
+    									value="성별">
+    								</w2:column>
+    								<w2:column blockSelect="false" id="column1" style="height:20px" width="100" inputType="text"
+    									value="생년월일">
+    								</w2:column>
+    							</w2:row>
+    						</w2:header>
+    						<w2:gBody id="gBody1" style="">
+    							<w2:row id="row2" style="">
+    								<w2:column blockSelect="false" id="NAME" style="height:23px" inputType="text" width="70"></w2:column>
+    								<w2:column blockSelect="false" id="GENDER" style="height:20px" inputType="select" width="70"
+    									allOption="" chooseOption="">
+    									<w2:choices>
+    										<w2:item>
+    											<w2:label><![CDATA[남]]></w2:label>
+    											<w2:value><![CDATA[M]]></w2:value>
+    										</w2:item>
+    										<w2:item>
+    											<w2:label><![CDATA[여]]></w2:label>
+    											<w2:value><![CDATA[W]]></w2:value>
+    										</w2:item>
+    									</w2:choices>
+    								</w2:column>
+    								<w2:column blockSelect="false" id="BIRTH" style="height:20px" width="70" inputType="calendar"
+    									displayFormat="">
+    								</w2:column>
+    							</w2:row>
+    						</w2:gBody>
+    					</w2:gridView>
+    				</xf:group>
+    				<xf:group id="group5" style="position:relative;width:250px;float:left;clear:none;">
+    					<w2:textbox id="textbox3" label="LinkedDataList"
+    						style="position:relative;padding:10px;font-size:11pt;text-align:left;">
+    					</w2:textbox>
+    					<w2:gridView dataList="Linked_PersonInfo" fixedColumnWithHidden="true" id="gridView2" scrollByColumn="false"
+    						style="position:relative;width:100%;height:220px;" useShiftKey="false" readOnly="" readOnlyPriority="">
+    						<w2:header id="header2" style="">
+    							<w2:row id="row3" style="">
+    								<w2:column blockSelect="false" id="column11" style="height:23px" inputType="text" width="70"
+    									value="이름">
+    								</w2:column>
+    								<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70"
+    									value="성별">
+    								</w2:column>
+    								<w2:column blockSelect="false" id="column7" style="height:20px" width="100" inputType="text"
+    									value="생년월일">
+    								</w2:column>
+    							</w2:row>
+    						</w2:header>
+    						<w2:gBody id="gBody2" style="">
+    							<w2:row id="row4" style="">
+    								<w2:column blockSelect="false" id="NAME" style="height:23px" inputType="text" width="70"></w2:column>
+    								<w2:column blockSelect="false" id="GENDER" style="height:20px" inputType="select" width="70"
+    									allOption="" chooseOption="">
+    									<w2:choices>
+    										<w2:item>
+    											<w2:label><![CDATA[남]]></w2:label>
+    											<w2:value><![CDATA[M]]></w2:value>
+    										</w2:item>
+    										<w2:item>
+    											<w2:label><![CDATA[여]]></w2:label>
+    											<w2:value><![CDATA[W]]></w2:value>
+    										</w2:item>
+    									</w2:choices>
+    								</w2:column>
+    								<w2:column blockSelect="false" id="BIRTH" style="height:20px" width="70" inputType="calendar"
+    									dateValidCheck="" displayFormat="">
+    								</w2:column>
+    							</w2:row>
+    						</w2:gBody>
+    					</w2:gridView>
+
+    				</xf:group>
+
+    				
+    			</xf:group></xf:group>
+    		
+    	</xf:group>
+    </body>
+</html>
+ 

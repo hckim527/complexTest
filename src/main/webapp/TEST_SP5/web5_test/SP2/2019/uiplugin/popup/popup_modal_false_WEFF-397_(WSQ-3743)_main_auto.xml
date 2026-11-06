@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_memberList" saveRemovedData="true" ev:oncelldatachange="">
+					<w2:columnInfo>
+						<w2:column id="id" name="아이디" dataType="text"></w2:column>
+						<w2:column id="name" name="성명" dataType="text"></w2:column>
+						<w2:column id="tel" name="연락처" dataType="text"></w2:column>
+						<w2:column id="region" name="지역" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<id><![CDATA[P0001]]></id>
+							<name><![CDATA[홍길동]]></name>
+							<tel><![CDATA[010-2323-4323]]></tel>
+							<region><![CDATA[서울]]></region>
+						</w2:row>
+						<w2:row>
+							<id><![CDATA[P0002]]></id>
+							<name><![CDATA[허균]]></name>
+							<tel><![CDATA[010-2444-2312]]></tel>
+							<region><![CDATA[인천]]></region>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.ibx_openPopup_onclick = function(e) {
+    requires("uiplugin.popup");
+    var paramData = {
+        parentPopupId: "",
+        rowData: WebSquare.wUnit.getObjById('dlt_memberList').getRowJSON(0)
+    };
+    var dataObj = {
+        type: "json", // 데이터 타입. "xml","string","json","array" 
+        data: paramData, // 전달 데이터 객체. 
+        name: "paramData" // 변수명. popup에서 $w.getParameter( "rowObj" )로 깨내올 수 있다. 
+    };
+    var opts = {
+        "id": "popup_wframe1",
+        "type": "window",
+        "width": "700px",
+        "height": "250px",
+        "top": 150,
+        "left": 150,
+        "popupName": "Popup1",
+        "modal": false,
+        "useIFrame": true,
+        "dataObject": dataObj,
+        "title": "focusTest",
+        //			"alwaysOnTop" : false,
+        "useControl": true,
+        "controls": {
+            "minimize": true,
+            "maximize": true,
+            "close": true
+        },
+        //			"foldSize" :{
+        //				"width" : 200
+        //			},					
+        "foldOnMinimized": true,
+        "frameMode": "wframe"
+    };
+    $w.openPopup("popup_modal_false_WEFF-397_(WSQ-3743)_wframe1.xml", opts);
+    //console.log("[Open popup_wframe1]");
+};
+scwin.getZIndex = function() {
+    return parseInt(popup_wframe1.getStyle("z-index")) <= parseInt(popup_wframe2.getStyle("z-index"));
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "1500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('ibx_openPopup').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "popup_wframe1_wframe_ibx_openPopup.click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.getZIndex()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group style="height:136px;padding:10px;" id="">
+			<xf:group style="width: 100%;" id="" class="">
+				<w2:textbox style="height: 23px;font-size:20px;float:left;margin-top:5px;margin-left:5px;font-weight: bold"
+					label="Main과 Popup(WFrame)간 DataList 공유 예제" id="">
+				</w2:textbox>
+				<xf:group tagname="table" style="width:100.00%;" id="" class="w2tb">
+					<w2:attributes>
+						<w2:summary></w2:summary>
+					</w2:attributes>
+					<xf:group tagname="caption"></xf:group>
+					<xf:group tagname="colgroup">
+						<xf:group tagname="col" style="width:19.04%;"></xf:group>
+						<xf:group tagname="col" style="width:30.96%;"></xf:group>
+						<xf:group tagname="col" style="width:17.58%;"></xf:group>
+						<xf:group tagname="col" style="width:32.42%;"></xf:group>
+					</xf:group>
+					<xf:group tagname="tr" style="">
+						<xf:group tagname="th" style="" class="w2tb_th">
+							아이디
+							<w2:attributes>
+								<w2:scope>row</w2:scope>
+							</w2:attributes>
+						</xf:group>
+						<xf:group tagname="td" style="" class="w2tb_td">
+							<xf:input ref="data:dlt_memberList.id" adjustMaxLength="false" style="width: 144px;height: 21px;" id=""
+								class="fm_w100">
+							</xf:input>
+						</xf:group>
+						<xf:group tagname="th" style="" class="w2tb_th">
+							성명
+							<w2:attributes>
+								<w2:scope>row</w2:scope>
+							</w2:attributes>
+						</xf:group>
+						<xf:group tagname="td" style="" class="w2tb_td">
+							<xf:input ref="data:dlt_memberList.name" adjustMaxLength="false" style="width: 144px;height: 21px;" id=""
+								class="fm_w100">
+							</xf:input>
+						</xf:group>
+					</xf:group>
+					<xf:group tagname="tr" style="">
+						<xf:group tagname="th" style="" class="w2tb_th">
+							연락처
+							<w2:attributes>
+								<w2:scope>row</w2:scope>
+							</w2:attributes>
+						</xf:group>
+						<xf:group tagname="td" style="" class="w2tb_td">
+							<xf:input ref="data:dlt_memberList.tel" adjustMaxLength="false" style="width: 144px;height: 21px;" id=""
+								class="fm_w100">
+							</xf:input>
+						</xf:group>
+						<xf:group tagname="th" style="" class="w2tb_th">
+							지역
+							<w2:attributes>
+								<w2:scope>row</w2:scope>
+							</w2:attributes>
+						</xf:group>
+						<xf:group tagname="td" style="" class="w2tb_td">
+							<xf:input ref="data:dlt_memberList.region" adjustMaxLength="false" style="width: 144px;height: 21px;" id=""
+								class="fm_w100">
+							</xf:input>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+			<xf:trigger type="button" style="width: 80px;height: 23px;margin-top:5px;margin-left:5px;" id="ibx_openPopup" ev:onclick="scwin.ibx_openPopup_onclick">
+				<xf:label><![CDATA[팝업 오픈]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>
+ 

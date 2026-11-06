@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="category1" name="category1" dataType="number"></w2:column>
+						<w2:column id="category2" name="category2" dataType="number"></w2:column>
+						<w2:column id="category3" name="category3" dataType="number"></w2:column>
+						<w2:column id="category4" name="category4" dataType="number"></w2:column>
+						<w2:column id="category5" name="category5" dataType="number"></w2:column>
+						<w2:column id="category6" name="category6" dataType="number"></w2:column>
+						<w2:column id="category7" name="category7" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.grid1_ongroupby = function(options) {
+    return false;
+};
+scwin.checkType = function() {
+    return typeof WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_label') == 'object' && WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_label').textContent != '';
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 run 버튼을 클릭한다.
+    //1. In your browser, click the run button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. 상단에 filterBox 가 생성된다.
+    //1. A filterBox is created at the top.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyZone_div').childElementCount > 0", "true");
+    //Test step 2. 생성된 filterBox 의 위치를 확인한다.
+    //2. Check the location of the generated filterBox.
+    //Verify step 2. filterBox 가 표시된다.
+    //2. The filterBox is displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkType()", "true");
+    //Test step 3. 상단에 x버튼 (그림안에 빨간 테두리) 를 클릭한다.
+    //3. Click the x button (the red border inside the picture) at the top.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_delete').click()");
+    //Verify step 3. filterBox 에 있는 데이터가 한번에 없어진다. (그전버전에서는 한개씩 없어짐)
+    //3. The data in the filterBox is lost at once. (One in the previous version)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyZone_div').childElementCount == 0", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.arr = [];
+    for (window.i = 0; i < 50000; i++) {
+        for (window.j = 0; j < 7; j++) {
+            arr.push(Math.floor((Math.random() * (100 - 1 + 1)) + 1));
+        }
+    }
+    /*
+    window.arr = [];
+    arr.push( 1 );
+    arr.push( 2 );
+    arr.push( 3 );
+    arr.push( 4 );
+    arr.push( 5 );
+    arr.push( 6 );
+    arr.push( 7 );
+    arr.push( 8 );
+    arr.push( 9 );
+    arr.push( 10 );
+    arr.push( 11 );
+    arr.push( 12 );
+    arr.push( 13 );
+    arr.push( 14 );
+    */
+    dataList1.setData(arr);
+    input1.setValue(" [ 0, 1, 2] ");
+    input2.setValue(" [ 1, 0, 1] ");
+    input3.setValue(" { inputType:'expression', expression: 'toggle()+depthStr()+\"    [ \"+count()+\" 건 ]\"', align: 'left', colSpan:9} ");
+    input4.setValue("");
+    input5.setValue("");
+    input6.setValue(" {colSpan:7} ");
+    input7.setValue(" {hidden:true} ");
+    input8.setValue(' {"category1":["1","2","3"], "category2":["1","2","3"]} ');
+    input9.setValue(" [ {value:'합계'}, {inputType:'expression', expression:'SUM(\"category7\")'} ] ");
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 02-Apr-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css">
+			.w2grid_groupby_depth_2{
+				background-color: #ffffad;
+			}
+			.w2grid_groupby_depth_3{
+				background-color: #affffff;
+			}
+		</style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="dataList1" baseNode="vector" repeatNode="data/INFO" id="grid1" rowNumVisible="true" rowStatusVisible="true"
+			style="position: absolute ;left:50px;top:40px;width: 693px;height: 700px;border: 1px solid black;"
+			columnMove="false" columnOrder="0,1,2,3,4,5,6,7,8,9" groupbyZone="true" ev:ongroupby="scwin.grid1_ongroupby" filterBoxvisibleRowNum="2" groupbyFilterBox="true" groupbyFilterBoxLocation="top">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column id="header_category1" style="height:20px" inputType="text" width="50" value="category1"></w2:column>
+					<w2:column id="header_category2" style="height:20px" inputType="text" width="50" value="category2"></w2:column>
+					<w2:column id="header_category3" style="height:20px" inputType="text" width="100" value="category3"></w2:column>
+					<w2:column id="header_category4" style="height:20px" inputType="text" width="150" value="category4"></w2:column>
+					<w2:column id="header_category5" style="height:20px" inputType="text" width="100" value="category5"></w2:column>
+					<w2:column id="header_category6" style="height:20px" inputType="text" width="100" value="category6"></w2:column>
+					<w2:column id="header_category7" style="height:20px" width="100" inputType="text" value="category7"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="category1" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category2" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category3" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category4" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category5" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category6" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category7" style="height:20px" width="70" inputType="select" allOption="" chooseOption="">
+						<w2:choices>
+							<w2:item>
+								<w2:label><![CDATA[a]]></w2:label>
+								<w2:value><![CDATA[a]]></w2:value>
+							</w2:item>
+							<w2:item>
+								<w2:label><![CDATA[b]]></w2:label>
+								<w2:value><![CDATA[b]]></w2:value>
+							</w2:item>
+							<w2:item>
+								<w2:label><![CDATA[c]]></w2:label>
+								<w2:value><![CDATA[c]]></w2:value>
+							</w2:item>
+						</w2:choices>
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="footer_category1" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category2" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category3" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category4" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category5" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category6" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category7" style="height:20px" width="70" inputType="expression" expression="SUM('category7')">
+					</w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+		<xf:group id="group1" style="position:absolute;top:165px;left:785px;width:738px;height:391px;">
+			<w2:textbox id="textbox1"
+				label="grid1.groupby({&lt;br&gt;&lt;br&gt; &amp;nbsp; &amp;nbsp;sortIndex:&lt;br&gt; &amp;nbsp; &amp;nbsp;, sortOrder:&lt;br&gt;&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowNumHeader:&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowStatusHeader:&lt;br&gt; &amp;nbsp; &amp;nbsp;, groupbyHeader:&lt;br&gt;&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowNumFooter:&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowStatusFooter:&lt;br&gt; &amp;nbsp; &amp;nbsp;, filter:&lt;br&gt; &amp;nbsp; &amp;nbsp;, groupbyFooter:&lt;br&gt;&lt;br&gt; &amp;nbsp; })"
+				style="position: absolute ;left:0px;top:5px;width:736px;height:389px;font-weight: bold;font-size: 20px;border: 1px solid black;">
+			</w2:textbox>
+			<xf:trigger id="trigger1" style="position: absolute ;left:575px;top:366px;width: 150px;height: 20px;" type="button">
+				<xf:label>run</xf:label>
+				<script ev:event="onclick" type="javascript"><![CDATA[
+				
+				var sortOrder = (input1.getValue().length!=0?input1.getValue():"[]");
+				var sortIndex = (input2.getValue().length!=0?input2.getValue():"[]");
+				var rowNumHeader = (input3.getValue().length!=0?input3.getValue():"{}");
+				var rowStatusHeader = (input4.getValue().length!=0?input4.getValue():"{}");
+				var groupbyHeader = (input5.getValue().length!=0?input5.getValue():"[]");
+				var rowNumFooter = (input6.getValue().length!=0?input6.getValue():"{}");
+				var rowStatusFooter = (input7.getValue().length!=0?input7.getValue():"{}");
+				var filter = (input8.getValue().length!=0?input8.getValue():"{}");
+				var groupbyFooter = (input9.getValue().length!=0?input9.getValue():"[]");
+				
+				var groupbyFunctionStr = textbox1.getValue();
+				var groupbyFunctionArr = groupbyFunctionStr.replaceAll("&nbsp;","").replaceAll("<br>","").replaceAll('"',"'").split(":");
+				var dm = ":";
+				
+				groupbyFunctionStr =  
+					groupbyFunctionArr[0] + dm + sortOrder + 
+					groupbyFunctionArr[1] + dm + sortIndex +
+					groupbyFunctionArr[2] + dm + rowNumHeader +
+					groupbyFunctionArr[3] + dm + rowStatusHeader +
+					groupbyFunctionArr[4] + dm + groupbyHeader +
+					groupbyFunctionArr[5] + dm + rowNumFooter +
+					groupbyFunctionArr[6] + dm + rowStatusFooter +
+					groupbyFunctionArr[7] + dm + filter +
+					groupbyFunctionArr[8] + dm + groupbyFooter +
+					groupbyFunctionArr[9];
+					eval(groupbyFunctionStr);
+				
+				
+			 ]]></script>
+			</xf:trigger>
+			<xf:input id="input1" placeholder="sortIndex" style="position: absolute ;height:15px;width:520px;left:206px;top:60px;">
+			</xf:input>
+			<xf:input id="input2" placeholder="sortOrder" style="position: absolute ;height:15px;width:520px;left:206px;top:84px;">
+			</xf:input>
+			<xf:input id="input3" placeholder="rowNumHeader" style="position: absolute ;height:15px;width:520px;left:206px;top:125px;">
+			</xf:input>
+			<xf:input id="input4" placeholder="rowStatusHeader" style="position: absolute ;height:15px;width:520px;left:206px;top:146px;">
+			</xf:input>
+			<xf:input id="input5" placeholder="groupbyHeader" style="position: absolute ;height:15px;width:520px;left:206px;top:168px;">
+			</xf:input>
+			<xf:input id="input6" placeholder="rowStatusFooter "
+				style="position: absolute ;height:15px;width:520px;left:206px;top:215px;">
+			</xf:input>
+			<xf:input id="input7" placeholder="rowNumFooter" style="position: absolute ;height:15px;width:520px;left:206px;top:239px;">
+			</xf:input>
+			<xf:input id="input8" placeholder="filter" style="position: absolute ;height:15px;width:520px;left:206px;top:262px;">
+			</xf:input>
+			<xf:input id="input9" placeholder="groupbyFooter" style="position: absolute ;height:15px;width:520px;left:206px;top:285px;">
+			</xf:input>
+		</xf:group>
+		<xf:trigger type="button" id="trigger2" style="position: absolute ;left: 778px;top: 100px;width: 123px;height: 42px;">
+			<xf:label>excel down</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[ 
+			
+				var infoArr = [];
+				var options = {};
+				var infoObj = {};
+				
+				// 엑셀 다운로드 기본 옵션 설정
+				options.fileName         = "excel.xlsx";
+				options.type             =  "1";
+				options.startRowIndex    = 0;
+				options.startColumnIndex = 0;
+				//options.headerColor      = "#DBEEF3";
+				//options.footerColor      = "#92CDDC";
+				options.groupby = "true";
+				options.useFooter = true;
+				options.headerColor = "#123455";
+		   		
+				grid1.advancedExcelDownload(options, infoArr);
+			
+			]]></script>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger3" style="position: absolute ;left: 777px;top: 48px;width: 110px;height: 35px;">
+			<xf:label></xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[ 
+			
+				alert( grid1.getCellData( 0, 0 ) );
+			]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

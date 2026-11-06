@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript"><![CDATA[ 
+		var jsonData = [{"col1":"Test1", "col2":10, "col3":11}
+		               ,{"col1":"Test2", "col2":11, "col3":12}
+		               ,{"col1":"Test3", "col2":12, "col3":13}
+		               ];
+		               
+		dataList1.setJSON( jsonData );
+		
+		trigger1_onclick = function(e) {
+			var options = {};
+			options.type="2";
+   			options.fileName= "excel.xlsx";
+   			gridView1.advancedExcelDownload( options );
+		};
+		
+		trigger2_onclick = function(e) {
+        	var options = {};	
+        	options.type = "2";	
+			options.startRowIndex = "1"; 
+			gridView1.advancedExcelUpload( options );
+        };	
+		
+		trigger3_onclick = function(e) {
+			var options = {};
+			options.type="2";
+			options.delim = ';';
+			options.fileName = "test.csv";
+			gridView1.saveCSV( options );
+		};
+		
+		trigger4_onclick = function(e) {
+			var options = {};
+			options.type = "1";
+			options.delim="$blank",
+			gridView1.readCSV( options );
+		};
+		
+		trigger5_onclick = function(e) {
+			var options = {};
+			options.type = "1";
+			options.delim = "t",
+			gridView1.readCSV( options );
+		};
+		]]></script>
+    </head>
+    <body>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left:66px;top:30px;width:289px;height:184px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" inputType="text" width="70" value="name3"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" value="Select"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="select">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[Y]]></w2:label>
+    							<w2:value><![CDATA[Yes]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[N]]></w2:label>
+    							<w2:value><![CDATA[No]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 387px;top: 29px;width: 92px;height: 36px;"
+    		ev:onclick="trigger1_onclick">
+    		<xf:label><![CDATA[excel down]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="trigger2_onclick" id="trigger2" style="position: absolute ;left:387px;top:69px;width: 92px;height: 36px;"
+    		type="button">
+    		<xf:label><![CDATA[excel up]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="trigger3_onclick" id="trigger3" style="position: absolute ;left:387px;top:109px;width: 92px;height: 36px;"
+    		type="button">
+    		<xf:label><![CDATA[csv down]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="trigger4_onclick" id="trigger4" style="position: absolute ;left:387px;top:149px;width:123px;height:36px;"
+    		type="button">
+    		<xf:label><![CDATA[csv up ("$blank")]]></xf:label>
+    	</xf:trigger>
+
+    	<xf:trigger ev:onclick="trigger5_onclick" id="trigger5" style="position: absolute ;left:387px;top:189px;width:124px;height:36px;"
+    		type="button">
+    		<xf:label><![CDATA[csv up ("t")]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

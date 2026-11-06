@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" repeatNode="map" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="symbol" name="symbol" dataType="text"></w2:column>
+                        <w2:column id="price" name="price" dataType="number"></w2:column>
+                        <w2:column id="memo" name="memo" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+            scwin.onpageload = function() {
+                dataList1.setJSON([
+                    { symbol: "A001", price: "-000000003.0000", memo: "Resize the Price column after first edit." },
+                    { symbol: "A002", price: "123456789.1234", memo: "Re-enter edit mode and check spinner input width." }
+                ]);
+            };
+
+            scwin.resetData = function() {
+                scwin.onpageload();
+            };
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group id="groupGuide" style="position:absolute;left:20px;top:15px;width:760px;height:72px;">
+            <w2:textbox id="guide1" style="position:absolute;left:0px;top:0px;width:760px;height:24px;"
+                label="WAEA-864: GridView spinner edit width after column resize"></w2:textbox>
+            <w2:textbox id="guide2" style="position:absolute;left:0px;top:26px;width:760px;height:24px;"
+                label="1. Double-click Price cell. 2. Resize Price column. 3. Double-click Price cell again."></w2:textbox>
+            <xf:trigger id="btnReset" type="button" ev:onclick="scwin.resetData"
+                style="position:absolute;left:0px;top:52px;width:100px;height:24px;">
+                <xf:label><![CDATA[Reset data]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <w2:gridView id="gridView1" dataList="data:dataList1" autoFit="none" scrollByColumn="false"
+            defaultCellHeight="28" style="position:absolute;left:20px;top:110px;width:760px;height:160px;">
+            <w2:caption id="caption1" value="WAEA-864 spinner resize sample"></w2:caption>
+            <w2:header id="header1">
+                <w2:row id="headerRow1">
+                    <w2:column id="hSymbol" inputType="text" value="Symbol" width="140" displayMode="label"></w2:column>
+                    <w2:column id="hPrice" inputType="text" value="Price spinner" width="280" displayMode="label"></w2:column>
+                    <w2:column id="hMemo" inputType="text" value="Memo" width="330" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="bodyRow1">
+                    <w2:column id="symbol" inputType="text" value="" width="140" displayMode="label"></w2:column>
+                    <w2:column id="price" inputType="spinner" value="" width="280" displayMode="label"
+                        dataType="number" increment="0.0001" min="-999999999" max="999999999"></w2:column>
+                    <w2:column id="memo" inputType="text" value="" width="330" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>

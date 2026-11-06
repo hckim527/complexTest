@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_programName="그리드뷰 서버 페이징">
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" repeatNode="map" id="dlt_emp" saveRemovedData="true"
+    				ev:ondataload="scwin.dlt_emp_ondataload">
+    				<w2:columnInfo>
+    					<w2:column id="chk" name="chk" dataType="text" ignoreStatus="true"></w2:column>
+    					<w2:column id="empNm" name="판매사명" dataType="text"></w2:column>
+    					<w2:column id="clsfNm" name="직책" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    				<w2:data use="true">
+    					<w2:row>
+    						<chk><![CDATA[일길동]]></chk>
+    						<empNm><![CDATA[1]]></empNm>
+    						<clsfNm><![CDATA[1]]></clsfNm>
+    					</w2:row>
+    					<w2:row>
+    						<chk><![CDATA[이길동]]></chk>
+    						<empNm><![CDATA[2]]></empNm>
+    						<clsfNm><![CDATA[2]]></clsfNm>
+    					</w2:row>
+    					<w2:row>
+    						<chk><![CDATA[삼길동]]></chk>
+    						<empNm><![CDATA[3]]></empNm>
+    						<clsfNm><![CDATA[3]]></clsfNm>
+    					</w2:row>
+    					<w2:row>
+    						<chk><![CDATA[사길동]]></chk>
+    						<empNm><![CDATA[4]]></empNm>
+    						<clsfNm><![CDATA[4]]></clsfNm>
+    					</w2:row>
+    				</w2:data>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    		<xf:submission id="sbm_search" ref='data:json,dma_search'
+    			target='data:json,[{"id":"dlt_emp","key":"SERVER_RESULT"},{"id":"dma_pageInfo","key":"SERVER_PAGING"}]'
+    			action="http://127.0.0.1:8081/tpl/web/emp/v1/salesman" method="get" mediatype="application/json" encoding="UTF-8" instance=""
+    			replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="조회중" ev:submit=""
+    			ev:submitdone="scwin.sbm_search_submitdone" ev:submiterror="" abortTrigger="">
+    		</xf:submission>
+    		<xf:submission abortTrigger="" action="/tpl/web/emp/v1/salesman" customHandler="" encoding="UTF-8" errorHandler="" ev:submit=""
+    			ev:submitdone="scwin.sbm_save_submitdone" ev:submiterror="" id="sbm_save" instance="" mediatype="application/json" method="post"
+    			mode="asynchronous" processMsg="" ref='data:json,{"action":"modified","id":"dlt_emp","key":"dltEmp"}' replace="" target=""
+    			style="">
+    		</xf:submission>
+    		<xf:submission id="sbm_getCode" ref=""
+    			target='data:json,[{"id":"dlt_clsf","key":"dltClsf"},{"id":"dlt_mngrEmp","key":"dltMngrEmp"}]' action="/tpl/web/emp/v1/code"
+    			method="get" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler=""
+    			mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_getCode_submitdone" ev:submiterror="" abortTrigger="">
+    		</xf:submission>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+
+	scwin.onpageload = function() {
+	
+		dlt_emp.insertRow(0)
+		dlt_emp.insertRow(0)
+		dlt_emp.insertRow(0)
+	
+		gridView1.setCellClass(0,0,"req");
+		gridView1.setCellClass(0,1,"req");
+		gridView1.setCellClass(0,2,"req");
+		
+		gridView1.setCellClass(1,0,"req");
+		gridView1.setCellClass(1,1,"req");
+		gridView1.setCellClass(1,2,"req");
+		
+		gridView1.setCellClass(2,0,"req");
+		gridView1.setCellClass(2,1,"req");
+		gridView1.setCellClass(2,2,"req");
+	
+	};
+
+	scwin.onpageunload = function() {
+
+	};
+
+	scwin.trigger1_onclick = function(e) {
+		dlt_emp.removeRow(dlt_emp.getRowPosition());
+	};
+	
+	scwin.checkVal = function() {
+		return !WebSquare.wUnit.getJq('#gridView1_cell_0_0').hasClass('req');
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column9').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column9').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_6_0').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()	
+		
+	]]></script>
+
+    	<style style="width: 100px;height: 100px;">
+    	.req{ 
+    		color:red;
+    		border : 2px solid red;
+    	}
+    	
+    	</style>
+
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<!--w2:udc_yearCalendar pickerType="picker" style="width: 190px;" id="" mandatory="false"></w2:udc_yearCalendar-->
+    	<xf:trigger type="button" style="width:172px;height:23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[선택row 삭제]]></xf:label>
+    	</xf:trigger><w2:gridView autoFit="allColumn" class="wq_gvw" dataList="data:dlt_emp" defaultCellHeight="32" editModeEvent="onclick"
+    		ev:oncellclick="" ev:oncelldblclick="scwin.grd_indexPage_oncelldblclick" ev:onheaderclick="" ev:onscrollend="" focusMode="row"
+    		id="gridView1" rowNumHeaderValue="번호" rowNumLocaleRef="" rowStatusHeaderValue="변경" scrollByColumn="false"
+    		scrollByColumnAdaptive="false" sortable="true" style="height:292px;" tooltipDisplay="true" visibleRowNum=""
+    		showSortableUseFilter="true" showSortableImage="true" sortEvent="onclick">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column9" value="A" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column8" value="B" displayMode="label"
+    					sortable="true">
+    				</w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column7" value="C" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column width="70" inputType="text" style="height:20px" id="chk" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="empNm" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="clsfNm" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

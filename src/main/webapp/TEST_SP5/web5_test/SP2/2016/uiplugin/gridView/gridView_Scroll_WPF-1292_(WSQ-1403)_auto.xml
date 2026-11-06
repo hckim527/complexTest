@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList1.removeRows([0, 1, 2, 3, 4, 5]);
+};
+scwin._checkStyle = function() {
+    var el = WebSquare.wUnit.getJq('#gridView1_body_tbody tr');
+    var count = 0;
+    for (var i = 0; i < el.length; i++) {
+        if (el[i].style.display == "none") {
+            count++;
+        }
+    }
+    return count > 0;
+}
+scwin.checkVal = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'gridView1_scrollY_div')).getPropertyValue('overflow-y') == 'hidden';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. Script 탭에서 scwin.trigger1_onclick 부분을 확인한다.
+    //1. In the Script tab, check scwin.trigger1_onclick.
+    //Verify 1. dataList1.removeRows( [0,1,2,3,4,5] );
+    //Test step 2. 브라우저에서 removeRows 버튼을 클릭한다.
+    //2. Click the removeRows button in your browser.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 6개의 row 가 삭제된다. (그전버전에서는 6개의 row가 삭제되나, 스크롤이 그대로 남아있는 현상이 발생함.)
+    //2. Six rows are deleted. (In previous versions, 6 rows were deleted, but scrolling remained unchanged.)
+    WebSquare.wUnit.addCommand("assert", "scwin._checkStyle()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 08-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: absolute ;left:17px;top:93px;width:528px;height:84px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name4">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 36px;top: 24px;width: 177px;height: 34px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[removeRows]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

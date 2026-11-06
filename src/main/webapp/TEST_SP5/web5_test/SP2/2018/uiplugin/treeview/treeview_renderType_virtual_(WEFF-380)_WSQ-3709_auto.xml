@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="label" name="name1" dataType="text"></w2:column>
+                        <w2:column id="value" name="name2" dataType="text"></w2:column>
+                        <w2:column id="depth" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "label": "라벨1",
+        "value": "밸류1",
+        "depth": 1
+    }, {
+        "label": "라벨2",
+        "value": "밸류2",
+        "depth": 2
+    }, {
+        "label": "라벨3",
+        "value": "밸류3",
+        "depth": 2
+    }, {
+        "label": "라벨4",
+        "value": "밸류4",
+        "depth": 3
+    }, {
+        "label": "라벨5",
+        "value": "밸류5",
+        "depth": 2
+    }, {
+        "label": "라벨6",
+        "value": "밸류6",
+        "depth": 3
+    }, {
+        "label": "라벨7",
+        "value": "밸류7",
+        "depth": 1
+    }, {
+        "label": "라벨8",
+        "value": "밸류8",
+        "depth": 2
+    }, {
+        "label": "라벨9",
+        "value": "밸류9",
+        "depth": 3
+    }, {
+        "label": "라벨10",
+        "value": "밸류10",
+        "depth": 4
+    }, {
+        "label": "라벨11",
+        "value": "밸류11",
+        "depth": 3
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.treeview1_ondblclick = function() {
+    //debugger;
+    console.log("ondbclick!!!!!!!!!!!!!!!!!!");
+    localStorage.setItem("log", 'ondbclick!!!!!!!!!!!!!!!!!!');
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'treeview1_label_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'ondbclick!!!!!!!!!!!!!!!!!!'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:treeview lineShow="" id="treeview1" dataType="listed" tooltipGroupClass="false"
+    		style="height:400px;width: 300px;border: 1px solid #000;display:inline-block;margin:10px;position: relative;" useDrag="" alwaysDraw="false"
+    		showTreeDepth="3" ev:ondblclick="scwin.treeview1_ondblclick" renderType="virtual" toggleEvent="">
+    		<w2:itemset nodeset="data:dataList1">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="value"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref="col4"></w2:folder>
+    			<w2:checkbox ref=""></w2:checkbox>
+    			<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=""></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    	<w2:treeview alwaysDraw="false" dataType="listed" ev:ondblclick="scwin.treeview1_ondblclick" id="treeview3" lineShow=""
+    		renderType="table" showTreeDepth="2" style="height:400px;width: 300px;border: 1px solid #000;display:inline-block;margin:10px;"
+    		tooltipGroupClass="false" useDrag="" toggleButtonEvent="" toggleEvent="">
+    		<w2:itemset nodeset="data:dataList1">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="value"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref="col4"></w2:folder>
+    			<w2:checkbox ref=""></w2:checkbox>
+    			<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=""></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    </body>
+</html>
+ 

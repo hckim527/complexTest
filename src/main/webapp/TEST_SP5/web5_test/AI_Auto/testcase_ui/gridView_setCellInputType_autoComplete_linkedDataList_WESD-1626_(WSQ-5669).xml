@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dlt_select" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList bind="dlt_select" id="linkedDataList1">
+            		<w2:condition type="filter"><![CDATA[col3==ref('data:dataList1.col1')]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[  
+	scwin.onpageload = function() {
+		var selectData = [{col1:"a1", col2:"label_a1", col3:"a"}
+						,{col1:"a2", col2:"label_a2", col3:"a"}
+						,{col1:"a3", col2:"label_a3", col3:"a"}
+						,{col1:"a4", col2:"label_a4", col3:"a"}
+						,{col1:"b1", col2:"label_b1", col3:"b"}
+						,{col1:"b2", col2:"label_b2", col3:"b"}
+						,{col1:"b3", col2:"label_b3", col3:"b"}
+						,{col1:"b4", col2:"label_b4", col3:"b"}];
+		dlt_select.setJSON(selectData);
+		
+		var jsonData = [{"col1":"a", "col4":"a1"},{"col1":"b", "col4":"b1"}
+						,{"col1":"c", "col4":"c1"},{"col1":"c", "col4":"c2"}
+						,{"col1":"a", "col4":"a2"},{"col1":"b", "col4":"b2"}]
+		dataList1.setJSON(jsonData);
+		
+		var autoCompleteTypeOptions = {
+			id : "",
+			inputType:"autoComplete",
+			options : {
+				chooseOption : "true", 
+				chooseOptionLabel : "-0000000-",
+				viewType : "icon",
+				readOnly : "false"
+			},
+			itemSet : {
+				nodeset : "data:linkedDataList1",
+				value : "col1",
+				label : "col2"
+			}
+		};
+		
+		var inputTypeOptions = {
+			inputType:"text"
+		};
+		for(var i=0; i<dataList1.getRowCount(); i++){
+			var a = dataList1.getCellData(i, "col1");
+			if(a !== "c" ){
+				gridView1.setCellReadOnly(i, "col2", false);
+				gridView1.setCellInputType(i, "col2", autoCompleteTypeOptions);
+			}else{
+				gridView1.setCellInputType(i, "col2", inputTypeOptions)
+			}
+		}
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+scwin.trigger1_onclick = function(e) {
+	
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setJSON]]></xf:label>
+    	</xf:trigger>
+    	<w2:gridView checkAllType="false" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+    		style="width: 500px;height: 150px;" tooltipSec="0" dataList="data:dataList1" autoResizeEmbeddedInput="true" focusImage="true" focusMode="row" focusMove="false" keyMoveEditMode="true" readOnly="true" scrollFocus="true" senseReader="true" sortEvent="onclick" sortHeaderDiv="true" sortable="true" visibleRowNum="11" setCellInputTypeCustom="true" fixedColumn="1">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column7" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column6" value="name2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column5" value="name3" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column4" value="name4" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="name5" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="custom" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col3" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col4" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col5" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

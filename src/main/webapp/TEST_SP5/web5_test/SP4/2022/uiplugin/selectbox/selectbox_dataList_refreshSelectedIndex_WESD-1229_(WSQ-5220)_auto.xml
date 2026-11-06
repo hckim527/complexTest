@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		var dataJson = [
+			{"col1":"label1","col2":"value1"},
+			{"col1":"label2","col2":"value2"},
+			{"col1":"label3","col2":"value3"},
+			{"col1":"label4","col2":"value4"},
+			{"col1":"label5","col2":"value5"}
+		]
+		dataList1.setJSON(dataJson);
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.trigger1_onclick = function(e) {
+		
+		var selectedIndex = select1.getSelectedIndex();
+
+		dataList1.setCellData(selectedIndex, "col1", "테스트");
+	};
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('select1').value == '테스트';
+	}		
+
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('select1').setValue('value2')");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('select2').setValue('value2')");		
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");		
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+
+
+    	
+    	<xf:group style="width: 200px;height: 200px;" id="">
+    		<w2:textbox id="" label='renderType="select"' style="width: 150px;height: 23px;"></w2:textbox>
+    		<xf:select1 id="select1" chooseOption="" style="width: 148px;height: 21px;" submenuSize="auto" allOption="" disabled="false"
+    			direction="auto" appearance="minimal" disabledClass="w2selectbox_disabled" ref="" refreshSelectedIndex="true" renderType="select">
+    			<xf:choices>
+    				<xf:itemset nodeset="data:dataList1">
+    					<xf:label ref="col1"></xf:label>
+    					<xf:value ref="col2"></xf:value>
+    				</xf:itemset>
+    			</xf:choices>
+    		</xf:select1>
+
+    	</xf:group>
+    	<xf:group style="width: 200px;height: 200px;" id="">
+    		<w2:textbox id="" label='renderType="component"' style="width: 150px;height: 23px;"></w2:textbox>
+    		<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false"
+    			disabledClass="w2selectbox_disabled" id="select2" ref="" refreshSelectedIndex="true" renderType="component"
+    			style="width: 148px;height: 21px;" submenuSize="auto">
+    			<xf:choices>
+    				<xf:itemset nodeset="data:dataList1">
+    					<xf:label ref="col1"></xf:label>
+    					<xf:value ref="col2"></xf:value>
+    				</xf:itemset>
+    			</xf:choices>
+    		</xf:select1>
+    	</xf:group>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    			<xf:label><![CDATA[setcelldata]]></xf:label>
+    		</xf:trigger>
+    </body>
+</html>

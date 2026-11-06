@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="date"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <col1><![CDATA[20190325]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20191006]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20191022]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20190910]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20190824]]></col1>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.inputCalendar1_onviewchange = function(info) {
+    console.log("inputCalendar1: ", info);
+};
+scwin.gridView1_onviewchange = function(info) {
+    console.log("gridView1: ", info);
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setVal = function() {
+    scwin.simulateWrapper('#G_gridView1__col1_input', 'key-combo', {
+        combo: 'ENTER'
+    });
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_1_0').click()");
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1__col1_input').val() == '20191022'", "true");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /**
+     * 2019-08-06 11:12 처럼 포맷된 형태의 값을 복사붙여넣기 시 inputCalendar onviewchange 이벤트 발생안함.
+     * 201908061122 처럼 포맷되지 않은 데이터를 붙여넣기한 직후에는 위 값을 붙여넣어도 onviewchange 발생함.
+     */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:inputCalendar rightAlign="false" calendarValueType="yearMonthDateTime" renderType="component" id="inputCalendar1"
+            renderDiv="true" style="position: relative;width:260px;height:58px;" focusOnDateSelect="false" footerDiv="false"
+            ioFormat="yyyyMMdd HH:mm" ev:onviewchange="scwin.inputCalendar1_onviewchange" dateValidCheck="true" ref="data:dataMap1.key1">
+        </w2:inputCalendar>
+        <w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+            style="position: relative;width: 500px;height: 150px;" ev:onviewchange="scwin.gridView1_onviewchange" 
+            keyMoveEditMode="true" moveKeyEditMode="false" directEdit="true" editModeEvent="onclick" arrowMove="true" focusFlow="linear">
+            <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header1" style="">
+                <w2:row id="row1" style="">
+                    <w2:column blockSelect="false" id="column5" removeBorderStyle="false" style="" inputType="text" width="136" value="name1"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="" inputType="text" width="70" value="name2"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column1" removeBorderStyle="false" style="" width="70" inputType="text" value="name3"
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1" style="">
+                <w2:row id="row2" style="">
+                    <w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="calendar" width="136" value=""
+                        displayMode="label" calendarValueType="yearMonthDate">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <xf:input adjustMaxLength="false" id="" style="width: 144px;height: 21px;" initValue="201908061010"></xf:input>
+        <xf:input adjustMaxLength="false" id="" style="width: 144px;height: 21px;" initValue="2019-08-07 10:10"></xf:input>
+    </body>
+</html>
+ 

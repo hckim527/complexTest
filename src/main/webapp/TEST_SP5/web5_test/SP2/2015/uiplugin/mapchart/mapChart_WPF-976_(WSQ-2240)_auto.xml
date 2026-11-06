@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="code" name="value" dataType="text"></w2:column>
+        				<w2:column id="value" name="code" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="" target="data:json" action="mapChart_WPF-976_(WSQ-2240)_mapData1.json" method="post" mediatype="application/json"
+        		encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+        		ev:submitdone="" ev:submiterror="">
+        	</xf:submission>
+        	<xf:submission id="submission2" ref="" target="data:json" action="mapChart_WPF-976_(WSQ-2240)_mapData2.json" method="post" mediatype="application/json"
+        		encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+        		ev:submitdone="" ev:submiterror="">
+        	</xf:submission>
+        	<xf:submission id="submission3" ref="" target="data:json" action="mapChart_WPF-976_(WSQ-2240)_mapData3.json" method="post" mediatype="application/json"
+        		encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+        		ev:submitdone="" ev:submiterror="">
+        	</xf:submission>
+        </xf:model>
+        <style>
+        </style>        
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    $w.executeSubmission("submission1");
+}
+scwin.mapchart1_onbeforemapchange = function(info) {
+    if (info.newMapCode.length >= 2) {
+        return false; // 지도 확장기능 사용하지 않음 
+    }
+}
+scwin.mapchart1_onmapdatachange = function(dataListId) {
+    var dataList = WebSquare.wUnit.getObjById(dataListId);
+    switch (dataListId) {
+        case $p.id+'dataList1':
+            var data = dataList.getAllJSON();
+            for (var i = 0; i < data.length; i++) {
+                var municipality = d3.select("#" + this.id + "_map").select(".municipality.c" + data[i].code);
+                municipality.style("fill", scwin.colorScale1(data[i].value));
+            }
+            break;
+    }
+}
+scwin.trigger1_onclick = function(e) {
+    $w.executeSubmission(selectbox1.getValue());
+};
+scwin.rgb2hex = function(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}
+scwin._checkRgb = function(hexa) {
+    var rgb = document.getElementsByClassName("municipality c31")[0].style.fill;
+    var color;
+    if (rgb.indexOf("rgb") != -1) {
+        color = scwin.rgb2hex(rgb);
+        return color;
+    }
+    return rgb;
+}
+scwin.checkVal = function() {
+    return scwin._checkRgb() == '#ff7a00';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 2. submission값을 변경하고 change data를 클릭한다.
+    //2. Change the submission value and click change data.
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectbox1_button').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectbox1_itemTable_1').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectbox1').setValue('submission2')");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 변경한 submission값에 따라 MapChart가 변경된다.
+    //2. The MapChart is changed according to the changed submission value.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.colorScale1 = d3.scale.linear()
+    .range(["red", "yellow", "green", "turquoise", "blue"])
+    .domain([0, 0.25, 0.5, 0.75, 1]);
+    scwin.init();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 06-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="Mapchart DataList 동적 연동 예제 (submission 이용)" id="" style="position: relative;width:828px;height:50px;font-size:24pt;"></w2:textbox>
+
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectbox1"
+    		style="position: relative;height:30px;width:150px;" displayMode="label" optionOrder="false" allOption="" disabled="false"
+    		submenuSize="auto">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[submission1]]></xf:label>
+    				<xf:value><![CDATA[submission1]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[submission2]]></xf:label>
+    				<xf:value><![CDATA[submission2]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[submission3]]></xf:label>
+    				<xf:value><![CDATA[submission3]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select1>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;height:30px;width:150px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[change data]]></xf:label>
+    	</xf:trigger>
+    	<w2:mapchart style="position: relative;width:700px;height:700px;" id="mapchart1" dataLists="dataList1" zoomMin="1" zoomMax="1"
+    		dataMapRatio_level0="simp01" event_drillup="oncontextmenu" event_drilldown="ondblclick" event_select="onclick"
+    		event_deselect="onmouseout" event_tooltipon="onmouseover" event_tooltipoff="onmouseout"
+    		ev:onbeforemapchange="scwin.mapchart1_onbeforemapchange" ev:onmapdatachange="scwin.mapchart1_onmapdatachange">
+    	</w2:mapchart>
+
+
+    </body>
+</html>
+ 

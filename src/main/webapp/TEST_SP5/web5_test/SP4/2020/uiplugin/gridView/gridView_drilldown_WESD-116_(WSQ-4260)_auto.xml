@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="depth" name="depth" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "col2": "a1fewfekwlmfefewl",
+        "col3": "a1",
+        "depth": "0"
+    }, {
+        "col2": "a1-1",
+        "col3": "a1-1",
+        "depth": "1"
+    }, {
+        "col2": "a2",
+        "col3": "a2",
+        "depth": "0"
+    }, {
+        "col2": "a2-1",
+        "col3": "a2-1",
+        "depth": "1"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'gridView1_tooltip').style.display == 'block';
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 4. 브라우저에서 image 컬럼(name3)을 마우스오버한다.
+    //4. In your browser, mouse over the image column (name3)
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_1')");
+    // verify step noImageTooltip 속성이 적용되어 image 컬럼에서는 tooltip 이 나타나지 않는다.
+    //4. The noImageTooltip attribute is applied and the tooltip does not appear in the image column.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+    		drilldownRealRowIndexAll="true" drilldownRealRowIndex="true"
+            tooltipDisplay="true"
+    		dataDragSelect="true" useShiftKey="true" 
+    		style="position: absolute ;left: 63px;top: 70px;width: 484px;height: 188px;">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column7" removeBorderStyle="false" style="" inputType="checkbox" width="70" value="name1"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5" removeBorderStyle="false" style="" inputType="text" width="70" value="name2"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="" inputType="text" width="70" value="name3"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" removeBorderStyle="false" style="" width="70" inputType="text" value="depth"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="checkbox" width="70" value=""
+    					
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" inputType="drilldown" width="70" value="" depthType="line"
+    					displayMode="label" depthColumn="depth" showDepth="0">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="depth" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	
+    </body>
+</html>
+ 

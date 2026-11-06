@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="date"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <col1><![CDATA[20190325]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20191006]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20191022]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20190910]]></col1>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[20190824]]></col1>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+                <w2:dataMap baseNode="map" id="dataMap1">
+                    <w2:keyInfo>
+                        <w2:key id="key1" name="name1" dataType="text"></w2:key>
+                        <w2:key id="key2" name="name2" dataType="text"></w2:key>
+                    </w2:keyInfo>
+                </w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    //dataMap1.setJSON({"key1":"2019-12-18 10:10"});
+    dataMap1.setJSON({
+        "key1": "201912300910"
+    }); //2019-12-30 09:10
+};
+scwin.onpageunload = function() {};
+scwin.inputCalendar1_onviewchange = function(info) {
+    console.log("inputCalendar1: ", info);
+};
+scwin.gridView1_onviewchange = function(info) {
+    console.log("gridView1: ", info);
+};
+scwin.gridView1_oncellindexchange = function(row, col, oldRow, oldCol) {
+    console.log("gridView1_oncellindexchange: ", row, col, oldRow, oldCol);
+    var colID = gridView1.getColumnID(col);
+    if (colID == "col1") {
+        gridView1.setFocusedCell(row, col, false);
+    }
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /**
+     * 2019-08-06 11:12 처럼 포맷된 형태의 값을 복사붙여넣기 시 inputCalendar onviewchange 이벤트 발생안함.
+     * 201908061122 처럼 포맷되지 않은 데이터를 붙여넣기한 직후에는 위 값을 붙여넣어도 onviewchange 발생함.
+     */
+    /**
+     * IE에서 탭으로 이동 시 포맷값 유지됨.
+     * dataDragSelect=true 이면 IE에서 셀 클릭 시 포맷값 유지됨.
+     */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:inputCalendar rightAlign="false" calendarValueType="yearMonthDateTime" renderType="component" id="inputCalendar1"
+            renderDiv="true" style="position: relative;width:260px;height:58px;" focusOnDateSelect="false" footerDiv="false" unformatOnPaste="true"
+            ev:onviewchange="scwin.inputCalendar1_onviewchange" dateValidCheck="true" ref="data:dataMap1.key1" validateRef="true">
+        </w2:inputCalendar>
+    </body>
+</html>
+ 

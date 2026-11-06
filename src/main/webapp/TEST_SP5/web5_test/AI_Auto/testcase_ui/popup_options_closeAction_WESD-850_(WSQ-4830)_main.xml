@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.btn_layer_onclick = function() {
+    var popParam = {
+        type: "json",
+        name: "popInfo",
+        data: {
+            detail: {
+                "usrId": "hong",
+                usrNm: "홍길동",
+                usrAge: "19",
+                usrSex: "M",
+                note: "나는 홍길동 이다"
+            }
+        }
+    };
+    var obj = {
+        id: "layerPopup",
+        title: "layer popup",
+        url: "popup_options_closeAction_WESD-850_(WSQ-4830)_popup.xml",
+        width: 740,
+        height: 254,
+        modal: false,
+        popupParam: popParam
+    };
+    scwin.openCommonPopup(obj, "scwin.layerCallback");
+};
+scwin.layerCallback = function() {
+    console.log("scwin.layerCallback...");
+};
+scwin.openCommonPopup = function(popOpt, objCallBack) {
+    if(WebSquare._xv !== "SP5"){requires("uiplugin.popup");}
+    var popObj = (typeof popOpt == "string") ? JSON.parse(popOpt) : popOpt;
+    var id = popObj.id || "";
+    var popType = popObj.type || "wframePopup"; // iframePopup, wframePopup, browserPopup
+    var title = popObj.title || " ";
+    var url = popObj.url;
+    var width = popObj.width || 400;
+    var height = popObj.height || 400;
+    var top = popObj.top || -1;
+    var left = popObj.left || -1;
+    var isModal = (typeof popObj.modal == "undefined" || popObj.modal == true) ? true : false;
+    var useIFrame = (popType != "browserPopup") ? true : false;
+    if (typeof popObj.popupParam == "undefined") {
+        popObj.popupParam = {};
+    }
+    if (typeof popObj.popupParam.data == "undefined") {
+        popObj.popupParam.data = {};
+    }
+    popObj.popupParam.data.id = id;
+    popObj.popupParam.data.type = "json";
+    if (popType == "wframePopup") {
+        popObj.popupParam.data.mode = "W";
+    } else if (popType == "iframePopup") {
+        popObj.popupParam.data.mode = "I";
+    } else {
+        popObj.popupParam.data.mode = "B";
+    }
+    popObj.popupParam.data.frameId = $p.id;
+    // callback 함수가 object일때
+    if (typeof objCallBack == "function") {
+        if (popType == "wframePopup") {
+            var fnNm = "__close_callback_Func__" + comUtil.getLocalDateTime("YYYYMMddhhmmssn");
+            gcom.callbackFuncList[$p.id + fnNm] = objCallBack;
+            popObj.popupParam.data.objCallBackNm = $p.id + fnNm;
+        } else {
+            alert("inline(object) callback함수는 popup type이 wframePopup만 지원합니다.\n그 외는 string으로 사용하십시오.");
+            return;
+        }
+    } else {
+        if (typeof objCallBack != "undefined" && objCallBack != "") {
+            if (popType == "wframePopup") {
+                popObj.popupParam.data.userCallBack = $p.id + (objCallBack || "");
+            } else if (popType == "iframePopup") {
+                popObj.popupParam.data.userCallBack = $p.id + (objCallBack || "");
+            } else {
+                popObj.popupParam.data.userCallBack = (objCallBack || "");
+            }
+        }
+    }
+    if (!popObj.popupParam.type) {
+        popObj.popupParam.type = "json";
+    }
+    var jsonData = popObj.popupParam;
+    var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+    var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+    var brWidth = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+    var brHeight = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+    if (!useIFrame) {
+        if (left > 0) {
+            left = left + dualScreenLeft;
+        } else {
+            left = ((brWidth / 2) - (width / 2)) + dualScreenLeft;
+        }
+        if (top > 0) {
+            top = top + dualScreenTop;
+        } else {
+            top = ((brHeight / 2) - (height / 2)) + dualScreenTop;
+        }
+    } else {
+        if (left > 0) {
+            left = left + (window.pageXOffset || document.body.scrollLeft);
+        } else {
+            left = ((brWidth / 2) - (width / 2)) + (window.pageXOffset || document.body.scrollLeft);
+        }
+        if (top > 0) {
+            top = top + (window.pageYOffset || document.body.scrollTop);
+        } else {
+            top = ((brHeight / 2) - (height / 2)) + (window.pageYOffset || document.body.scrollTop);
+        }
+    }
+    // top, left를 고정시킬때
+    if (popObj.fixedTop === true) {
+        top = popObj.top;
+        left = popObj.left;
+    }
+    var popupOptions = {
+        "id": id,
+        "type": popType,
+        "width": width + "px",
+        "height": height + "px",
+        "top": top,
+        "left": left,
+        "className": popObj.className || "",
+        "popupName": title,
+        "modal": isModal,
+        "useIFrame": useIFrame,
+        "dataObject": jsonData,
+        "alwaysOnTop": popObj.alwaysOnTop || false,
+        "useModalStack": (popObj.useModalStack == false) ? false : true,
+        "resizable": (popObj.resizable == false) ? false : true,
+        "useMaximize": (popObj.useMaximize == false) ? false : true,
+        "closeAction": popObj.closeAction || scwin.closeAction // 상단X 클릭시 팝업종료 단, 정의된 함수는 부모창에서 만들어야 함
+    };
+    if (typeof popupOptions.popupUrl !== "undefined" && popupOptions.popupUrl.indexOf("w2xPath") > -1) {
+        $p.openPopup(null, popupOptions);
+    } else {
+        $p.openPopup(url, popupOptions);
+    }
+};
+scwin.closeAction = function(id, info) {
+    if (!info.isCloseButtonClick) {
+        return true;
+    }
+    console.log("scwin.closeAction...");
+    return true;
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="contentWrap" id="" style="">
+			<xf:group id="tbl_search" style="" class="tbl_search">
+				<xf:group id="" style="width:100%;" adaptive="layout" class="w2tb tbl_sc" adaptiveThreshold="768" tagname="table">
+					<w2:attributes>
+						<w2:summary></w2:summary>
+					</w2:attributes>
+					<xf:group tagname="colgroup">
+						<xf:group style="width:100px;" tagname="col"></xf:group>
+					</xf:group>
+					<xf:group tagname="tr">
+						<xf:group style="" class="w2tb_th" tagname="th">팝업화면</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+
+			<xf:group id="" style="" class="section">
+				<xf:group id="" style="" class="dp">
+					<w2:anchor id="btn_layer" style="" ev:onclick="scwin.btn_layer_onclick" class="btn_tcm" outerDiv="">
+						<xf:label><![CDATA[layer popup]]></xf:label>
+					</w2:anchor>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html> 

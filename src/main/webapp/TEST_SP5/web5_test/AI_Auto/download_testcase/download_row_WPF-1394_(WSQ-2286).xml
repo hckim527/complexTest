@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.exceldown = function() { //useStyle 부분 추가
+    var options = {};
+    options.fileName = "excel.xlsx";
+    options.type = "1";
+    options.useStyle = "true";
+    options.spanAll = "true";
+    options.rowHeight = "50";
+    gridView1.advancedExcelDownload(options);
+};
+scwin.trigger2_onclick = function(e) {
+    var excelOpt = {};
+    excelOpt.startRowIndex = 1;
+    excelOpt.startColumnIndex = 0;
+    excelOpt.endColumnIndex = 1;
+    excelOpt.separator = "|||";
+    gridView1.advancedExcelUpload(excelOpt);
+};
+scwin.onpageload = function() {
+    window.json1 = [{
+            "col1": '"Test1"',
+            "col2": "A"
+        },
+        {
+            "col1": '"Test2"',
+            "col2": "B"
+        },
+        {
+            "col1": '"Test3"',
+            "col2": "C"
+        },
+        {
+            "col1": '"Test4"',
+            "col2": "D"
+        },
+        {
+            "col1": '"Test5"',
+            "col2": "E"
+        },
+        {
+            "col1": '"Test6"',
+            "col2": "F"
+        }
+    ];
+    dataList1.setJSON(json1);
+    /*		scwin.trigger1_onclick = function(e) {
+    			window.excelOpt = {};  //excel download 옵션 
+    			excelOpt.fileName = "excelData%.xls";    //또는 xlsx 확장자 사용 
+    			excelOpt.separator = "|||";
+     
+    			gridView1.advancedExcelDownload( excelOpt );
+    		
+    		}; */ //기존에 있는 엑셀 다운로드 기능 추석처리
+    scwin.trigger1_onclick = function(e) { //새로운 엑셀 다운로드 기능
+        scwin.exceldown();
+    };
+    gridView1.setCellColor(0, 1, "red"); //setCellColor 부분 추가
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+         <w2:textbox label="Excel Download (Height)" id="textbox1" style="position: relative;width:508px;height:50px;font-size:30px;"
+    		escape="true">
+    	</w2:textbox>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="position: relative;width:256px;height:200px;"
+    		ignoreCellClick="false" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" value="name2"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[down ]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[upload]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

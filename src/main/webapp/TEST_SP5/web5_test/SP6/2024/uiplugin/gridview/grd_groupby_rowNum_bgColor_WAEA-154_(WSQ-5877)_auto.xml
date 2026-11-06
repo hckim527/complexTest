@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+
+                <w2:dataList id="dataList1" baseNode="list" style="" repeatNode="map" keyNode="infoList" attributeMap="value" idAttribute="value" >
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[
+
+    scwin.onpageload = function() {
+        var jsonData = [{col1:"afwafewfkjewlfae",col3:"a"},{col1:"c",col3:"c"},{col1:"d",col3:"d"},{col1:"b",col3:"b"}];
+        dataList1.setJSON(jsonData);
+    };
+   
+    scwin.onpageunload = function() {
+       
+    };
+
+
+    scwin.gridView1_ongroupby = function(options) {
+        scwin.test(options);
+    };
+    scwin.test = function(options){
+        //debugger;
+        var flag = true;
+        if(flag) {
+            options.closeGroup = true; 
+            
+            options.groupbyHeader = [{colSpan: "3", inputType: "expression", expression: " toggle() + depthStr() + ' [ ' + count() + ' 건 ] ' ", align: "left" }];
+            options.groupbyFooter = [
+                {colSpan:"3",inputType: "expression", expression: " SUM('col2')", displayFormatter: "countFormatFunction", align: "center"}
+            ];
+            
+            gridView1.groupby( options ); //실제 groupby 실행
+            
+        } else {
+            return false; 
+        }
+    }
+    var countFormatFunction = function( value ) {
+        return "총판매수량 : " + value + " 개 ";
+    };
+
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}
+	scwin.Dbclick = function(id) {
+		var el = WebSquare.wUnit.getDomById($p.id + id);
+		scwin.fireDbClick(el);
+	}
+	
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#gridView1_column1', 'drag-n-drop', {
+			dx: 0,
+			dy: -30
+		});
+	}
+	scwin.checkVal = function() {
+		let tdElement = WebSquare.wUnit.getDomById("gridView1_headerRowNumber_bodyRow_1");
+		let bgColor = window.getComputedStyle(tdElement).backgroundColor;
+		return bgColor == 'rgb(223, 233, 248)';
+	}
+	scwin.unitTest = function() {
+		//Init test
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");				
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').querySelectorAll('span')[1].click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_1_0').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').querySelectorAll('span')[1].click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run and Stop unit Test
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:gridView id="gridView1" style="left:0px;top:0px;width:400px;height:200px;" useFilterList="true" scrollByColumnAdaptive="false" sortable="true" groupbyDisplayRowIndex="true" dataList="dataList1" rowNumVisible="true" autoFit="lastColumn" focusMode="row"  syncRowPositionOption="style" editModeEvent="onclick" scrollFocus="true" titleAuto="true" groupbyZone="true" ev:ongroupby="scwin.gridView1_ongroupby">
+            <w2:header id="header1" style="">
+                <w2:row id="row2" style="">
+                    <w2:column id="column1" inputType="text" style="" value="name1" width="70"></w2:column>
+                    <w2:column id="column2" inputType="text" style="" value="name2" width="70" useFilter="true"></w2:column>
+                    <w2:column id="column3" inputType="text" style="" value="name3" width="70" useFilter="true"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody4" style="">
+                <w2:row id="row5" style="">
+                    <w2:column inputType="text" style="" id="col1" width="70"></w2:column>
+                    <w2:column inputType="text" style="" id="col2" width="70"></w2:column>
+                    <w2:column inputType="text" style="" id="col3" width="70"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>

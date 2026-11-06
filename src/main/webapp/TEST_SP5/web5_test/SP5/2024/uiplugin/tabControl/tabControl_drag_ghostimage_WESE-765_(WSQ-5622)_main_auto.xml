@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+
+        <script type="javascript" lazy="false"><![CDATA[ 
+        	scwin.onpageload = function() {
+            };
+
+            scwin.tabControl1_ontabsplit = function(dragIndex, e) {
+                var options = {
+                    left: e.screenX + 'px',
+                    top: e.screenY + 'px',
+                };
+                var tabInfo = tabControl1.getTabInfo();
+                var src = "";
+                for (var i = 0; i < tabInfo.length; i++) {
+                    if (tabInfo[i].currentTabIndex == dragIndex) {
+                        src = tabInfo[i].src;
+                        break;
+                    }
+                }
+                $p.openPopup(src, options);
+                return true; // true 리턴시 해당 탭 닫힘.
+            }
+			
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#tabControl1_tab_tabs1', 'drag-n-drop', {
+			dx: 50,
+			dy: 0
+		});
+	}
+
+	scwin.checkVal = function() {
+		var temp = WebSquare.logger.getLog();
+		return temp.indexOf('screenX') == -1;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tabs1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest() 
+	
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:textarea id="textarea1" style="width:600px;height:200px"></xf:textarea>
+    	<w2:tabControl id="tabControl1" useTabKeyOnly="true" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist"
+            confirmFalseAction="new" alwaysDraw="false" style="height: 400px;" hiddenTab="false"
+            tabMove="true"
+            tabSplit="true"
+            ev:ontabsplit="scwin.tabControl1_ontabsplit">
+            <w2:tabs disabled="false" style="width:70px;height:30px" label="tabs1" id="tabs1"></w2:tabs>
+            <w2:tabs disabled="false" style="width:70px;height:30px" label="tabs2" id="tabs2"></w2:tabs>
+            <w2:tabs disabled="false" style="width:70px;height:30px" label="tabs3" id="tabs3"></w2:tabs>
+            <w2:tabs disabled="false" style="width:70px;height:30px" label="tabs4" id="tabs4"></w2:tabs>
+            <w2:content frameMode="wframe" alwaysDraw="false" style="height:400px" id="content1" src="tabControl_drag_ghostimage_WESE-765_(WSQ-5622)_sub.xml" scope="true" closable="true"></w2:content>
+            <w2:content frameMode="wframe" alwaysDraw="false" style="height:400px" id="content2" src="tabControl_drag_ghostimage_WESE-765_(WSQ-5622)_sub.xml" scope="true" closable="true"></w2:content>
+            <w2:content frameMode="wframe" alwaysDraw="false" style="height:400px" id="content3" src="tabControl_drag_ghostimage_WESE-765_(WSQ-5622)_sub.xml" scope="true" closable="true"></w2:content>
+            <w2:content frameMode="wframe" alwaysDraw="false" style="height:400px" id="content4" src="tabControl_drag_ghostimage_WESE-765_(WSQ-5622)_sub.xml" scope="true" closable="true"></w2:content>
+        </w2:tabControl>
+    </body>
+</html>

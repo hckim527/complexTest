@@ -1,0 +1,149 @@
+<?xml-stylesheet href="/websquare5/common/css/content.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="vector" style="" saveRemovedData="true" repeatNode="data/INFO" valueAttribute="">
+            		<w2:columnInfo>
+            			<w2:column id="branch" name="branch" dataType="text" col_id="branch" />
+            			<w2:column id="market" name="market" dataType="text" col_id="market" />
+            			<w2:column id="model" name="model" dataType="text" col_id="model" />
+            			<w2:column id="sale_number" name="sale_number" dataType="number" col_id="sale_number" />
+            			<w2:column id="sale_price" name="sale_price" dataType="number" col_id="sale_price" />
+            		</w2:columnInfo>
+            		<w2:data xmlns="">
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var data1 = [{
+            "branch": "제3대리점",
+            "market": "L",
+            "model": "아이폰6",
+            "sale_number": "5",
+            "sale_price": "300000",
+            "rowStatus": "U"
+        },
+        {
+            "branch": "제3대리점",
+            "market": "S",
+            "model": "갤럭시S5",
+            "sale_number": "9",
+            "sale_price": "1080000",
+            "rowStatus": "U"
+        },
+        {
+            "branch": "제3대리점",
+            "market": "D",
+            "model": "갤럭시S5",
+            "sale_number": "9",
+            "sale_price": "1080000",
+            "rowStatus": "U"
+        }
+    ];
+    var data2 = ["엘전자", "L", "성규전자", "S", "동우전자", "D"];
+    dataList2.setData(data2);
+    dataList1.setJSON(data1);
+}
+scwin.gridView1_excelUpload = function() {
+    /*
+     * @param         options JSON형태로 저장된 그리드의 엑셀 업로드 옵션
+     * options.type             : [defalut:    0] 1이면 엑셀 파일이 그리드의 보이는 결과로 만들어져있을때  0이면 엑셀 파일이 그리드의 실제 데이터로 구성되어있을때 
+     * options.sheetNo            : [defalut:    0] excel파일에서 그리드의 데이터가 있는 sheet번호
+     * options.startRowIndex    : [defalut:    0] excel파일에서 그리드의 데이터가 시작되는 행의 번호(헤더 포함)
+     * options.startColumnIndex : [defalut:    0] excel파일에서 그리드의 데이터가 시작되는 열의 번호
+     * options.headerExist        : [defalut:    0] excel파일에서 그리드의 데이터에 header가 있는지 여부(1이면 header 존재 0이면 없음)
+     * options.footerExist        : [defalut: 1] excel파일에서 그리드의 데이터에 footer가 있는지 여부(1이면 footer 존재 0이면 없음 기본값은 1 그리드에 footer가 없으면 적용되지 않음)
+     * options.append            : [defalut: 0] excel파일에서 가져온 데이터를 그리드에 append시킬지 여부(1이면 현재 그리드에 데이터를 추가로 넣어줌 0이면 현재 그리드의 데이터를 삭제하고 넣음)
+     * options.hidden            : [defalut: 0] 읽어들이려는 엑셀파일에 hidden column이 저장되어 있는지 여부를 설정하는 int형 숫자(0이면  엑셀파일에 hidden 데이터가 없으므로 그리드 hidden column에 빈 데이터를 삽입  1 : 엑셀파일에 hidden 데이터가 있으므로 엑셀 파일로부터 hidden 데이터를 삽입 )    
+     * options.fillHidden        : [defalut: 0] Grid에 hiddenColumn에 빈 값을 넣을지를 결정하기 위한 int형 숫자(1이면 hidden Column에 빈 값을 저장하지 않음,0이면 hidden column이 저장되어있지 않은 Excel File이라 간주하고 hidden Column에 빈 값을 넣어줌)(hidden이 0인 경우에는 fillhidden은 영향을 끼치지 않음)     
+     * options.skipSpace        : [defalut: 0] 공백무시 여부(1이면 무시 0이면 포함)
+     * options.insertColumns    : radio, checkbox와 같은 컬럼을 엑셀에서 받아 오지 않고, 사용자 컬럼 설정 으로 업로드 ( 데이터 구조 : [ { columnIndex:1, columnValue:"1" } ] )    
+     * options.popupUrl            : 업로드시에 호출할 popup의 url
+     */
+    var options = {};
+    options.type = 1;
+    options.headerExist = "1"; //헤더의 존재 여부 입니다.
+    options.startRowIndex = "0"; //excel파일에서 gird의 데이터가 시작되 row의 index입니다..(헤더 포함)
+    options.startColumnIndex = "0"; //excel파일에서 gird의 데이터가 시작되는 column의 index입니다.(헤더 포함)
+    options.sheetNo = 0; //excel의 sheet번호입니다.
+    options.append = "0"; //append 여부입니다. 0이면 append하지 않고 새로 쓰고 1이면 그리드의 뒤쪽에 데이터를 추가로 붙여줍니다.
+    options.hidden = "1"; //1이면 그리드에서 엑셀 다운로드시에 hidden을 포함했다는 의미입니다. 즉 upload시에 그리드의 hidden Column에 값을 넣는다는 의미입니다.
+    options.fillHidden = "1"; //1이면 hidden Column에 빈 값을 저장하지 않음,0이면 hidden column이 저장되어있지 않은 Excel File이라 간주하고 hidden Column에 빈 값을 넣어줌
+    gridView1.advancedExcelUpload(options); //엑셀 업로드를 시작합니다.
+}
+scwin.gridView1_excelDownload = function() {
+    var options = {};
+    options.type = 1
+    options.headerExist = 1; //헤더의 존재 여부 입니다.
+    options.sheetNo = 0; //excel의 sheet번호입니다.
+    options.append = 0; //append 여부입니다. 0이면 append하지 않고 새로 쓰고 1이면 그리드의 뒤쪽에 데이터를 추가로 붙여줍니다.
+    options.hidden = 1; //1이면 그리드에서 엑셀 다운로드시에 hidden을 포함했다는 의미입니다. 즉 upload시에 그리드의 hidden 
+    gridView1.advancedExcelDownload(options);
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:group id="group1" style="display:table;width:100%;height:100%;">
+            <xf:group id="group2" style="vertical-align:middle;text-align:center;display:table-cell;">
+                <xf:group id="group3" style="display:inline-block;padding:30px;">
+                    <w2:textbox class="titlebox" id="textbox1" label="Excel Upload" style=""/>
+                    <w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="position: relative;width:620px;height:500px;text-align:left;" fixedColumnWithHidden="true" useShiftKey="false" visibleRowNum="">
+                        <w2:header id="header1" style="">
+                            <w2:row id="row1" style="">
+                                <w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="110" value="branch"></w2:column>
+                                <w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="105" value="market"></w2:column>
+                                <w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="120" value="model"/>
+                                <w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="143" value="sale_number"></w2:column>
+                                <w2:column blockSelect="false" id="column1" style="height:20px" width="122" inputType="text" value="sale_price"></w2:column>
+                            </w2:row>
+                        </w2:header>
+                        <w2:gBody id="gBody1" style="">
+                            <w2:row id="row2" style="">
+                                <w2:column blockSelect="false" id="gridView1_branch" style="height:20px" inputType="text" width="110" col_id="branch"/>
+                                <w2:column blockSelect="false" id="gridView1_market" style="height:20px" inputType="select" width="105"
+                                	col_id="market" allOption="" chooseOption="" ref="" displayMode="value delim label" delimiter="-">
+                                	<w2:choices>
+                                		<w2:itemset nodeset="data:dataList2">
+                                			<w2:label ref="col1"></w2:label>
+                                			<w2:value ref="col2"></w2:value>
+                                		</w2:itemset>
+                                	</w2:choices>
+                                </w2:column>
+                                <w2:column blockSelect="false" id="gridView1_model" style="height:20px" inputType="text" width="120" col_id="model"/>
+                                <w2:column blockSelect="false" id="gridView1_sale_number" style="height:20px" inputType="text" width="114" textAlign="" displayFormat="" col_id="sale_number"/>
+                                <w2:column blockSelect="false" id="gridView1_sale_price" style="height:20px" width="122" inputType="text" displayFormat="#,###" textAlign="" col_id="sale_price"/>
+                            </w2:row>
+                        </w2:gBody>
+                    </w2:gridView>
+                    <xf:trigger id="trigger1" style="position: relative;width: 150px;height: 23px;margin-top:10px;margin-left:10px;" type="button" ev:onclick="scwin.gridView1_excelDownload">
+                        <xf:label><![CDATA[엑셀다운로드]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="trigger2" style="position: relative;width: 150px;height: 23px;margin-top:10px;margin-left:10px;" type="button" ev:onclick="scwin.gridView1_excelUpload">
+                        <xf:label><![CDATA[엑셀업로드]]></xf:label>
+                    </xf:trigger>
+                </xf:group>
+            </xf:group>
+        </xf:group>
+    </body>
+</html> 

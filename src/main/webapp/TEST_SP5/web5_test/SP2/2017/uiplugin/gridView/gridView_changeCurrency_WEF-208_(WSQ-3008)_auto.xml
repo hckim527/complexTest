@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="number"></w2:column>
+						<w2:column id="col2" name="name2" dataType="number"></w2:column>
+						<w2:column id="col3" name="name3" dataType="number"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false">
+						<w2:row>
+							<col1><![CDATA[123456789]]></col1>
+							<col2><![CDATA[123456789]]></col2>
+							<col3><![CDATA[123456789]]></col3>
+							<col4><![CDATA[123456789]]></col4>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[123456789]]></col1>
+							<col2><![CDATA[123456789]]></col2>
+							<col3><![CDATA[123456789]]></col3>
+							<col4><![CDATA[123456789]]></col4>
+						</w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col1", "euro");
+    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col2", "number");
+    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col3", "rupee");
+    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col4", "tenge");
+};
+scwin.trigger2_onclick = function(e) {
+    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col1", "euro", "#.###,00");
+    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col2", "number", "#,###.00");
+    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col3", "rupee", "##,##,###.00");
+    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col4", "tenge", "# ###-00");
+};
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById(id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플 실행 후 'changeCurrency1'와 'changeCurrency2 API'를 클릭한다.
+    //1. After running the sample, click 'changeCurrency1' and 'changeCurrency2 API'.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 1. 상단 gridView의 formatter 설정된 값과 하단 gridView의 API를 적용한 Formatter 설정된 값으로 동일하게 변경되어진다.
+    //1. It is changed to the set value of the formatter of the upper gridView and the set value of the formatter applying the API of the lower gridView.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText == '111.111.111,00'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').innerText == '222,222,222.00'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').innerText == '33,33,33,333.00'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_3').innerText == '444 444 444-00'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').innerText == '111.111.111,00'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText == '222,222,222.00'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_2').innerText == '33,33,33,333.00'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_3').innerText == '444 444 444-00'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 'changeCurrency2 API'를 클릭한 grdiView에서(하단) edit모두로 값을 변경한다.
+    //2. Change the value from grdiView by clicking on 'changeCurrency2 API' to (bottom) edit all.
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView2__col2').value = '12312312'");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 2. 변경된 값의 동일한 formatter로 적용되어 보여진다.
+    //2. The changed values ​​are applied to the same formatter.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText == '12,312,312.00'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.arr = [];
+    var beforeVal, afterVal;
+    for (var i = 0; i < 4 * 10; i++) {
+        window.arr[i] = i * 111111111 + 111111111;
+    }
+    dataList1.setData(window.arr);
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 12-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        //scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView useFilterList="false" dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false"
+			id="gridView1" style="position: absolute;width: 500px;height: 150px;left:68px;top:16px;" ignoreCellClick="false"
+			ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn" numberMask="#,###.00"
+			euroMask="#.###,00" rupeeMask="##,##,###.00" tengeMask="# ###-00" maxlength="29" rowNumVisible="true" senseReader="false">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label"
+						value="name1">
+					</w2:column>
+					<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="70" displayMode="label"
+						value="name2">
+					</w2:column>
+					<w2:column blockSelect="false" id="column4" style="height:20px" inputType="text" width="70" displayMode="label"
+						value="name3">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label"
+						value="name4">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text" displayMode="label"
+						applyFormat="all" dataType="">
+					</w2:column>
+					<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"
+						applyFormat="all">
+					</w2:column>
+					<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"
+						applyFormat="all">
+					</w2:column>
+					<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="text" displayMode="label"
+						applyFormat="all">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="position: absolute;width:324px;height:105px;left:68px;top:174px;font-size:14pt;"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[changeCurrency1]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="position: absolute;width:324px;height:95px;left:71px;top:517px;font-size:14pt;"
+			ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[changeCurrency2 API]]></xf:label>
+		</xf:trigger>
+		<w2:gridView autoFit="allColumn" dataList="dataList1" fixedColumnWithHidden="true" id="gridView2" ignoreCellClick="false"
+			ignoreToggleOnDisabled="false" maxlength="29" rowNumVisible="true" scrollByColumn="false" scrollByColumnAdaptive="false"
+			style="position: absolute;width: 500px;height: 150px;left:71px;top:357px;" summaryAuto="false" useFilterList="false"
+			useShiftKey="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:20px" value="name1"
+						width="70">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="column5" inputType="text" style="height:20px" value="name2"
+						width="70">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="column4" inputType="text" style="height:20px" value="name3"
+						width="70">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px" value="name4"
+						width="70">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"
+						applyFormat="all">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:20px" width="70"
+						applyFormat="all" displayFormat="">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" applyFormat="all" style="height:20px"
+						width="70">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="col4" inputType="text" applyFormat="all" style="height:20px"
+						width="70">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>
+ 

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap id="dma_user_info" attributeMap="" baseNode="map">
+					<w2:keyInfo>
+						<w2:key id="usrId" name="사용자ID" dataType="number"></w2:key>
+						<w2:key id="usrNm" name="사용자이름" dataType="number"></w2:key>
+						<w2:key id="usrAge" name="나이" dataType="text"></w2:key>
+						<w2:key id="usrSex" name="성별" dataType="text"></w2:key>
+						<w2:key id="note" name="비고" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.popupID = $p.getParameter("popupID");
+    scwin.popInfo = $p.getParameter("popInfo");
+    $p.log("### log  =====> " + scwin.popupID);
+    //$p.log("### log  =====> " + JSON.stringify(scwin.popInfo,null,2));
+    if (typeof scwin.popInfo.detail != "undefined") {
+        dma_user_info.setJSON(scwin.popInfo.detail);
+    }
+};
+scwin.btn_close_onclick = function() {
+    scwin.closePopup(scwin.popupID);
+};
+scwin.closePopup = function(popId) {
+    console.log("scwin.closePopup");
+    var parentFunc = null;
+    if (typeof scwin.popInfo.isClose == "undefined") scwin.popInfo.isClose = true;
+    if (scwin.popInfo.isClose) {
+        if (scwin.popInfo.mode == "B") {
+            window.close();
+        } else {
+            $p.closePopup(popId, {
+                popupTest: "test!!!!"
+            });
+        }
+    }
+    var strParam = "";
+    if (scwin.popInfo.userCallBack != null && (scwin.popInfo.userCallBack != $p.id) &&
+        scwin.popInfo.userCallBack.length > 0 && (scwin.popInfo.userCallBack.length != scwin.popInfo.frameId.length)) {
+        if (scwin.popInfo.mode == "B") { // window.open
+            parentFunc = opener.eval(scwin.popInfo.frameId + scwin.popInfo.userCallBack)(strParam);
+            parentFunc(strParam);
+        } else if (scwin.popInfo.mode == "I") { // iframePopup
+            parentFunc = parent.eval(scwin.popInfo.userCallBack)(strParam);
+            parentFunc(strParam);
+        } else { // wframePopup
+            eval(scwin.popInfo.userCallBack)(strParam);
+        }
+    }
+};
+scwin.onpageunload = function() {};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="contentWrap" id="" style=""><!-- sub_contents -->
+			<xf:group class="dfbox " id="" style="">
+				<w2:textbox class="df_tt fl" id="" label="layer popup" style=""></w2:textbox>
+				<xf:group class="fr" id="" style="">
+				</xf:group>
+			</xf:group>
+
+			<xf:group id="" style="" class=""><!-- section -->
+				<xf:group id="" style="width:100%;" class="w2tb tb" tagname="table">
+					<w2:attributes>
+						<w2:summary></w2:summary>
+					</w2:attributes>
+					<xf:group tagname="colgroup">
+						<xf:group style="width:150px;" tagname="col"></xf:group>
+						<xf:group style="" tagname="col"></xf:group>
+						<xf:group style="width:150px;" tagname="col"></xf:group>
+						<xf:group style="" tagname="col"></xf:group>
+					</xf:group>
+					<xf:group style="" tagname="tr">
+						<xf:group style="" class="w2tb_th req" tagname="th">ID</xf:group>
+						<xf:group style="" class="w2tb_td" tagname="td">
+							<xf:input id="ibx_usrId" ref="data:dma_user_info.usrId" style="height:24px;width:100%;" disabled=""></xf:input>
+						</xf:group>
+						<xf:group class="w2tb_th" tagname="th">이름</xf:group>
+						<xf:group class="w2tb_td" tagname="td">
+							<xf:input id="ibx_usrNm" ref="data:dma_user_info.usrNm" style="height:24px;" class="" mandatory=""></xf:input>
+						</xf:group>
+					</xf:group>
+					<xf:group style="" tagname="tr">
+						<xf:group style="" class="w2tb_th" tagname="th">나이</xf:group>
+						<xf:group style="" class="w2tb_td" tagname="td">
+							<xf:input id="ibx_usrAge" ref="data:dma_user_info.usrAge" style="height:24px;"></xf:input>
+						</xf:group>
+						<xf:group class="w2tb_th" tagname="th">성별</xf:group>
+						<xf:group class="w2tb_td" tagname="td">
+							<xf:select1 id="rad_usrSex" selectedIndex="-1" appearance="full" style="width: 150px;height: 21px;" cols="2" rows=""
+								ref="data:dma_user_info.usrSex">
+								<xf:choices>
+									<xf:item>
+										<xf:label><![CDATA[남자]]></xf:label>
+										<xf:value><![CDATA[M]]></xf:value>
+									</xf:item>
+									<xf:item>
+										<xf:label><![CDATA[여자]]></xf:label>
+										<xf:value><![CDATA[F]]></xf:value>
+									</xf:item>
+								</xf:choices>
+							</xf:select1>
+						</xf:group>
+					</xf:group>
+					<xf:group style="" tagname="tr">
+						<xf:group style="" class="w2tb_th" tagname="th">비고</xf:group>
+						<xf:group style="" class="w2tb_td" tagname="td">
+							<w2:attributes>
+								<w2:colspan>3</w2:colspan>
+								<w2:rowspan>1</w2:rowspan>
+							</w2:attributes>
+							<xf:input id="ibx_note" ref="data:dma_user_info.note" style="height:24px;"></xf:input>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+
+			<xf:group class="dfbox " id="" style="">
+				<xf:group class="fr" id="" style="">
+					<w2:anchor id="btn_close" style="margin-left: 10px;" ev:onclick="scwin.btn_close_onclick" class="btn_tcm" outerDiv="">
+						<xf:label><![CDATA[닫기]]></xf:label>
+					</w2:anchor>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html> 

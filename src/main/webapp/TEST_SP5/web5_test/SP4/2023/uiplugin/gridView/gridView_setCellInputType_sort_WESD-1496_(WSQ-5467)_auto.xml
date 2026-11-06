@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" ev:oncelldatachange="">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+
+            	<w2:dataList id="dlt_autoComplete" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+
+
+            	<w2:dataList id="dlt_selectData" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[ 
+         
+         
+	scwin.init = function(){
+		var jsonData=[{"col1":"2", "col2":"타법원"},{"col1":"2", "col2":"타법원","col3":"서울중앙지법","col4":"서울중앙지법"}
+					,{"col1":"2", "col2":"해당법원","col3":"성남지원","col4":"성남지원"}];
+		dataList1.setJSON(jsonData);
+
+
+		var sel_sampleData = [
+			{"col1":"타법원", "col2":"타법원"},
+			{"col1":"해당법원", "col2":"해당법원"}
+		];
+		
+		dlt_autoComplete.setJSON(sel_sampleData);
+
+		sel_sampleData2 = [
+			{"col1":"서울중앙지법", "col2":"서울중앙지법"},
+			{"col1":"성남지원", "col2":"성남지원"},
+			{"col1":"테스트", "col2":"테스트"}
+		];
+
+		dlt_selectData.setJSON(sel_sampleData2);
+		
+
+		$p.data.setBroadcast(false);
+		for(var i=0; i<gridView1.getRowCount(); i++){
+			var col1Data = dataList1.getCellData(i, "col1");
+			var obj = {};
+			if(col1Data == 1){
+				obj = {
+					inputType : "text"
+				}
+			}else{
+				obj = {
+					inputType : "select",
+					options : {
+						viewType : "icon",
+						chooseOption : true
+					},
+					itemSet : {
+						nodeset:"data:dlt_selectData",
+						label : "col1",
+						value : "col2"
+					}
+				}
+			}
+			gridView1.setCellInputType( i , "col3" , obj );
+
+
+			var obj2 = {};
+			if(col1Data == 1){
+				obj2 = {
+					inputType : "text"
+				}
+			}else{
+				obj2 = {
+					inputType : "autoComplete",
+					options : {
+						viewType : "icon",
+						chooseOption : true
+					},
+					itemSet : {
+						nodeset:"data:dlt_autoComplete",
+						label : "col1",
+						value : "col2"
+					}
+				}
+			}
+			gridView1.setCellInputType( i , "col2" , obj2 );
+		}
+
+		$p.data.setBroadcast(true);
+	};
+
+	        
+	scwin.onpageload = function() {
+		scwin.init();
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.button1_onclick = function(e) {
+	};
+	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('gridView1_dynamic_select_0_2_input_0').value == '성남지원';
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");						
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");						
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="gridView.setCellInputType();" id="" style="width: 700px;height: 30px;font-size:200%;padding:5px;"></w2:textbox>
+	    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+	    		sortable="true"
+
+
+senseReader="true" keyMoveEditMode="true" captionTitle="그리드 제목" captionAuto="true" autoResizeEmbeddedInput="true" sortHeaderDiv="true"
+scrollFocus="true" titleAuto="true" useStartEndDiv="true"
+
+	    		setCellInputTypeCustom="true" scrollByColumnAdaptive="false" id="gridView1" style="width: 700px;height: 150px;" ignoreCellClick="false"
+	    		syncScroll="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true"
+	    		>
+	    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+	    		<w2:header id="header1" style="">
+	    			<w2:row id="row1" style="">
+	    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="170" value="autoComplete" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="column1" style="" width="170" inputType="text" value="select" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="column4" style="" width="170" inputType="text" value="select2" displayMode="label"></w2:column>
+	    			</w2:row>
+	    		</w2:header>
+	    		<w2:gBody id="gBody1" style="">
+	    			<w2:row id="row2" style="">
+	    				<w2:column blockSelect="false" id="col1" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="col2" style="" inputType="custom" width="170" value="" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="col3" style="" width="170" inputType="custom"  value="" displayMode="label"></w2:column>
+
+    				<w2:column blockSelect="false" id="col4" style="height:20px" inputType="select" width="70" chooseOption="true" selectedData="false"
+    					chooseOptionLabel="$blank" viewType="icon" sortLabel="true" sortable="true">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dlt_selectData">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+	    			</w2:row>
+	    		</w2:gBody>
+	    	</w2:gridView>
+    </body>
+</html>

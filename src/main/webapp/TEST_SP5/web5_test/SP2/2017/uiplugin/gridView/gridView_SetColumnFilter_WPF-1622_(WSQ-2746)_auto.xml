@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[aaa]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[bb]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[c]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[b]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[d]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[aaaaa]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[c]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[b]]></col1>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList1.setColumnFilter({
+        type: 'row',
+        colIndex: 'col1',
+        key: "a",
+        condition: 'and',
+        exactMatch: true
+    });
+};
+scwin.trigger2_onclick = function(e) {
+    dataList1.setColumnFilter({
+        type: 'row',
+        colIndex: 'col1',
+        key: "a",
+        condition: 'and'
+    });
+};
+scwin.trigger3_onclick = function(e) {
+    dataList1.clearFilter();
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. Script 탭에서 scwin.trigger1_onclick 부분을 확인한다.
+    //1. In the Script tab, check scwin.trigger1_onclick.
+    // verify step 1. 코멘트확인
+    //1. Review comments
+    // Test step 2. scwin.trigger2_onclick 부분을 확인한다.
+    //2. Check the scwin.trigger2_onclick section.
+    // verify step 2. 코멘트확인
+    //2. Confirm comments
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 3. 'a' 데이터랑 완전 일치한 데이터가 필터처리된다.  
+    //3. The data that matches the 'a' data is filtered.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_0_0').innerText", "a");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_1_0').innerText", "a");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gv1_body_tbody tr').not('.w2grid_hidedRow').length == 2", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 4. filter 초기화 버튼을 클릭한다.
+    //4. Click the Reset filter button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    // verify step 4. 설정한 필터가 초기화된다.
+    //4. The set filter is initialized.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_0_0').innerText", "aaa");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_1_0').innerText", "a");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_2_0').innerText", "bb");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_3_0').innerText", "a");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_4_0').innerText", "c");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_5_0').innerText", "b");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_6_0').innerText", "d");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_7_0').innerText", "aaaaa");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_8_0').innerText", "c");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_9_0').innerText", "b");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    // verify step 5. 'a' 데이터랑 부분적으로 일치한 데이터가 필터처리된다.
+    //5. Data partially matching the 'a' data is filtered.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_0_0').innerText", "aaa");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_1_0').innerText", "a");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_2_0').innerText", "a");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_3_0').innerText", "aaaaa");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gv1_body_tbody tr').not('.w2grid_hidedRow').length == 4", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 29-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gv1"
+    		style="position: absolute;width:187px;height:336px;left:51px;top:43px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column1" style="height:32px;" width="103" inputType="text" value="name1"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" width="103" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:211px;height:34px;left:251px;top:43px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setRowFilter({exactMatch:true})]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2"
+    		style="position: absolute;width:211px;height:34px;left:251px;top:81px;" type="button">
+    		<xf:label><![CDATA[setRowFilter({exactMatch:false})]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3"
+    		style="position: absolute;width:211px;height:34px;left:251px;top:181px;" type="button">
+    		<xf:label><![CDATA[filter 초기화 ]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

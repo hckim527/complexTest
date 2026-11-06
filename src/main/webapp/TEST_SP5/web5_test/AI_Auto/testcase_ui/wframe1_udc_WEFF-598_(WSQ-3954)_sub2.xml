@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>UDC</w2:type>
+        <w2:buildDate/>
+        <w2:model></w2:model>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <!--/** WEBSQUARE UDC */
+            {
+            "icon": "",
+            "apis": [
+            {
+            "description": "desc",
+            "name": "getValue_1",
+            "return": [{
+            "description": "desc",
+            "type": "String"
+            }],
+            "params": []
+            },
+            {
+            "description": "desc",
+            "name": "onTrigger1",
+            "return": [{
+            "description": "desc",
+            "type": "String"
+            }],
+            "params": []
+            },
+            {
+            "description": "desc",
+            "name": "onTrigger2",
+            "return": [{
+            "description": "desc",
+            "type": "String"
+            }],
+            "params": []
+            }
+            ],
+            "events": [],
+            "width": "300px",
+            "properties": [
+            {
+            "default": "",
+            "description": "Component id",
+            "hidden": "N",
+            "name": "id",
+            "necessary": "Y",
+            "type": "string",
+            "bindparent": "",
+            "option": ""
+            },
+            {
+            "default": "",
+            "description": "Component style",
+            "hidden": "N",
+            "name": "style",
+            "necessary": "N",
+            "type": "string",
+            "bindparent": "",
+            "option": ""
+            },
+            {
+            "default": "",
+            "description": "Component class",
+            "hidden": "N",
+            "name": "class",
+            "necessary": "N",
+            "type": "string",
+            "bindparent": "",
+            "option": ""
+            },
+            {
+            "default": "",
+            "description": "Component ref",
+            "hidden": "N",
+            "name": "ref",
+            "necessary": "N",
+            "type": "bindColumn",
+            "bindparent": "",
+            "option": ""
+            }
+            ],
+            "notSupportBrowser": "",
+            "version": "",
+            "category": "Basic",
+            "htmlRender": "",
+            "componentName": "udc_input_trigger",
+            "height": "23px",
+            "pluginName": "udc_input_trigger",
+            "developer": "",
+            "disableIcon": "",
+            "description": "",
+            "company": ""
+            }
+        -->
+        <xf:group class="" id="" style="" pluginName="udc_input_trigger">
+            <link rel="stylesheet" type="text/css" href=""></link>
+            <style type="text/css"><![CDATA[ ]]></style>
+            <script type="text/javascript" src=""></script>
+            <script ev:event="oncreated(options)" type="text/javascript"><![CDATA[
+				/**
+				 * //property handling
+				 * $w.log("id:" + options.id);
+				 * $w.log("style:" + options.style);
+				 * $w.log("class:" + options.class);
+				 * $w.log("ref:" + options.ref);
+				 *
+				 * //event trigger
+				*/
+
+				/**
+				 * Function description...
+				 * @date 2019. 06. 20
+				 * @memberOf udc_obj
+				 * @param 
+				 * @returns  
+				 * @author mo
+				 * @example
+				 * @since
+				*/ 
+				udc_obj.getValue_1 = function(){
+				
+				};
+
+				/**
+				 * Function description...
+				 * @date 2019. 06. 20
+				 * @memberOf udc_obj
+				 * @param 
+				 * @returns  
+				 * @author mo
+				 * @example
+				 * @since
+				*/ 
+				udc_obj.onTrigger1 = function(){
+				    console.log("udc_obj.onTrigger1");
+                    var udcID = udc_obj.id;
+
+                    //[WEFF-598 / WSQ-3954 / WSQ-4293 가이드]
+                    //1) config.js strictMode(@value="true", @id="mf") 환경에서는
+                    //   main 페이지의 scwin 이 window.mf_scwin 으로 등록된다.
+                    //2) config.js wframe.scope(@value="true") 환경에서는 wframe 내부에
+                    //   별도의 scwin 이 생성되므로, UDC 클로저에서 참조하는 scwin 은
+                    //   wframe-local 객체이며 main 페이지의 함수에 접근할 수 없다.
+                    //=> 외부(main) 함수는 아래처럼 글로벌 scope variable 로 접근한다.
+                    var outerScwin = window.mf_scwin || window.scwin;    //strictMode @id="mf"
+                    var func = outerScwin && outerScwin.outter_wframe;
+                    if(typeof func === "function") {
+                        func.call(outerScwin, udcID);
+                    } else {
+                        alert("mf_scwin.outter_wframe is not a function");
+                    }
+				};
+
+				/**
+				 * Function description...
+				 * @date 2019. 06. 20
+				 * @memberOf udc_obj
+				 * @param 
+				 * @returns  
+				 * @author mo
+				 * @example
+				 * @since
+				*/ 
+				udc_obj.onTrigger2 = function(){
+				    console.log("udc_obj.onTrigger2");
+                    var udcID = udc_obj.id;
+
+                    //문자열로 함수를 지정하는 패턴도 동일하게 strictMode prefix 를 반영해야 한다.
+                    //strictMode @id="mf" 이므로 글로벌 scope variable 명은 "mf_scwin" 이다.
+                    var _win = window || parent;
+                    var scopeVar = _win.mf_scwin ? "mf_scwin" : "scwin";
+
+                    var funcStr = scopeVar + ".outter_wframe";
+                    var objArr = funcStr.split(".");
+
+                    var callbackFn = _win[objArr[0]] && _win[objArr[0]][objArr[1]];
+                    if(typeof callbackFn === "function") {
+                        callbackFn.call(_win[objArr[0]], udcID);
+                    } else {
+                        alert(funcStr + " is not a function");
+                    }
+				};
+				]]></script>
+            <script ev:event="onattributeChanged(type,value)" type="text/javascript"><![CDATA[ ]]></script>
+            <script ev:event="ondestroyed()" type="text/javascript"><![CDATA[ ]]></script>
+            <xf:input adjustMaxLength="false" id="" style="width: 144px;height: 21px;"></xf:input>
+            <xf:trigger type="button" id="" style="width: 80px;height: 23px;">
+                <xf:label><![CDATA[udc_trigger1]]></xf:label>
+                <script ev:event="onclick(e)" type="text/javascript"><![CDATA[ 
+                    udc_obj.onTrigger1();
+                ]]></script>
+            </xf:trigger>
+            <xf:trigger type="button" id="" style="width: 80px;height: 23px;">
+                <xf:label><![CDATA[udc_trigger2]]></xf:label>
+                <script ev:event="onclick(e)" type="text/javascript"><![CDATA[ 
+                    udc_obj.onTrigger2();
+                ]]></script>
+            </xf:trigger>
+        </xf:group>
+    </body>
+</html>
+ 

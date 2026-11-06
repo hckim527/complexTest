@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataMap id="dataMap1">
+                <w2:keyInfo>
+                    <w2:key id="domId" name="domId" dataType="text"></w2:key>
+                </w2:keyInfo>
+            </w2:dataMap>
+            <w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="COL1" name="Name" dataType="text"></w2:column>
+                    <w2:column id="COL2" name="Value" dataType="text"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.log = function(msg) {
+        var cur = txa_log.getValue();
+        var ts = new Date().toLocaleTimeString();
+        var line = "[" + ts + "] " + msg;
+        txa_log.setValue(cur ? cur + "\n" + line : line);
+    };
+
+    scwin.btn_search_onclick = function() {
+        var domId = ipt_domId.getValue().trim();
+        if (!domId) {
+            scwin.log("DOM ID를 입력해주세요.");
+            return;
+        }
+        var comp = $p.debug.getComponentByDom(domId);
+        if (comp) {
+            scwin.log("── getComponentByDom(\"" + domId + "\") ──");
+            scwin.log("  id         : " + comp.getID());
+            scwin.log("  originalId : " + comp.getOriginalID());
+            scwin.log("  pluginName : " + (comp.options.pluginName || comp.options.pluginName || ""));
+            scwin.log("  scope_id   : " + (comp.scope_id || ""));
+        } else {
+            scwin.log("결과 없음 — \"" + domId + "\" 에 해당하는 컴포넌트를 찾지 못했습니다.");
+        }
+    };
+
+    scwin.btn_batch_onclick = function() {
+        var domId = ipt_domId.getValue().trim();
+        if (!domId) {
+            scwin.log("DOM ID를 입력해주세요.");
+            return;
+        }
+        var ids = domId.split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+        var mapping = $p.debug.getComponentsByDom(ids);
+        scwin.log("── getComponentsByDom(" + JSON.stringify(ids) + ") ──");
+        for (var key in mapping) {
+            var comp = mapping[key];
+            if (comp) {
+                scwin.log("  " + key + " → originalId: " + comp.getOriginalID() + ", type: " + (comp.options.pluginName || ""));
+            } else {
+                scwin.log("  " + key + " → null");
+            }
+        }
+    };
+
+    scwin.btn_clear_onclick = function() {
+        txa_log.setValue("");
+    };
+
+    scwin.onpageload = function() {
+        dataMap1.set("domId", "mf_grd_main_cell_0_0");
+        dataList1.setJSON([
+            { COL1: "item1", COL2: "val1" },
+            { COL1: "item2", COL2: "val2" },
+            { COL1: "item3", COL2: "val3" }
+        ]);
+    };
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_main" style="width:800px; padding:10px;">
+        <!-- 조회 UI -->
+        <xf:group style="margin-bottom:10px;">
+            <xf:input id="ipt_domId" ref="data:dataMap1.domId" style="width:400px; height:28px;"></xf:input>
+            <xf:trigger type="button" id="btn_search" ev:onclick="scwin.btn_search_onclick" style="width:100px; height:28px;">
+                <xf:label><![CDATA[단건 조회]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_batch" ev:onclick="scwin.btn_batch_onclick" style="width:100px; height:28px;">
+                <xf:label><![CDATA[일괄 조회]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick" style="width:80px; height:28px;">
+                <xf:label><![CDATA[로그삭제]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <!-- 테스트 대상 컴포넌트 -->
+        <xf:group style="margin-bottom:10px; padding:8px; border:1px solid #ccc;">
+            <xf:input id="ipt_main" style="width:200px; height:25px;"></xf:input>
+            <xf:select1 id="sel_main" appearance="minimal" style="width:200px; height:25px;">
+                <w2:option><w2:value>1</w2:value><w2:label>Option 1</w2:label></w2:option>
+                <w2:option><w2:value>2</w2:value><w2:label>Option 2</w2:label></w2:option>
+            </xf:select1>
+            <w2:gridView id="grd_main" dataList="data:dataList1" style="width:760px; height:120px;">
+                <w2:header>
+                    <w2:row>
+                        <w2:column id="hd_COL1" value="Name" width="380"></w2:column>
+                        <w2:column id="hd_COL2" value="Value" width="380"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody>
+                    <w2:row>
+                        <w2:column id="COL1" width="380"></w2:column>
+                        <w2:column id="COL2" width="380"></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+            <w2:wframe id="wfm_sub" src="debug_getComponentByDom_WAEA-721_(WSQ-6285)_sub.xml" style="width:760px; height:180px;"></w2:wframe>
+        </xf:group>
+
+        <!-- 결과 로그 -->
+        <w2:textarea id="txa_log" style="width:780px; height:200px; font-family:monospace; font-size:12px; background:#1e1e1e; color:#0f0;" readOnly="true"/>
+    </xf:group>
+</body>
+</html>

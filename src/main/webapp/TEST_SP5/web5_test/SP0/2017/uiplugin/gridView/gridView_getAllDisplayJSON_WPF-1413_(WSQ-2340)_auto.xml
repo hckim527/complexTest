@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+            		<w2:condition type="filter"><![CDATA[col1 > 10]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    window.data = [];
+    for (var i = 1; i <= 100; i++) {
+        for (var j = 1; j <= 3; j++) {
+            data.push(i * j);
+        }
+    }
+    dataList1.setData(data);
+}		
+scwin.trigger1_onclick = function(e) {
+    dataList1.removeAll();
+};
+scwin.unitTest2 = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 개발자도구 (F12) 를 실행한다.
+    //1. Run the Developer Tool (F12) in your browser.
+    //Verify step 1. The developer tool is launched.
+    //Test step 2. 콘솔탭에서 gridView1.getAllDisplayJSON(); 를 입력한다.
+    //2. On the Console tab, click gridView1.getAllDisplayJSON (); .
+    //Verify step 2. Return the data shown in the first grid screen to JSON.
+    WebSquare.wUnit.addCommand('set', 'el = JSON.stringify(gridView1.getAllDisplayJSON())');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'JSON.parse(el) != null', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 3. gridView2.getAllDisplayJSON(); 를 입력한다.
+    //3. gridView2.getAllDisplayJSON (); .
+    //Verify step 3. Return the data shown on the second grid screen to JSON.
+    WebSquare.wUnit.addCommand('set', 'el = JSON.stringify(gridView2.getAllDisplayJSON())');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'JSON.parse(el) != null', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 4. 브라우저에서 첫번째 그리드와 두번째 그리드에 임의의 필터를 적용한다.
+    //4. In the browser, apply an arbitrary filter to the first grid and the second grid.
+    //Verify step 4. The filter is applied to the first grid and the second grid.
+    WebSquare.wUnit.addCommand('set', $p.id+'gridView1_column5_filter.click()');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('set', 'WebSquare.wUnit.getJq(".w2grid_customFilter_list_listColumn_checkbox")[1].click()');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('set', 'WebSquare.wUnit.getJq(".w2grid_customFilter_list_listColumn_checkbox")[2].click()');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not(".w2grid_hidedRow").length == 1', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('set', $p.id+'gridView2_column5_filter.click()');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('set', $p.id+'gridView2_item_0_selectbox_column5_button.click()');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('set', $p.id+'gridView2_item_0_selectbox_column5_itemTable_1.click()');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('set', 'gridView2_btnConform_column5.click()');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not(".w2grid_hidedRow").length == 0', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 5. 다시 콘솔탭에서 gridView1.getAllVisibleJSON(); 를 입력한다.
+    //5. On the Console tab again, open gridView1.getAllVisibleJSON ();.
+    //Verify step 5. Return the JSON data with the filter applied to the first grid.
+    WebSquare.wUnit.addCommand('set', 'el = JSON.stringify(gridView1.getAllVisibleJSON())');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'JSON.parse(el) != null', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 6. gridView2.getAllVisibleJSON(); 를 입력한다.
+    //6. gridView2.getAllVisibleJSON (); .
+    //Verify step 6. Return the JSON data with the filter applied to the second grid.
+    WebSquare.wUnit.addCommand('set', 'el = JSON.stringify(gridView2.getAllVisibleJSON())');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'JSON.parse(el) != null', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 7. 새로고침 후 다시 콘솔탭에서 gridView1.getAllDisplayXML(); 를 입력한다. (IE 브라우저 제외)
+    //7. On the console tab again after refreshing gridView1.getAllDisplayXML (); . (Except IE browser)
+    //Verify step 7. Show XML information on the first grid.
+    WebSquare.wUnit.addCommand('set', 'el = gridView1.getAllDisplayXML())');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'WebSquare.xml.parse(el) != null', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Test step 8. 새로고침 후 다시 콘솔탭에서 gridView2.getAllDisplayXML(); 를 입력한다. (IE 브라우저 제외)
+    //8. On the console tab again after refreshing gridView2.getAllDisplayXML (); . (Except IE browser)
+    //Verify step 8. Show the XML information on the second grid.
+    WebSquare.wUnit.addCommand('set', 'el = gridView2.getAllDisplayXML())');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', 'WebSquare.xml.parse(el) != null', 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+
+	scwin.checkVal1 = function() {
+		return mf_gridView1.getAllDisplayJSON().length == 100;
+	}		
+	scwin.checkVal2 = function() {
+		return mf_gridView1.getAllVisibleJSON().length == 2;
+	}
+
+	scwin.checkVal3 = function() {
+		return mf_gridView2.getAllDisplayJSON().length == 90;
+	}		
+	scwin.checkVal4 = function() {
+		return mf_gridView2.getAllVisibleJSON().length == 0;
+	}		
+	scwin.unitTest = function() {
+		//noResult="previous"
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column5_filter').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_customFilter_list').querySelectorAll('input')[1].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_customFilter_list').querySelectorAll('input')[2].click()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_customFilter_list').querySelectorAll('input')[3].click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_column5_filter').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_item_0_selectbox_column5_button').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_item_0_selectbox_column5_itemTable_1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_btnConform_column5').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:textbox label="1. dataList연동 " id="" style="position: relative;width:269px;height:58px;font-size:18pt;"></w2:textbox>
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="position: relative;width:450px;height:200px;" useShiftKey="true" rowNumVisible="true" autoFit="allColumn" useFilterList="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1" useFilter="true"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" displayFormat="#.0"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" displayFormat="#.00"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" displayFormat="#.000"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:textbox id="" label="2. linkedDataList연동" style="position: relative;width:269px;height:58px;font-size:18pt;"></w2:textbox>
+    	<w2:gridView dataList="linkedDataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView2"
+    		style="position: relative;width: 450px;height: 200px;" useShiftKey="true" autoFit="allColumn" rowNumVisible="true" >
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1" useFilter="true"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" displayFormat="#.0"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" displayFormat="#.00"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" displayFormat="#.000"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 300px;height: 30px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[dataList1.removeAll()]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

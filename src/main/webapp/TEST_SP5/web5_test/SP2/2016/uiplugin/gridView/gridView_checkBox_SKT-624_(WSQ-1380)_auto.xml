@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[4]]></col2>
+            				<col3><![CDATA[7]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[5]]></col2>
+            				<col3><![CDATA[8]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            				<col2><![CDATA[6]]></col2>
+            				<col3><![CDATA[9]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkBox = function() {
+    var el = WebSquare.wUnit.getDomById($p.id + "gridView1_column5").childNodes[0]
+    return el.checked && !el.indeterminate;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 0. SKT관련 config.xml설정 미적용후 테스트하면 정상동작함(적용해도 정상임)
+    //0. SKT-related config.xml setting does not work and then it works normally (even if it is applied)
+    //Test step 1. 샘플파일 실행 후 개발자모드(F12)실행한다.
+    //1. Execute the sample file and execute developer mode (F12).
+    //Verify step 1. 실행화면에서 console화면이 보여진다.
+    //1. The console screen is displayed on the execution screen.
+    //Test step 2. consose창에 'dataList1.setCellData(1, 'col1', '1');''dataList1.setCellData(2, 'col1', '1');'입력하고 실행한다.
+    //2. In the console window, type 'dataList1.setCellData (1,' col1 ',' 1 ');' 'dataList1.setCellData (2,' col1 ',' 1 ');
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').setCellData(1, 'col1', '1')");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').setCellData(2, 'col1', '1')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. 그리드뷰의 헤더가 전체선택으로 체크되어진다.(이전에는 체크되지 않음)
+    //2. The header of the grid view is checked as a whole selection (previously unchecked).
+    WebSquare.wUnit.addCommand("assert", "scwin.checkBox()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 06-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="checkbox" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="checkbox" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

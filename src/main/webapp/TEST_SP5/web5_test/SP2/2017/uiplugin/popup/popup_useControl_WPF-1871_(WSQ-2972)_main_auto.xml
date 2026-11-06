@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger2_onclick = function(e) {
+    imports("uiplugin.popup");
+    WebSquare.util.openPopup("./popup_useControl_WPF-1871_(WSQ-2972)_pop.xml", { //get방식으로 팝업의 아이디를 넘김니다.
+        id: "pop1",
+        type: "litewindow",
+        width: 500,
+        minimumWidth: 100,
+        height: 500,
+        top: 50,
+        left: 50,
+        popupName: "test",
+        modal: true,
+        useIFrame: false,
+        resizable: true,
+        status: false,
+        menubar: false,
+        scrollbars: scroll,
+        title: 'test222',
+        useMaxmimize: true,
+        useControl: true,
+        controls: {
+            minimize: true,
+            maximize: true,
+            close: false
+        },
+        foldSize: {
+            width: 200
+        },
+        foldOnMinimized: true
+    });
+};
+scwin.getStyleEle = function(id, style) {
+    var el = WebSquare.wUnit.getDomById(id),
+        eleStyle = window.getComputedStyle(el);
+    return eleStyle.getPropertyValue(style);
+}
+scwin.checktype1 = function() {
+    return typeof pop1;
+}
+scwin.checktype2 = function() {
+    return typeof pop1_header_control;
+}
+scwin.checkVal = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById('pop1_header_control')).getPropertyValue('width') == "40px";
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 'litewindow modal pupup'버튼을 클릭한다.
+    //1. Run the sample file and click the 'litewindow modal pupup' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    // verify step 1. test팝업창이 생성된다.
+    //1. A test popup window is created.
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype1()", "object");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. test팝업창의 우측상단에 '창사이즈최소화'버튼과 '창사이즈복원'버튼의 위치를 확인한다.
+    //2. Check the position of 'minimize window size' button and 'window size restoration' button on the upper right corner of the test popup window.
+    // verify step 2. test팝업창의 우측상단 메뉴가 우측으로 정렬되어 보여진다.(이전에는 닫기버튼 X표시부분은 빈 영역으로 남아있었음)
+    //2. The right upper menu of the test popup window is displayed aligned to the right.(Previously the close button X marking remained a blank area)
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "object");
+    WebSquare.wUnit.addCommand("assert", "scwin.getStyleEle('pop1_header_control', 'right')", "0px");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 19-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+
+    		/*.w2window_header_control {
+
+    		}
+
+    		.w2window_minimize {
+    			display: inline-block !important;
+    		}
+
+    		.w2window_restore {
+    			display: inline-block !important;
+    		}
+
+    		.w2window_close {
+    			display: inline-block !important;
+    		}*/
+
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger id="trigger2" style="position: relative;width:206px;height:33px;left:105px;top:74px;margin-left:5px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[2. litewindow modal popup]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

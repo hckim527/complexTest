@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.test = function(e) {
+    var contentWidth = 800;
+    var contentH = 600;
+    var bodyWidth = 1280;
+    var bodyH = 800;
+    var scalePoint = contentWidth / bodyWidth;
+    var scalePointH = contentH / bodyH;
+    var scaleP = scalePoint <= scalePointH ? scalePoint : scalePointH;
+    var scale = 'scale(' + (scaleP) + ')';
+    var contentHeight = WebSquare.wUnit.getJq("html").height();
+    var bodyHeight = contentHeight / scalePoint;
+    var bottomPoint = bodyHeight - contentHeight;
+    WebSquare.wUnit.getJq("body").css({
+        'position': 'absolute',
+        'top': '0',
+        'width': '1280px',
+        'height': 'initial',
+        '-ms-transform': scale,
+        'transform': scale,
+        'transform-origin': 'top left'
+    });
+}
+scwin.check1 = function() {
+    return Math.abs(WebSquare.wUnit.getJq("#sldTest1_thumb1").position().left - WebSquare.wUnit.getJq("#sldTest1_scale_1_1").position().left) < 10 ? true : false;
+}
+scwin.check2 = function() {
+    return Math.abs(WebSquare.wUnit.getJq("#sldTest1_thumb1").position().left - WebSquare.wUnit.getJq("#sldTest1_scale_end_1").position().left) < 10 ? true : false;
+}
+scwin.setSimulate1 = function() {
+    WebSquare.wUnit.getJq('#sldTest1_thumb1').simulate('drag-n-drop', {
+        dx: 100,
+        dy: 0
+    });
+}
+scwin.setSimulate2 = function() {
+    WebSquare.wUnit.getJq('#sldTest1_thumb1').simulate('drag-n-drop', {
+        dx: 200,
+        dy: 0
+    });
+}
+scwin.setSimulate3 = function() {
+    WebSquare.wUnit.getJq('#sldTest1_thumb1').simulate('drag-n-drop', {
+        dx: 300,
+        dy: 0
+    })
+}
+scwin.setSimulate4 = function() {
+    WebSquare.wUnit.getJq('#sldTest1_thumb1').simulate('drag-n-drop', {
+        dx: 500,
+        dy: 0
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //1. 샘플실행 후 slider 부분을 클릭했을때 원하는 위치로 가거나 drag가 정상동작하는지를 확인한다.
+    //1. After running the sample, when you click the slider part, go to the desired position or check whether the drag works properly.
+    //WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate3()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.check1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //1. slider 부분을 클릭했을때 원하는 위치로 가거나 drag가 정상동작한다.
+    //1. When you click the slider part, it moves to the desired position or drag works normally.
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate4()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.check2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload" style="position: absolute; top: 0px; width: 1280px; height: initial; transform: scale(0.625); transform-origin: left top 0px;">
+    	
+
+    	<xf:group id="grpGroup1" style="height:190px;padding-left: 10px;">
+    		<w2:textbox label="body 변경" id="tbxtextbox1" style="width: 500px;height: 23px;"></w2:textbox>
+    		<w2:slider id="sldTest1" increment="20" ev:onthumbmove="" tooltipShow="true"
+    			style="position: relative;width: 90%;height: 30px;" minValue="0" class="" showScale="true" maxValue="100" setBackground="true">
+    		</w2:slider>
+    	</xf:group>
+    
+    </body>
+</html>
+ 

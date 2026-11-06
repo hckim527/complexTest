@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList baseNode="list" repeatNode="map" id="albumList" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="albumId" name="앨범아이디" dataType="text"></w2:column>
+        				<w2:column id="id" name="아이디" dataType="text"></w2:column>
+        				<w2:column id="title" name="타이틀" dataType="text"></w2:column>
+        				<w2:column id="url" name="URL" dataType="text"></w2:column>
+        				<w2:column id="thumbnailUrl" name="썸네일 URL" dataType="text"></w2:column>
+        				<w2:column id="test" name="name6" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataMap baseNode="map" id="idMap">
+        			<w2:keyInfo>
+        				<w2:key id="id" name="아이디" dataType="text"></w2:key>
+        			</w2:keyInfo>
+        			<w2:data use="true">
+        				<id><![CDATA[2]]></id>
+        			</w2:data>
+        		</w2:dataMap>
+        		<w2:dataMap baseNode="map" id="dataMap1">
+        			<w2:keyInfo>
+        				<w2:key id="TOTAL_YN" name="총건수 조회여부" dataType="text"></w2:key>
+        				<w2:key id="START_NUM" name="시작 순번" dataType="number"></w2:key>
+        				<w2:key id="END_NUM" name="끝 순번" dataType="number"></w2:key>
+        			</w2:keyInfo>
+        		</w2:dataMap>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="sbm_album" ref="data:json,albumList" target='data:json,albumList' action="gridview_senseReader_expression_WESD-1412_(WSQ-5364)_sub1.json" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="" ev:submit="" ev:submitdone="scwin.sbm_album_submitdone" ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        	<xf:submission id="submission2" ref="data:json,albumList" target="data:json,albumList" action="gridview_senseReader_expression_WESD-1412_(WSQ-5364)_sub2.json" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="" ev:submit="" ev:submitdone="" ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+		$p.executeSubmission("sbm_album");
+	};
+
+	scwin.onpageunload = function() {
+
+	};
+
+	//페이지리스트 클릭시 호출
+	scwin.pageList1_onclick = function(idx) {
+
+		$p.executeSubmission("submission2");
+
+
+	};
+
+	scwin.sbm_album_submitdone = function(e) {
+		//페이징카운트셋팅
+	/* 	var totalRow = albumList.getTotalRow();
+		var totalCnt = Math.ceil(albumList.getTotalRow() / 20); */
+		pageList1.setCount(2);
+	
+	};
+
+
+		
+	scwin.custom = function(seq) {
+		localStorage.setItem('log', seq);	
+		console.log("scwin.custom "+ seq);	
+	};
+
+
+	scwin.searchMain = function(idx, strYn) {
+	/* 	console.log("idx :: "+idx, "   strYn :: "+strYn);
+		dataMap1.set("TOTAL_YN", strYn);
+		dataMap1.set("START_NUM", (10 * (idx - 1) + 1));
+		dataMap1.set("END_NUM", 10);
+
+	 */
+
+		//$p.executeSubmission("sbm_album");
+	};	
+
+	scwin.checkVal = function(){
+		return localStorage.getItem('log') == '20';
+	}   
+	scwin.unitTest  = function(){
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList1_next_btn').click()");
+		WebSquare.wUnit.addCommand("pause", "400");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	localStorage.removeItem("log");	
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	
+    	
+    	<xf:group id="" style="padding:10px">
+    	
+				<w2:gridView autoFit="allColumn" class="" dataList="data:albumList" 
+					fixedColumnWithHidden="true" id="ui_gridView" ignoreCellClick="false" ignoreToggleOnDisabled="false" scrollByColumn="false"
+					scrollByColumnAdaptive="false" style="height:250px;" summaryAuto="false" useShiftKey="true" visibleRowNum="10" senseReader="true">
+				
+    			<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    			<w2:header style="" id="header1">
+    				<w2:row style="" id="row1">
+    					<w2:column width="70" inputType="text" style="height:20px" id="column5" value="앨범아이디" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="column4" value="아이디" displayMode="label"></w2:column>
+    					<w2:column width="200" inputType="text" style="height:20px" id="column3" value="타이틀" displayMode="label"></w2:column>
+    					<w2:column width="250" inputType="text" style="height:20px" id="column2" value="URL" displayMode="label"></w2:column>
+    					<w2:column width="120" inputType="text" style="height:20px" id="column1" value="썸네일 URL" displayMode="label"></w2:column>
+    				<w2:column width="120" inputType="text" style="height:20px" id="column6" value="expression Test" displayMode="label"></w2:column>
+    				</w2:row>
+    			</w2:header>
+    			<w2:gBody style="" id="gBody1">
+    				<w2:row style="" id="row2">
+    					<w2:column width="70" inputType="text" style="height:20px" id="albumId" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="id" displayMode="label"></w2:column>
+    					<w2:column width="200" inputType="text" style="height:20px" id="title" displayMode="label"></w2:column>
+    					<w2:column editModeEvent="" width="250" inputType="link" style="height:20px" id="url" displayMode="label"></w2:column>
+    					<w2:column imageWidth="20" width="120" inputType="image" style="height:20px" id="thumbnailUrl" displayMode="label"
+    						imageHeight="20">
+    					</w2:column>
+    					<w2:column width="200" inputType="expression" style="height:20px" id="test" displayMode="label" expression="scwin.custom(display('id'))"></w2:column>
+    				</w2:row>
+    			</w2:gBody>
+    		</w2:gridView>
+  
+				
+    		<w2:pageList pageSize="10" displayButtonType="display" displayFormat="#" style="" id="pageList1"
+    			ev:onclick="scwin.pageList1_onclick" ev:onviewchange="">
+    		</w2:pageList>
+    	</xf:group>
+    </body>
+</html>

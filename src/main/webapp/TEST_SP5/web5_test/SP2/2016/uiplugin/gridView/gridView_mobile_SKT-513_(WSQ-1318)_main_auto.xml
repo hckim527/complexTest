@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.gridView1_ondblclick = function() {
+    var opts = {
+        "id": "test1",
+        "type": "window", // popup 객체의 type으로 window, browser 중 하나, browser
+        // type의 경우 useIFrame 속성과 상관없이 window.open으로 열림.
+        "width": 80 + "px",
+        "height": 80 + "px",
+        "top": 0, // useIframe이 true인 경우 브라우져를 기준 false인 경우 모니터를 기준으로 한다.
+        "left": 0,
+        "popupName": "test1" || '', // useIframe : true시 popup 객체의 이름으로
+        // popup 프레임의 표시줄에 나타납니다.
+        "modal": false, // modal을 이용해서 뒤 쪽 배경을 동작하지 않도록 만들기 위한 인자
+        // 입니다. false이면 뒤쪽의 컴퍼넌트가 사용 가능합니다.
+        "useIFrame": true // true : IFrame 을 사용하는 WebSquare popup /
+        // false: window.open 을 사용하는 popup
+    };
+    WebSquare.util.openPopup("gridView_mobile_SKT-513_(WSQ-1318)_popup.xml", opts);
+}
+scwin.gridView2_ondblclick = function() {
+    var opts = {
+        "id": "test1",
+        "type": "window", // popup 객체의 type으로 window, browser 중 하나, browser
+        // type의 경우 useIFrame 속성과 상관없이 window.open으로 열림.
+        "width": 100 + "px",
+        "height": 100 + "px",
+        "top": 0, // useIframe이 true인 경우 브라우져를 기준 false인 경우 모니터를 기준으로 한다.
+        "left": 0,
+        "popupName": "test1" || '', // useIframe : true시 popup 객체의 이름으로
+        // popup 프레임의 표시줄에 나타납니다.
+        "modal": false, // modal을 이용해서 뒤 쪽 배경을 동작하지 않도록 만들기 위한 인자
+        // 입니다. false이면 뒤쪽의 컴퍼넌트가 사용 가능합니다.
+        "useIFrame": true // true : IFrame 을 사용하는 WebSquare popup /
+        // false: window.open 을 사용하는 popup
+    };
+    WebSquare.util.openPopup("gridView_mobile_SKT-513_(WSQ-1318)_popup.xml", opts);
+}
+scwin.gridView1_oncellclick = function(row, col) {
+    console.log(this.id + "_oncellclick :" + row + "," + col);
+}
+scwin.__isBackground = function() {
+    var rgb = WebSquare.wUnit.getJq("#gridView1_cell_0_0").css("background-color");
+    if (rgb.indexOf("rgb") < 0) {
+        return rgb == "#fca73c";
+    }
+    return rgb == "rgb(252, 167, 60)";
+}
+scwin.fireDbClick = function(id) {
+    var node = WebSquare.wUnit.getDomById(id);
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 그리드 영역(컬럼)이 선택되어진다.
+    //2. Grid area (column) is selected.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isBackground()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 그리드영역(컬럼)을 다시한번 터치한다.
+    //3. Touch the grid area (column) again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 그리드 영역(컬럼)이 edit모드로 변경된다.
+    //3. The grid area (column) changes to edit mode.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1__col1').css('display')", "block");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. 그리드영역(컬럼)을 길게 터치한다.
+    //4. Touch and hold the grid area (column).
+    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick('gridView1_cell_0_0')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 4. 팝업창이 열린다.
+    //4. A pop-up window opens.
+    WebSquare.wUnit.addCommand("assert", "typeof test1", "object");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    if(WebSquare._xv !== "SP5"){requires("uiplugin.popup");}
+    window.data = [];
+    window.data2 = [];
+    for (var i = 0; i < 5; i++) {
+        for (var j = 0; j < 3; j++) {
+            window.cellData = "row = [" + i + "], col = [" + j + "]";
+            data.push(cellData);
+            data2.push(cellData);
+            data2.push(cellData);
+        }
+    }
+    dataList2.setData(data2);
+    dataList1.setData(data);
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="27" id="gridView1"
+    		style="position: relative;width:408px;height:277px;" fixedColumnWithHidden="true" useShiftKey="true" editModeEvent="onclick" senseReader="" tooltipDisplay="true" ev:ondblclick="scwin.gridView1_ondblclick" ev:oncellclick="scwin.gridView1_oncellclick" hammerEnabled="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" inputType="text" width="200" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" inputType="text" width="50" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" width="100" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" inputType="select" width="70" allOption="" chooseOption="" renderType="native">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView applyAllColumnStyle="false" autoFit="allColumn" dataList="dataList1" defaultCellHeight="27"
+    		fixedColumnWithHidden="true" id="gridView2" scrollByColumn="false" style="position: relative;width:317px;height:277px;margin-top:20px;" useShiftKey="true" tooltipDisplay="true" editModeEvent="onclick" senseReader="" tooltipShowAlways="true" ev:ondblclick="scwin.gridView2_ondblclick" hammerEnabled="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" inputType="text" value="name1" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="column3" inputType="text" value="name2" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="column1" inputType="text" value="name3" width="70"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" inputType="text" width="70"></w2:column>
+    				<w2:column allOption="" blockSelect="false" chooseOption="" id="col2" inputType="select" width="70" renderType="native">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" inputType="text" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

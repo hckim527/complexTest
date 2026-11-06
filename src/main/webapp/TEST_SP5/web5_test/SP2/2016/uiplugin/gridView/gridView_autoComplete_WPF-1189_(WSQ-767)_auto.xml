@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[1]]></col2>
+            				<col3><![CDATA[1]]></col3>
+            				<col4><![CDATA[1]]></col4>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[2]]></col2>
+            				<col3><![CDATA[2]]></col3>
+            				<col4><![CDATA[2]]></col4>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            				<col2><![CDATA[3]]></col2>
+            				<col3><![CDATA[3]]></col3>
+            				<col4><![CDATA[3]]></col4>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<label><![CDATA[일용이]]></label>
+            				<value><![CDATA[1]]></value>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[이동건]]></label>
+            				<value><![CDATA[2]]></value>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[삼순이]]></label>
+            				<value><![CDATA[3]]></value>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.__triggerDbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById(id);
+    var dataEditmodeevent = WebSquare.util.getDataPrefix("editmodeevent");
+    var editMode = el.getAttribute(dataEditmodeevent)
+    if (editMode == "onclick") {
+        el.click();
+        return;
+    }
+    scwin.fireDbClick(el);
+}
+scwin.__isChanged = function() {
+    return WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').innerText != old;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 항목명(autoCom_valueLabel)의 값을 더블클릭하여 다른값으로 변경한다.
+    //1. Run the sample file and double-click the value of the item name (autoCom_valueLabel) to change it to another value.
+    WebSquare.wUnit.addCommand("set", "scwin.__triggerDbclick($p.id+'gridView1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_' + $p.id + 'gridView1___autoComplete_0_col2_col2_button').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_' + $p.id + 'gridView1___autoComplete_0_col2_col2_itemTable_1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 1. 선택값으로 값이 변경된다.(이전에는 변경되지 않음)
+    //1. The value is changed to the selected value (not changed previously)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').innerText == '2 이동건'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.old = WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').innerText;
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="width:614px;height:150px;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="108" displayMode="label"
+    					value="autoCom_label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="152" displayMode="label"
+    					value="autoCom_valueLabel">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="126" displayMode="label"
+    					value="select_label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="150" inputType="text" displayMode="label"
+    					value="select_valueLabel">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="autoComplete" width="108" displayMode="label"
+    					allOption="" chooseOption="" search="contain" viewType="icon">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="autoComplete" width="152"
+    					displayMode="value delim label" allOption="" chooseOption="" search="contain" viewType="icon">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="select" width="126" displayMode="label"
+    					allOption="" chooseOption="" search="contain"  viewType="icon">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="150" inputType="select"
+    					displayMode="value delim label" allOption="" chooseOption="" viewType="icon">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

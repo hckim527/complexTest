@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/TEST/skt/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dsl_dataList1">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dsl_inputTypeList" ev:oncelldatachange="scwin.dsl_inputTypeList_oncelldatachange">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dsl_dataList2">
+					<w2:columnInfo>
+						<w2:column id="label" dataType="text"></w2:column>
+						<w2:column id="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dsl_dataList3">
+					<w2:columnInfo>
+						<w2:column id="label" dataType="text"></w2:column>
+						<w2:column id="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.getType = function(info) {
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var returnInfo;
+    var inputType = dsl_inputTypeList.getCellData(rowIndex, colIndex) || "text";
+    switch (inputType) {
+        case "radio":
+            returnInfo = {
+                id: "dynamic_radio_" + rowIndex + "_" + colIndex,
+                inputType: "radio",
+                options: {
+                    groupName: "radio_" + rowIndex
+                }
+            };
+            break;
+        case "checkbox":
+            returnInfo = {
+                id: "dynamic_checkbox_" + rowIndex + "_" + colIndex,
+                inputType: "checkbox",
+                options: {}
+            };
+            break;
+        case "button":
+            returnInfo = {
+                id: "dynamic_button_" + rowIndex + "_" + colIndex,
+                inputType: "button",
+                options: {}
+            };
+            break;
+        case "calendar":
+            returnInfo = {
+                id: "dynamic_calendar_" + rowIndex + "_" + colIndex,
+                inputType: "calendar",
+                options: {
+                    viewType: "icon"
+                }
+            };
+            break;
+        case "image":
+            returnInfo = {
+                id: "dynamic_image_" + rowIndex + "_" + colIndex,
+                inputType: "image",
+                options: {
+                    imageSrc: "/SAMPLE/W5/project/dynamic/img.gif"
+                }
+            };
+            break;
+        case "link":
+            returnInfo = {
+                id: "dynamic_link_" + rowIndex + "_" + colIndex,
+                inputType: "link",
+                options: {}
+            };
+            break;
+        case "select":
+            returnInfo = {
+                id: "dynamic_select_" + rowIndex + "_" + colIndex,
+                inputType: "select",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dsl_dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            };
+            break;
+        case "autoComplete":
+            returnInfo = {
+                id: "dynamic_autoComplete_" + rowIndex + "_" + colIndex,
+                inputType: "autoComplete",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dsl_dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            };
+            break;
+        case "checkcombobox":
+            returnInfo = {
+                id: "dynamic_checkcombobox_" + rowIndex + "_" + colIndex,
+                inputType: "checkcombobox",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dsl_dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            };
+            break;
+        case "textarea":
+            returnInfo = {
+                id: "dynamic_textarea_" + rowIndex + "_" + colIndex,
+                inputType: "textarea",
+                options: {}
+            };
+            break;
+        case "text":
+            returnInfo = {
+                id: "dynamic_text_" + rowIndex + "_" + colIndex,
+                inputType: "text",
+                options: {
+                    maxByteLength: "6"
+                }
+            };
+            break;
+        case "textImage":
+            returnInfo = {
+                id: "dynamic_textImage_" + rowIndex + "_" + colIndex,
+                inputType: "textImage",
+                options: {
+                    viewType: "icon",
+                    imageSrc: "/SAMPLE/W5/project/dynamic/alz.jpg",
+                    textAlign: "center"
+                }
+            };
+            break;
+    }
+    return returnInfo;
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scvar == "undefined") {
+        window.scvar = {};
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_b1_onclick = function(e) {
+    var rowIndex = WebSquare.util.getNumber(edt_rowTb.getValue());
+    var inputType = cob_inputType1.getValue();
+    for (var i = 0; i < dsl_inputTypeList.getColCnt(); i++) {
+        dsl_inputTypeList.setCellData(rowIndex, i, inputType);
+    }
+    grd_inputList.refreshRow(rowIndex);
+};
+scwin.btn_b2_onclick = function(e) {
+    var colIndex = WebSquare.util.getNumber(edt_colTb.getValue());
+    var inputType = cob_inputType2.getValue();
+    for (var i = 0; i < dsl_inputTypeList.getRowCount(); i++) {
+        dsl_inputTypeList.setCellData(i, colIndex, inputType);
+    }
+    grd_inputList.refreshColumn(colIndex);
+    //grd_inputList.
+};
+scwin.btn_b3_onclick = function(e) {
+    var colIndex = WebSquare.util.getNumber(edt_cellColTb.getValue());
+    var rowIndex = WebSquare.util.getNumber(edt_cellRowTb.getValue());
+    var inputType = cob_inputType3.getValue();
+    dsl_inputTypeList.setCellData(rowIndex, colIndex, inputType);
+    grd_inputList.refreshCell(rowIndex, colIndex);
+};
+scwin.dsl_inputTypeList_oncelldatachange = function(info) {
+    //event;
+};
+scwin.btn_b4_onclick = function(e) {
+    for (var i = 0; i < dsl_inputTypeList.getColCnt(); i++) {
+        dsl_inputTypeList.setCellData(0, i, "text");
+    }
+    dsl_dataList1.setCellData(0, 0, "radio checkbox button calendar image link select autoComplete checkcombobox textarea");
+    grd_inputList.refreshRow(0);
+};
+scwin.onpageload = function() {
+    if (typeof scwin.onpageload === "function") {
+        //scwin.onpageload();
+    }
+    /******************************************************************************
+     * 프로그램명 : 개발 가이드 샘플.[그리드 사용자정의 inputType]
+     * ProgramID  : grd_customInputType
+     * 작성자	  : 홍길동
+     * 작성일	  : 2016-01-01
+     * 변경로그   : 최초작성 2016-01-01
+     ******************************************************************************/
+    if (!scwin.promise) {
+        scwin.promise = {};
+    }
+
+    if (typeof scvar == "undefined") {
+        window.scvar = {};
+    }
+
+    scvar.dataArr = [
+        "radio", "radio",
+        "checkbox", "checkbox",
+        "button", "button",
+        "calendar", "calendar",
+        "image", "image",
+        "link", "link",
+        "select", "select",
+        "autoComplete", "autoComplete",
+        "checkcombobox", "checkcombobox",
+        "textarea", "textarea",
+        "text", "text",
+        "textImage", "textImage"
+    ];
+    dsl_dataList2.setData(scvar.dataArr);
+    dsl_dataList3.setData(scvar.dataArr);
+    scvar._dataArr = [];
+    for (var i = 0; i < 300; i++) {
+        scvar._dataArr.push("");
+    }
+    dsl_dataList1.setData(scvar._dataArr.slice(0));
+    dsl_inputTypeList.setData(scvar._dataArr.slice(0));
+    /**
+     * 1. Row 갱신 버튼 클릭
+     */
+    /**
+     * 2. Column 갱신 버튼 클릭
+     */
+    /**
+     * 3. Cell 갱신 버튼 클릭
+     */
+    /**
+     * dsl_inputTypeList 셀 데이터 변경시 이벤트
+     */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="cont_wrap" id="" style="margin-top:0px;">
+			<xf:group class="w2tb tbl_lo" id="" style="" tagname="table">
+				<w2:attributes>
+					<w2:summary></w2:summary>
+				</w2:attributes>
+				<xf:group tagname="colgroup">
+					<xf:group style="" tagname="col"></xf:group>
+				</xf:group>
+				<xf:group tagname="tr">
+					<xf:group class="w2tb_td" style="" tagname="td">
+						<xf:group class="grpbox" id="" style="">
+							<xf:group class="stit_01" id="" style="">
+								<w2:textbox id="" label="customInputType" style="" tagname="h3"></w2:textbox>
+								<w2:textbox label="1.Row갱신에 text로 넣고 하시면 됩니다. gettype에 option에 maxlengthByte로 설정하였습니다." id="" style="position: absolute;width: 500px;height: 23px;left:184px;top:8px;"></w2:textbox>
+							</xf:group>
+							<xf:group class="sub_cont" id="">
+								<w2:gridView dataList="dsl_dataList1" fixedColumnWithHidden="true" id="grd_inputList"
+									ignoreCellClick="false" ignoreToggleOnDisabled="false" rowNumVisible="true" scrollByColumn="false" style="height:300px;width:300px;"
+									useShiftKey="true" tooltipDisplay="true" tooltipShowAlways="true" class="grid_01">
+									<w2:header id="header1" style="">
+										<w2:row id="row2" style="">
+											<w2:column id="header1" inputType="text" style="" value="col1" width="*"></w2:column>
+											<w2:column id="header2" inputType="text" style="" value="col2" width="*"></w2:column>
+											<w2:column id="header3" inputType="text" style="" value="col3" width="*"></w2:column>
+											<w2:column id="header4" inputType="text" style="" value="col4" width="*"></w2:column>
+											<w2:column id="header5" inputType="text" style="" value="col5" width="*"></w2:column>
+										</w2:row>
+									</w2:header>
+									<w2:gBody id="gBody4" style="">
+										<w2:row id="row5" style="">
+											<w2:column id="col1" inputType="custom" typeGetter="scwin.getType" maxLength="6"></w2:column>
+											<w2:column id="col2" inputType="custom" typeGetter="scwin.getType" maxByteLength="40" maxLength=""></w2:column>
+											<w2:column id="col3" inputType="custom" typeGetter="scwin.getType"></w2:column>
+											<w2:column id="col4" inputType="custom" typeGetter="scwin.getType"></w2:column>
+											<w2:column id="col5" inputType="custom" typeGetter="scwin.getType"></w2:column>
+										</w2:row>
+									</w2:gBody>
+								</w2:gridView>
+							</xf:group>
+							
+						</xf:group>
+					</xf:group>
+				</xf:group>
+				<xf:group tagname="tr">
+					<xf:group class="w2tb_td" tagname="td">
+						<xf:group class="grpbox" id="" style="">
+							<xf:group class="stit_01" id="">
+								<w2:textbox id="" label="1. Row 갱신" style="" tagname="h3"></w2:textbox>
+							</xf:group>
+							<xf:group class="sub_cont" id="">
+
+
+
+								<xf:group class="w2tb tbl_lo2" id="" style="width:500px;" summary="" tagname="table">
+									<xf:group tagname="colgroup">
+										<xf:group style="" tagname="col"></xf:group>
+										<xf:group style="width:150px;" tagname="col"></xf:group>
+										<xf:group style="width:48px;" tagname="col"></xf:group>
+									</xf:group>
+									<xf:group id="" style="" tagname="tr">
+										<xf:group class="w2tb_td" style="" tagname="td">
+											<xf:input id="edt_rowTb" placeholder="Row Index" style=""></xf:input>
+										</xf:group>
+										<xf:group class="w2tb_td" tagname="td">
+											<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+												displayMode="label" id="cob_inputType1" optionOrder="false" style="" submenuSize="auto">
+												<xf:choices>
+													<xf:itemset nodeset="data:dsl_dataList2">
+														<xf:label ref="label"></xf:label>
+														<xf:value ref="value"></xf:value>
+													</xf:itemset>
+												</xf:choices>
+											</xf:select1>
+										</xf:group>
+										<xf:group class="w2tb_td" style="" tagname="td">
+											<xf:trigger ev:onclick="scwin.btn_b1_onclick" id="btn_b1" style="" type="button">
+												<xf:label><![CDATA[갱신]]></xf:label>
+											</xf:trigger>
+										</xf:group>
+									</xf:group>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+				<xf:group tagname="tr">
+					<xf:group class="w2tb_td" tagname="td">
+						<xf:group class="grpbox" id="" style="">
+							<xf:group class="stit_01" id="">
+								<w2:textbox id="" label="2. Column 갱신" style="" tagname="h3"></w2:textbox>
+							</xf:group>
+							<xf:group class="sub_cont" id="">
+								<xf:group class="w2tb tbl_lo2" id="" style="width:500px;" summary="" tagname="table">
+									<xf:group tagname="colgroup">
+										<xf:group style="" tagname="col"></xf:group>
+										<xf:group style="width:150px;" tagname="col"></xf:group>
+										<xf:group style="width:48px;" tagname="col"></xf:group>
+									</xf:group>
+									<xf:group id="" style="" tagname="tr">
+										<xf:group class="w2tb_td" style="" tagname="td">
+											<xf:input id="edt_colTb" placeholder="Col Index" style="">
+											</xf:input>
+										</xf:group>
+										<xf:group class="w2tb_td" tagname="td">
+											<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+												displayMode="label" id="cob_inputType2" optionOrder="false" style="" submenuSize="auto">
+												<xf:choices>
+													<xf:itemset nodeset="data:dsl_dataList2">
+														<xf:label ref="label"></xf:label>
+														<xf:value ref="value"></xf:value>
+													</xf:itemset>
+												</xf:choices>
+											</xf:select1>
+										</xf:group>
+										<xf:group class="w2tb_td" style="" tagname="td">
+											<xf:trigger ev:onclick="scwin.btn_b2_onclick" id="btn_b2" style="" type="button">
+												<xf:label><![CDATA[갱신]]></xf:label>
+											</xf:trigger>
+										</xf:group>
+									</xf:group>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+				<xf:group tagname="tr">
+					<xf:group class="w2tb_td" tagname="td">
+
+						<xf:group class="grpbox" id="" style="">
+							<xf:group class="stit_01" id="">
+								<w2:textbox id="" label="3. Cell 갱신" style="" tagname="h3"></w2:textbox>
+							</xf:group>
+							<xf:group class="sub_cont" id="">
+								<xf:group class="w2tb tbl_lo2" id="" style="width:666.67px;" summary="" tagname="table">
+									<xf:group tagname="colgroup">
+										<xf:group style="" tagname="col"></xf:group>
+										<xf:group style="" tagname="col"></xf:group>
+										<xf:group style="width:150px;" tagname="col"></xf:group>
+										<xf:group style="width:48px;" tagname="col"></xf:group>
+									</xf:group>
+									<xf:group id="" style="" tagname="tr">
+										<xf:group class="w2tb_td" style="" tagname="td">
+											<xf:input id="edt_cellRowTb" placeholder="Row Index" style="">
+											</xf:input>
+										</xf:group>
+										<xf:group class="w2tb_td" tagname="td">
+											<xf:input id="edt_cellColTb" placeholder="Col Index" style="">
+											</xf:input>
+										</xf:group>
+										<xf:group class="w2tb_td" tagname="td">
+											<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+												displayMode="label" id="cob_inputType3" optionOrder="false" style="" submenuSize="auto">
+												<xf:choices>
+													<xf:itemset nodeset="data:dsl_dataList2">
+														<xf:label ref="label"></xf:label>
+														<xf:value ref="value"></xf:value>
+													</xf:itemset>
+												</xf:choices>
+											</xf:select1>
+
+										</xf:group>
+										<xf:group class="w2tb_td" style="" tagname="td">
+											<xf:trigger ev:onclick="scwin.btn_b3_onclick" id="btn_b3" style="" type="button">
+												<xf:label><![CDATA[갱신]]></xf:label>
+											</xf:trigger>
+										</xf:group>
+									</xf:group>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+				<xf:group tagname="tr">
+					<xf:group class="w2tb_td" tagname="td">
+						<xf:group class="grpbox" id="" style="">
+							<xf:group class="stit_01" id="">
+								<w2:textbox id="" label="4. inputType : custom 일 때 toolTip" style="" tagname="h3"></w2:textbox>
+							</xf:group>
+							<xf:group class="sub_cont" id="">
+								<w2:textbox id="" label="- 그리드 속성" style="" tagname=""></w2:textbox>
+								<w2:textbox id="" label="- tooltipDisplay : true" style="" tagname=""></w2:textbox>
+								<w2:textbox id="" label="- tooltipShowAlways : true" style="" tagname=""></w2:textbox>
+							</xf:group>
+							<xf:group class="sub_cont" id="" style="">
+								<xf:group class="w2tb tbl_lo2" id="" style="width:2147483933.67px;" summary="" tagname="table">
+									<xf:group tagname="colgroup">
+										<xf:group style="width:48.00px;" tagname="col"></xf:group>
+									</xf:group>
+									<xf:group id="" style="" tagname="tr">
+										<xf:group class="w2tb_td" style="" tagname="td">
+											<xf:trigger ev:onclick="scwin.btn_b4_onclick" id="btn_b4" style="" type="button">
+												<xf:label><![CDATA[첫번째 셀 갱신]]></xf:label>
+											</xf:trigger>
+										</xf:group>
+									</xf:group>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+ 

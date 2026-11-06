@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "col1": "a1",
+        "col2": "a1"
+    }, {
+        "col1": "a2",
+        "col2": "a2"
+    }, {
+        "col1": "a3",
+        "col2": "a3"
+    }, {
+        "col1": "a4",
+        "col2": "a4"
+    }, {
+        "col1": "a5",
+        "col2": "a5"
+    }, {
+        "col1": "a6",
+        "col2": "a6"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.autoComplete1_onviewchange = function(info) {
+    console.log("autoComplete gridViewItemset onviewchange");
+    WebSquare.logger.printLog("autoComplete gridViewItemset onviewchange");
+};
+scwin.sel1_onviewchange = function(info) {
+    console.log("select gridViewItemset onviewchange");
+    WebSquare.logger.printLog("select gridViewItemset onviewchange");
+};
+scwin.checkLog = function(text) {
+    var log = WebSquare.logger.getLog();
+    return log.indexOf(text) > -1;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 autoComplete의 아이템리스트(역삼각형)를 클릭하고 'a2'값을 클릭하고 로그보기를 수행한다.
+    //1. After running the sample, click the item list (inverted triangle) of autoComplete, click the value of 'a2' and execute the log view.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_gridViewItemTable_gridView_cell_1_0').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. onviewchange 이벤트가 발생하여 로그하단에 'autoComplete gridViewItemset onviewchange'값이 정상적으로 보여진다.(이전에는 onviewchange 이벤트 발생하지 않음)
+    //1. The onViewchange event is generated and the value of 'autoComplete gridViewItemset onviewchange' is displayed normally at the bottom of the log (previously no onViewchange event)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkLog('autoComplete gridViewItemset onviewchange')", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Test step 2. selectbox의 아이템리스트(역삼각형)를 클릭하고 'a2'값을 클릭하고 로그보기를 수행한다.
+    //2. Click on the list of items in the selectbox (inverted triangle) and click on the value 'a2' to view the log.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('sel1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('sel1_gridViewItemTable_gridView_cell_1_0').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2.  onviewchange 이벤트가 발생하여 로그하단에 'select gridViewItemset onviewchange'값이 정상적으로 보여진다.
+    //2. The onviewchange event occurs and the value of 'select gridViewItemset onviewchange' is displayed normally at the bottom of the log.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkLog('select gridViewItemset onviewchange')", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 03-Apr-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete chooseOption="false" displayMode="label" editType="select" id="autoComplete1" interactionMode="" search="start"
+    		style="position: absolute ;left: 76px;top: 131px;width: 162px;height: 38px;" submenuSize="auto" useKeywordHighlight="false"
+    		visibleRowNum="5" ev:onviewchange="scwin.autoComplete1_onviewchange">
+    		<w2:choices>
+    			<w2:gridViewItemset autoFit="true" height="" hideHeader="" label="col1" nodeset="data:dataList1" rowMouseOver=""
+    				wheelStop="true"
+    				rowMouseOverColor="" selectedRowColor="" value="col2" visibleRowNum="" width="">
+    				<w2:item header="2" headerStyle="" hidden="" ref="col1" style=""></w2:item>
+    			</w2:gridViewItemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" chooseOption="false" displayMode="label" optionOrder="false"
+    		allOption="false" submenuSize="auto" direction="auto" id="sel1"
+    		style="position: absolute ;left:320px;top:132px;width: 162px;height: 38px;" disabled="false" renderType="component" ev:onviewchange="scwin.sel1_onviewchange">
+    		<xf:choices>
+    			<w2:gridViewItemset autoFit="" selectedRowColor="" height="" visibleRowNum="" rowMouseOver="" width=""
+    				wheelStop="true"
+    				nodeset="data:dataList1" value="col2" rowMouseOverColor="" label="col1" hideHeader="">
+    				<w2:item ref="col1" style="width:100%" hidden="" headerStyle="" header="2"></w2:item>
+    				<w2:item ref="col2" style="width:100%;" hidden="" headerStyle="" header="3"></w2:item>
+    			</w2:gridViewItemset>
+    		</xf:choices>
+    	</xf:select1>
+    	<w2:textbox label="autoComplete" id="" style="position: absolute ;left: 79px;top: 71px;width: 167px;height: 46px;"></w2:textbox>
+    	<w2:textbox label="selectbox" id="" style="position: absolute ;left:324px;top:73px;width: 155px;height: 42px;"></w2:textbox>
+    	<xf:trigger type="button" id="" style="position: absolute ;left: 82px;top: 2300px;width: 147px;height: 42px;">
+    		<xf:label></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

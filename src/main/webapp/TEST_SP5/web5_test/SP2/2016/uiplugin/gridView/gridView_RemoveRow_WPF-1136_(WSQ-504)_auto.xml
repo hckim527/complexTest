@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    jsonData1 = [{
+        "col1": "test1_1",
+        "col2": "test1_2"
+    }]
+    jsonData2 = [{
+        "col1": "test2_1",
+        "col2": "test2_2"
+    }]
+    jsonData3 = [{
+        "col1": "test3_1",
+        "col2": "test3_2"
+    }]
+    dataList1.setJSON(jsonData1, true);
+    dataList1.setJSON(jsonData2, true);
+    dataList1.setJSON(jsonData3, true);
+};
+scwin.trigger2_onclick = function(e) {
+    dataList1.removeRow(2);
+    dataList1.removeRow(1);
+};
+scwin.trigger3_onclick = function(e) {
+    jsonData4 = [{
+        "col1": "test4_1",
+        "col2": "test4_2"
+    }]
+    dataList1.setJSON(jsonData4, true);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 setp1.setJson(jsondata,true) 버튼을 클릭한다.-  
+    //In your browser, click the setp1.setJson (jsondata, true) button.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    //Verify 1. 컬럼 데이터 3줄이 생성된다.- 
+    //Three lines of column data are generated.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_body_tbody tr').not('.w2grid_hidedRow').length == 3", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. setp2.removeRow 버튼을 클릭한다.
+    //Click the setp2.removeRow button.            
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 컬럼 데이터 2줄이 삭제된다
+    //Two lines of column data are deleted
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_body_tbody tr').not('.w2grid_hidedRow').length == 1", "true");
+    //Test step 3. step3.setJson(jsondata,true) 버튼을 클릭한다.
+    //Click the step3.setJson (jsondata, true) button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify3. 컬럼 데이터 1줄이 생성된다.
+    //One line of column data is generated.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_body_tbody tr').not('.w2grid_hidedRow').length == 2", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 22-Jan-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 150px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setp1.setJson(jsondata,true) ]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;width: 120px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[setp2.removeRow]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3" style="position: relative;width: 150px;height: 23px;" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[step3.setJson(jsondata,true) ]]></xf:label>
+    	</xf:trigger>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: relative;width: 500px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+    </body>
+</html>
+ 

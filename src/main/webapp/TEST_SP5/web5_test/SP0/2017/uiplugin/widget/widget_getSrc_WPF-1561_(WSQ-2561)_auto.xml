@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    widgetContainer.addWidgets([{
+            id: "widget1",
+            title: "위젯1",
+            src: "widget_getSrc_WPF-1561_(WSQ-2561)_content.xml",
+            scope: true,
+            x: 0,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget2",
+            title: "위젯2",
+            src: "widget_getSrc_WPF-1561_(WSQ-2561)_content.xml",
+            scope: true,
+            x: 1,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget3",
+            title: "위젯3",
+            src: "widget_getSrc_WPF-1561_(WSQ-2561)_content.xml",
+            scope: true,
+            hasTitleBar: true,
+            x: 2,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        }
+    ]);
+}
+scwin.trigger1_onclick = function(e) {
+    //alert( widgetContainer.getWidgetById('widget1').getSrc() );
+};
+scwin.checkAlert = function() {
+    return widgetContainer.getWidgetById('widget1').getSrc();
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 우측의 버튼을 클릭한다.
+    //1. Run the sample file and click the button on the right.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. widgetContainer의 경로(SRC)가알림창에보여진다.('widget_getSrc_WPF-1561_(WSQ-2561)_content.xml')이전에는 getSRC() API가 없었음)
+    // 1. The path to the widgetContainer (SRC) is shown in the notification window('widget_getSrc_WPF-1561_ (WSQ-2561) _content.xml').(Previously there was no getSRC () API)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkAlert() == 'widget_getSrc_WPF-1561_(WSQ-2561)_content.xml'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 31-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:widgetContainer id="widgetContainer" widgetMove="true" minUnitWidth="1" cols="3" horizontalMargin="0" verticalMargin="0"
+    		params="false" widgetResize="true" maxUnitWidth="1" threshold="null" mode="pushpull"
+    		style="position: absolute;width:900px;height:495px;border: 1px solid #000000;" minUnitHeight="1" maxUnitHeight="1"
+    		unitHeightPixel="300">
+    	</w2:widgetContainer>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:267px;height:43px;left:927px;top:32px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[widgetContainer.getWidgetById('widget1').getSrc();]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.makeDataList = function(id, obj) {
+    //create({ //정상
+    $p.data.create({ //비정상
+        "id": id,
+        "type": "dataList",
+        "option": {
+            "useData": false
+        },
+        "columnInfo": obj
+    });
+}
+scwin.onpageload = function() {
+    var jsonData = [{
+            "value": "a",
+            "label": "test1"
+        },
+        {
+            "value": "b",
+            "label": "test2"
+        },
+        {
+            "value": "c",
+            "label": "test3"
+        }
+    ];
+    var column = {};
+    var columnArr = [];
+    for (var k in jsonData[0]) {
+        //dataList를 동적으로 만들기 위한 컬럼 정
+        column = {};
+        column["id"] = k;
+        column["dataType"] = "text";
+        columnArr.push(column);
+    }
+    scwin.makeDataList("dataList1", columnArr);
+    dataList1.setJSON(jsonData);
+    dataList2.setJSON(jsonData)
+};
+scwin.onpageunload = function() {};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'select1_label').innerText == 'test1'", "true");
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:select1 id="select1" chooseOption="" style="position: absolute ;left: 82px;top: 56px;width: 362px;height: 176px;"
+    		submenuSize="auto" allOption="" disabled="false" direction="auto" appearance="minimal" disabledClass="w2selectbox_disabled" ref="">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dataList1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:select1>
+    </body>
+</html>
+ 

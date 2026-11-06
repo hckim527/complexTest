@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection>
+                <w2:dataMap baseNode="map" id="dataMap1" ev:onmodelchange="scwin.dataMap1_onmodelchange">
+                    <w2:keyInfo>
+                        <w2:key id="col1" name="name1" dataType="text"></w2:key>
+                        <w2:key id="col2" name="name2" dataType="text"></w2:key>
+                        <w2:key id="col3" name="name3" dataType="text"></w2:key>
+                    </w2:keyInfo>
+                </w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+scwin.btn_setEdit_onclick = function(e) {
+    input1.setEditFormat("######-#######");
+};
+
+scwin.btn_setEdit2_onclick = function(e) {
+    input1.setValue("1234561234567");
+};
+
+scwin.btn_setEdit3_onclick = function(e) {
+    input2.setValue("01051970281");
+};
+
+scwin.oneditkeyup = function(info) {
+    console.log("oldValue = " + info.oldValue + "\nnewValue = " + info.newValue);
+};
+
+scwin.dataMap1_onmodelchange = function(info) {
+        var key = info.key;        
+        if (key === "col1") {
+            var value = dataMap1.get( "col1" );        
+            if (value) {
+                output1.setValue(value);
+            }
+        } else if (key === "col2") {
+            var value = dataMap1.get( "col2" );        
+            if (value) {
+                output2.setValue(value);
+            }
+        }
+    };
+	
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#input1', 'key-sequence', {
+			sequence: '123'
+		});
+	}
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('grd_excelGrid_noresult').style.display == 'none';
+	}
+	scwin.getErrorLog = function() {
+		var temp = WebSquare.logger.getLog();
+		return temp.indexOf("Cannot read properties of undefined") == -1;
+	}	
+	scwin.unitTest = function() {
+		//Init test
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_setEdit').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.getErrorLog()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run and Stop unit Test
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group tagname="fieldset" style="height:40px;border:1px solid red;">
+            <legend>input1 editFormat = ""</legend>
+            <xf:input id="input1" style="width:158px;height:21px;" dataType="text" ev:onclick="" ev:onfocus="" ev:onviewchange="" ev:onkeyup="" ev:oneditenter="" ev:onblur="" ev:oneditkeyup="scwin.oneditkeyup" ref="data:dataMap1.col1"></xf:input>
+        </xf:group>
+        <xf:group tagname="fieldset" style="height:40px;border:1px solid red;">
+            <legend>input2 editFormat = "###-####-####"</legend>
+            <xf:input id="input2" style="width:158px;height:21px;" dataType="text" ev:onclick="" ev:onfocus="" ev:onviewchange="" ev:onkeyup="" ev:oneditenter="" ev:onblur="" ev:oneditkeyup="scwin.oneditkeyup" ref="data:dataMap1.col2" editFormat="###-####-####"></xf:input>
+        </xf:group>
+        <xf:group>
+            <xf:trigger type="button" id="btn_setEdit" style="width:300px;height:23px;" ev:onclick="scwin.btn_setEdit_onclick">
+                <xf:label><![CDATA[input1 setEditFormat 적용]]></xf:label>
+            </xf:trigger>
+        </xf:group>        
+        <xf:group>
+            <xf:trigger type="button" id="btn_setEdit2" style="width:300px;height:23px;" ev:onclick="scwin.btn_setEdit2_onclick">
+                <xf:label><![CDATA[input1 setValue 1234561234567]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <xf:group>
+            <xf:trigger type="button" id="btn_setEdit3" style="width:300px;height:23px;" ev:onclick="scwin.btn_setEdit3_onclick">
+                <xf:label><![CDATA[input2 setValue 01051970281]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <xf:group tagname="fieldset" style="height:40px;border:1px solid red;">
+            <legend>dataMap1 col1</legend>
+            <xf:output style="width:148px;height:21px;" id="output1">
+            </xf:output>
+        </xf:group>
+        <xf:group tagname="fieldset" style="height:40px;border:1px solid red;">
+            <legend>dataMap1 col2</legend>
+            <xf:output style="width:148px;height:21px;" id="output2">
+            </xf:output>
+        </xf:group>
+    </body>
+</html>

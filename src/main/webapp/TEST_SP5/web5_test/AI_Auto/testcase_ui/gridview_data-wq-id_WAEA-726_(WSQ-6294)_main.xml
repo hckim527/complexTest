@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <w2:dataCollection>
+                <w2:dataMap id="dataMap1" baseNode="map">
+                    <w2:keyInfo>
+                        <w2:key id="compId" name="컴포넌트ID" dataType="text"></w2:key>
+                    </w2:keyInfo>
+                </w2:dataMap>
+                <w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="COL1" name="Name" dataType="text"></w2:column>
+                        <w2:column id="COL2" name="Value" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    $p.getComponentById("dataMap1").set("compId", "ipt_test");
+    var data = [
+        { COL1: "item1", COL2: "val1" },
+        { COL1: "item2", COL2: "val2" },
+        { COL1: "item3", COL2: "val3" }
+    ];
+    $p.getComponentById("dataList1").setJSON(data);
+};
+
+scwin.log = function(msg) {
+    var txa = $p.getComponentById("txa_log");
+    txa.setValue(txa.getValue() + msg + "\n");
+};
+
+scwin.btn_check_onclick = function() {
+    var compId = $p.getComponentById("dataMap1").get("compId");
+    var el = document.querySelector('[data-wq-id="' + compId + '"]');
+    if (el) {
+        scwin.log("[OK] data-wq-id=\"" + compId + "\" → DOM id=\"" + el.id + "\"");
+    } else {
+        scwin.log("[FAIL] data-wq-id=\"" + compId + "\" 를 가진 DOM을 찾을 수 없습니다.");
+    }
+};
+
+scwin.btn_listAll_onclick = function() {
+    var elems = document.querySelectorAll("[data-wq-id]");
+    scwin.log("--- data-wq-id 전체 목록 (" + elems.length + "개) ---");
+    for (var i = 0; i < elems.length; i++) {
+        scwin.log("  " + elems[i].getAttribute("data-wq-id") + " → " + elems[i].id + " (" + elems[i].tagName + ")");
+    }
+};
+
+scwin.btn_clear_onclick = function() {
+    $p.getComponentById("txa_log").setValue("");
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group id="grp_main" style="width:100%;padding:10px;">
+            <xf:input id="ipt_test" ref="data:dataMap1.compId" style="width:200px;height:25px;"></xf:input>
+            <xf:trigger type="button" id="btn_check" ev:onclick="scwin.btn_check_onclick" style="width:120px;height:25px;">
+                <xf:label><![CDATA[선택자 검색]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_listAll" ev:onclick="scwin.btn_listAll_onclick" style="width:120px;height:25px;">
+                <xf:label><![CDATA[전체 목록]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick" style="width:80px;height:25px;">
+                <xf:label><![CDATA[초기화]]></xf:label>
+            </xf:trigger>
+            <xf:select1 id="sel_test" appearance="minimal" style="width:200px;height:25px;">
+                <w2:option>
+                    <w2:value>1</w2:value>
+                    <w2:label>Option 1</w2:label>
+                </w2:option>
+                <w2:option>
+                    <w2:value>2</w2:value>
+                    <w2:label>Option 2</w2:label>
+                </w2:option>
+            </xf:select1>
+            <w2:gridView id="grd_main" dataList="data:dataList1" style="width:500px;height:150px;">
+                <w2:header>
+                    <w2:row>
+                        <w2:column id="hd_COL1" value="Name" width="250"></w2:column>
+                        <w2:column id="hd_COL2" value="Value" width="250"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody>
+                    <w2:row>
+                        <w2:column id="COL1" width="250"></w2:column>
+                        <w2:column id="COL2" width="250"></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+            <w2:wframe id="wfm_sub" src="gridview_data-wq-id_WAEA-726_(WSQ-6294)_sub.xml" style="width:500px;height:250px;"></w2:wframe>
+            <w2:textarea id="txa_log" style="width:500px;height:200px;" readOnly="true"></w2:textarea>
+        </xf:group>
+    </body>
+</html>

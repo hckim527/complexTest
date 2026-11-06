@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.select1_onchange = function() {
+    //alert('onChange');
+    log.push("onChange");
+};
+scwin.select1_onviewchange = function(info) {
+    //alert('onviewChange');
+    log.push("onviewChange");
+};
+scwin.select1_onlabelclick = function(index, checked, value) {
+    //alert('onlabelclick');
+    log.push("onlabelclick");
+};
+scwin.clickLabel = function() {
+    return WebSquare.wUnit.getJq(".w2checkbox_label")[0].click();
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. Source 탭 또는 Property 탭에서 select1 의 renderType 부분을 확인한다.
+    //1. In the Source tab or Property tab, check the renderType part of select1.
+    // verify step 1. renderType='checkboxgroup'
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('select1').getAttribute('renderType')", "checkboxgroup");
+    //Test step 2. scwin.select1_onchange 부분을 확인한다.
+    //2. Check scwin.select1_onchange.
+    //Verify step 2. alert("onChange");
+    //Test step 3. scwin.select1_onviewchange 부분을 확인한다.
+    //3. Check scwin.select1_onviewchange.
+    //Verify step 3. alert("onviewChange");
+    //Test step 4. scwin.select1_onlabelclick 부분을 확인한다.
+    //4. Check the scwin.select1_onlabelclick section.
+    //Test step 5. IE 8 / 9 / 10 / 11 브라우저에서 '전체' (Label )을 클릭한다.
+    //5. In the IE 8/9/10/11 browser, click on 'Label'.
+    WebSquare.wUnit.addCommand("set", "scwin.clickLabel()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 5. 'onChange' / 'onviewChange' / 'onlabelclick' 순서로 팝업이 생성된다. (2017-02-10 엔진에서는 onviewChange 이벤트 동작안함)(20171012 변경사항 : onChange / onlabelclick / onviewChange 순서로 변경됨)
+    //5. A pop-up is created in the order 'onChange' / 'onviewChange' / 'onlabelclick'. (OnviewChange event does not work in 2017-02-10 engine)(20171012 changes: onChange / onlabelclick / onviewChange changed in order)
+    WebSquare.wUnit.addCommand("assert", "log[0] == 'onChange'", "true");
+    WebSquare.wUnit.addCommand("assert", "log[1] == 'onlabelclick'", "true");
+    WebSquare.wUnit.addCommand("assert", "log[2] == 'onviewChange'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 6. 이번에는 체크부분을 클릭한다.
+    //6. Now click on the check.
+    WebSquare.wUnit.addCommand("set", "log.splice(0, 3)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('select1_input_0').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 6. 'onChange' / 'onviewChange' 순서로 팝업이 생성된다. (Label 을 클릭한 것이 아니라서 onlabelclick 이벤트는 동작제외)
+    //6. Popups are created in the order 'onChange' / 'onviewChange'. (The onlabelclick event does not operate because the label is not clicked)
+    WebSquare.wUnit.addCommand("assert", "log[0] == 'onChange'", "true");
+    WebSquare.wUnit.addCommand("assert", "log[1] == 'onviewChange'", "true");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = [];
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 31-Jan-2018
+    window.sl = select1.getValue();
+    window.cb = select1_input_0.checked;
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:select appearance="full" id="select1"
+    		style="position: relative;width: 148px;height: 21px;"
+    		selectedindex="-1" cols="1" rows="" renderType="checkboxgroup" ev:onviewchange="scwin.select1_onviewchange" ev:onchange="scwin.select1_onchange" ev:onlabelclick="scwin.select1_onlabelclick">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[전체]]></xf:label>
+    				<xf:value><![CDATA[Y]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select>
+    </body>
+</html>
+ 

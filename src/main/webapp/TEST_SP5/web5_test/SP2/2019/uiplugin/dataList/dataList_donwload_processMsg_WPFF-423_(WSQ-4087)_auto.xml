@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="d1_col1" name="필드1" dataType="text"></w2:column>
+            			<w2:column id="d1_col2" name="필드2" dataType="text"></w2:column>
+            			<w2:column id="d1_col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="d1_col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="do1_col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="d2_col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="d2_col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="d3_col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger11_onclick = function(e) {
+    dataList1.removeAll();
+    dataList2.removeAll();
+};
+scwin.trigger12_onclick = function(e) {
+    var num = 10000
+    var arr = [];
+    for (var i = 0; i < num; i++) {
+        for (var j = 0; j < 5; j++) {
+            arr[i * 5 + j] = "dataList1_" + i + j;
+        }
+    }
+    var arr1 = [];
+    for (var i = 0; i < num; i++) {
+        for (var j = 0; j < 3; j++) {
+            arr1[i * 3 + j] = "dataList2_" + i + j;
+        }
+    }
+    dataList1.setData(arr);
+    dataList2.setData(arr1);
+};
+scwin.trigger1_onclick = function(e) {
+    var scId = "";
+    var options = {
+        common: {
+            fileName: "dataList.xlsx",
+            multipleSheet: "true",
+            // dataListDownloadURL:"경로",
+            showProcess: true,
+            processMsg: "sampleText"
+        },
+        //excelInfo에 각 그리드의 정보를 입력한다.
+        excelInfo: [{
+                dataListId: "dataList1",
+                sheetName: "첫번째 sheet",
+                removeColumns: "",
+                wframeId: scId
+            },
+            {
+                dataListId: "dataList2",
+                sheetName: "두번째 sheet",
+                removeColumns: "",
+                wframeId: scId
+            }
+        ]
+    };
+    WebSquare.util.multipleDataListDownload(options);
+};
+scwin.checkVal = function() {
+    var temp = WebSquare.wUnit.getDomById($p.id + '___processbar2_i').children[0].contentWindow.document;
+    return temp.getElementById('processMsgLayer').innerText == 'sampleText';
+}
+scwin.unitTest = function() {
+    //Unit tets
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger12').click()");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left:47px;top:34px;width: 122px;height: 37px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[dataList Download]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger11" style="position: absolute ;left:174px;top:34px;width: 122px;height: 37px;" type="button"
+    		ev:onclick="scwin.trigger11_onclick">
+    		<xf:label><![CDATA[dataList 초기화]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger12" style="position: absolute ;left:299px;top:34px;width: 122px;height: 37px;" type="button"
+    		ev:onclick="scwin.trigger12_onclick">
+    		<xf:label><![CDATA[dataList 값설정]]></xf:label>
+    	</xf:trigger>
+    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="" style="position: absolute ;left:52px;top:126px;width: 415px;height: 278px;"
+    		ignoreCellClick="false" syncScroll="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true"
+    		columnMove="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column9" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name3" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name4" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name5" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="d1_col1" style="" inputType="text" width="70" value="" displayMode="label"
+    					colMerge="false">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="d1_col2" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="d1_col3" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="d1_col4" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="do1_col5" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView dataList="data:dataList2" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="" style="position: absolute ;left: 481px;top: 128px;width: 410px;height: 271px;"
+    		ignoreCellClick="false" syncScroll="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="d2_col1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="d2_col2" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="d3_col3" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

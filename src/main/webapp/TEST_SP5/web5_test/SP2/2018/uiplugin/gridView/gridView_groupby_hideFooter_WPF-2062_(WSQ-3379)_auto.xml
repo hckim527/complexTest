@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""></data>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list"
+					saveRemovedData="true" repeatNode="map"
+					getMatchedFromAllData="false" keepFilter="true"
+					removeDummyRowStatus="true" removeDataMatch="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="분류1"
+							dataType="text">
+						</w2:column>
+						<w2:column id="col2" name="분류2"
+							dataType="text">
+						</w2:column>
+						<w2:column id="col3" name="금액"
+							dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<style type="text/css">
+			.w2grid_groupby_depth_2{
+				background-color: #ffffad;
+			}
+			.w2grid_groupby_depth_3{
+				background-color: #affffff;
+			}
+		</style>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    //		
+}
+scwin.grid1_ongroupby = function(options) {
+    options.groupbyHeader = [{
+            inputType: "text",
+            value: "header1"
+        },
+        {
+            inputType: "text",
+            value: "header2"
+        },
+        {
+            inputType: "text",
+            value: "header3"
+        }
+    ]
+    options.groupbyHeader = [{
+        colSpan: "3",
+        inputType: "expression",
+        expression: " toggle() + depthStr() + ' [ ' +',' + count() + ' 건 ] ' ",
+        align: "left"
+    }];
+    options.groupbyFooter = [{
+            inputType: "text",
+            value: "footer1"
+        },
+        {
+            inputType: "text",
+            value: "footer2"
+        },
+        {
+            inputType: "text",
+            value: "footer3"
+        },
+    ];
+    options.groupbyFooter = [{
+        targetIndex: 0,
+        colSpan: "3",
+        inputType: "expression",
+        expression: " SUM('col3')",
+        align: "center"
+    }];
+    options.hideFooter = true;
+    this.groupby(options);
+    return true;
+}
+scwin.trigger1_onclick = function() {
+    scwin.data1 = [
+        "0", "A", 1,
+        "0", "A", 2,
+        "0", "A", 3,
+        "0", "B", 4,
+        "0", "B", 5,
+        "0", "B", 6,
+        "1", "B", 7,
+        "1", "C", 8,
+        "1", "C", 9,
+        "1", "C", 10,
+        "1", "C", 11
+    ];
+    dataList1.setData(scwin.data1.slice(0));
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById($p.id+"grid1_cell_0_0").firstElementChild.innerText.trim() == '0 [ ,6 건 ]';
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#grid1_column5', 'drag-n-drop', {
+        dx: 0,
+        dy: -50
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#grid1_column3', 'drag-n-drop', {
+        dx: 50,
+        dy: -50
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 0. 20180409일 기준 SP1엔진만 반영됨(추후 SP2도 반영예정) -> 20180413_SP2반영됨
+    //0. Only SP1 engines will be reflected on 20180409 days (future SP2 will be reflected) -> 20180413_SP2 reflected
+    //Test step 1. 샘플실행 후 "조회"버튼 클릭 후 "분류1", 분류2"항목을 각각 groupby 시킨다.
+    //1. After running the sample, click the "Query" button and group the items "Category 1" and "Category 2" respectively.
+    WebSquare.wUnit.addCommand("pause", "2000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 1. 데이터가 조회되고 '분류1', 분류2'항목이 각각 groupby 되어진다.
+    //1. The data is searched and the 'Category 1' and 'Category 2' items are respectively groupby.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_groupbyZone_div').childElementCount == 2", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. gridView영역의 toggle(-,+)버튼을 클릭(1 depth인 0값, 2 depth인 0-A값)하여 기능이 정상동작하는지 확인한다.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_minus')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 2. 
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 14-Jun-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css">
+		</style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView
+			style="position:relative;width:553px;height:407px;border:1px solid black;"
+			groupbyZone="true" useRealColIndex="true" closeGroup="true"
+			rowNumWidth="" rowStatusVisible="" rowStatusWidth="" id="grid1"
+			baseNode="base" repeatNode="repeat" valueNode="value"
+			readOnlyBackgroundColor="#80ff00" editModeEvent="ondblclick"
+			rowNumVisible="" tooltipDisplay="true" focusMode="cell"
+			backgroundColorMode="always" sortable="true" dataList="dataList1"
+			useFilterList="true" ev:ongroupby="scwin.grid1_ongroupby"
+			groupbyFilterBox="true" customFilterBox="true" senseReader="false"
+			ev:oncellclick="scwin.grid1_oncellclick">
+			<w2:caption id="caption1" style=""
+				value="this is a grid caption.">
+			</w2:caption>
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" id="column5"
+						useFilter="true" style="height:20px" inputType="text" width="70"
+						displayMode="label" value="분류1">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3"
+						useFilter="true" style="height:20px" inputType="text" width="70"
+						displayMode="label" value="분류2">
+					</w2:column>
+					<w2:column blockSelect="false" id="column1"
+						useFilter="true" style="height:20px" width="70" inputType="text"
+						displayMode="label" value="금액">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="col1"
+						style="height:20px" inputType="text" width="70"
+						displayMode="label" customFormatter="">
+					</w2:column>
+					<w2:column blockSelect="false" id="col2"
+						style="height:20px" inputType="text" width="70"
+						displayMode="label" customFormatter="testFunc">
+					</w2:column>
+					<w2:column blockSelect="false" id="col3"
+						style="height:20px" width="70" inputType="text"
+						displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer id="footer1" style="">
+				<w2:row id="row3" style="">
+					<w2:column blockSelect="false" id="column8"
+						style="height:20px" width="70" inputType="text"
+						displayMode="label">
+					</w2:column>
+					<w2:column blockSelect="false" id="column7"
+						style="height:20px" width="70" inputType="text"
+						displayMode="label">
+					</w2:column>
+					<w2:column blockSelect="false" id="column6"
+						style="height:20px" width="70" inputType="text"
+						displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1"
+			style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[조회]]></xf:label>
+		</xf:trigger>
+	</body>
+</html> 

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList1.setJSON(jsonData1); //jsonData1 을 dataList1 에 표현  
+};
+scwin.trigger2_onclick = function(e) {
+    dataList1.insertRow(); // dataList1 에 Row 추가
+};
+scwin.trigger3_onclick = function(e) {
+    dataList1.removeRow(3); // dataList1 에 3번째 Row부터 삭제
+    //			dataList1.deleteRow( 3 );	// dataList1 에 3번째 Row부터 삭제 (삭제상테 확인)
+};
+scwin.trigger4_onclick = function(e) {
+    dataList1.removeColumnFilterAll(); //dataList1 의 컬럼과 필터를 모두 삭제
+    var jsonData2 = [ //변수명은 jsonData2 선언           
+        {
+            "col1": "가",
+            "col2": "B",
+            "col3": 3,
+            "rowStatus": "R"
+        },
+        {
+            "col1": "가",
+            "col2": "A",
+            "col3": 2,
+            "rowStatus": "R"
+        },
+        {
+            "col1": "가",
+            "col2": "A",
+            "col3": 1,
+            "rowStatus": "R"
+        }
+    ];
+    dataList1.setJSON(jsonData2); //jsonData2 를 dataList1 에 표현
+};
+scwin.trigger5_onclick = function(e) {
+    dataList1.setCellData(1, 2, "꺄오");
+};
+scwin.trigger6_onclick = function(e) {
+    var options = {}; //변수명은 options 선언
+    options.fileName = "excel.xls"; //다운로드할 파일명과 확장자 지정
+    options.type = "1"; //0 인 경우 실제데이터 / 1 인 경우 눈에 보이는 데이터 다운로드
+    options.useStyle = "true"; //지정한 bodyColor 적용
+    options.spanAll = "true"; //엑셀 다운로드시 drilldown gridView의 전체목록을 펼쳐서 출력
+    gridView1.advancedExcelDownload(options); //gridView1 에 표현된 데이터를 엑셀다운로드
+};
+scwin.trigger7_onclick = function(e) {
+    var options = {}; //변수명은 options 선언
+    options.fileName = "excel.xlsx"; //다운로드할 파일명과 확장자 지정
+    options.type = "1"; //0 인 경우 실제데이터 / 1 인 경우 눈에 보이는 데이터 다운로드
+    options.useStyle = "true"; //지정한 bodyColor 적용
+    options.spanAll = "true"; //엑셀 다운로드시 drilldown gridView의 전체목록을 펼쳐서 출력
+    gridView1.advancedExcelDownload(options); //gridView1 에 표현된 데이터를 엑셀다운로드
+};
+scwin.trigger8_onclick = function(e) {
+    var options = {}; //변수명은 options 선언
+    options.type = "1"; //0 인 경우 실제데이터, 즉 Value.xls 만 업로드 / 1 인 경우 눈에 보이는 데이터, 즉 label.xls 만 업로드
+    //				options.headerExist = "1";	//헤더의 존재유무
+    options.startRowIndex = "1"; //데이터가 시작되는 row 의 index (헤더 포함)
+    //				options.Columnindex = "0";	//데이터가 시작되는 column 의 index (헤더포함)
+    //				options.sheetNo = 0;	//excel 의 sheet 번호
+    //				options.pwd = "1234";	//excel 의 비밀번호
+    gridView1.advancedExcelUpload(options); //업로드된 엑셀 데이터를 gridView1 에 표현
+};
+scwin.__hasError = function() {
+    var logs = WebSquare.logger.getLog();
+    var hasErrorIdCol1 = logs.indexOf("id[col1]") > 0;
+    var hasErrorIdCol7 = logs.indexOf("id[column7]") > 0;
+    return hasErrorIdCol7 && hasErrorIdCol1;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 브라우저에서 로그 (Ctrl + 마우스 오른쪽) 를 실행한다.
+    //2. Run the log in the browser (Ctrl + right mouse).
+    // verify step 2. 로그에 에러로그가 표시된다. (그림2 참고)
+    //2. An error log is displayed in the log. (See Figure 2)
+    WebSquare.wUnit.addCommand("assert", "scwin.__hasError()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //초기 데이터    
+    window.jsonData1 = [{
+            "col1": "AAA",
+            "col2": 2,
+            "col3": "다",
+            "rowStatus": "R"
+        },
+        {
+            "col1": "AAA",
+            "col2": 1,
+            "col3": "나",
+            "rowStatus": "R"
+        },
+        {
+            "col1": "AAA",
+            "col2": 1,
+            "col3": "가",
+            "rowStatus": "R"
+        }
+    ];
+    //초기데이터 검색
+    //Row 추가        
+    //Row 삭제
+    //Row 초기화 (아래 데이터로 변경)				
+    //Column 데이터 변경				
+    //엑셀 (xls) 다운로드1
+    //엑셀 (xlsx) 다운로드2
+    //엑셀 업로드
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 07-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>		
+		
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left:10px;top:12px;width:439px;height:283px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true" rowStatusVisible="true" useFilterList="true" autoFitFilterList="true" sortable="true"
+    		useCtrlOnMultisort="false" readOnly="" rowNumVisible="false">
+    		<!-- useFilterList, autoFilterList, sortable, useCtrlOnMultisort 추가 -->
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="85" displayMode="label"
+    					value="name1" useFilter="true" autoFitFilterList="true">
+    					<!-- useFilterList, autoFilterList 추가 -->
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="85" displayMode="label"
+    					value="name2" useFilter="true" autoFitFilterList="true">
+    					<!-- useFilterList, autoFilterList 추가 -->
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" width="85" inputType="text" displayMode="label"
+    					value="name3" useFilter="true" autoFitFilterList="true">
+    					<!-- useFilterList, autoFilterList 추가 -->
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gbody" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="92" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width: 129px;height: 23px;left:449px;top:12px;"
+    		ev:onclick="scwin.trigger1_onclick">	<!-- 검색 이벤트 -->
+    		<xf:label><![CDATA[Search]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: absolute;width:129px;height: 23px;left:449px;top:34px;"
+    		ev:onclick="scwin.trigger2_onclick">	<!-- Add Row 이벤트 -->
+    		<xf:label><![CDATA[Add Row]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3" style="position: absolute;width:129px;height:23px;left:449px;top:56px;"
+    		ev:onclick="scwin.trigger3_onclick">	<!-- Remove Row 이벤트 -->
+    		<xf:label><![CDATA[Remove Row]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger4" style="position: absolute;width:129px;height: 23px;left:449px;top:78px;"
+    		ev:onclick="scwin.trigger4_onclick">	<!-- Reset 이벤트 -->
+    		<xf:label><![CDATA[Reset]]></xf:label>
+       	</xf:trigger>
+    	<xf:trigger type="button" id="trigger5" style="position: absolute;width:129px;height:23px;left:449px;top:100px;"
+    		ev:onclick="scwin.trigger5_onclick">	<!-- Column 데이터 변경 이벤트 -->
+    		<xf:label><![CDATA[Column Change]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger6" style="position: absolute;width:129px;height:23px;left:449px;top:121px;"
+    		ev:onclick="scwin.trigger6_onclick">	<!-- Excel (xls) Download 1 이벤트 -->
+    		<xf:label><![CDATA[Excel (xls) Down]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger7" style="position: absolute;width:129px;height:23px;left:449px;top:143px;"
+    		ev:onclick="scwin.trigger7_onclick">	<!-- Excel (xlsx) Download 2 이벤트 -->
+    		<xf:label><![CDATA[Excel (xlsx) Down]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger8" style="position: absolute;width:129px;height:23px;left:449px;top:164px;"
+    		ev:onclick="scwin.trigger8_onclick">	<!-- Excel Upload 이벤트 -->
+    		<xf:label><![CDATA[Excel Upload]]></xf:label>
+		</xf:trigger>
+    </body>
+</html>
+ 

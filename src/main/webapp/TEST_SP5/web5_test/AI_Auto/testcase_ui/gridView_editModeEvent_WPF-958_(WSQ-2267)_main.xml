@@ -1,0 +1,1176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/w2test/stylesheetAL.css" type="text/css"?>
+<?xml-stylesheet href="/w2test/GirStyleAL.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+
+		<xf:model>
+			<xf:instance>
+				<data xmlns="">
+                </data>
+			</xf:instance>
+
+			<!-- 변경요청 대상 조회 -->
+			<xf:submission id="selectEnpSbmtMpDocList" ref="select/map"
+				target="enpSbmtMpDocList" action="/oe/mpa/selectEnpSbmtMpDocList.do"
+				method="post" mediatype="application/xml" encoding="UTF-8" instance=""
+				replace="instance" errorHandler="" customHandler="" mode="synchronous"
+				processMsg="">
+				<script type="javascript" ev:event="xforms-submit-done">
+				<![CDATA[
+					grid1.removeAll();
+					var dataXML = e.responseBody;
+					grid1.setXML(dataXML);
+
+					var mpSbmtStatCd="";
+					var mpMenuOpenSttsCd="";
+					var bfCheckDocYn="";
+
+					btnApyUnable.hide();		//일시적적용불가버튼
+					btnBfCheck.hide();			//사전검토버튼
+					btnMenuOpen.hide();			//메뉴오픈버튼
+					btnAddMenuOpen.hide();		//메뉴오픈추가버튼
+					btnOpenRslt.hide();			//오픈결과버튼
+					btnChngRqDoc.hide();		//변경요청서작성버튼
+
+					if(grid1.getRowCount() == 0){
+						btnBfCheck.show();
+					}else{
+						if(grid1.getCellData(0,"docSeq")=="TEMP_DATA"){
+							if(grid1.getRowCount() == 1){
+								btnBfCheck.show();
+							}else{
+								mpSbmtStatCd=grid1.getCellData(1,"mpSbmtStatCd");				//문서제출상태코드
+								mpMenuOpenSttsCd=grid1.getCellData(1,"mpMenuOpenSttsCd");		//메뉴오픈요청상태코드
+								bfCheckDocYn=grid1.getCellData(1,"bfCheckDocYn");				//사전검토문서존재여부
+							}
+						}else{
+							mpSbmtStatCd=grid1.getCellData(0,"mpSbmtStatCd");				//문서제출상태코드
+							mpMenuOpenSttsCd=grid1.getCellData(0,"mpMenuOpenSttsCd");		//메뉴오픈요청상태코드
+							bfCheckDocYn=grid1.getCellData(0,"bfCheckDocYn");				//사전검토문서존재여부
+						}
+						if(mpSbmtStatCd=="01"){
+							if(bfCheckDocYn=="Y"){
+								btnApyUnable.show();
+								btnAddMenuOpen.show();
+								if(mpMenuOpenSttsCd=="09"){
+									btnOpenRslt.show();
+								}
+							}else{
+								//보여줄 버튼 없음 사전검토요청 상태
+							}
+						}else if(mpSbmtStatCd=="02"){
+							if(bfCheckDocYn=="Y"){
+								btnApyUnable.show();
+								btnAddMenuOpen.show();
+							}else{
+								//보여줄 버튼 없음 사전검토중인 상태
+							}
+						}else if(mpSbmtStatCd=="03"){
+							if(bfCheckDocYn=="Y"){
+								btnApyUnable.show();
+								if(mpMenuOpenSttsCd=="08"){
+									btnOpenRslt.show();
+									btnChngRqDoc.show();
+								}else if(mpMenuOpenSttsCd=="09"){
+									btnMenuOpen.show();
+									btnOpenRslt.show();
+								}else if(mpMenuOpenSttsCd=="07"){
+									btnOpenRslt.show();
+								}else if(mpMenuOpenSttsCd=="10"){
+									btnChngRqDoc.show();
+									btnOpenRslt.show();
+								}else if(mpMenuOpenSttsCd=="00"){
+									btnMenuOpen.show();
+								}
+							}else{
+								//있을수 없음 검토완료 된 건이 존재하는데 사전검토여부가 N이라는게
+							}
+						}else if(mpSbmtStatCd=="04"){
+							if(bfCheckDocYn=="Y"){
+								btnApyUnable.show();
+								btnChngRqDoc.show();
+							}else{
+								btnBfCheck.show();
+							}
+						}else if(mpSbmtStatCd=="13"){		//추가제출상태
+							btnApyUnable.show();
+							if(bfCheckDocYn=="Y"){
+								if(mpMenuOpenSttsCd=="07"||mpMenuOpenSttsCd=="09"){
+									btnOpenRslt.show();
+								}else if(mpMenuOpenSttsCd=="08"||mpMenuOpenSttsCd=="10"){
+									btnOpenRslt.show();
+									btnChngRqDoc.show();
+								}
+							}else{
+								//있을수 없음 추가제출은 변경제출후 건임...
+							}
+						}
+					}
+				]]>
+				</script>
+			</xf:submission>
+
+			<!-- 모니터링계획확인 목록 조회(하단그리드) -->
+			<xf:submission id="selectSbmtMpDoc" ref="select/map" target="response/datagrid"
+				action="/cm/selectTbBicd002.do" method="post" mediatype="text/xml"
+				encoding="UTF-8" instance="" replace="instance" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="">
+				<script type="javascript" ev:event="xforms-submit-done"><![CDATA[
+				    grid2.removeAll();
+           			var dataXML = e.responseBody;
+					grid2.setXML(dataXML);
+				]]></script>
+			</xf:submission>
+
+			<!-- 검증기관 지정 정보 조회 -->
+			<xf:submission id="selectVeriMpInfo" ref="select/map" target="veriInstInfo"
+				action="/vr/mpa/selectVeriMpInfo.do" method="post" mediatype="text/xml"
+				encoding="UTF-8" instance="" replace="instance" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="">
+				<script type="javascript" ev:event="xforms-submit-done"><![CDATA[
+           			var dataXML = e.responseBody;
+				    veriMpDocGrd.setXML(dataXML);
+				]]></script>
+			</xf:submission>
+
+			<!-- 사업장목록 조회 -->
+    		<xf:submission id="selectPobSeqList" ref="select/map"
+    			target="pobSeqList" action="/oe/mpa/selectPobSeqList.do"
+    			method="post" mediatype="application/xml" encoding="UTF-8"
+    			instance="" replace="instance" errorHandler="" customHandler=""
+    			mode="synchronous" processMsg="">
+				<script type="javascript" ev:event="xforms-submit-done"><![CDATA[
+				    pobSeqList.setValue("all");
+				]]></script>
+    		</xf:submission>
+
+		</xf:model>
+
+		<script type="javascript">
+		<![CDATA[
+		
+		imports("uiplugin.popup");
+		
+		grid1.insertRow();
+		grid1.insertRow();
+		grid1.insertRow();
+
+			/********************************************
+			* Parameter
+			********************************************/
+			var menu=WebSquare.net.getParameter("menu");
+			var mgEnpCd="";
+			var emplyrId="";
+			var currentDate="";
+			var printDate="";
+			var selectRow="";
+
+			/********************************************
+			* session
+			********************************************/
+			function doProccess(){
+				fn_init();
+			}
+
+			/********************************************
+			* window.onLoad()
+			********************************************/
+			function fn_init(){
+				mgEnpCd = WebSquare.ModelUtil.getInstanceValue("session/map/map/insttCode/@value");
+				emplyrId = WebSquare.ModelUtil.getInstanceValue("session/map/map/emplyrId/@value");
+				currentDate = WebSquare.ModelUtil.getInstanceValue("session/map/map/currentDate/@value");
+				printDate = currentDate.substr(0,4)+"년 "+currentDate.substr(4,2)+"월 "+currentDate.substr(6,2)+ "일";
+
+				WebSquare.ModelUtil.setInstanceValue("select/map/plPeri/@value","1차");
+				WebSquare.ModelUtil.setInstanceValue("select/map/mgEnpCd/@value",mgEnpCd);
+				WebSquare.ModelUtil.executeSubmission("selectEnpSbmtMpDocList"); //제출현황 목록 조회
+				var rowCnt=grid1.getRowCount();
+				var docSeq="";
+				for(var i=0;i<rowCnt;i++){
+					docSeq=grid1.getCellData(i,"docSeq");
+					if(docSeq!=null && docSeq.length > 2){
+						selectRow=i;
+						break;
+					}
+				}
+				output15555.setValue(docSeq=="TEMP_DATA"?"(문서번호 : 작성중)":"(문서번호 : "+docSeq+")");
+				WebSquare.ModelUtil.setInstanceValue("select/map/docSeq/@value",docSeq);
+				WebSquare.ModelUtil.setInstanceValue("select/map/plPeri/@value",grid1.getCellData(selectRow,"plPeri"));
+				WebSquare.ModelUtil.setInstanceValue("select/map/itgClsCd/@value","MG002");
+				WebSquare.ModelUtil.setInstanceValue("select/map/mgAtc3Nm/@value","7");
+				WebSquare.ModelUtil.executeSubmission("selectSbmtMpDoc"); //제출문서 목록 조회
+				WebSquare.ModelUtil.executeSubmission("selectPobSeqList"); //사업장 목록 조회
+				WebSquare.ModelUtil.executeSubmission("selectVeriMpInfo"); //모니터링 계획서 검증 정보 조회
+
+			}
+
+			/********************************************
+			* 그리드 - 관리화면
+			********************************************/
+			function mgAtc1NmFunction(data){
+				var msg = "";
+				if(data != ""){
+					msg += "<a href=javascript:fnLocLinkMove('" + data + "');>";
+					msg += "<img src='/images/button/btnImage_link.gif' alt='링크'/>";
+					msg += "</a>";
+				}
+				return msg;
+			}
+
+			function fnLocLinkMove(data){
+				window.location.href="/websquare/websquare.html?w2xPath="+data;
+			}
+
+			/********************************************
+			* 링크 팝업
+			********************************************/
+			function linkFunction(data){
+				var url = "";
+				var retObj = null;
+				if(data.indexOf(".sa",1)> 1){
+					url = "/ibsheet/iframe.jsp?url=" + data;
+					url = url.replace(".sa?menu", ".sa&menu");
+					retObj = window.showModalDialog(url, window, "dialogWidth:1030px; dialogHeight:850px; scroll:auto; resizable:yes;");
+				}else{
+					url = "/websquare/websquare.html?w2xPath=" + data;
+					retObj = retObj = window.showModalDialog(url, window, "dialogWidth:1000px; dialogHeight:700px; scroll:auto; resizable:yes;");
+				}
+				if(retObj == null){}
+			}
+
+			/********************************************
+			* 그리드 - 보고서
+			********************************************/
+			function printFunction(data){
+				var msg = "";
+				if(data != ""){
+					msg += "<img src='/images/button/btnImage_view.gif' alt='보고서'/>";
+				}
+				return msg;
+			}
+
+			/********************************************
+			* 검사기관지정 팝업 호출
+			********************************************/
+			function openVeriInstApp(){
+				imports("uiplugin.popup");
+				var hash = new WebSquare.collection.Hashtable();
+				hash.put("mgEnpCd",mgEnpCd);
+				hash.put("veriInstRgNo",veriMpDocGrd.getCellData(0,"veriInstRgNo"));
+				hash.put("mpOpenBdt",veriMpDocGrd.getCellData(0,"mpOpenBdt"));
+				hash.put("mpOpenEdt",veriMpDocGrd.getCellData(0,"mpOpenEdt"));
+				if(veriMpDocGrd.getCellData(0,"veriReqDt")!="-"&&veriMpDocGrd.getCellData(0,"veriDocSeq")=="-"){
+					hash.put("readOnlyVeriEnpYn","Y");
+				}else{
+					hash.put("readOnlyVeriEnpYn","N");
+				}
+				var paramXml = hash.toString();
+				var options = {
+							   id : "veriInstApp",
+							   type : "window",
+							   width: "700px",
+							   height: "260px",
+							   top: "100px",
+							   left: "500px",
+							    popupName : "모니터링 계획서 제출현황",
+							    modal : true,
+							    useIFrame : false,
+							    style : "",
+							    resizable : true,
+							    status : false,
+							    menubar : false,
+							    scrollbars : true,
+							    title : false,
+							    xml: paramXml,
+							    srcData: "",
+							    destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup("/vr/mpa/OGVRMPA000P.xml",options);
+			}
+
+			/********************************************
+			* MP검증 요청 팝업 호출
+			********************************************/
+			function openVeriMpDocRq(){
+				imports("uiplugin.popup");
+				var hash = new WebSquare.collection.Hashtable();
+
+				var docSeq = "";
+
+				for(var i=0;i<grid1.getRowCount();i++){
+					if(grid1.getCellData(i,"mpSbmtStatCd") =="03"){
+						docSeq = grid1.getCellData(i,"docSeq");
+						break;
+					}
+				}
+
+				hash.put("mgEnpCd",mgEnpCd);
+				hash.put("docSeq",docSeq);
+				hash.put("corpNm",veriMpDocGrd.getCellData(0,"corpNm"));
+				hash.put("veriInstRgNo",veriMpDocGrd.getCellData(0,"veriInstRgNo"));
+				var paramXml = hash.toString();
+				var options = {
+							   id : "veriMpDocRq",
+							   type : "window",
+							   width: "500px",
+							   height: "230px",
+							   top: "100px",
+							   left: "500px",
+							    popupName : "모니터링 계획서 제출현황",
+							    modal : true,
+							    useIFrame : false,
+							    style : "",
+							    resizable : true,
+							    status : false,
+							    menubar : false,
+							    scrollbars : true,
+							    title : false,
+							    xml: paramXml,
+							    srcData: "",
+							    destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup("/vr/mpa/OGVRMPA001P.xml",options);
+			}
+
+			function fnShowMpHistory(){
+				imports("uiplugin.popup");
+
+				var hash = new WebSquare.collection.Hashtable();
+				var popupId="";
+				var popupName="";
+				var url="";
+				var pWidth="";
+				var pHeight="";
+
+				hash.put("mgEnpCd",mgEnpCd);
+
+				popupId="mpEnpHisView";
+				popupName="문서제출이력";
+				url="/oe/mpa/OGOEMPA401P.xml";
+				pWidth="650px";
+				pHeight="480px";
+
+				var paramXml = hash.toString();
+				var options = {
+							   id : popupId,
+							   type : "window",
+							   width: pWidth,
+							   height: pHeight,
+							   top: "0px",
+							   left: "0px",
+							    popupName : "모니터링 계획서 제출현황",
+							    modal : true,
+							    useIFrame : false,
+							    style : "",
+							    resizable : true,
+							    status : false,
+							    menubar : false,
+							    scrollbars : true,
+							    title : false,
+
+							    xml: paramXml,
+							    srcData: "",
+							    destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup(url,options);
+			}
+
+			/***************************************************************
+        	 * 사전검토신청서
+        	 ***************************************************************/
+        	function fnPopupOpen(){
+
+				imports("uiplugin.popup");
+				var param ="";
+				var tmpPlPeri = "";
+				var tmpMgEnpCd = "";
+				var tmpDocSeq = "";
+				var tmpView = "";
+				var tmpMpSbmtStatCd = "";
+
+				tmpPlPeri = grid1.getCellData(0,"plPeri" );
+			    tmpMgEnpCd = grid1.getCellData(0,"mgEnpCd" );
+			    tmpDocSeq = grid1.getCellData(0,"docSeq" );
+			    //tmpView = grid1.getCellData(0,"bfRewRqView" );
+			    //tmpModDocSeq = grid1.getCellData(0,"modDocSeq" );
+			    tmpMpSbmtStatCd = grid1.getCellData(0,"mpSbmtStatCd");
+
+			    var hash = new WebSquare.collection.Hashtable();
+
+				hash.put("plPeri",tmpPlPeri);
+				hash.put("mgEnpCd",tmpMgEnpCd);
+				hash.put("docSeq",tmpDocSeq);
+				//hash.put("view",tmpView);
+				//hash.put("modDocSeq",tmpModDocSeq);
+				hash.put("mpSbmtStatCd",tmpMpSbmtStatCd);
+				hash.put("callPath","2"); // 할당대상업체
+
+				var paramXml = hash.toString();
+
+				var options = {
+								id : "popup1",
+								type : "window",
+								width: "700px",
+								height: "500px",
+								top: "0px",
+								left: "0px",
+								popupName : "모니터링계획 사전검토 신청서",
+							    modal : true,
+							    useIFrame : false,
+							    style : "",
+							    resizable : true,
+							    status : false,
+							    menubar : false,
+							    scrollbars : true,
+							    title : false,
+							    xml: paramXml,
+							    srcData: "",
+							    destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup("/oe/mpa/OGOEMPA171P.xml",options);
+        	}
+
+			function fnMpMenuOpenRq(addRqYn){
+			    imports("uiplugin.popup");
+				var mgEnpCd= grid1.getCellData(0,"mgEnpCd");
+				var plPeri = grid1.getCellData(0,"plPeri");
+				var docSeq = grid1.getCellData(0,"docSeq");
+				var mpSbmtStatCd = grid1.getCellData(0,"mpSbmtStatCd");
+				var callPath = "2"; // 1: 주무관청 , 2: 할당대상업체
+				var view = "요청";
+
+				if(addRqYn == "X"){
+					view="결과";
+				}
+
+				if("TEMP_DATA"==docSeq){
+					if(addRqYn == "X"){
+						docSeq = grid1.getCellData(1,"docSeq");
+					}else{
+				     	alert("신규작성 상태에서는 MP메뉴 오픈 요청을 하실 수 없습니다.");
+				     	return;
+				     }
+				}
+
+			    var hash = new WebSquare.collection.Hashtable();
+				hash.put("mgEnpCd",mgEnpCd);
+				hash.put("docSeq",docSeq);
+				hash.put("plPeri",plPeri);
+				hash.put("mpSbmtStatCd",mpSbmtStatCd);
+				hash.put("callPath",callPath);
+				hash.put("addRqYn",addRqYn)
+				hash.put("view",view);
+
+				var paramXml = hash.toString();
+
+				var options = {
+								id : "popup1",
+								type : "window",
+								width: "700px",
+								height: "400px",
+								top: "0px",
+								left: "0px",
+								popupName : "오픈 요청 확인",
+							    modal : true,
+							    useIFrame : false,
+							    style : "",
+							    resizable : true,
+							    status : false,
+							    menubar : false,
+							    scrollbars : true,
+							    title : false,
+							    xml: paramXml,
+							    srcData: "",
+							    destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup("/oe/mpa/OGOEMPA441P.xml",options);
+			}
+
+			function fnOpenApyUnablRq(){
+				imports("uiplugin.popup");
+				var docSeq = "";
+				var mgEnpCd= grid1.getCellData(0,"mgEnpCd");
+				var plPeri = grid1.getCellData(0,"plPeri");
+				var mgEnpCdNm = insttNm;
+				var view ="작성";
+				var callPath ="2"; //할당대상업체
+				if(grid1.getCellData(0,"docSeq") == "TEMP_DATA"){
+					docSeq = grid1.getCellData(1,"docSeq");
+				}else{
+					docSeq = grid1.getCellData(0,"docSeq");
+				}
+				var insttNm = WebSquare.ModelUtil.getInstanceValue("session/map/map/insttNm/@value");
+
+				if(docSeq=="TEMP_DATA"){
+				   docSeq = grid1.getCellData(0,"modDocSeq");
+				}
+				if(docSeq==null||docSeq==""){
+				   alert("모니터링 계획 사전검토서 신청서 제출 후 사용 가능 합니다.");
+				   return;
+				}
+
+				var hash = new WebSquare.collection.Hashtable();
+
+				hash.put("mgEnpCd",mgEnpCd);
+				hash.put("plPeri",plPeri);
+				hash.put("docSeq",docSeq);
+				hash.put("view",view);
+				hash.put("callPath",callPath);
+				hash.put("mgEnpCdNm",insttNm);
+
+				var paramXml = hash.toString();
+
+				 var options = {
+							   id : "popup4",
+							   type : "window",
+							   width: "900px",
+							   height: "480px",
+							   top: "0px",
+							   left: "0px",
+							    popupName : "모니터링 계획 일시적적용불가 통지서",
+							    modal : true,
+							    useIFrame : false,
+							    style : "",
+							    resizable : true,
+							    status : false,
+							    menubar : false,
+							    scrollbars : true,
+							    title : false,
+							    xml: paramXml,
+							    srcData: "",
+							    destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup("/oe/mpa/OGOEMPA522P.xml",options);
+			}
+
+			function onCellClickMpDocList(rowNum,colNum){
+
+				imports("uiplugin.popup");
+				var hash = new WebSquare.collection.Hashtable();
+				var popupId="";
+				var popupName="";
+				var url="";
+				var pWidth="";
+				var pHeight="";
+
+				var mgEnpCd=grid1.getCellData(rowNum,"mgEnpCd");
+				var docSeq=grid1.getCellData(rowNum,"docSeq");
+				var modDocSeq=grid1.getCellData(rowNum,"modDocSeq");
+				var plPeri=grid1.getCellData(rowNum,"plPeri");
+
+				hash.put("mgEnpCd",mgEnpCd);
+				hash.put("docSeq",docSeq);
+				hash.put("modDocSeq",modDocSeq);
+				hash.put("plPeri",plPeri);
+				hash.put("callPath","2");
+				hash.put("mode","R");
+				hash.put("view","보기");
+
+				var colNm = grid1.getColumnID(colNum);
+
+				if(colNm!="mpView"&&colNm!="rqDocView"&&colNm!="rqRlsView"&&colNm!="attFileView"&&colNm!="veriView"){
+					return;
+				}
+				
+				if(grid1.getCellData(rowNum,colNm) == "-"){
+					return;
+				}
+
+				if(colNm == "mpView"){			//MP열람
+					output15555.setValue(docSeq=="TEMP_DATA"?"(문서번호 : 작성중)":"(문서번호 : "+docSeq+")");
+					WebSquare.ModelUtil.setInstanceValue("select/map/docSeq/@value",docSeq);
+					WebSquare.ModelUtil.setInstanceValue("select/map/plPeri/@value",plPeri);
+					selectRow = rowNum;
+					WebSquare.ModelUtil.executeSubmission("selectPobSeqList");
+					return;
+				}else if(colNm == "rqDocView"){	//요청서보기
+					var rlsVal=grid1.getCellData(rowNum,"rqDocView");
+					if(rlsVal=="변경"){
+						popupId="mpRlsRq";
+						popupName="변경요청서";
+						url="/oe/mpa/OGOEMPA442P.xml";
+						pWidth="700px";
+						pHeight="700px";
+					}else if(rlsVal=="사전"){
+						popupId="mpEnnRqDoc";
+						popupName="사전검토신청서";
+						url="/oe/mpa/OGOEMPA171P.xml";
+						pWidth="700px";
+						pHeight="380px";
+						hash.put("view","보기");
+						hash.put("callPath","1");
+					}else{
+						return;
+					}
+				}else if(colNm == "rqRlsView"){	//검토결과서보기
+					popupId="mpModDocView";
+					var rlsVal=grid1.getCellData(rowNum,"rqRlsView");
+					if(rlsVal=="시정검토"){
+						popupName="시정보완요청";
+						url="/oe/mpa/OGOEMPA412P.xml";
+						pWidth="700px";
+						pHeight="350px";
+					}else if(rlsVal=="사전검토"){
+						hash.put("mode","R");
+						url="/oe/mpa/OGOEMPA411P.xml";
+						pWidth="700px";
+						pHeight="550px";
+					}else if(rlsVal=="추가검토"){
+						hash.put("mode","R");
+						url="/oe/mpa/OGOEMPA423P.xml";
+						pWidth="1100px";
+						pHeight="870px";
+					}else{
+						return;
+					}
+				}else if(colNm == "attFileView"){	//첨부파일
+					var fileId=grid1.getCellData(rowNum,"mpRewAttchFileId");
+					getFileDownLoad(fileId);
+					return;
+				}else if(colNm == "veriView"){		//MP 검증보고서
+					if(grid1.getCellData(rowNum,"veriView")=="-") return;
+					var veriDocSeq = grid1.getCellData(rowNum,"veriDocSeq");
+					var insttNm = WebSquare.ModelUtil.getInstanceValue("session/map/map/insttNm/@value");
+					var emplyrNm = WebSquare.ModelUtil.getInstanceValue("session/map/map/emplyrNm/@value");
+					var oReport = GetfnParamSet();
+		            	oReport.rptname = "vr/mpa/OGVRMPA000R";
+		            	oReport.param("VERI_DOC_SEQ").value = veriDocSeq;
+		            	oReport.param("POB_SEQ").value = "all";
+		            	oReport.param("PRINT_INFO").value = "문서출력자 : "+insttNm+" / "+emplyrNm+" / "+printDate+ " / " + veriDocSeq + " / " + "-전체-";
+		            var prntDocList=["OGVRMPA011R",		//표지
+            		             "OGVRMPA012R",		//업체정보
+            		             "OGVRMPA013R",		//모니터링계획서 제출이력
+            		             "OGVRMPA014R",		//사업장별 정보 및 검증이력
+            		             "OGVRMPA021R",		//2-1.사업장 조직경계 및 배출시설
+            		             "OGVRMPA022R",		//2-2.배출시설별 모니터링 방법
+            		             "OGVRMPA023R",		//2-3.활동자료의 모니터링측정방법
+            		             "OGVRMPA024R",		//2-4.배출시설별 배출활동의
+            		             "OGVRMPA025R",		//2-5.에너지 외부유입 및 구매계획
+            		             "OGVRMPA026R",		//2-6.사업장 고유배출계수
+            		             "OGVRMPA027R",		//2-7.품질관리/품질보증 활동계획
+            		             "OGVRMPA031R",		//3.발견사항 및 시정조치 확인
+            		             "OGVRMPA041R"];	//4.검증의견
+            		for(var i=0;i<prntDocList.length;i++){
+	            		oReport.param(prntDocList[i]).value = "Y";
+	            	}
+	            	oReport.open();
+					return;
+				}else{
+					return;
+				}
+
+				var paramXml = hash.toString();
+				var options = {
+							   id : popupId,
+							   type : "window",
+							   width: pWidth,
+							   height: pHeight,
+							   top: "50px",
+							   left: "300px",
+							    popupName : "모니터링 계획서 제출현황",
+							    modal : true,
+							    useIFrame : false,
+							    style : "",
+							    resizable : true,
+							    status : false,
+							    menubar : false,
+							    scrollbars : true,
+							    title : false,
+
+							    xml: paramXml,
+							    srcData: "",
+							    destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup(url,options);
+			}
+
+			/********************************************
+			* 그리드 셀 클릭
+			********************************************/
+			function onCellClick(row,col){
+				var colNm = grid2.getColumnID(col);
+				if(colNm=="mgAtc2Nm"){
+					var oReport = GetfnParamSet();
+					var docSeqNmV = "신규작성";
+			        var docSeqV = "";
+			        var pobNmV = "";
+			        var pobSeqV = "";
+
+					docSeqNmV = grid1.getCellData(selectRow,"docSeq");
+					docSeqV = grid1.getCellData(selectRow,"docSeq");
+					pobNmV = pobSeqList.getText();
+					pobSeqV =  pobSeqList.getValue();
+
+					oReport.rptname = "oe/mpa/OGOEMPA000R";
+					oReport.param("MG_ENP_CD").value = mgEnpCd;
+					oReport.param("PL_PERI").value = grid1.getCellData(selectRow,"plPeri");
+					oReport.param("DOC_SEQ").value = docSeqV
+					oReport.param("SERVER_ADDR").value = REX_SOP_SERVER;
+					oReport.param("POB_SEQ").value = pobSeqV;
+
+					oReport.param(grid2.getCellData(row,"mgAtc2Nm")).value = "Y";  // 출력할 파일
+
+					var insttNm = WebSquare.ModelUtil.getInstanceValue("session/map/map/insttNm/@value");
+					var emplyrNm = WebSquare.ModelUtil.getInstanceValue("session/map/map/emplyrNm/@value");
+
+					oReport.param("PRINT_INFO").value = "문서출력자 : "+insttNm+" / "+emplyrNm+" / "+printDate+ " / " + docSeqNmV + " / " + pobNmV;
+					oReport.open();
+				}
+			}
+
+			// 변경요청서
+			function fnModMpDocOpen(){
+				imports("uiplugin.popup");
+				var url = "/oe/mpa/OGOEMPA442P.xml"; // 변경요청서 작성 또는 보기
+
+				var param ="";
+				var tmpPlPeri = "";
+				var tmpMgEnpCd = "";
+				var tmpDocSeq = "";
+				var tmpModDocSeq = "";
+				var mpSbmtStatCd = "";
+				var tmpView = "작성";
+
+				var dataRowNum=0;
+				if(grid1.getCellData(0,"docSeq") == "TEMP_DATA"){
+					dataRowNum=1;
+				}
+
+				tmpPlPeri = grid1.getCellData(dataRowNum,"plPeri");
+				tmpMgEnpCd = grid1.getCellData(dataRowNum,"mgEnpCd");
+				tmpDocSeq = grid1.getCellData(dataRowNum,"docSeq");
+				tmpModDocSeq = grid1.getCellData(dataRowNum,"modDocSeq");
+				mpSbmtStatCd = grid1.getCellData(dataRowNum,"mpSbmtStatCd");
+
+				var hash = new WebSquare.collection.Hashtable();
+
+				hash.put("plPeri",tmpPlPeri);
+				hash.put("mgEnpCd",tmpMgEnpCd);
+				hash.put("docSeq",tmpDocSeq);
+				hash.put("modDocSeq",tmpModDocSeq);
+				hash.put("view",tmpView);
+				hash.put("mode","C");
+				hash.put("callPath","2"); // 할당대상업체
+
+				var paramXml = hash.toString();
+
+				var options = {
+							id : "popup1",
+							type : "window",
+							width: "700px",
+							height: "700px",
+							top: "0px",
+							left: "0px",
+							popupName : "모니터링계획 변경요청서",
+							modal : true,
+							useIFrame : false,
+							style : "",
+							resizable : true,
+							status : false,
+							menubar : false,
+							scrollbars : true,
+							title : false,
+							xml: paramXml,
+							srcData: "",
+							destData: ""
+							};
+				WebSquare.uiplugin.popup.openPopup(url,options);
+			}
+
+			/********************************************
+        	 * Rexpert 출력
+        	 ********************************************/
+			function rexpertOutPut(){
+				var oReport = GetfnParamSet();
+				var arrayList = grid2.getCheckedIndex(0);
+
+				if(arrayList == ""){
+					alert("출력할 데이터가 없습니다.");
+					return;
+				}
+
+				var oReport = GetfnParamSet();
+				var docSeqNmV = "신규작성";
+		        var docSeqV = "";
+		        var pobNmV = "";
+		        var pobSeqV = "";
+				docSeqNmV = grid1.getCellData(selectRow,"docSeq");
+				docSeqV = grid1.getCellData(selectRow,"docSeq");
+				pobNmV = pobSeqList.getText();
+				pobSeqV =  pobSeqList.getValue();
+
+				oReport.rptname = "oe/mpa/OGOEMPA000R";
+				oReport.param("MG_ENP_CD").value = mgEnpCd;
+				oReport.param("PL_PERI").value = grid1.getCellData(selectRow,"plPeri");
+				oReport.param("DOC_SEQ").value = docSeqV;
+				oReport.param("SERVER_ADDR").value = REX_SOP_SERVER;
+				oReport.param("POB_SEQ").value = pobSeqV;
+
+				for(var i = 0; i < arrayList.length; i++){
+					oReport.param(grid2.getCellData(arrayList[i],"mgAtc2Nm")).value = "Y";
+				}
+				var insttNm = WebSquare.ModelUtil.getInstanceValue("session/map/map/insttNm/@value");
+				var emplyrNm = WebSquare.ModelUtil.getInstanceValue("session/map/map/emplyrNm/@value");
+				oReport.param("PRINT_INFO").value = "문서출력자 : "+insttNm+" / "+emplyrNm+" / "+printDate+ " / " + docSeqNmV + " / " + pobNmV;
+				oReport.open();
+			}
+
+			function getFileDownLoad(fileId){
+				var param = "?atch_file_id=" + fileId + "&file_sn=0";
+				var request = "http://master.gir.go.kr/cm/cmb/getBlobFile.do" + param;
+				window.open(request);
+			}
+
+			/********************************************
+             * 작성 또는 보기
+             ********************************************/
+            function fn_viewAndReg(data){
+            	var msg="-";
+				if(data == "보기"){
+					msg="<img src='/images/button/btnImage_view.gif' alt='보기' style='cursor:pointer;'/>";
+				}else if(data == "작성"){
+					msg="<img src='/images/button/btnImage_write.gif' alt='작성' style='cursor:pointer;'/>";
+				}else if(data == "다운"){
+					msg="<img src='/images/button/btnImage_down.gif' alt='다운' style='cursor:pointer;'/>";
+				}else if(data == "변경"){
+					msg="<img src='/images/button/btnImage_change2.gif' alt='변경요청서' style='cursor:pointer;'/>";
+				}else if(data == "첨부"){
+					msg="<img src='/images/button/btnImage_file.gif' alt='첨부파일' style='cursor:pointer;'/>";
+				}else if(data == "추가검토"){
+					msg="<img src='/images/button/btnImage_review2.gif' alt='추가검토결과' style='cursor:pointer;'/>";
+				}else if(data == "시정검토"){
+					msg="<img src='/images/button/btnImage_rectify2.gif' alt='시정보완요청' style='cursor:pointer;'/>";
+				}else if(data == "사전검토"){
+					msg="<img src='/images/button/btnImage_beforehand2.gif' alt='사전검토결과' style='cursor:pointer;'/>";
+				}else if(data == "조회"){
+					msg="<img src='/images/button/btnImage_inquiry.gif' alt='조회' style='cursor:pointer;'/>";
+				}else if(data == "사전"){
+					msg="<img src='/images/button/btnImage_examination2.gif' alt='사전검토 신청서' style='cursor:pointer;'/>";
+				}else if(data == "검증"){
+					msg="<img src='/images/button/btnImage_verification.gif' alt='검증보고서' style='cursor:pointer;'/>";
+				}
+				return msg;
+            }
+		]]>
+		</script>
+
+	</head>
+	<body>
+		<form name="form">
+			<input type="hidden" name="pobSeq" />
+			<input type="hidden" name="modDocSeq" />
+		</form>
+		<w2:wframe mode="async"
+			style="overflow:scroll;position:absolute;left:0px;top:0px;width:0px;height:0px;"
+			id="sessionFrame" src="/cm/cma/OGCMCMA030S.xml" class="none">
+		</w2:wframe>
+		<xf:group id="contentsArea" class="contentsArea">
+			<!--  </xf:group> -->
+
+			<xf:group id="group2222" style="" adaptiveThreshold="" class="clearfix titleGroup mgt0">
+				<w2:textbox id="output1555" class="title fl mgt" label="모니터링 계획 제출 현황" tagname="h3"></w2:textbox>
+				<xf:group class="fr mgt15" id="group1077" style="">
+					<xf:trigger alt="전체 진행 이력 보기" class="btn005 small ieinline fl mgr5" id="trigger2" type="image">
+						<xf:label>전체 진행 이력 보기</xf:label>
+						<script ev:event="onclick" type="javascript">
+							<![CDATA[
+							fnShowMpHistory();
+						]]>
+						</script>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+			<xf:group id="gridGroup11" class="mgt5">
+
+
+				<xf:group id="gridArea111" style="" class="gridArea">
+					<w2:grid baseNode="map" repeatNode="vector/map" id="grid1" style="height:178px;" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn" class="grid01" hideHeader="" valueNode="value" readOnly="true" rowNumVisible="true" rowNumWidth="20" rowNumHeaderValue="NO" resize="" rowMouseOver="" scrollByColumn="" visibleRowNum="5" escape="" userData3="" overflowY="auto" editModeEvent="onclick">
+						<script ev:event="onCellClick(row,col)" type="javascript"><![CDATA[
+						
+						//WebSquare.uiplugin.popup.openPopup("", {popupUrl:"http://websquare.co.kr"});
+						WebSquare.uiplugin.popup.openPopup("gridView_editModeEvent_WPF-958_(WSQ-2267)_sub.xml", {});
+						
+						//	onCellClickMpDocList(row,col);
+						]]></script>
+						<w2:header id="header1" style="" class="gridHeaderTable" columnClass="gridHeaderTD">
+							<w2:row id="row1" style="">
+								<w2:column blockSelect="false" id="column3" inputType="text" width="130" value="문서번호" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column1" inputType="text" width="70" value="제출일자" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column5" inputType="text" width="50" value="MP열람" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column2" inputType="text" width="70" value="진행현황" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column13" inputType="text" width="70" value="진행일자" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column11" inputType="text" width="70" value="MP OPEN" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column9" inputType="text" width="70" value="제출문서" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column7" inputType="text" width="140" value="검토결과" colSpan="2" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column5" style="height:30px;" inputType="text" width="60" value="검증보고서"></w2:column>
+								<w2:column blockSelect="false" id="column9" style="height:30px" inputType="text" width="70" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column7" style="height:30px" inputType="text" width="70" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column14" inputType="text" width="60" value="MP OPEN" style="height:30px;"></w2:column>
+								<w2:column blockSelect="false" id="column16" inputType="text" width="70" value="MP OPEN" style="height:30px;" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column15" inputType="text" width="70" value="MP OPEN" style="height:30px;" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column17" inputType="text" width="70" value="MP OPEN" style="height:30px;" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column18" inputType="text" width="70" value="MP OPEN" style="height:30px;" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column19" inputType="text" width="70" value="MP OPEN" style="height:30px;" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column20" inputType="text" width="70" value="MP OPEN" style="height:30px;" hidden="true"></w2:column>
+								<w2:column blockSelect="false" id="column21" inputType="text" width="70" value="MP OPEN" style="height:30px;" hidden="true"></w2:column>
+							</w2:row>
+						</w2:header>
+						<w2:gBody id="gBody1" style="" class="gridBodyTable" columnClass="gridBodyTD">
+							<w2:row id="row2" style="">
+								<w2:column blockSelect="false" id="docSeqNm" inputType="text" width="120" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="mpAplSbmtDtm" width="60" inputType="text" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="mpView" inputType="text" width="60" displayFormatter="fn_viewAndReg" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="mpSbmtStatCdNm" inputType="text" width="60" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="modDtm" inputType="text" width="60" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="mpMenuOpenSttsCdNm" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="rqDocView" inputType="text" width="70" displayFormatter="fn_viewAndReg" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="rqRlsView" inputType="text" width="70" displayFormatter="fn_viewAndReg" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="attFileView" inputType="text" width="70" displayFormatter="fn_viewAndReg" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" id="veriView" style="height:27px" inputType="text" width="70" displayFormatter="fn_viewAndReg" textAlign="center" value="" displayFormat=""></w2:column>
+								<w2:column blockSelect="false" id="mpRewAttchFileId" style="height:27px" inputType="text" width="70"></w2:column>
+								<w2:column blockSelect="false" id="veriDocSeq" style="height:27px" inputType="text" width="70"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="mpSbmtStatCd" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="plPeri" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="mgEnpCd" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="modDocSeq" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="mpMenuOpenSttsCd" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="bfCheckDocYn" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="docSeq" inputType="text" width="70" textAlign="center" style="height:27px;"></w2:column>
+								<w2:column blockSelect="false" hidden="true" id="veri" inputType="text" width="70" textAlign="center" style="height:27px;" displayFormatter="fn_viewAndReg"></w2:column>
+							</w2:row>
+						</w2:gBody>
+					</w2:grid>
+				</xf:group>
+			</xf:group>
+			<xf:group class="clearfix mgt10" id="group11311">
+				<xf:group id="113111" class="fl">
+					<xf:trigger class="btn005 ieinline mgr5" id="btnApyUnable" type="image" style="display:none">
+						<xf:label>일시적 적용불가</xf:label>
+						<script ev:event="onclick" type="javascript">
+							<![CDATA[
+							fnOpenApyUnablRq();
+						]]>
+						</script>
+					</xf:trigger>
+				</xf:group>
+				<xf:group id="113110" class="fr">
+					<xf:trigger class="btn002 ieinline fl mgr5" id="btnBfCheck" type="image" style="display:none">
+						<xf:label>사전검토 신청서 작성</xf:label>
+						<script ev:event="onclick" type="javascript">
+							<![CDATA[
+							fnPopupOpen();
+						]]>
+						</script>
+					</xf:trigger>
+					<xf:trigger class="btn002 ieinline fl mgr5" id="btnMenuOpen" type="image" style="display:none">
+						<xf:label>MP 변경요청을 위한 메뉴 OPEN 요청</xf:label>
+						<script ev:event="onclick" type="javascript">
+							<![CDATA[
+							fnMpMenuOpenRq("N");
+						]]>
+						</script>
+					</xf:trigger>
+					<xf:trigger class="btn002 ieinline fl mgr5" id="btnAddMenuOpen" type="image" style="display:none">
+						<xf:label>MP추가변경을 위한 메뉴 OPEN요청</xf:label>
+						<script ev:event="onclick" type="javascript">
+							<![CDATA[
+							fnMpMenuOpenRq("Y");
+						]]>
+						</script>
+					</xf:trigger>
+					<xf:trigger class="btn004 ieinline fl mgr5" id="btnOpenRslt" type="image" style="display:none">
+						<xf:label>메뉴 OPEN결과</xf:label>
+						<script ev:event="onclick" type="javascript">
+							<![CDATA[
+							fnMpMenuOpenRq("X");
+						]]>
+						</script>
+					</xf:trigger>
+					<xf:trigger class="btn002 ieinline fl mgr5" id="btnChngRqDoc" type="image" style="display:none">
+						<xf:label>변경요청서 작성</xf:label>
+						<script ev:event="onclick" type="javascript">
+							<![CDATA[
+							fnModMpDocOpen();
+						]]>
+						</script>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+
+			<xf:group adaptiveThreshold="" class="titleGroup" id="group11312" style="">
+				<w2:textbox class="title" id="textbox2" label="모니터링 계획서 검증" tagname="h3"></w2:textbox>
+			</xf:group>
+			<xf:group id="gridGroup12" style="" class="gridArea">
+				<w2:grid id="veriMpDocGrd" baseNode="map" style="height:68px;" useShiftKey="true" fixedColumnWithHidden="true" repeatNode="map" autoFit="allColumn" class="grid03" visibleRowNum="1" valueNode="value" resize="" focusMode="row">
+					<w2:header id="header1" style="" class="gridHeaderTable" columnClass="gridHeaderTD">
+						<w2:row id="row1" style="">
+							<w2:column id="column9" blockSelect="false" style="height:30px;" width="70" inputType="text" value="검증기관"></w2:column>
+							<w2:column blockSelect="false" id="column16" style="height:30px;" inputType="text" width="70" value="MP열람기간"></w2:column>
+							<w2:column id="column7" blockSelect="false" style="height:30px;" width="40" inputType="text" value="대상년도"></w2:column>
+							<w2:column id="column5" blockSelect="false" style="height:30px;" width="50" inputType="text" value="검증보고서 요청일자"></w2:column>
+							<w2:column id="column3" blockSelect="false" style="height:30px;" width="70" inputType="text" value="모니터링계획서"></w2:column>
+							<w2:column id="column1" blockSelect="false" style="height:30px;" inputType="text" width="70" value="검증보고서"></w2:column>
+							<w2:column blockSelect="false" id="column558" style="height:30px;" inputType="text" width="70" value="MP열람시작일" hidden="true"></w2:column>
+							<w2:column blockSelect="false" id="column108" style="height:30px;" inputType="text" width="70" value="MP열람종료일" hidden="true"></w2:column>
+							<w2:column blockSelect="false" id="column289" style="height:30px;" inputType="text" width="70" value="검증기관코드" hidden="true"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1" style="" class="gridBodyTable" columnClass="gridBodyTD">
+						<w2:row id="row2" style="">
+							<w2:column id="corpNm" blockSelect="false" style="height:28px;" width="70" inputType="text" value="" readOnly="true"></w2:column>
+							<w2:column blockSelect="false" id="veriDt" style="height:28px;" inputType="text" width="70" value="" readOnly="true"></w2:column>
+							<w2:column id="pfYy" blockSelect="false" style="height:28px;" width="70" inputType="text" value="" readOnly="true"></w2:column>
+							<w2:column id="veriReqDt" blockSelect="false" style="height:28px;" width="70" inputType="text" value="" readOnly="true"></w2:column>
+							<w2:column id="docSeq" blockSelect="false" style="height:28px;" width="70" inputType="text" value="" readOnly="true"></w2:column>
+							<w2:column id="veriDocSeq" blockSelect="false" style="height:28px;" inputType="text" width="70" value="" readOnly="true"></w2:column>
+							<w2:column blockSelect="false" id="mpOpenBdt" style="height:28px" inputType="text" width="70"></w2:column>
+							<w2:column blockSelect="false" id="mpOpenEdt" style="height:28px" inputType="text" width="70"></w2:column>
+							<w2:column blockSelect="false" id="veriInstRgNo" style="height:26px" inputType="text" width="70"></w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:grid>
+			</xf:group>
+			<xf:group class="clearfix mgt10" id="group11313">
+				<xf:group id="group11315" class="fr">
+					<xf:trigger class="btn002 fl mgr5" id="trigger4" type="image">
+						<xf:label>검증기관 지정</xf:label>
+						<script ev:event="onclick" type="javascript"><![CDATA[
+							openVeriInstApp();
+						 ]]></script>
+					</xf:trigger>
+					<xf:trigger class="btn002 fl" id="trigger5" type="image">
+						<xf:label>검증보고서요청</xf:label>
+						<script ev:event="onclick" type="javascript"><![CDATA[
+							if(veriMpDocGrd.getRowCount()==0){
+								alert("지정된 검증기관이 없습니다.");return;
+							}
+							if(veriMpDocGrd.getCellData(0,"veriReqDt")!="-" && veriMpDocGrd.getCellData(0,"veriDocSeq")=="-"){
+								alert("이미 모니터링 계획서 검증이 요청 되었습니다.");return;
+							}
+
+							for(var i=0;i<grid1.getRowCount();i++){
+								if(grid1.getCellData(i,"mpSbmtStatCd") =="03"){
+									if(grid1.getCellData(i,"veriDocSeq")!=""){
+										alert("이미 검증이 완료된 상태입니다.\n문서번호 [ "+grid1.getCellData(i,"docSeq")+" ]의 검증보고서가 존재합니다.");
+										return;
+									}else{
+										break;
+									}
+								}
+								if(i==grid1.getRowCount()-1){
+									alert("문서번호 [ "+grid1.getCellData(i,"docSeq")+" ]\n신 모니터링 계획서의 진행상태가 검토완료가 아닙니다.");
+								}
+							}
+
+							openVeriMpDocRq();
+						 ]]></script>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+
+			<xf:group id="form1set" class="">
+
+				<xf:group id="form1">
+					<xf:group class="clearfix mgt10">
+						<w2:textbox id="output155" class="title fl" label="모니터링 계획 제출 확인" tagname="h3"></w2:textbox>
+						<w2:textbox id="output15555" class="fl spanTit" label="(문서번호 : )" tagname="span"></w2:textbox>
+						<xf:group class="fr mgt15" id="group2110">
+							<xf:select1 class="fl w200 mgr10" defaultStyle="text-align:center;vertical-align:middle" disabled="false"
+								displayMode="label" id="pobSeqList" submenuSize="auto" visibleRowNum="15" allOption="true" chooseOption="">
+								<script ev:event="onchange" type="javascript"><![CDATA[
+		    					]]></script>
+								<xf:choices>
+									<xf:itemset nodeset="pobSeqList/map/vector">
+										<xf:label ref="map/pobNm/@value"></xf:label>
+										<xf:value ref="map/pobSeq/@value"></xf:value>
+									</xf:itemset>
+								</xf:choices>
+							</xf:select1>
+							<xf:trigger class="btn005 small fl" id="group1099" type="image" style="">
+								<xf:label>보고서 출력</xf:label>
+								<script ev:event="onclick" type="javascript"><![CDATA[
+									rexpertOutPut();
+								 ]]></script>
+							</xf:trigger>
+						</xf:group>
+
+					</xf:group>
+
+					<xf:group class="gridArea mgt5 mgb20" id="group106" style="" tagname="">
+						<w2:grid baseNode="map" repeatNode="vector/map" id="grid2" style="height:625px" fixedColumnWithHidden="true"
+							useShiftKey="true" class="grid02" autoFit="allColumn" rowNumHeaderValue="" valueNode="value" visibleRowNum="21" overflowY="auto">
+							<script ev:event="onCellClick( row , col )" type="javascript">
+								<![CDATA[
+						    	onCellClick(row, col);
+						    ]]>
+							</script>
+							<w2:header id="header1" style="" columnClass="gridHeaderTD" class="gridHeaderTable">
+								<w2:row id="row1" style="">
+									<w2:column blockSelect="false" id="chk" inputType="checkbox" width="15" value="chk"
+										style="height:30px;">
+									</w2:column>
+									<w2:column blockSelect="false" id="column1" width="195" inputType="text" value="모니터링 계획 목차"
+										style="height:30px;">
+									</w2:column>
+									<w2:column blockSelect="false" id="column9" inputType="text" width="25" value="작성화면"
+										style="height:30px;">
+									</w2:column>
+									<w2:column blockSelect="false" id="column22" inputType="text" width="25" value="보고서"
+										style="height:30px;">
+									</w2:column>
+									<w2:column blockSelect="false" id="column23" inputType="text" width="25" style="height:30px;"
+										hidden="true">
+									</w2:column>
+									<w2:column blockSelect="false" id="column24" inputType="text" width="25" style="height:30px;"
+										hidden="true">
+									</w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody id="gBody1" style="" columnClass="gridBodyTD" class="gridBodyTable">
+								<w2:row id="row2" style="">
+									<w2:column blockSelect="false" id="chk" inputType="checkbox" width="30" readOnly="false"></w2:column>
+									<w2:column blockSelect="false" id="itgDtsCdNm" width="170" inputType="text" textAlign="left"
+										readOnly="true">
+									</w2:column>
+									<w2:column blockSelect="false" id="mgAtc1Nm" inputType="text" width="40"
+										displayFormatter="mgAtc1NmFunction" textAlign="center" readOnly="true">
+									</w2:column>
+									<w2:column blockSelect="false" id="mgAtc2Nm" inputType="text" width="40"
+										displayFormatter="printFunction" textAlign="center" readOnly="true">
+									</w2:column>
+									<w2:column blockSelect="false" id="stat" hidden="true" width="170" inputType="text"
+										textAlign="center">
+									</w2:column>
+									<w2:column blockSelect="false" id="itgDtsCd" hidden="true" width="170" inputType="text"
+										textAlign="center">
+									</w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:grid>
+					</xf:group>
+				</xf:group>
+				<!-- <xf:group class="btnAreaR clearfix" id="group107">
+					<xf:group class="btnAreaR fl" id="group108">
+					<xf:group class="btn_img" id="group109" tagname="a">
+					<w2:attributes>
+					<w2:href>javascript:return;</w2:href>
+					</w2:attributes>
+					<xf:image alt="보고서출력" id="image5" src="/images/button/btn_bogo_print.gif">
+					<script ev:event="onclick" type="javascript"><![CDATA[
+					rexpertOutPut();
+					]]></script>
+					</xf:image>
+					</xf:group>
+					</xf:group>
+					</xf:group> -->
+			</xf:group>
+
+
+
+
+		</xf:group>
+	</body>
+</html>

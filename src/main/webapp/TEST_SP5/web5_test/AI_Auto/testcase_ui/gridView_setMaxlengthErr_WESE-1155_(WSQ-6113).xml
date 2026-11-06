@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+              <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true" keepDataType="true">
+                <w2:columnInfo>
+                  <w2:column id="col1" name="name1" dataType="number"></w2:column>
+                  <w2:column id="col2" name="name2" dataType="number"></w2:column>
+                </w2:columnInfo>
+                <w2:data use="true">
+                  <w2:row>
+                    <col1><![CDATA[]]></col1>
+                    <col2><![CDATA[]]></col2>
+                  </w2:row>
+                  <w2:row>
+                    <col1><![CDATA[123.12]]></col1>
+                    <col2><![CDATA[0]]></col2>
+                  </w2:row>
+                </w2:data>
+              </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    //use data나 setJSON으로 넣으면 string타입으로 출력
+    //스크립트에서 데이터 직접 추가 시 number타입으로 출력
+    dataList1.setCellData(0, "col1", 12345678.12)
+   // dataList1.setCellData(0, "col2", 123456789.12)
+
+   // debugger;
+    //console.log(dataList1.getFilteredColData('col1'));
+    gridView2.setMaxLength("col1", "9.2");
+    input1.setMaxLength("9.2");
+	//gridView2.changeCurrency("col1", "euro",  "#.###,00");
+    gridView2.changeCurrency({
+      'colID': "col1",
+      'type': "euro",
+      'format': "#.###,00",
+      'customModelFormatter': "scwin.euroCustomModelFormatter",
+      'customModelUnformatter': "scwin.euroCustomModelUnformatter"
+    });
+    //gridView2.changeCurrency("col2", "tenge", "# ###-00")
+    gridView2.changeCurrency({
+      'colID': "col2",
+      'type': "tenge",
+      'format': "# ###,00",
+      'customModelFormatter': "scwin.tengeCustomModelFormatter",
+      'customModelUnformatter': "scwin.tengeCustomModelUnformatter"
+    });
+
+    //getCellData에서 string 타입으로 리턴(실데이터는 number)
+    console.log(parseFloat(dataList1.getCellData(0,"col1"))+parseFloat(dataList1.getCellData(1,"col1"))) // 연산 결과 확인
+
+   console.log(dataList1.getCellData(0,"col1")+dataList1.getCellData(1,"col1")) // 연산 결과 확인
+
+};
+
+ scwin.euroCustomModelFormatter = function(realData, formattedData) {
+  realData = realData + "";
+  return realData.replace(",", ".");
+};
+scwin.euroCustomModelUnformatter = function(realData, formattedData) {
+  realData = realData + "";
+  return realData.replace(".", ",");
+};
+scwin.tengeCustomModelFormatter = function(realData, formattedData) {
+  realData = realData + "";
+  return realData.replace(",", ".");
+};
+scwin.tengeCustomModelUnformatter = function(realData, formattedData) {
+  realData = realData + "";
+  return realData.replace(".", ",");
+}; 
+
+ ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+      <w2:gridView id="gridView2" style="width: 500px;height: 150px;" checkAllType="false" scrollByColumn="false" defaultCellHeight="20"
+        scrollByColumnAdaptive="false" dataList="data:dataList1">
+        <w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+        <w2:header style="" id="header1">
+          <w2:row style="" id="row1">
+            <w2:column width="226" inputType="text" style="" id="column1" value="name1" displayMode="label"></w2:column>
+            <w2:column width="226" inputType="text" style="" id="column2" value="name2" displayMode="label"></w2:column>
+          </w2:row>
+        </w2:header>
+        <w2:gBody style="" id="gBody1">
+          <w2:row style="" id="row2">
+            <w2:column width="226" inputType="text" applyFormat="all" style="" id="col1" value="" displayMode="label"></w2:column>
+            <w2:column width="226" inputType="text" applyFormat="all" style="" id="col2" value="" displayMode="label"></w2:column>
+          </w2:row>
+        </w2:gBody>
+      </w2:gridView>
+      <xf:input adjustMaxLength="false" id="input1" style="width: 144px;height: 21px;" dataType="euro" euroMask="#.###,00" applyFormat="all"></xf:input>
+    </body>
+</html>

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+	<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="category1" name="category1" dataType="number"></w2:column>
+						<w2:column id="category2" name="category2" dataType="number"></w2:column>
+						<w2:column id="category3" name="category3" dataType="number"></w2:column>
+						<w2:column id="category4" name="category4" dataType="number"></w2:column>
+						<w2:column id="category5" name="category5" dataType="number"></w2:column>
+						<w2:column id="category6" name="category6" dataType="number"></w2:column>
+						<w2:column id="category7" name="category7" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.grid1_ongroupby = function(options) {
+    return false;
+};
+scwin.grid1_groupbyFilterBoxFormatter = function(data) {
+    var label = "";
+    var labelArr = [];
+    for (var i = 0; i < data.length; i++) {
+        var s_label = "";
+        var obj = data[i];
+        var header = obj.header;
+        var filter = obj.filter;
+        for (var j = 0; j < filter.length; j++) {
+            if (filter[j].gate)
+                s_label = s_label + " " + filter[j].gate + " ";
+            var values = filter[j].values;
+            if (values.join)
+                values = "[" + values.join(" ,") + "]";
+            s_label = s_label + filter[j].operator + " " + values;
+        }
+        s_label = "(" + header + " " + s_label + ")";
+        labelArr.push(s_label);
+    }
+    label = labelArr.join(" & ");
+    return label;
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#grid1_header_category1', 'drag-n-drop', {
+        dx: -100,
+        dy: -50
+    });
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById('grid1_groupbyZone_list_items_main').querySelectorAll('div')[2].innerText == '0';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getJq($('.w2grid_groupbyZone_list_listRow')[2]).find('input')[0].click();
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_groupbyZone_div').childElementCount > 0", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_labelDiv')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //WebSquare.wUnit.addCommand("set", "scwin.checkVal2()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_1_0').innerText != '0'", "true");
+	
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.arr = [];
+    for (window.i = 0; i < 500; i++) {
+        for (window.j = 0; j < 7; j++) {
+            //	arr.push( Math.floor( (Math.random() * (30 - 1 + 1)) + 1) );
+            arr.push(Math.floor(Math.sqrt(i) * Math.sqrt(i)) % (Math.ceil(Math.sqrt(i)) + 1));
+        }
+    }
+    /*
+    window.arr = [];
+    arr.push( 1 );
+    arr.push( 2 );
+    arr.push( 3 );
+    arr.push( 4 );
+    arr.push( 5 );
+    arr.push( 6 );
+    arr.push( 7 );
+    arr.push( 8 );
+    arr.push( 9 );
+    arr.push( 10 );
+    arr.push( 11 );
+    arr.push( 12 );
+    arr.push( 13 );
+    arr.push( 14 );
+    */
+    dataList1.setData(arr);
+    input1.setValue(" [ 0, 1, 2] ");
+    input2.setValue(" [ 1, 0, 1] ");
+    input3.setValue(" { inputType:'expression', expression: 'toggle()+depthStr()+\"    [ \"+count()+\" 건 ]\"', align: 'left', colSpan:9} ");
+    input4.setValue("");
+    input5.setValue("");
+    input6.setValue(" {colSpan:7} ");
+    input7.setValue(" {hidden:true} ");
+    input8.setValue(' {"category1":["1","2","3"], "category2":["1","2","3"]} ');
+    input9.setValue(" [ {value:'합계'}, {inputType:'expression', expression:'SUM(\"category7\")'} ] ");
+    // data: @type:array, @desc: groupby filterbox 에 추가되는 filter 정보를 담고 있다.
+    // | header: @type:string, @desc: filter 대상이 되는 열의 헤더 label
+    // | filter: @type:array, @desc: filter 조건을 포함
+    // | | operator: @type:string, @desc: filter 연산자
+    // | | values: @type:object, @desc: filter 비교값 - 대상이 다수일 경우에는 array 형태로 제공
+    // | | gate: @type:string, @desc: filter 접속어 [undefiend, and, or]
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 03-Apr-2018
+    //end
+}
+]]></script>
+		<style type="text/css">
+			.w2grid_groupby_depth_2{
+				background-color: #ffffad;
+			}
+			.w2grid_groupby_depth_3{
+				background-color: #affffff;
+			}
+			.aaa{
+				background-color: red;
+			}
+		</style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" baseNode="vector" repeatNode="data/INFO" id="grid1" rowNumVisible="true" rowStatusVisible="true"
+			style="position: absolute ;left:50px;top:40px;width: 693px;height: 700px;border: 1px solid black;"
+			columnMove="false" columnOrder="0,1,2,3,4,5,6,7,8,9" groupbyZone="true" ev:ongroupby="scwin.grid1_ongroupby" groupbyFilterBox="true" groupbyFilterBoxLocation="top" 
+			groupbyFilterBoxFormatter="scwin.grid1_groupbyFilterBoxFormatter"  sortable="true" useFilterList="true" autoFit="" customFilterBox = "false" useFilterEmptyValue = "">
+			<w2:header id="header1" style="" useFilterList="true"  >
+				<w2:row id="row1" style="">
+					<w2:column id="header_category1" style="height:20px" inputType="text" width="50" value="category1" useFilter="true"></w2:column>
+					<w2:column id="header_category2" style="height:20px" inputType="text" width="50" value="category2" useFilter="true"></w2:column>
+					<w2:column id="header_category3" style="height:20px" inputType="text" width="100" value="category3" useFilter="true"></w2:column>
+					<w2:column id="header_category4" style="height:20px" inputType="text" width="150" value="category4" useFilter="true"></w2:column>
+					<w2:column id="header_category5" style="height:20px" inputType="text" width="100" value="category5" useFilter="true"></w2:column>
+					<w2:column id="header_category6" style="height:20px" inputType="text" width="100" value="category6" useFilter="true"></w2:column>
+					<w2:column id="header_category7" style="height:20px" width="100" inputType="text" value="category7" useFilter="true"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="category1" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category2" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category3" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category4" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category5" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category6" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="category7" style="height:20px" width="70" inputType="select" allOption="" chooseOption="">
+						<w2:choices>
+							<w2:item>
+								<w2:label><![CDATA[a]]></w2:label>
+								<w2:value><![CDATA[a]]></w2:value>
+							</w2:item>
+							<w2:item>
+								<w2:label><![CDATA[b]]></w2:label>
+								<w2:value><![CDATA[b]]></w2:value>
+							</w2:item>
+							<w2:item>
+								<w2:label><![CDATA[c]]></w2:label>
+								<w2:value><![CDATA[c]]></w2:value>
+							</w2:item>
+						</w2:choices>
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column id="footer_category1" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category2" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category3" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category4" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category5" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category6" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="footer_category7" style="height:20px" width="70" inputType="expression" expression="SUM('category7')">
+					</w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+		<xf:group id="group1" style="position:absolute;top:165px;left:785px;width:738px;height:391px;">
+			<w2:textbox id="textbox1"
+				label="grid1.groupby({&lt;br&gt;&lt;br&gt; &amp;nbsp; &amp;nbsp;sortIndex:&lt;br&gt; &amp;nbsp; &amp;nbsp;, sortOrder:&lt;br&gt;&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowNumHeader:&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowStatusHeader:&lt;br&gt; &amp;nbsp; &amp;nbsp;, groupbyHeader:&lt;br&gt;&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowNumFooter:&lt;br&gt; &amp;nbsp; &amp;nbsp;, rowStatusFooter:&lt;br&gt; &amp;nbsp; &amp;nbsp;, filter:&lt;br&gt; &amp;nbsp; &amp;nbsp;, groupbyFooter:&lt;br&gt;&lt;br&gt; &amp;nbsp; })"
+				style="position: absolute ;left:0px;top:5px;width:736px;height:389px;font-weight: bold;font-size: 20px;border: 1px solid black;">
+			</w2:textbox>
+			<xf:trigger id="trigger1" style="position: absolute ;left:575px;top:366px;width: 150px;height: 20px;" type="button">
+				<xf:label>run</xf:label>
+				<script ev:event="onclick" type="javascript"><![CDATA[
+				debugger;
+				var sortOrder = (input1.getValue().length!=0?input1.getValue():"[]");
+				var sortIndex = (input2.getValue().length!=0?input2.getValue():"[]");
+				var rowNumHeader = (input3.getValue().length!=0?input3.getValue():"{}");
+				var rowStatusHeader = (input4.getValue().length!=0?input4.getValue():"{}");
+				var groupbyHeader = (input5.getValue().length!=0?input5.getValue():"[]");
+				var rowNumFooter = (input6.getValue().length!=0?input6.getValue():"{}");
+				var rowStatusFooter = (input7.getValue().length!=0?input7.getValue():"{}");
+				var filter = (input8.getValue().length!=0?input8.getValue():"{}");
+			
+				var groupbyFooter = (input9.getValue().length!=0?input9.getValue():"[]");
+				
+				var groupbyFunctionStr = textbox1.getValue();
+				var groupbyFunctionArr = groupbyFunctionStr.replaceAll("&nbsp;","").replaceAll("<br>","").replaceAll('"',"'").split(":");
+				var dm = ":";
+				
+				groupbyFunctionStr =  
+					groupbyFunctionArr[0] + dm + sortOrder + 
+					groupbyFunctionArr[1] + dm + sortIndex +
+					groupbyFunctionArr[2] + dm + rowNumHeader +
+					groupbyFunctionArr[3] + dm + rowStatusHeader +
+					groupbyFunctionArr[4] + dm + groupbyHeader +
+					groupbyFunctionArr[5] + dm + rowNumFooter +
+					groupbyFunctionArr[6] + dm + rowStatusFooter +
+					groupbyFunctionArr[7] + dm + filter +
+					groupbyFunctionArr[8] + dm + groupbyFooter +
+					groupbyFunctionArr[9];
+					eval(groupbyFunctionStr);
+				
+				
+			 ]]></script>
+			</xf:trigger>
+			<xf:input id="input1" placeholder="sortIndex" style="position: absolute ;height:15px;width:520px;left:206px;top:60px;">
+			</xf:input>
+			<xf:input id="input2" placeholder="sortOrder" style="position: absolute ;height:15px;width:520px;left:206px;top:84px;">
+			</xf:input>
+			<xf:input id="input3" placeholder="rowNumHeader" style="position: absolute ;height:15px;width:520px;left:206px;top:125px;">
+			</xf:input>
+			<xf:input id="input4" placeholder="rowStatusHeader" style="position: absolute ;height:15px;width:520px;left:206px;top:146px;">
+			</xf:input>
+			<xf:input id="input5" placeholder="groupbyHeader" style="position: absolute ;height:15px;width:520px;left:206px;top:168px;">
+			</xf:input>
+			<xf:input id="input6" placeholder="rowStatusFooter "
+				style="position: absolute ;height:15px;width:520px;left:206px;top:215px;">
+			</xf:input>
+			<xf:input id="input7" placeholder="rowNumFooter" style="position: absolute ;height:15px;width:520px;left:206px;top:239px;">
+			</xf:input>
+			<xf:input id="input8" placeholder="filter" style="position: absolute ;height:15px;width:520px;left:206px;top:262px;">
+			</xf:input>
+			<xf:input id="input9" placeholder="groupbyFooter" style="position: absolute ;height:15px;width:520px;left:206px;top:285px;">
+			</xf:input>
+		</xf:group>
+		<xf:trigger type="button" id="trigger2" style="position: absolute ;left: 778px;top: 100px;width: 123px;height: 42px;">
+			<xf:label>excel down</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[ 
+			
+				var infoArr = [];
+				var options = {};
+				var infoObj = {};
+				
+				// 엑셀 다운로드 기본 옵션 설정
+				options.fileName         = "excel.xlsx";
+				options.type             =  "1";
+				options.startRowIndex    = 0;
+				options.startColumnIndex = 0;
+				//options.headerColor      = "#DBEEF3";
+				//options.footerColor      = "#92CDDC";
+				options.groupby = "true";
+				options.useFooter = true;
+				options.headerColor = "#123455";
+		   		
+				grid1.advancedExcelDownload(options, infoArr);
+			
+			]]></script>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger3" style="position: absolute ;left: 777px;top: 48px;width: 110px;height: 35px;">
+			<xf:label></xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[ 
+			
+				alert( grid1.getCellData( 0, 0 ) );
+			]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    // validate Ctrl + C
+    isCopyValid = input1.validator.validateKeyPress(input1, input1.getValue(), {
+        metaKey: true,
+        charCode: 67
+    });
+};
+scwin.trigger4_onclick = function(e) {
+    // validate Ctrl + V
+    isPasteValid = input1.validator.validateKeyPress(input1, input1.getValue(), {
+        metaKey: true,
+        charCode: 86
+    });
+};
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input1').setValue('123')");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("assert", "isCopyValid", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("assert", "isPasteValid", "true");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.isCopyValid = false;
+    window.isPasteValid = false;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:input id="input1" style="width: 144px;height: 21px;" allowChar="0-9" dataType="number" ref="data:dataMap1.key1"></xf:input>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width: 80px;height: 23px;left:152px;top:27px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[Ctrl+C]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger4" style="position: absolute;width: 80px;height: 23px;left:234px;top:27px;"
+    		ev:onclick="scwin.trigger4_onclick" type="button">
+    		<xf:label><![CDATA[Ctrl+V]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

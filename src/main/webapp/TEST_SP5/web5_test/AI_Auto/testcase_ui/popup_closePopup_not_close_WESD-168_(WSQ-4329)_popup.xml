@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" src="/sample2/test.js" />
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    //if(WebSquare._xv !== "SP5"){requires("uiplugin.popup");} //팝업을 사용하기 위해 반드시 포함되어야 한다.
+    var jsonData = [{
+        "col1": 1234,
+        "col2": "aaaa"
+    }, {
+        "col1": 5678,
+        "col2": "bbbb"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.popup_callbackFn = function(e) {
+    console.log("callback Function");
+    alert("팝업 closeAction 함수");
+    return true;
+}
+scwin.trigger1_onclick = function(e) {
+    console.log("trigger1_onclick: ", e);
+    console.log(e.target.offsetTop, e.target.offsetLeft, e.clientX, e.clientY);
+    //var url="./openPopup_gridView.xml";
+    //var url="./openPopup_upload.xml";
+    //      var url="/bangsa/gridView_subTotal_footer_2.xml";
+    var url = "popup_closePopup_not_close_WESD-168_(WSQ-4329)_popup.xml";
+    // var url="/WebSquare10.xml";
+    var jsonObj = dataList1.getAllJSON();
+    var dataObj = {
+        type: "json",
+        data: {
+            fileName: "file.mrd",
+            parent_dataList: jsonObj,
+            callbackFn: "scwin.popup_callbackFn"
+        },
+        name: "paramObj"
+    };
+    var options = {
+        id: "popup1"
+            // , type: "wframePopup"
+            ,
+        type: "browserPopup",
+        width: "300px",
+        height: "445px",
+        top: e.target.offsetTop + 20,
+        left: e.target.offsetLeft + e.target.offsetWidth + 20
+            //, useIframe: false
+            ,
+        dataObject: dataObj
+            // , modal: true
+            // , useModalStack: true
+            ,
+        useATagBtn: true,
+        alwaysOnTop: true
+        // , useModalDisable: true  // modal true 시 부모영역 컴포넌트 disabled 처리 유무
+        // , closeAction: "scwin.popup_callbackFn"
+    };
+    //debugger;
+    $p.openPopup(url, options, dataObj);
+    var _top = e.target.offsetTop + 20;
+    var _left = e.target.offsetLeft + e.target.offsetWidth + 20;
+    var url1 = "/WebSquare10.xml"
+    var _url = "/websquare/popup.html?w2xPath=" + url1 + "&popupID=" + "popup1";
+    // window.open(_url, "_blank", "width=247px,height=245px,top="+_top+",left="+_left);
+};
+scwin.trigger2_onclick = function(e) {
+    console.log("trigger2 onclick");
+    var popObj = $p.getPopupWindow("popup1");
+    if (popObj) popObj.document.title = "변경된 팝업 타이틀";
+};
+scwin.trigger2_onmousedown = function(e) {
+    console.log("trigger2 onmousedown");
+};
+scwin.callSyncXHR = function() {
+    console.log("callSyncXHR");
+    var resText;
+    var xhr = new XMLHttpRequest(),
+        method = "POST",
+        url = "/list.json";
+    xhr.open(method, url, false);
+    xhr.onreadystatechange = function() {
+        console.log('xhr.readyState', xhr.readyState);
+        if (xhr.readyState > 2) {
+            //newTextReceived = xhr.responseText.substring(lastSize);  
+            //lastSize = xhr.responseText.length;  
+            //callback(newTextReceived);
+        }
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert("okokokokook");
+            console.log(xhr.responseText);
+            xhr.responseText.substring(resText);
+        }
+    };
+    console.log("asdfasdfasdf" + 123);
+    //        setTimeout(function(){
+    xhr.send();
+    //        }, 1);
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+        <style type="text/css"><![CDATA[ 
+            /* wframe팝업 드래그 못하게 하는 방법은 없음. 아래와 같은 css를 사용해서 팝업의 헤더를 날려야함. */
+            /*.w2window_header {
+                visibility: hidden;
+                display:none;
+            }
+            .w2window_body {
+                top:2px;
+            }*/
+        
+        ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:trigger type="button" id="trigger1" style="position: relative;width:196px;height:203px;margin-left:80px;margin-top:70px;"
+            ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[openPopup]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="trigger2" style="position: relative;width:347px;height:391px;left:172px;top:-45px;" ev:onclick="scwin.trigger2_onclick" ev:onmousedown="scwin.trigger2_onmousedown">
+            <xf:label><![CDATA[asdadsfasdfasdf]]></xf:label>
+        </xf:trigger>
+    </body>
+</html>
+ 

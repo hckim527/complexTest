@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="chk" name="checkbox" dataType="text"></w2:column>
+            			<w2:column id="col1" name="A" dataType="text"></w2:column>
+            			<w2:column id="col2" name="B" dataType="text"></w2:column>
+            			<w2:column id="col3" name="C" dataType="text"></w2:column>
+            			<w2:column id="col4" name="U1" dataType="text"></w2:column>
+            			<w2:column id="col5" name="U2" dataType="text"></w2:column>
+            			<w2:column id="col6" name="U3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList3" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.searchConfig = {};
+	scwin.onpageload = function() {
+		var data = [];
+		var cnt = 100;
+		for (var i = 0; i < cnt; i++) {
+			data.push((i%2)+"");
+			data.push("A" + (i % 10));
+			data.push("B" + (3 - (i % 3)));
+			data.push("C" + ((i + 3) % 7));
+			if (i % 2) {
+				data.push("T");
+			} else {
+				data.push("F");
+			}
+			if (i < (cnt / 3)) {
+				data.push("###");
+			} else if (i < (cnt * 2 / 3)) {
+				data.push("$$$");
+			} else {
+				data.push("@@@");
+			}
+			data.push(Math.floor(Math.sqrt(i)));
+		}
+		dataList1.setData(data);
+		var data2 = ["chk","chk","A","col1","B","col2","C","col3","U1","col4","U2","col5","U3","col6"];
+		dataList2.setData(data2);
+		checkbox1.setValue("col1 col2 col3 col4 col5 col6");
+		var data3 = [];
+		var data4 = [];
+		for (var i = 0; i < 10; i++) {
+			data3.push("A" + i);
+			data3.push("A" + i);
+			data4.push("A" + i);
+		}
+		dataList3.setData(data3);
+		checkbox2.setValue(data4.join(" "));
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	scwin.gridView1_ongroupby = function(options) {
+		options.groupbyHeader = [
+			{inputType:"expression", expression:"toggle()+depthStr()"}
+		];
+		options.hideFooter = true;
+		gridView1.groupby(options);
+	}
+	
+	
+	scwin.trigger1_onclick = function(e) {
+		var data = input1.getValue();
+		if (data === "") {
+			gridView1.clearSearchData();
+		} else {
+			scwin.searchConfig.data = data;
+			scwin.searchConfig.column = checkbox1.getValue(",");
+			gridView1.searchData(scwin.searchConfig);
+		}
+	};
+	
+	scwin.trigger2_onclick = function(e) {
+		scwin.searchConfig = {};
+	};
+	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('gridView1_groupbyZone_searchinput').style.display == 'block';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_groupbyZone_searchbtn').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()		
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="">
+    		<w2:gridView ev:ongroupby="scwin.gridView1_ongroupby" scrollByColumnAdaptive="false" groupbyZone="true" rowNumVisible=""
+    			dataList="data:dataList1" style="width:800px;height:353px;" scrollByColumn="false" id="gridView1" autoFit="allColumn"
+    			closeGroup="true" defaultCellHeight="20" groupbyZoneSearch="true">
+    			<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    			<w2:header style="" id="header1">
+    				<w2:row style="" id="row1">
+    					<w2:column width="70" inputType="checkbox" style="height:20px" id="column7" value="checkbox" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="column6" value="A" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="column5" value="B" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="column4" value="C" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="column3" value="U1" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="column2" value="U2" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="column1" value="U3" displayMode="label"></w2:column>
+    				</w2:row>
+    			</w2:header>
+    			<w2:gBody style="" id="gBody1">
+    				<w2:row style="" id="row2">
+    					<w2:column width="70" inputType="checkbox" style="height:20px" id="chk" value="" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="col3" value="" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="col4" value="" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="col5" value="" displayMode="label"></w2:column>
+    					<w2:column width="70" inputType="text" style="height:20px" id="col6" value="" displayMode="label"></w2:column>
+    				</w2:row>
+    			</w2:gBody>
+    		</w2:gridView>
+    	</xf:group>
+    	<xf:group id="grp_searchConfig" style="display:none;">
+    		<w2:textbox id="" label="searchConfig" style="position:relative;width:279px;height:40px;font-size:30px;"></w2:textbox>
+
+    		<xf:group id="">
+    			<w2:textbox style="position:relative;width:107px;height:20px;font-size:20px;" id="" label="targetColumn"></w2:textbox>
+    			<xf:select ref="" appearance="full" style="position:relative;width:539px;height:55px;" id="checkbox1" selectedindex="-1"
+    				rows="" cols="7">
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dataList2">
+    						<xf:label ref="label"></xf:label>
+    						<xf:value ref="value"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:select>
+    		</xf:group>
+    		<xf:group id="" style="">
+    			<w2:textbox id="" label="targetGroup(미구현)" style="position:relative;width:227px;height:20px;font-size:20px;"></w2:textbox>
+    			<xf:select appearance="full" cols="5" id="checkbox2" ref="" rows="" selectedindex="-1"
+    				style="position:relative;width:539px;height:55px;">
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dataList3">
+    						<xf:label ref="label"></xf:label>
+    						<xf:value ref="value"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:select>
+    		</xf:group>
+    	</xf:group>
+    	
+    </body>
+</html>

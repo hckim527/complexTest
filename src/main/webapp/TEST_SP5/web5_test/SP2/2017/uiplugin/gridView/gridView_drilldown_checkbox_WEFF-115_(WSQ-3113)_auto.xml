@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<root>
+                		<ui>
+                			<vector>
+                				<vector_row>
+                					<col1>false</col1>
+	                				<col2>1111</col2>
+	                				<col3>1</col3>
+                				</vector_row>
+                				<vector_row>
+                					<col1>false</col1>
+	                				<col2>2222</col2>
+	                				<col3>2</col3>
+                				</vector_row>
+                				<vector_row>
+                					<col1>false</col1>
+	                				<col2>3333</col2>
+	                				<col3>2</col3>
+                				</vector_row>
+                				<vector_row>
+                					<col1>false</col1>
+	                				<col2>4444</col2>
+	                				<col3>1</col3>
+                				</vector_row>
+                				<vector_row>
+                					<col1>false</col1>
+	                				<col2>5555</col2>
+	                				<col3>2</col3>
+                				</vector_row>
+                			</vector>
+                		</ui>
+                	</root>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    grid1.setCellData(1, 1, "test data!!!");
+};
+scwin.trigger2_onclick = function(e) {
+    alert(grid1.getCellData(1, 1));
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플 실행 후 2번째 row의 checkbox를 클릭 후 '4444'값의 +기호를 클릭하여 drilldown한다.
+    //1. After running the sample, click on the checkbox in the second row and then drill down by clicking the + sign of the '4444' value.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_1_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_plus')[1].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 2번째 row에 체크된 checkbox가 유지되어 보여진다.
+    //1. The checked checkbox in the second row is maintained and shown.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_1_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 그다음 상단의 '1111'값의 +기호를 클릭한다.
+    //2. Then click the + sign of the '1111' value at the top.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_plus')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 4번째 row에 체크된 checkbox가 유지되어 보여진다. (이전에는 1111값 하위의 2222값에 checkbox가 체크되어 보여짐)
+    //2. The checked checkbox in the fourth row is maintained and shown. (Previously, the checkbox was checked in the value 2222 below the value 1111)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_3_0').childNodes[0].checked", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 23-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid ref="root/ui/vector" baseNode="vector" repeatNode="vector_row" id="grid1" style="width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="checkbox" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="drilldown" width="120" value="" displayMode="label" depthType="div" depthColumn="col3" showDepth="1"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setCellData]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[getCellData]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html> 

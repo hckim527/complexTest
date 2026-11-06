@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true" ev:onbeforerowpositionchange="scwin.dataList1_onbeforerowpositionchange">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="체크박스" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var arr = [1, "가", "인천", "한국",
+        0, "나", "인천", "한국",
+        0, "다", "서울", "한국",
+        1, "라", "뉴욕", "미국"
+    ];
+    dataList1.setData(arr, "append");
+};
+scwin.trigger1_onclick = function(e) {
+    var options = {
+        fileName: "test_maxCellCount.xlsx",
+        sheetName: "sheet1",
+        type: "1",
+        //showProcess : false, //다운로드 시 프로세스 창을 보여줄지 여부 (true:보임)
+        //showConfirm : true, //다운로드 확인창을 띄울지 여부 (false:미확인)
+        useHeaderCheckBoxLabel: true, //사용가능하게 수정됨 20190621엔진
+        //useHeaderCheckBoxLabel : "true", //사용가능하게 수정됨 20190621엔진
+        useStyle: "true" //화면의 그리드 스타일을 엑셀파일로 내려받음
+    };
+    gridView1.advancedExcelDownload(options);
+};
+scwin.dataList1_onbeforerowpositionchange = function(info) {
+    console.log("=================");
+    console.log(info.oldRowIndex + " -> " + info.newRowIndex);
+    var temp2 = temp++;
+    localStorage.setItem("log", temp2);
+    //console.log(1111+ " - > " +temp2);		
+    if (dataList1.getRowJSON(info.oldRowIndex).col2 == "ERROR") {
+        //alert("aaa");
+        return false;
+    };
+};
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#gridView1_cell_0_1_text', 'key-sequence', {
+        sequence: 'ERROR'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#gridView1_cell_0_1_text', 'key-combo', {
+        combo: 'DEL'
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col2').value = ''");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col2').value = 'ERROR'");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_2').click()");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_1_0').children[1].click()");
+    WebSquare.wUnit.addCommand("pause", "300");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "300");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.temp = 0;
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" fixedColumnWithHidden="true" id="gridView1" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		keyMoveEditMode="true" rowNumVisible="" scrollByColumn="false" sortable="true"
+    		style="position: relative ;left:21px;top:22px;width:529px;height:139px;" useShiftKey="true" senseReader="false">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" checkboxlabel="체크박스AA" displayMode="label" id="column11" inputType="checkbox"
+    					style="height:20px" width="153" checkboxLabel="" checkboxLabelColumn="" value="체크박스">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column9" inputType="radio" style="height:20px" value="name1"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px" value="name2"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px" value="name3"
+    					width="70">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="col1" inputType="checkbox" style="height:20px" width="153" checkboxLabel="테스트"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col4" inputType="text" style="height:20px" width="70" displayFormat=""></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger ev:onclick="scwin.trigger1_onclick" id="trigger1" style="position: absolute ;left:40px;top:198px;width: 176px;height: 56px;"
+    		type="button">
+    		<xf:label><![CDATA[엑셀다운로드]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

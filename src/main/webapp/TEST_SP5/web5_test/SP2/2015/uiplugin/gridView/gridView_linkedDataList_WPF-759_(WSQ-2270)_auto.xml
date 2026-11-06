@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="false"></w2:data>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+            		<w2:condition type="filter"><![CDATA[val('selectbox1') == col1]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            	<w2:linkedDataList bind="dataList1" id="linkedDataList1_1" style="">
+            		<w2:condition type="filter"><![CDATA[col1 == val('selectbox1')]]></w2:condition>
+            		<w2:condition type="sort"></w2:condition>
+            	</w2:linkedDataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="false"></w2:data>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList2" bind="dataList2">
+            		<w2:condition type="filter"><![CDATA[val('selectbox2') == col('col1')]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            	<w2:linkedDataList bind="dataList2" id="linkedDataList2_1" style="">
+            		<w2:condition type="filter"><![CDATA[col1 == val('selectbox2') ]]></w2:condition>
+            		<w2:condition type="sort"></w2:condition>
+            	</w2:linkedDataList>
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger2_onclick = function(e) {
+    alert(dataMap1.get("key1"));
+};
+scwin.checkVal1 = function() {
+    return linkedDataList1_1.getCellData(0, 0) == selectbox1.getText();
+}
+scwin.checkVal2 = function() {
+    return linkedDataList2_1.getCellData(0, 0) == selectbox2.getText();
+}
+scwin.unitTest = function() {
+    // debugger;
+    // Init test
+    WebSquare.wUnit.start();
+    // Test step 1: 1. Sorce 탭에서 linkedDataList filter 조건을 val("selectbox1") == col("col") 인지 확인한다.
+    // 1. In the Sorce tab, verify that the linkedDataList filter condition is val ("selectbox1") == col ("col").
+    // Verify 1: 1. val("selectbox1") == col("col")
+    // 1. val ("selectbox1") == col ("col")
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Test step 2: 2. datalist1 를 편집한다. - 2. Edit datalist1.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').setCellData(0,1,'abc')");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').setCellData(1,1,'def')");
+    // Verify 2: 2. 가운데 오작동부분에 데이터가 갱신된다. - 2. Data is updated in the middle malfunction part.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('linkedDataList1').getCellData(0,1)", "abc");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('linkedDataList1').getCellData(1,1)", "def");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Test step 3: 3. 좌측에 datalist1 1 을 2 로 변경한다. (1 -> 2) - 3. Change datalist1 1 to 2 on the left. (1 -> 2)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectbox1').setText('2')");
+    // Verify 3: 3. select 값에 맞춰서 우측에 있는 linkedLit 가 변경된다. - 3. The linkedLit on the right changes to match the select value.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Test step 4: 4. datalist2 를 편집한다. - 4. Edit datalist2.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList2').setCellData(0,1,'ghi')");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList2').setCellData(1,1,'klm')");
+    // Verify 4: 4. 가운데 오작동부분에 데이터가 갱신된다. - 4. The data is updated in the middle malfunction part.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('linkedDataList2').getCellData(0,1)", "ghi");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('linkedDataList2').getCellData(1,1)", "klm");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Test step 5: 5. 좌측에 datalist2 1A 를 2A 로 변경한다. (1A -> 2A) - 5. Change datalist2 1A to 2A on the left. (1A -> 2A)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectbox2').setText('2A')");
+    // Verify 5: 5. select 값에 맞춰서 우측에 있는 linkedLit 가 변경된다. - 5. The linkedLit on the right is changed to match the select value.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Run test
+    WebSquare.wUnit.run();
+    // Stop test
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.json1 = [{
+            "col1": "1",
+            "col2": "일이다"
+        },
+        {
+            "col1": "2",
+            "col2": "이이다"
+        }
+    ];
+    window.json2 = [{
+            "col1": "1A",
+            "col2": ""
+        },
+        {
+            "col1": "2A",
+            "col2": ""
+        }
+    ];
+    dataList1.setJSON(json1);
+    dataList2.setJSON(json2);
+    // Function test
+    // Created by Sang.Do
+    // Created date 17-Jan-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="group1" style="height:206px;">
+    		<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectbox1"
+    			style="position: relative;width: 148px;height: 21px;float:left;" displayMode="label" optionOrder="false" allOption=""
+    			disabled="false" submenuSize="auto">
+    			<xf:choices>
+    				<xf:item>
+    					<xf:label><![CDATA[1]]></xf:label>
+    					<xf:value><![CDATA[1]]></xf:value>
+    				</xf:item>
+    				<xf:item>
+    					<xf:label><![CDATA[2]]></xf:label>
+    					<xf:value><![CDATA[2]]></xf:value>
+    				</xf:item>
+    			</xf:choices>
+    		</xf:select1>
+    		<xf:group id="group3" style="height:172px;width:297px;float:left;">
+    			<w2:textbox id="textbox1" style="position: relative;width: 150px;height: 23px;float:left;width:297px;" label="dataList1"></w2:textbox>
+    			<w2:gridView dataList="dataList1" id="gridView1" style="position: relative;width:297px;height:148px;float:left;"
+    				scrollByColumn="false" useShiftKey="true" fixedColumnWithHidden="true">
+    				<w2:header id="header1" style="">
+    					<w2:row id="row2" style="">
+    						<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+    						<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" value="name2"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody4" style="">
+    					<w2:row id="row5" style="">
+    						<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+    						<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    		<xf:group id="group4" style="height:172px;float:left;width:297px;border-color:red;border-style:dashed;">
+    			<w2:textbox id="textbox2" label="[오작동]linkedList 조건 : val('selectbox1') == col1"
+    				style="position: relative;width:297px;height: 23px;float:left;border-color:;">
+    			</w2:textbox>
+    			<w2:gridView dataList="linkedDataList1" id="gridView2" style="position: relative;width:297px;height:148px;float:left;"
+    				scrollByColumn="false" useShiftKey="true" fixedColumnWithHidden="true">
+    				<w2:header id="header9" style="">
+    					<w2:row id="row10" style="">
+    						<w2:column id="column15" blockSelect="false" style="height:20px" width="70" inputType="text" value="name1"></w2:column>
+    						<w2:column id="column11" blockSelect="false" style="height:20px" inputType="text" width="70" value="name2"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody12" style="">
+    					<w2:row id="row13" style="">
+    						<w2:column id="col1" blockSelect="false" style="height:20px" width="70" inputType="text"></w2:column>
+    						<w2:column id="col2" blockSelect="false" style="height:20px" inputType="text" width="70"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    		<xf:group id="group7" style="height:172px;float:left;width:297px;">
+    			<w2:textbox id="textbox5" label="[정상]linkedList 조건 :col1 == val('selectbox1')"
+    				style="position: relative;width:297px;height: 23px;float:left;">
+    			</w2:textbox>
+    			<w2:gridView dataList="linkedDataList1_1" fixedColumnWithHidden="true" id="gridView5" scrollByColumn="false"
+    				style="position: relative;width:297px;height:148px;float:left;" useShiftKey="true">
+    				<w2:header id="header9" style="">
+    					<w2:row id="row10" style="">
+    						<w2:column blockSelect="false" id="column15" inputType="text" style="height:20px" value="name1" width="70"></w2:column>
+    						<w2:column blockSelect="false" id="column11" inputType="text" style="height:20px" value="name2" width="70"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody12" style="">
+    					<w2:row id="row13" style="">
+    						<w2:column blockSelect="false" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    	</xf:group>
+    	<xf:group id="group2" style="height:206px;">
+    		<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false"
+    			disabledClass="w2selectbox_disabled" displayMode="label" id="selectbox2" optionOrder="false"
+    			style="position: relative;width: 148px;height: 21px;float:left;" submenuSize="auto">
+    			<xf:choices>
+    				<xf:item>
+    					<xf:label><![CDATA[1A]]></xf:label>
+    					<xf:value><![CDATA[1A]]></xf:value>
+    				</xf:item>
+    				<xf:item>
+    					<xf:label><![CDATA[2A]]></xf:label>
+    					<xf:value><![CDATA[2A]]></xf:value>
+    				</xf:item>
+    			</xf:choices>
+    		</xf:select1>
+    		<xf:group id="group5" style="height:172px;width:297px;float:left;">
+    			<w2:textbox id="textbox3" style="position: relative;width: 150px;height: 23px;float:left;width:297px;" label="dataList2"></w2:textbox>
+    			<w2:gridView id="gridView3" dataList="dataList2" style="position: relative;width:297px;height:148px;float:left;"
+    				useShiftKey="true" scrollByColumn="false" fixedColumnWithHidden="true">
+    				<w2:header id="header1" style="">
+    					<w2:row id="row2" style="">
+    						<w2:column id="column7" blockSelect="false" style="height:20px" width="70" inputType="text" value="name1"></w2:column>
+    						<w2:column id="column3" blockSelect="false" style="height:20px" width="70" inputType="text" value="name2"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody4" style="">
+    					<w2:row id="row5" style="">
+    						<w2:column id="col1" blockSelect="false" style="height:20px" width="70" inputType="text"></w2:column>
+    						<w2:column id="col2" blockSelect="false" style="height:20px" width="70" inputType="text"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    		<xf:group id="group6" style="height:172px;width:297px;float:left;border-color:red;border-style:dashed;">
+    			<w2:textbox id="textbox4" style="position: relative;width:297px;height: 23px;float:left;"
+    				label="[오작동]linkedList조건 : val('selectbox2') == col1">
+    			</w2:textbox>
+    			<w2:gridView id="gridView4" dataList="linkedDataList2" style="position: relative;width:297px;height:148px;float:left;"
+    				useShiftKey="true" scrollByColumn="false" fixedColumnWithHidden="true">
+    				<w2:header id="header9" style="">
+    					<w2:row id="row10" style="">
+    						<w2:column id="column15" blockSelect="false" style="height:20px" width="70" inputType="text" value="name1"></w2:column>
+    						<w2:column id="column11" blockSelect="false" style="height:20px" width="70" inputType="text" value="name2"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody12" style="">
+    					<w2:row id="row13" style="">
+    						<w2:column id="col1" blockSelect="false" style="height:20px" width="70" inputType="text"></w2:column>
+    						<w2:column id="col2" blockSelect="false" style="height:20px" width="70" inputType="text"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    		<xf:group id="group8" style="height:172px;float:left;width:297px;">
+    			<w2:textbox id="textbox6" label="[정상]linkedList 조건 :col1 == val('selectbox2')"
+    				style="position: relative;width:297px;height: 23px;float:left;">
+    			</w2:textbox>
+    			<w2:gridView dataList="linkedDataList2_1" fixedColumnWithHidden="true" id="gridView6" scrollByColumn="false"
+    				style="position: relative;width:297px;height:148px;float:left;" useShiftKey="true">
+    				<w2:header id="header9" style="">
+    					<w2:row id="row10" style="">
+    						<w2:column blockSelect="false" id="column15" inputType="text" style="height:20px" value="name1" width="70"></w2:column>
+    						<w2:column blockSelect="false" id="column11" inputType="text" style="height:20px" value="name2" width="70"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody12" style="">
+    					<w2:row id="row13" style="">
+    						<w2:column blockSelect="false" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</xf:group>
+    	</xf:group>
+    </body>
+</html>
+ 

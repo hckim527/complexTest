@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript"><![CDATA[
+        
+	scwin.init = function(){
+		opt1.options.tooltip = "test1111";
+		//opt1.options.toolTip = "test1111";
+		opt1.setToolTip();
+	}
+	scwin.init();
+
+	scwin.fireOver = function(node){
+		if( document.createEventObject ) {
+			node.fireEvent('onmouseover') ;
+		} else if( document.createEvent ) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('mouseover', true, false);
+			node.dispatchEvent(evt);
+		}
+		else if (typeof node.onmouseover == 'function' ) {
+			node.onmouseover();
+		}
+	}
+	scwin.mouseOverBehaviour = function(id){
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireOver(el);
+	}
+	scwin.checkValue = function(id, value) {
+		if(WebSquare.wUnit.getDomById(id).innerText == value) {
+			return true;
+		}
+		return false
+	}
+	scwin.unitTest = function(){
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");			
+
+		WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('opt1')");
+		WebSquare.wUnit.addCommand("pause", "400");
+
+		WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wq_uuid_0_balloonTip').style.display == 'block'", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();			
+	]]></script>
+    </head>
+    <body>
+    	<xf:output label="" style="width: 150px;height: 23px;" id="opt1" disabled="">
+    		<xf:label><![CDATA[test1]]></xf:label>
+    	</xf:output>
+    </body>
+</html>

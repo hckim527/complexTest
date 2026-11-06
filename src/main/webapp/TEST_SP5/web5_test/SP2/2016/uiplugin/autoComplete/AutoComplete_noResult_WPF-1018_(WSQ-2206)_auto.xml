@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행하고 콤보리스트의 333값을 선택하고 다시한번 클릭하여 edit모드로 변경한다.- Run the sample file, select the 333 value in the combo list, and click again to change to edit mode.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_itemTable_3').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 1. 333값이 선택되어지고 edit모드로 변경된다.- 333 value is selected and changed to edit mode.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete1_label').innerText == '333'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete1').getAttribute('noResult')", "first");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 전체선택모드에서 다시 마우스를 클릭해서 한글자씩 삭제한다.- In full selection mode, click mouse again to delete one character.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1').setText('')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 2. 한글자씩 삭제되고 noResult 속성에 first 값이 적용되어진다.(이전에는 이전 값이 선택되어짐) - One character is deleted and the first value is applied to the noResult attribute (Previously, the previous value is selected)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete1').getAttribute('noResult')", "first");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete1_label').innerText == '전체'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+            "col1": "111"
+        },
+        {
+            "col1": "222"
+        },
+        {
+            "col1": "333"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 19-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete visibleRowNum="5" chooseOption="true" id="autoComplete1" style="position: relative;width: 148px;height: 21px;"
+        search="start" interactionMode="" displayMode="label"
+               useKeywordHighlight="false" submenuSize="auto" editType="select" allOption="" noResult="first" chooseOptionLabel="전체">
+               <w2:choices>
+                       <w2:itemset nodeset="data:dataList1">
+                              <w2:label ref="col1"></w2:label>
+                              <w2:value ref="col1"></w2:value>
+                       </w2:itemset>
+               </w2:choices>
+        </w2:autoComplete>
+    </body>
+</html>
+ 

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList1.removeAll();
+};
+scwin.checkactiveElement = function() {
+    return WebSquare.wUnit.getDomById($p.id + "wq_uuid_3_input") == document.activeElement;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 removeAll() 버튼을 클릭한다.-Click the removeAll () button in your browser.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. autocomplete 안에 있는 데이터가 초기화된다.- The data in autocomplete is initialized.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_3_input').value == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 초기화 된 autocomplete 를 더블클릭한다.- Double-click the initialized autocomplete.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_3_input').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. edit 모드로 진입된다.- Enter edit mode.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkactiveElement()", "true");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "label": "1",
+        "value": "1"
+    }, {
+        "label": "2",
+        "value": "2"
+    }];
+    dataList1.setJSON(jsonData);
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 22-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete visibleRowNum="5" chooseOption="" id="" style="position: absolute ;left:48px;top:144px;width: 197px;height: 27px;"
+    		search="start" interactionMode="" displayMode="label" useKeywordHighlight="false" submenuSize="auto" editType="select" allOption="">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList1">
+    				<w2:label ref="label"></w2:label>
+    				<w2:value ref="value"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<w2:textbox
+    		label="재현방법&lt;br/&gt;1. dataList removeAll()&lt;br/&gt;2. autoComplete 더블클릭&lt;br/&gt;&lt;br/&gt;이전 데이터가 autoComplete에 남아 있음" id=""
+    		style="position: absolute ;left: 48px;top: 29px;width:468px;height:82px;">
+    	</w2:textbox>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left:275px;top:145px;width: 155px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[removeAll()]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

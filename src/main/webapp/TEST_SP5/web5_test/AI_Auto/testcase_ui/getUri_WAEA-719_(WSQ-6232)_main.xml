@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xf="http://www.w3.org/2006/xforms"
+      xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events">
+<head>
+    <xf:model/>
+    <script type="javascript"><![CDATA[
+        scwin.onpageload = function() {
+            scwin.log("page loaded");
+        };
+
+        scwin.log = function(msg) {
+            var txa = $p.getComponentById("txa_log");
+            var prev = txa.getValue();
+            txa.setValue(prev ? prev + "\n" + msg : msg);
+        };
+
+        scwin.btn_test1_onclick = function() {
+            scwin.log("=== Test 1: getUri basic path ===");
+            var jsLoader = WebSquare.jsLoader;
+            var result = jsLoader.getUri("/ui/BM/BM001M01.xml", {parse: true});
+            scwin.log("input: /ui/BM/BM001M01.xml");
+            scwin.log("output: " + result);
+            scwin.log("has //: " + (result.indexOf("/_wpack_//") >= 0 || result.replace(/https?:\/\//, "").indexOf("//") >= 0));
+        };
+
+        scwin.btn_test2_onclick = function() {
+            scwin.log("=== Test 2: getUri with origin ===");
+            var jsLoader = WebSquare.jsLoader;
+            var input = location.origin + "/ui/BM/BM001M01.xml";
+            var result = jsLoader.getUri(input, {parse: true});
+            scwin.log("input: " + input);
+            scwin.log("output: " + result);
+            var stripped = result.replace(/https?:\/\//, "");
+            scwin.log("has //: " + (stripped.indexOf("//") >= 0));
+        };
+
+        scwin.btn_test3_onclick = function() {
+            scwin.log("=== Test 3: getUri w2xPath encoded ===");
+            var jsLoader = WebSquare.jsLoader;
+            var input = "?w2xPath=%2Fui%2FBM%2FBM001M01.xml";
+            var result = jsLoader.getUri(input, {parse: true});
+            scwin.log("input: " + input);
+            scwin.log("output: " + result);
+            scwin.log("has //: " + (result.replace(/https?:\/\//, "").indexOf("//") >= 0));
+        };
+
+        scwin.btn_test4_onclick = function() {
+            scwin.log("=== Test 4: getUri trailing slash path ===");
+            var jsLoader = WebSquare.jsLoader;
+            var input = "/ui//BM/BM001M01.xml";
+            var result = jsLoader.getUri(input, {parse: true});
+            scwin.log("input: " + input);
+            scwin.log("output: " + result);
+            var stripped = result.replace(/https?:\/\//, "");
+            scwin.log("has //: " + (stripped.indexOf("//") >= 0));
+        };
+
+        scwin.btn_runall_onclick = function() {
+            $p.getComponentById("txa_log").setValue("");
+            scwin.btn_test1_onclick();
+            scwin.btn_test2_onclick();
+            scwin.btn_test3_onclick();
+            scwin.btn_test4_onclick();
+            scwin.log("\n=== ALL TESTS DONE ===");
+        };
+    ]]></script>
+</head>
+<body>
+    <xf:group id="grp_buttons" style="padding:10px;">
+        <xf:trigger type="button" id="btn_runall" ev:onclick="scwin.btn_runall_onclick" style="width:120px;height:30px;">
+            <xf:label><![CDATA[Run All Tests]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_test1" ev:onclick="scwin.btn_test1_onclick" style="width:80px;height:30px;">
+            <xf:label><![CDATA[Test 1]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_test2" ev:onclick="scwin.btn_test2_onclick" style="width:80px;height:30px;">
+            <xf:label><![CDATA[Test 2]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_test3" ev:onclick="scwin.btn_test3_onclick" style="width:80px;height:30px;">
+            <xf:label><![CDATA[Test 3]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="btn_test4" ev:onclick="scwin.btn_test4_onclick" style="width:80px;height:30px;">
+            <xf:label><![CDATA[Test 4]]></xf:label>
+        </xf:trigger>
+    </xf:group>
+    <w2:textarea id="txa_log" style="width:100%;height:400px;" readOnly="true"/>
+</body>
+</html>

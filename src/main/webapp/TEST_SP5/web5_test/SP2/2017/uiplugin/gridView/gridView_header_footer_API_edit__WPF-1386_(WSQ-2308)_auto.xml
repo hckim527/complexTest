@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.userExp = function() {
+    return dataMap1.get("key1");
+}
+scwin.trigger1_onclick = function(e) {
+    debugger;
+    var options = {};
+    options.type = "1";
+    options.fileName = "test.xlsx";
+    options.useSubTotal = "true";
+    options.startRowIndex = 0;
+    options.startColumnIndex = 0;
+    gridView1.advancedExcelDownload(options);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행하여 setHeaderValue 헤더의 값이 설정한 포멧형식으로 보여지는 지 확인한다.
+    //1. Run the sample file to verify that the value of the setHeaderValue header is displayed in the format you set.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 1. setHeaderValue 항목의 2번째 헤더의 값이 '555,555'로 보여진다.
+    //1. The value of the second header of the setHeaderValue item is shown as '555,555'.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_column11').innerText", "555,555");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setData(['111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111']);
+    dataMap1.set("key1", "555555");
+    window.value = gridView1.getFormattedHeaderValue("column11", "555555");
+    gridView1.setHeaderValue("column11", value);
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 30-Jan-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]>
+        
+        </script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1" style="width:706px;height:150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" displayMode="label" value="name1" dataType=""></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" displayMode="label" value="value"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="height:20px;" inputType="text" width="170" displayMode="label" value="expression userExp"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="166" displayMode="label" value="expression SUM"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="166" inputType="text" displayMode="label" value="setHeaderValue"></w2:column>
+    			</w2:row>
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column15" style="height:20px;" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column14" style="height:20px;" width="70" inputType="text" displayMode="label" value="555555" dataType="number" displayFormat="#,###"></w2:column>
+    				<w2:column blockSelect="false" id="column13" style="height:20px;" width="170" inputType="expression" displayMode="label" displayFormat="#,###" dataType="number" expression="scwin.userExp()"></w2:column>
+    				<w2:column blockSelect="false" id="column12" style="height:20px;" width="166" inputType="expression" displayMode="label" displayFormat="#,###" dataType="number" expression="sum('col4')"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" width="166" inputType="text" displayMode="label" displayFormat="#,###" dataType="number"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="170" displayMode="label" escape=""></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" inputType="text" width="166" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col5" style="height:20px" width="166" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[excel]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

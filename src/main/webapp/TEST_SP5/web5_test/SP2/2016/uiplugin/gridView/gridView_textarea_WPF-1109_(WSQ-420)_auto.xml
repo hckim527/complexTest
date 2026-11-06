@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="calendar" dataType="text"></w2:column>
+            			<w2:column id="col3" name="textarea" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.__simulate = function(id, options) {
+    WebSquare.wUnit.getJq(id).simulate("key-sequence", options);
+}
+scwin.setSimulate1 = function() {
+    scwin.__simulate('#G_wq_uuid_3__col2_input', {
+        sequence: '20160101',
+        delay: 100
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.__simulate('#G_wq_uuid_3__col3', {
+        sequence: 'here',
+        delay: 100
+    });
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. IE11에서 샘플파일을 실행하고 calendar 이미지를 클릭하여 날짜를 입력한다.
+    //1. Run the sample file in IE11 and click on the calendar image to enter the date.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_3_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // is IE 9 and later or not IE
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 1. calendar필드에 날짜가 입력되고 마우스커서가 깜빡거린다.
+    //1. The date is entered in the calendar field and the mouse cursor blinks.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3__col2_input').val()", "20160101");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 입력 후 calendar에 마우스커서가 깜빡일때 오른쪽의 textarea에 마우스를 클릭하여 입력한다.
+    //2. When the mouse cursor is blinking on the calendar after input, click mouse on the textarea on the right.
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'wq_uuid_3_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // is IE 9 and later or not IE
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. textarea영역에 정상으로 입력되어진다.(이전에는 입력시도시 calendar필드로 마우스커서가 이동되는현상발생)
+    //2. The textarea area is entered normally (the mouse cursor moves to the calendar field in the previous attempt)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3__col3').val()", "here");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.insertRow();
+    dataList1.insertRow();
+    dataList1.insertRow();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 09-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" scrollByColumnAdaptive="false" id=""
+    		style="position: absolute ;left:34px;top:33px;width: 345px;height: 145px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="calendar">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="textarea">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="calendar" width="70" displayMode="label" viewType="icon"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:textarea id="" style="position: absolute ;left:432px;top:31px;width: 192px;height: 92px;" ref="data:dataList1.col3"></xf:textarea>
+    </body>
+</html>
+ 

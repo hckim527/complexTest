@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.inputCalendar1_onviewchange = function(info) {
+    console.log(info.oldValue + " " + info.newValue);
+};
+scwin.inputCalendar1_ondateselect = function(dateStr, dateObj) {
+    console.log(dateStr);
+};
+scwin.inputCalendar2_onviewchange = function(info) {
+    console.log(info.oldValue + " " + info.newValue);
+};
+scwin.inputCalendar2_ondateselect = function(dateStr, dateObj) {
+    console.log(dateStr);
+};
+scwin.getDateCurrent = function(type) {
+    var today = new Date();
+    var dd = 0;
+    var isFirstDay = false;
+    if (type == 0) {
+        //current date
+        dd = today.getDate();
+    } else if (type == 1) {
+        //next date
+        dd = today.getDate() + 1;
+    } else {
+        //previous date
+        if (today.getDate() === 1) {
+            isFirstDay = true;
+            var date = new Date();
+            date.setHours(-1);            
+            dd = date.getDate();
+        } else {
+            dd = today.getDate() - 1;
+        }
+    }
+    var mm = isFirstDay ? today.getMonth() : today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    today = yyyy + "-" + mm + "-" + dd;
+    return today;
+}
+scwin.__ispreviousElement = function() {
+    var id = WebSquare.wUnit.getJq("td.w2calendar_selected").last().attr("id");
+    var el = WebSquare.wUnit.getDomById($p.id + id).previousSibling;
+    return el;
+}
+scwin.__isnextElement = function() {
+    var id = WebSquare.wUnit.getJq("td.w2calendar_selected").last().attr("id");
+    var el = WebSquare.wUnit.getDomById($p.id + id).nextSibling;
+    return el;
+}
+scwin.checkVal0 = function() {
+    return WebSquare.wUnit.getObjById('inputCalendar1_calendar_currentDate').innerText == scwin.getDateCurrent(0);
+}
+scwin.checkVal1 = function() {
+    return scwin.getDateCurrent(0) === WebSquare.wUnit.getObjById('inputCalendar1_calendar_currentDate').innerText;
+}
+scwin.checkVal2 = function() {
+    return scwin.getDateCurrent(1) === WebSquare.wUnit.getObjById('inputCalendar1_calendar_currentDate').innerText;
+}
+scwin.checkVal3 = function() {
+    return scwin.getDateCurrent(0) === WebSquare.wUnit.getObjById('inputCalendar2_calendar_currentDate').innerText;
+}
+scwin.checkVal4 = function() {
+    return scwin.getDateCurrent(2) === WebSquare.wUnit.getObjById('inputCalendar2_calendar_currentDate').innerText;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 5. 브라우저에서 첫번째 calenadr1 를 선택 후 이전 날짜를 선택한다.
+    //5. In the browser, select the first calenadr1 and select the previous date.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.__ispreviousElement().click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. 현재일자 기준으로 이전 날짜가 선택이 불가능하다.
+    //5. The previous date can not be selected on the current date.
+    //WebSquare.wUnit.addCommand("assert", "scwin.checkVal0()","true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. 첫번째 inputcalenadr1 를 선택 후 이후 날짜를 선택한다.
+    //6. Select the first inputcalenadr1 and then the date.
+    WebSquare.wUnit.addCommand("set", "scwin.__isnextElement().click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 6. 현재일자 기준으로 이후 날짜가 선택이 가능하다.
+    //6. You can select future dates based on the current date.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 7. 두번째 calenadr2 를 선택 후 이후 날짜를 선택한다.
+    //7. Select the second calenadr2 and then select the date.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.__isnextElement().click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 7. 현재일자 기준으로 이후 날짜가 선택이 불가능하다.
+    //7. The date can not be selected on the current date.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 8. 두번째 inputcalenadr2 를 선택 후 이전 날짜를 선택한다.
+    //8. Select the second inputcalenadr2 and select the previous date.
+    WebSquare.wUnit.addCommand("set", "scwin.__ispreviousElement().click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 8. 현재일자 기준으로 이전 날짜가 선택이 가능하다.
+    //8. You can select the previous date based on the current date.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 13-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <style>
+    .w2calendar_date_disable{
+		color:gray;
+	}
+    </style>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:calendar weekStartsOn="0" id="calendar1" disableBeforeToday="true" disableDateClass="w2calendar_date_disable"
+    		style="position: absolute;width: 100px;height: 100px;left:132px;top:89px;" footerDiv="false">
+    	</w2:calendar>
+    	<w2:calendar footerDiv="false" id="calendar2" disableAfterToday="true" disableDateClass="w2calendar_date_disable"
+    		style="position: absolute;width: 100px;height: 100px;left:135px;top:353px;" weekStartsOn="0">
+    	</w2:calendar>
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar1" renderDiv="true"
+    		style="position: absolute;width: 150px;height: 23px;left:441px;top:263px;" rightAlign="false" focusOnDateSelect="false"
+    		footerDiv="false" calendarValueType="yearMonthDate" disableBeforeToday="true" disableDateClass="w2calendar_date_disable"
+    		ev:onviewchange="scwin.inputCalendar1_onviewchange" ev:ondateselect="scwin.inputCalendar1_ondateselect">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarValueType="yearMonthDate" focusOnDateSelect="false" footerDiv="false" id="inputCalendar2" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:446px;top:513px;" weekStartsOn="0"
+    		disableAfterToday="true" disableDateClass="w2calendar_date_disable" ev:onviewchange="scwin.inputCalendar2_onviewchange"
+    		ev:ondateselect="scwin.inputCalendar2_ondateselect">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar3" renderDiv="true"
+    		style="position: absolute;width:369px;height:84px;left:137px;top:627px;" rightAlign="false" focusOnDateSelect="false" footerDiv="false"
+    		calendarValueType="yearMonthDate">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

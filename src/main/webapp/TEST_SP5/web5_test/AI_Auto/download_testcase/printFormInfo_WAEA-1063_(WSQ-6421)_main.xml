@@ -1,0 +1,229 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2006/xforms">
+    <head>
+        <xf:model/>
+        <w2:printFormInfo type="A4" width="1700" height="2400" lpi="6" cpi="10" dpi="120"
+            marginLeft="60" marginTop="60" marginRight="60" marginBottom="60"/>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        scwin.log = function (msg) {
+            var prev = txa_log.getValue() || "";
+            txa_log.setValue(prev + msg + "\n");
+        };
+
+        scwin.onpageload = function () {
+            scwin.log("=== printFormInfo_WAEA-1063_(WSQ-6421)_main.xml onpageload ===");
+        };
+
+        // ── 자체 검증용 헬퍼 ──────────────────────────────────────────
+        scwin._passCnt = 0;
+        scwin._failCnt = 0;
+
+        scwin.assertEquals = function (name, actual, expected) {
+            var ok = (actual === expected);
+            if (ok) {
+                scwin._passCnt++;
+                scwin.log("  PASS  " + name + " = " + actual);
+            } else {
+                scwin._failCnt++;
+                scwin.log("  FAIL  " + name + " : expected[" + expected + "] actual[" + actual + "]");
+            }
+        };
+
+        scwin.assertJson = function (name, actualObj, expectedJson) {
+            var actualJson = JSON.stringify(actualObj);
+            if (actualJson === expectedJson) {
+                scwin._passCnt++;
+                scwin.log("  PASS  " + name + " = " + actualJson);
+            } else {
+                scwin._failCnt++;
+                scwin.log("  FAIL  " + name + " : expected" + expectedJson + " actual" + actualJson);
+            }
+        };
+
+        // ── 1. 현재 화면(최상위)의 용지 규격 조회 ─────────────────────
+        scwin.btn_selfInfo_onclick = function () {
+            var info = $p.getPrintFormInfo();
+            scwin.log("[1] $p.getPrintFormInfo() = " + JSON.stringify(info, null, 2));
+            scwin.log("    typeof info.dpi = " + (typeof info.dpi) + " / typeof info.type = " + (typeof info.type));
+            scwin.log("    단건 조회 $p.getPrintFormInfo('dpi') = " + $p.getPrintFormInfo("dpi"));
+            scwin.log("    미선언 속성 $p.getPrintFormInfo('noSuchAttr') = " + $p.getPrintFormInfo("noSuchAttr"));
+        };
+
+        // ── 2. includeFrame 자식 화면의 용지 규격을 부모에서 조회 ─────
+        scwin.btn_incInfo_onclick = function () {
+            var info = inc1.getPrintFormInfo();
+            scwin.log("[2] inc1.getPrintFormInfo() = " + JSON.stringify(info, null, 2));
+            scwin.log("    width 는 숫자가 아니어서 제외됨 : " + (info.hasOwnProperty("width") ? "포함(오류)" : "제외(정상)"));
+            scwin.log("    미지의 속성 orientation 은 문자열 그대로 : " + info.orientation);
+        };
+
+        // ── 3. wframe 자식 화면(규격 미선언)의 조회 ───────────────────
+        scwin.btn_wfInfo_onclick = function () {
+            var info = wf1.getPrintFormInfo();
+            scwin.log("[3] wf1.getPrintFormInfo() = " + JSON.stringify(info));
+            scwin.log("    선언이 없으면 빈 객체를 반환합니다.");
+        };
+
+        // ── 4. 컴포넌트 인쇄 좌표 조회 ────────────────────────────────
+        scwin.btn_position_onclick = function () {
+            scwin.log("[4] inp_amount.getPrintFormPosition() = " + JSON.stringify(inp_amount.getPrintFormPosition()));
+            scwin.log("    단건 inp_amount.getPrintFormPosition('printLine') = " + inp_amount.getPrintFormPosition("printLine"));
+            scwin.log("    txt_title.getPrintFormPosition() = " + JSON.stringify(txt_title.getPrintFormPosition()));
+            scwin.log("    좌표 미설정 컴포넌트 btn_position.getPrintFormPosition() = " + JSON.stringify(btn_position.getPrintFormPosition()));
+        };
+
+        // ── 5. 컴포넌트 인쇄 좌표 설정 ────────────────────────────────
+        scwin.btn_setPosition_onclick = function () {
+            var r1 = inp_amount.setPrintFormPosition({ printLine : 9, printColumn : 2 });
+            scwin.log("[5] setPrintFormPosition({printLine:9, printColumn:2}) = " + r1);
+            scwin.log("    조회 결과 = " + JSON.stringify(inp_amount.getPrintFormPosition()));
+            var r2 = inp_amount.setPrintFormPosition("printLineSpan", "4");
+            scwin.log("    setPrintFormPosition('printLineSpan', '4') = " + r2 + " → " + inp_amount.getPrintFormPosition("printLineSpan"));
+            var r3 = inp_amount.setPrintFormPosition("printLineSpan", null);
+            scwin.log("    setPrintFormPosition('printLineSpan', null) = " + r3 + " → " + inp_amount.getPrintFormPosition("printLineSpan"));
+        };
+
+        // ── 6. 잘못된 속성명 / 잘못된 값 ──────────────────────────────
+        scwin.btn_invalid_onclick = function () {
+            scwin.log("[6] setPrintFormPosition('printRow', 1) = " + inp_amount.setPrintFormPosition("printRow", 1));
+            scwin.log("    setPrintFormPosition('printLine', 'abc') = " + inp_amount.setPrintFormPosition("printLine", "abc"));
+            scwin.log("    getPrintFormPosition('printRow') = " + inp_amount.getPrintFormPosition("printRow"));
+            scwin.log("    실패 후에도 기존 값 유지 = " + JSON.stringify(inp_amount.getPrintFormPosition()));
+        };
+
+        // ── 7. 전체 자동 검증 ─────────────────────────────────────────
+        scwin.btn_verify_onclick = function () {
+            scwin._passCnt = 0;
+            scwin._failCnt = 0;
+            scwin.log("");
+            scwin.log("========== WAEA-1063 자동 검증 시작 ==========");
+
+            // T1. 최상위 화면 용지 규격 — type 은 문자열, 나머지는 숫자
+            var info = $p.getPrintFormInfo();
+            scwin.assertEquals("T1-1 info.type", info.type, "A4");
+            scwin.assertEquals("T1-2 typeof info.type", typeof info.type, "string");
+            scwin.assertEquals("T1-3 info.width", info.width, 1700);
+            scwin.assertEquals("T1-4 typeof info.width", typeof info.width, "number");
+            scwin.assertEquals("T1-5 info.dpi", info.dpi, 120);
+            scwin.assertEquals("T1-6 info.marginBottom", info.marginBottom, 60);
+            scwin.assertEquals("T1-7 info.lpi", info.lpi, 6);
+            scwin.assertEquals("T1-8 info.cpi", info.cpi, 10);
+
+            // T2. 단건 조회 / 미선언 속성
+            scwin.assertEquals("T2-1 단건 dpi", $p.getPrintFormInfo("dpi"), 120);
+            scwin.assertEquals("T2-2 단건 type", $p.getPrintFormInfo("type"), "A4");
+            scwin.assertEquals("T2-3 미선언 속성", $p.getPrintFormInfo("noSuchAttr"), undefined);
+
+            // T3. includeFrame 자식 화면 — 부모에서 프레임 컴포넌트로 조회
+            var incInfo = inc1.getPrintFormInfo();
+            scwin.assertEquals("T3-1 inc1 type", incInfo.type, "Continuous");
+            scwin.assertEquals("T3-2 inc1 dpi", incInfo.dpi, 180);
+            scwin.assertEquals("T3-3 inc1 숫자아닌 width 는 제외", incInfo.hasOwnProperty("width"), false);
+            scwin.assertEquals("T3-4 inc1 미지의 속성은 문자열 통과", incInfo.orientation, "landscape");
+            scwin.assertEquals("T3-5 inc1 height", incInfo.height, 1440);
+
+            // T4. wframe 자식 화면 — 선언 없으면 빈 객체
+            scwin.assertJson("T4-1 wf1 빈 객체", wf1.getPrintFormInfo(), "{}");
+
+            // T5. 컴포넌트 인쇄 좌표 조회 (XML 선언값)
+            scwin.assertJson("T5-1 txt_title 좌표", txt_title.getPrintFormPosition(),
+                '{"printLine":2,"printColumn":10}');
+            scwin.assertEquals("T5-2 단건 printColumn", txt_title.getPrintFormPosition("printColumn"), 10);
+            scwin.assertEquals("T5-3 typeof 단건", typeof txt_title.getPrintFormPosition("printLine"), "number");
+            scwin.assertJson("T5-4 좌표 미설정 컴포넌트", btn_position.getPrintFormPosition(), "{}");
+            scwin.assertEquals("T5-5 잘못된 속성명 조회", txt_title.getPrintFormPosition("printRow"), undefined);
+
+            // T6. 인쇄 좌표 설정 (객체 / 단건 / 문자열 숫자)
+            scwin.assertEquals("T6-1 객체 설정", inp_amount.setPrintFormPosition({ printLine : 9, printColumn : 2 }), true);
+            scwin.assertEquals("T6-2 설정 후 printLine", inp_amount.getPrintFormPosition("printLine"), 9);
+            scwin.assertEquals("T6-3 설정 후 printColumn", inp_amount.getPrintFormPosition("printColumn"), 2);
+            scwin.assertEquals("T6-4 문자열 숫자 설정", inp_amount.setPrintFormPosition("printLineSpan", "4"), true);
+            scwin.assertEquals("T6-5 숫자로 반환", inp_amount.getPrintFormPosition("printLineSpan"), 4);
+
+            // T7. 잘못된 속성명 / 값은 false 이고 기존 값을 바꾸지 않는다
+            scwin.assertEquals("T7-1 잘못된 속성명", inp_amount.setPrintFormPosition("printRow", 1), false);
+            scwin.assertEquals("T7-2 잘못된 값", inp_amount.setPrintFormPosition("printLine", "abc"), false);
+            scwin.assertEquals("T7-3 실패 후 값 유지", inp_amount.getPrintFormPosition("printLine"), 9);
+            scwin.assertEquals("T7-4 일부 오류 시 전체 미반영", inp_amount.setPrintFormPosition({ printColumn : 7, printRow : 1 }), false);
+            scwin.assertEquals("T7-5 미반영 확인", inp_amount.getPrintFormPosition("printColumn"), 2);
+
+            // T8. null / 빈 문자열은 속성 삭제
+            scwin.assertEquals("T8-1 null 로 삭제", inp_amount.setPrintFormPosition("printLineSpan", null), true);
+            scwin.assertEquals("T8-2 삭제 확인", inp_amount.getPrintFormPosition("printLineSpan"), undefined);
+
+            // T9. 기존 getUserData/setUserData 와 공존
+            scwin.assertEquals("T9-1 getUserData 로도 조회", inp_amount.getUserData("printColumn"), 2);
+            scwin.assertEquals("T9-2 setUserData 로 설정", inp_amount.setUserData("printColumn", 11), true);
+            scwin.assertEquals("T9-3 getPrintFormPosition 으로 조회", inp_amount.getPrintFormPosition("printColumn"), 11);
+
+            // T10. printFormInfo 가 컴포넌트로 만들어지지 않는다
+            scwin.assertEquals("T10-1 컴포넌트 미생성", !!$p.getComponentById("printFormInfo"), false);
+            scwin.assertEquals("T10-2 화면에 렌더되지 않음",
+                document.getElementsByTagName("printFormInfo").length + document.getElementsByTagName("w2:printFormInfo").length, 0);
+
+            // T11. UDC 컴포넌트에도 인쇄 좌표 속성이 적용된다
+            scwin.assertJson("T11-1 UDC 좌표", udc_slip.getPrintFormPosition(),
+                '{"printLine":7,"printColumn":4,"printColumnSpan":30}');
+            scwin.assertEquals("T11-2 UDC 단건", udc_slip.getPrintFormPosition("printColumn"), 4);
+            scwin.assertEquals("T11-3 UDC 설정", udc_slip.setPrintFormPosition("printLine", 12), true);
+            scwin.assertEquals("T11-4 UDC 설정 확인", udc_slip.getPrintFormPosition("printLine"), 12);
+
+            scwin.log("========== 검증 종료 : PASS " + scwin._passCnt + " / FAIL " + scwin._failCnt + " ==========");
+        };
+
+        scwin.btn_clear_onclick = function () {
+            txa_log.setValue("");
+        };
+        ]]>
+        </script>
+        <w2:require as="pf_udc" type="page" src="printFormInfo_WAEA-1063_(WSQ-6421)_udc.xml"></w2:require>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:10px;">
+            <w2:textbox label="WAEA-1063 printFormInfo / 인쇄 좌표 속성 검증 (최상위 화면)" style="font-weight:bold;"></w2:textbox>
+            <xf:group style="padding:6px 0;">
+                <xf:trigger id="btn_verify" type="button" ev:onclick="scwin.btn_verify_onclick">
+                    <xf:label><![CDATA[0. 전체 자동 검증]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_selfInfo" type="button" ev:onclick="scwin.btn_selfInfo_onclick">
+                    <xf:label><![CDATA[1. 현재 화면 용지 규격]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_incInfo" type="button" ev:onclick="scwin.btn_incInfo_onclick">
+                    <xf:label><![CDATA[2. includeFrame 자식 규격]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_wfInfo" type="button" ev:onclick="scwin.btn_wfInfo_onclick">
+                    <xf:label><![CDATA[3. wframe 자식 규격(미선언)]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_position" type="button" ev:onclick="scwin.btn_position_onclick">
+                    <xf:label><![CDATA[4. 컴포넌트 좌표 조회]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_setPosition" type="button" ev:onclick="scwin.btn_setPosition_onclick">
+                    <xf:label><![CDATA[5. 컴포넌트 좌표 설정]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_invalid" type="button" ev:onclick="scwin.btn_invalid_onclick">
+                    <xf:label><![CDATA[6. 잘못된 속성명·값]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_clear" type="button" ev:onclick="scwin.btn_clear_onclick">
+                    <xf:label><![CDATA[로그 지우기]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            <xf:group style="padding:6px 0;">
+                <w2:textbox id="txt_title" label="전표 제목 (printLine=2, printColumn=10)"
+                    printLine="2" printColumn="10"></w2:textbox>
+            </xf:group>
+            <xf:group style="padding:6px 0;">
+                <w2:textbox label="금액 입력 (printLine=5, printColumn=3, printLineSpan=1, printColumnSpan=20)"></w2:textbox>
+                <xf:input id="inp_amount" style="width:200px;"
+                    printLine="5" printColumn="3" printLineSpan="1" printColumnSpan="20"></xf:input>
+            </xf:group>
+            <w2:textarea id="txa_log" style="width:900px; height:420px;"></w2:textarea>
+            <w2:textbox label="── includeFrame(inc1) : printFormInfo_WAEA-1063_(WSQ-6421)_inc.xml ──" style="font-weight:bold;"></w2:textbox>
+            <w2:includeFrame id="inc1" src="printFormInfo_WAEA-1063_(WSQ-6421)_inc.xml" style="width:880px; height:70px; border:1px dotted green;"></w2:includeFrame>
+            <w2:textbox label="── wframe(wf1) : printFormInfo_WAEA-1063_(WSQ-6421)_wf.xml (printFormInfo 미선언) ──" style="font-weight:bold;"></w2:textbox>
+            <w2:wframe id="wf1" src="printFormInfo_WAEA-1063_(WSQ-6421)_wf.xml" style="width:880px; height:70px; border:1px dotted orange;"></w2:wframe>
+            <w2:textbox label="── UDC(udc_slip) : printFormInfo_WAEA-1063_(WSQ-6421)_udc.xml (printLine=7, printColumn=4, printColumnSpan=30) ──" style="font-weight:bold;"></w2:textbox>
+            <w2:pf_udc id="udc_slip" printLine="7" printColumn="4" printColumnSpan="30"
+                style="display:block; width:880px; border:1px dotted blue;"></w2:pf_udc>
+        </xf:group>
+    </body>
+</html>

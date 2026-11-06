@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="date" name="date" dataType="text"></w2:column>
+            			<w2:column id="holiday" name="holiday" dataType="text"></w2:column>
+            			<w2:column id="disabled" name="disabled" dataType="text"></w2:column>
+
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<holiday><![CDATA[]]></holiday>
+            				<disabled><![CDATA[Y]]></disabled>
+
+            				<date><![CDATA[20180801]]></date>
+            			</w2:row>
+            			<w2:row>
+            				<date><![CDATA[20180802]]></date>
+            				<holiday><![CDATA[Y]]></holiday>
+            				<disabled><![CDATA[Y]]></disabled>
+            			</w2:row>
+            			<w2:row>
+            				<date><![CDATA[20180805]]></date>
+            				<disabled><![CDATA[Y]]></disabled>
+            				<holiday><![CDATA[Y]]></holiday>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    c.disableDate('*');
+};
+scwin.trigger2_onclick = function(e) {
+    c.enableDate('20180812');
+};
+scwin.trigger3_onclick = function(e) {
+    c.enableDate('*');
+};
+scwin.trigger4_onclick = function(e) {
+    c.disableDate('20180812 20180811');
+};
+scwin.trigger5_onclick = function(e) {
+    ic.disableDate('*');
+};
+scwin.trigger6_onclick = function(e) {
+    ic.enableDate('20180812');
+};
+scwin.trigger7_onclick = function(e) {
+    ic.enableDate('*');
+};
+scwin.trigger8_onclick = function(e) {
+    ic.disableDate('20180812 20180811');
+};
+scwin.rgb2hex = function(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}
+scwin._checkRgb = function(id, hexa) {
+    var rgb = WebSquare.wUnit.getJq("#" + id).css("color");
+    var color;
+    if (rgb.indexOf("rgb") != -1) {
+        color = scwin.rgb2hex(rgb);
+        return color == hexa;
+    }
+    return rgb == hexa;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //pc
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_year_button').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_year_itemTable_40').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");     
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_month_button').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_month_itemTable_7').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");     
+    //mobile
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c').gotoYear(2018)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c').gotoMonth(8)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('c_cell_2_0', '#000000')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('c_cell_2_0', '#d02121')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('c_cell_2_0', '#000000')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:calendar id="c" style="width: 100px;height: 100px;" footerDiv="false" disableAftereDate="20180804" ref="data:dataList1"
+    		dataList="data:dataList1">
+    	</w2:calendar>
+    	<w2:inputCalendar holidayRef="data:dataList1.holiday" rightAlign="false" calendarValueType="yearMonthDate" renderType="component"
+    		id="ic" renderDiv="true" style="position: absolute;width: 150px;height: 23px;left:314px;top:130px;" focusOnDateSelect="false"
+    		footerDiv="false">
+    	</w2:inputCalendar>
+    	<xf:group id="" style="height:23px;margin-top: 20px;">
+    		<xf:trigger id="trigger1" style="margin-right:5px;height:23px;width:163px;" type="button" ev:onclick="scwin.trigger1_onclick">
+    			<xf:label><![CDATA[1. c.disableDate('*');]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger2" style="margin-right:5px;height:23px;width:186px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    			<xf:label><![CDATA[2. c.enableDate('20180812');]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger3" style="margin-right:5px;height:23px;width:163px;margin-left:0px;" type="button" ev:onclick="scwin.trigger3_onclick">
+    			<xf:label><![CDATA[3. c.enableDate('*');]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger4" style="margin-right:5px;height:23px;width:246px;margin-left:0px;" type="button" ev:onclick="scwin.trigger4_onclick">
+    			<xf:label><![CDATA[4. c.disableDate('20180812 20180811');]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<xf:group id="" style="height:23px;margin-top: 20px;">
+    		<xf:trigger ev:onclick="scwin.trigger5_onclick" id="trigger5" style="margin-right:5px;height:23px;width:163px;" type="button">
+    			<xf:label><![CDATA[5. ic.disableDate('*');]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.trigger6_onclick" id="trigger6" style="margin-right:5px;height:23px;width:186px;" type="button">
+    			<xf:label><![CDATA[6. ic.enableDate('20180812');]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.trigger7_onclick" id="trigger7" style="margin-right:5px;height:23px;width:163px;margin-left:0px;" type="button">
+    			<xf:label><![CDATA[7. ic.enableDate('*');]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger ev:onclick="scwin.trigger8_onclick" id="trigger8" style="margin-right:5px;height:23px;width:246px;margin-left:0px;" type="button">
+    			<xf:label><![CDATA[8. ic.disableDate('20180812 20180811');]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    </body>
+</html>
+ 

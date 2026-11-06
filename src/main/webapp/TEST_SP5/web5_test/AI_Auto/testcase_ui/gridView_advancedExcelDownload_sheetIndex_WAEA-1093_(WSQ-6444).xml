@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="gridView_advancedExcelDownload_sheetIndex">
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <xf:instance><data xmlns=""/></xf:instance>
+            <w2:dataCollection>
+                <w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="region" name="지역" dataType="text"/>
+                        <w2:column id="industry" name="업종" dataType="text"/>
+                        <w2:column id="amount" name="금액" dataType="number"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// gridView advancedExcelDownload sheetIndex 옵션 검증 샘플
+//
+// sheetIndex 는 기존 Excel 파일을 편집할 때 새 sheet 를 넣을 위치다.
+// 따라서 editMode:true 를 함께 지정한다. sheetIndex 외의 옵션은 기존과 동일하게 둔다.
+//
+// 기대 payload : <data hashkey='sheetIndex' value='0'/>
+//   미지정 / null / 빈 문자열 -> 요청에서 생략
+//   0 및 양수                 -> 값 그대로 전달 (엔진은 보정하지 않는다)
+
+scwin.onpageload = function() {
+    dataList1.setJSON([
+        { region: "서울", industry: "제조", amount: 100 },
+        { region: "부산", industry: "서비스", amount: 200 }
+    ]);
+};
+
+scwin.download = function(fileName, sheetIndex, sheetName) {
+    var options = {
+        fileName: fileName,
+        extension: "xlsx",
+        showDialog: false,
+        useXHR: true,
+        editMode: true
+    };
+    if (typeof sheetIndex !== "undefined") {
+        options.sheetIndex = sheetIndex;
+    }
+    if (typeof sheetName !== "undefined") {
+        options.sheetName = sheetName;
+    }
+    gridView1.advancedExcelDownload(options);
+};
+
+// 1) 미지정 : 요청에서 sheetIndex 가 생략돼야 한다
+scwin.downloadUnspecified = function() {
+    scwin.download("sheetIndex_unspecified.xlsx", undefined);
+};
+
+// 2) 0 : 생략되지 않고 그대로 전달돼야 한다
+scwin.downloadZero = function() {
+    scwin.download("sheetIndex_0.xlsx", 0);
+};
+
+// 3) 양수
+scwin.downloadPositive = function() {
+    scwin.download("sheetIndex_2.xlsx", 2);
+};
+
+// 4) sheetName 과 동시 지정 : 이름과 위치가 각각 독립적으로 전달돼야 한다
+scwin.downloadWithSheetName = function() {
+    scwin.download("sheetIndex_with_name.xlsx", 1, "신규시트");
+};
+
+// 5) null : 요청에서 생략돼야 한다
+scwin.downloadNull = function() {
+    scwin.download("sheetIndex_null.xlsx", null);
+};
+
+// 6) 빈 문자열 : 요청에서 생략돼야 한다
+scwin.downloadEmpty = function() {
+    scwin.download("sheetIndex_empty.xlsx", "");
+};
+
+// 7) 다중 sheet : 각 sheet 정보에 지정한 sheetIndex 가 전달돼야 한다
+scwin.downloadMultiSheet = function() {
+    WebSquare.util.multipleDataListDownload({
+        common: {
+            fileName: "sheetIndex_multi.xlsx",
+            multipleSheet: true,
+            showProcess: false,
+            useXHR: true,
+            editMode: true
+        },
+        excelInfo: [
+            { dataListId: "dataList1", sheetName: "첫번째", sheetIndex: 0 },
+            { dataListId: "dataList1", sheetName: "두번째", sheetIndex: 3 }
+        ]
+    });
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <h3>gridView advancedExcelDownload sheetIndex</h3>
+
+        <w2:gridView id="gridView1" dataList="data:dataList1"
+            style="position:relative;width:500px;height:140px;" defaultCellHeight="20" autoFit="allColumn">
+            <w2:caption id="caption1" style="display:none;" value="sheetIndex grid caption"/>
+            <w2:header id="header1">
+                <w2:row id="hrow1">
+                    <w2:column id="hcol1" width="120" inputType="text" value="지역" displayMode="label"/>
+                    <w2:column id="hcol2" width="120" inputType="text" value="업종" displayMode="label"/>
+                    <w2:column id="hcol3" width="120" inputType="text" value="금액" displayMode="label"/>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="brow1">
+                    <w2:column id="region" width="120" inputType="text" displayMode="label"/>
+                    <w2:column id="industry" width="120" inputType="text" displayMode="label"/>
+                    <w2:column id="amount" width="120" inputType="text" displayMode="label"/>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+
+        <xf:trigger id="btnUnspecified" type="button" ev:onclick="scwin.downloadUnspecified">
+            <xf:label>sheetIndex 미지정</xf:label>
+        </xf:trigger>
+        <xf:trigger id="btnZero" type="button" ev:onclick="scwin.downloadZero">
+            <xf:label>sheetIndex 0</xf:label>
+        </xf:trigger>
+        <xf:trigger id="btnPositive" type="button" ev:onclick="scwin.downloadPositive">
+            <xf:label>sheetIndex 2</xf:label>
+        </xf:trigger>
+        <xf:trigger id="btnWithSheetName" type="button" ev:onclick="scwin.downloadWithSheetName">
+            <xf:label>sheetName + sheetIndex</xf:label>
+        </xf:trigger>
+        <xf:trigger id="btnNull" type="button" ev:onclick="scwin.downloadNull">
+            <xf:label>sheetIndex null</xf:label>
+        </xf:trigger>
+        <xf:trigger id="btnEmpty" type="button" ev:onclick="scwin.downloadEmpty">
+            <xf:label>sheetIndex 빈 문자열</xf:label>
+        </xf:trigger>
+        <xf:trigger id="btnMultiSheet" type="button" ev:onclick="scwin.downloadMultiSheet">
+            <xf:label>다중 sheet (0 / 3)</xf:label>
+        </xf:trigger>
+    </body>
+</html>

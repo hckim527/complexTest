@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true" style="">
+    				<w2:columnInfo>
+    					<w2:column dataType="text" id="Continent" name="Continent"></w2:column>
+    					<w2:column dataType="text" id="Country" name="Country"></w2:column>
+    					<w2:column dataType="text" id="Item" name="Item"></w2:column>
+    					<w2:column dataType="text" id="Quantity" name="Quantity"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		var json = [
+			
+			{"Continent" : "Asia", "Country" : "China", "Item" : "TV", "Quantity" : "400"},
+			{"Continent" : "Asia", "Country" : "China", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Asia", "Country" : "China", "Item" : "Washer", "Quantity" : "100"},
+			{"Continent" : "Asia", "Country" : "Japan", "Item" : "TV", "Quantity" : "100"},
+			{"Continent" : "Asia", "Country" : "Japan", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Asia", "Country" : "Japan", "Item" : "Washer", "Quantity" : "200"},
+			{"Continent" : "Europe", "Country" : "Germany", "Item" : "TV", "Quantity" : "100"},
+			{"Continent" : "Europe", "Country" : "Germany", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Europe", "Country" : "Germany", "Item" : "Washer", "Quantity" : "200"},
+			{"Continent" : "Europe", "Country" : "France", "Item" : "TV", "Quantity" : "100"},
+			{"Continent" : "Europe", "Country" : "France", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Europe", "Country" : "France", "Item" : "Washer", "Quantity" : "200"},
+			{"Continent" : "Europe", "Country" : "Denmark", "Item" : "TV", "Quantity" : "100"},
+			{"Continent" : "Europe", "Country" : "Denmark", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Europe", "Country" : "Denmark", "Item" : "Washer", "Quantity" : "200"},
+			{"Continent" : "Americas", "Country" : "Canada", "Item" : "TV", "Quantity" : "100"},
+			{"Continent" : "Americas", "Country" : "Canada", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Americas", "Country" : "Canada", "Item" : "Washer", "Quantity" : "200"},
+			{"Continent" : "Americas", "Country" : "USA", "Item" : "TV", "Quantity" : "100"},
+			{"Continent" : "Americas", "Country" : "USA", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Americas", "Country" : "USA", "Item" : "Washer", "Quantity" : "200"},
+			{"Continent" : "Americas", "Country" : "Mexico", "Item" : "TV", "Quantity" : "100"},
+			{"Continent" : "Americas", "Country" : "Mexico", "Item" : "Freezer", "Quantity" : "300"},
+			{"Continent" : "Americas", "Country" : "Mexico", "Item" : "Washer", "Quantity" : "200"}
+			];
+		dataList1.setJSON(json);
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+    scwin.button1_onclick = function() {
+        gridView1.setColumnIncrement("Quantity", 0.1);
+    }
+    scwin.button2_onclick = function() {
+        var val = gridView1.getColumnIncrement("Quantity");
+        console.log(val);
+		window.checkLog = val;
+    }
+
+	scwin.Dbclick = function(id) {
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick(el);
+	}
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}		
+	scwin.checkVal1 = function() {
+		return window.checkLog == '0.1';
+	}		
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___spinner_Quantity___input').value == '300.1';
+	}			
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('button1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('button2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_1_2')");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___spinner_Quantity_upButton').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+	]]></script>
+    	<style type="text/css"><![CDATA[ ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView id="gridView1" style="width: 500px;height: 400px;margin: 20px;" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" dataList="data:dataList1" autoFit="allColumn" visibleRowNum="" rowNumVisible="" dataDragSelect="" useShiftKey="true" dataDragDrop="true" focusMode="both" useCtrlKey="" useCtrlOnMultisort="" selectedRowColor="" selectedCellColor="" rowStatusVisible="" dataDragDropStatus="true" showSortableImage="true" autoFitMinWidth="100" cellStatusIconPosition="left" cellStatusVisible="true" hammerEnabled="true" checkEditOnPaste="true">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="Country" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column2" value="Item" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column1" value="Quantity" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column width="70" inputType="text" style="height:20px" id="Country" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="Item" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="spinner" style="height:20px;" id="Quantity" value="" displayMode="label" blockSelect="true" validateOnInput="" class=".blue"
+						min="100" max="400" 
+						increment="1">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+		<w2:button type="" style="width:250px;height:40px;display:block;margin: 20px;" 
+            id="button1" ev:onclick="scwin.button1_onclick" 
+            label='setColumnIncrement("Quantity", 0.1)'>
+        </w2:button>
+        <w2:button type="" style="width:250px;height:40px;display:block;margin: 20px;" 
+            id="button2" ev:onclick="scwin.button2_onclick" 
+            label='getColumnIncrement("Quantity")'>
+        </w2:button>
+	</body>
+</html>

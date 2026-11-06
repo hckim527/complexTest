@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.sizeFormat = function(size) {
+    return parseInt(size, 10);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 열어서 windowContainer의 비공개 속성(useNameContainer=“true”) 설정한다.
+    //1. Open the sample file and set the windowContainer's private attribute (useNameContainer = "true").
+    //Verify step 1. 속성(useNameContainer)이 true로 설정된다.
+    //1. The attribute (useNameContainer) is set to true.
+    //Test step 2. 샘플파일을 실행 후 우측상단의 축소버튼을 클릭한다.
+    //2. Run the sample file and click on the zoom out button in the upper right corner.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "firstWidth = parseInt(WebSquare.wUnit.getJq('#win_subWindow9').css('width'))");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('win_subWindow9_restore').click()");
+    WebSquare.wUnit.addCommand("set", "secondWidth = parseInt(WebSquare.wUnit.getJq('#win_subWindow9').css('width'))");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 2. 화면이 축소되어 보여진다.
+    //2. The screen is reduced.
+    WebSquare.wUnit.addCommand("assert", "firstWidth > secondWidth", "true");
+    //Test step 3. 처음탭을 선택한다.
+    //3. Select the first tab.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('win_left').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('win_left').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('win_left').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'win_nameLayer_'+$p.id+'win_subWindow0').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 3. 왼쪽 여백이 동일하게 유지된다.(이전에는 왼쪽여백이 비정상적으로 커짐)
+    //3. The left margin remains the same (previously the left margin becomes abnormally large).
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#win_subWindow0').css('border-left-width').replace('px','') >= 0.8 && WebSquare.wUnit.getJq('#win_subWindow0').css('border-left-width').replace('px','') <= 1", "true");
+
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    for (var i = 1; i < 11; i++) {
+        win.createWindow("test" + i);
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 04-Apr-2018
+    var firstWidth, secondWidth;
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:windowContainer id="win" windowAutoResize="false" useCustomMsg="false" style="width:100%;height:100%;"
+    		sequentialArrangeRowNum="2" tooltipDisplay="true" stopToggleOnLast="false" windowTooltipDisplay="true" useControlIconTitle="false"
+    		useFixButton="false" horizontalArrangeNum="2" verticalArrangeNum="2" windowMaxNum="20" tooltipGroupClass="false" class=""
+    		hideTitleOnMaximize="false" spaInitCount="0" useStatusMsg="true" useCloseButton="false" windowMaximizeAll="false"
+    		fixArrangeFullScreen="false" sequentialArrangeColNum="2" toolbarPosition="top" useNameContainer="true" controlIconPosition="">
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    </body>
+</html>
+ 

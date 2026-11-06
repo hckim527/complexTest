@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="number"></w2:key>
+            			<w2:key id="key2" name="name2" dataType="bigDecimal"></w2:key>
+            			<w2:key id="key3" name="name3" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<key1><![CDATA[1234]]></key1>
+            			<key2><![CDATA[1234]]></key2>
+            			<key3><![CDATA[1234]]></key3>
+            		</w2:data>
+            	</w2:dataMap>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="소숫점숫자" dataType="number"></w2:column>
+            			<w2:column id="col2" name="소숫점숫자" dataType="bigDecimal"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1234]]></col1>
+            				<col2><![CDATA[1234]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[WebSquare.uiplugin.input.prototype.maskFormatModelFormat = function(value) {
+    try {
+        if (!value) {
+            return value;
+        }
+        var result = '';
+        var value2 = value;
+        value = value.toString();
+        if (this._getMaskFormat()) {
+            if (this.options.maskFormatModelExcludeChar) {
+                var excludeList = this.options.maskFormatModelExcludeChar.split('');
+                for (var i = 0; i < value.length; i++) {
+                    var inExcludeList = false;
+                    for (var j = 0; j < excludeList.length; j++) {
+                        if (value[i] == excludeList[j]) {
+                            inExcludeList = true;
+                            break;
+                        }
+                    }
+                    if (!inExcludeList) {
+                        result += value[i];
+                    }
+                }
+            } else {
+                result = value;
+            }
+        } else {
+            result = value;
+        }
+        if (typeof value2 === "number" && !isNaN(result)) {
+            result = Number(result)
+        }
+        return result;
+    } catch (e) {
+        WebSquare.exception.printStackTrace(e, null, this);
+    }
+};
+
+scwin.onpageload = function() {
+	
+};
+
+scwin.trigger1_onclick = function(e) {
+    ibx_key1.setValue(5432); 
+};
+
+scwin.trigger2_onclick = function(e) {
+    ibx_key1.setValue(5432.01);
+};
+
+scwin.trigger3_onclick = function(e) {
+    var big = $p.bigDecimal("5432");
+    ibx_key2.setValue(big);
+};
+
+scwin.trigger4_onclick = function(e) {
+    var big = $p.bigDecimal("5432.01");
+    ibx_key2.setValue(big);
+};
+
+scwin.trigger5_onclick = function(e) {
+    dataList1.setCellData(0, "col1", 5432);
+    var big = $p.bigDecimal("5432");
+    dataList1.setCellData(0, "col2", big);
+    grd_test.setFocusedCell(0, "col1", false);
+};
+
+scwin.trigger6_onclick = function(e) {
+    dataList1.setCellData(0, "col1", 5432.01);
+    var big = $p.bigDecimal("5432.01");
+    dataList1.setCellData(0, "col2", big);
+    grd_test.setFocusedCell(0, "col1", false);
+};
+
+scwin.trigger7_onclick = function(e) {
+    ibx_key3.setValue(5432.01);
+};
+
+scwin.trigger8_onclick = function(e) {
+    ibx_key3.setValue(5432);
+};
+
+	scwin.checkVal = function() {
+		const valueText = WebSquare.wUnit.getDomById('ibx_key3').value;
+		const innerText = WebSquare.wUnit.getDomById('wq_uuid_39').innerText;
+		return valueText == '1,234.00' && innerText == '1234.00';
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "1000");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	
+	
+]]></script>
+    </head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group tagname="table" style="width:100%;" id="" class="w2tb">
+			<w2:attributes>
+				<w2:summary></w2:summary>
+			</w2:attributes>
+			<xf:group tagname="caption"></xf:group>
+			<xf:group tagname="colgroup">
+				<xf:group tagname="col" style="width:25.00%;"></xf:group>
+				<xf:group tagname="col" style="width:25.00%;"></xf:group>
+				<xf:group tagname="col" style="width:25.00%;"></xf:group>
+				<xf:group tagname="col" style=""></xf:group>
+			</xf:group>
+			<xf:group tagname="tr" style="">
+				<xf:group tagname="th" style="" class="w2tb_th">
+					<w2:attributes>
+						<w2:scope>row</w2:scope>
+					</w2:attributes> 
+				</xf:group>
+				<xf:group tagname="td" style="" class="w2tb_td">
+					<xf:input id="ibx_key1" style="width: 200px;height: 21px;text-align: right;" ref="data:dataMap1.key1" dataType="number"
+						maskFormatModelExcludeChar="," maskFormat="reverse" allowChar="0-9." displayFormat="#,###.#0"></xf:input>
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<xf:trigger type="button" id="trigger2" style="width: 100px;height: 23px;margin-left: 20px;"
+						ev:onclick="scwin.trigger2_onclick">
+						<xf:label><![CDATA[setValue(소수)]]></xf:label>
+					</xf:trigger>
+					<xf:trigger type="button" id="trigger1" style="width: 100px;height: 23px;margin-left: 20px;"
+						ev:onclick="scwin.trigger1_onclick">
+						<xf:label><![CDATA[setValue(정수)]]></xf:label>
+					</xf:trigger>
+
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<w2:textbox id="" label="data" style="width: 150px;height: 23px;" ref="data:dataMap1.key1"></w2:textbox>
+				</xf:group>
+			</xf:group>
+			<xf:group tagname="tr">
+				<xf:group tagname="th" class="w2tb_th">
+					<w2:attributes>
+						<w2:scope>row</w2:scope>
+					</w2:attributes>
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<xf:input id="ibx_key2" style="width: 200px;height: 21px;text-align: right;" ref="data:dataMap1.key2" dataType="bigDecimal"
+						maskFormatModelExcludeChar="," maskFormat="reverse" displayFormat="#,###.#0" allowChar="0-9."></xf:input>
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<xf:trigger id="trigger4" style="width: 100px;height: 23px;margin-left: 20px" type="button"
+						ev:onclick="scwin.trigger4_onclick">
+						<xf:label><![CDATA[setValue(소수)]]></xf:label>
+					</xf:trigger>
+					<xf:trigger id="trigger3" style="width: 100px;height: 23px;margin-left: 20px;" type="button"
+						ev:onclick="scwin.trigger3_onclick">
+						<xf:label><![CDATA[setValue(정수)]]></xf:label>
+					</xf:trigger>
+
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<w2:textbox id="" label="data" ref="data:dataMap1.key2" style="width: 150px;height: 23px;"></w2:textbox>
+				</xf:group>
+			</xf:group>
+			<xf:group tagname="tr">
+				<xf:group tagname="th" class="w2tb_th">
+					<w2:attributes>
+						<w2:scope>row</w2:scope>
+					</w2:attributes>
+					<w2:span label="참고(maskFormatModelNumber)" style="" id=""></w2:span>
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<xf:input allowChar="0-9." dataType="number" displayFormat="#,###.#0" id="ibx_key3" maskFormat="reverse"
+						maskFormatModelExcludeChar="," ref="data:dataMap1.key3" style="width: 200px;height: 21px;text-align: right;" maskFormatModelNumber="true">
+					</xf:input>
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<xf:trigger id="trigger7" style="width: 100px;height: 23px;margin-left: 20px"
+						type="button" ev:onclick="scwin.trigger7_onclick">
+						<xf:label><![CDATA[setValue(소수)]]></xf:label>
+					</xf:trigger>
+					<xf:trigger id="trigger8" style="width: 100px;height: 23px;margin-left: 20px;"
+						type="button" ev:onclick="scwin.trigger8_onclick">
+						<xf:label><![CDATA[setValue(정수)]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<w2:textbox id="" label="data" ref="data:dataMap1.key3" style="width: 150px;height: 23px;"></w2:textbox>
+				</xf:group></xf:group><xf:group tagname="tr" style="">
+				<xf:group tagname="th" style="" class="w2tb_th">
+					<w2:attributes>
+						<w2:scope>row</w2:scope>
+					</w2:attributes>
+				</xf:group>
+				<xf:group tagname="td" style="" class="w2tb_td">
+					<w2:gridView checkAllType="false" defaultCellHeight="20" id="grd_test" style="width: 100%;height: 150px;"
+						dataList="data:dataList1" focusMode="row">
+						<w2:caption style="" id="caption3" value="this is a grid caption."></w2:caption>
+						<w2:header style="" id="header3">
+							<w2:row style="" id="row5">
+								<w2:column width="100" inputType="text" style="" id="column6" value="소숫점숫자" displayMode="label"></w2:column>
+								<w2:column width="100" inputType="text" style="" id="column5" value="소숫점숫자" displayMode="label"></w2:column>
+							</w2:row>
+						</w2:header>
+						<w2:gBody style="" id="gBody3">
+							<w2:row style="" id="row6">
+								<w2:column width="100" inputType="text" style="" id="col1" value="" displayMode="label" dataType="number"
+									maskFormatModelExcludeChar="," maskFormat="reverse" displayFormat="#,###.#0" allowChar="0-9." textAlign="right"></w2:column>
+								<w2:column width="100" inputType="text" style="" id="col2" value="" displayMode="label" dataType="bigDecimal"
+									maskFormatModelExcludeChar="," maskFormat="reverse" displayFormat="#,###.#0" allowChar="0-9." textAlign="right"></w2:column>
+							</w2:row>
+						</w2:gBody>
+					</w2:gridView>
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<xf:trigger id="trigger6" style="width: 100px;height: 23px;margin-left: 20px" type="button"
+						ev:onclick="scwin.trigger6_onclick">
+						<xf:label><![CDATA[setValue(소수)]]></xf:label>
+					</xf:trigger>
+					<xf:trigger id="trigger5" style="width: 100px;height: 23px;margin-left: 20px;" type="button"
+						ev:onclick="scwin.trigger5_onclick">
+						<xf:label><![CDATA[setValue(정수)]]></xf:label>
+					</xf:trigger>
+
+				</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<w2:attributes></w2:attributes>
+					<w2:textbox id="" label="data" style="width: 150px;height: 23px;" ref="data:dataList1.col1"></w2:textbox>
+					<w2:textbox id="" label="data" ref="data:dataList1.col2" style="width: 150px;height: 23px;"></w2:textbox>
+				</xf:group>
+			</xf:group>
+			<xf:group tagname="tr" style="height:100px;">
+				<xf:group tagname="th" style="" class="w2tb_th"><w2:attributes>
+						<w2:scope>row</w2:scope>
+					</w2:attributes></xf:group>
+				<xf:group tagname="td" style="" class="w2tb_td">
+					<w2:attributes>
+						<w2:colspan>3</w2:colspan>
+						<w2:rowspan>1</w2:rowspan>
+					</w2:attributes>
+					<w2:textbox id="" label='maksFormat "reverse"인 소수점 표현으로 되어 있는 형식에서 정수의 값을 setValue하면&lt;br/&gt;다른 displayFormat으로 소숫점을 미리 연산하여 처리하여 원하지 않은 값으로 표현된다.&lt;br/&gt;또한, 표현된 값과 실제 DataCollection 에서 저장된 값의 형태가 다르게 적용된다.&lt;br/&gt;참고로 maskFormatModelNumber 의 속성은 초기값의 표현을 제외하고는 동작하나 그리드에서 적용할 방법을 찾을수 없다.' style="width: 100%;height: 100%;" escape="false"></w2:textbox>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

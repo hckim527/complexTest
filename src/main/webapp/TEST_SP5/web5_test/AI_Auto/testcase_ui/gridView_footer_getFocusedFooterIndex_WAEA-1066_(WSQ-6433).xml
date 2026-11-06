@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="item" name="항목" dataType="text"/>
+                        <w2:column id="qty"  name="수량" dataType="number"/>
+                        <w2:column id="amt"  name="금액" dataType="number"/>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:mfeSubmission/>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    dataList1.setJSON([
+        {"item":"상품A", "qty":10, "amt":150000},
+        {"item":"상품B", "qty":5,  "amt":80000},
+        {"item":"상품C", "qty":8,  "amt":120000}
+    ]);
+};
+
+// footer 셀에 포커스를 둔 뒤 버튼 클릭 → 포커스된 footer 행 index 반환
+scwin.btnGetFocusedFooter_onclick = function(e) {
+    var idx = gridView1.getFocusedFooterIndex();
+    alert("getFocusedFooterIndex : " + idx);
+};
+]]></script>
+        <style type="text/css"><![CDATA[
+.guide { display:block; margin:10px 10px 4px; color:#0a7; font-size:13px; }
+.btns  { margin:10px; }
+]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+
+        <w2:textbox id="guide1" class="guide" style=""
+            label='footer 셀(합계행/비고행)을 클릭해 포커스를 준 뒤 버튼을 누르면 포커스된 footer 행 index 가 반환됩니다. columnMove(컬럼 드래그 이동) · sortable(헤더 클릭 정렬) 적용됨.'/>
+
+        <w2:gridView id="gridView1" dataList="dataList1"
+            sortable="true" columnMove="true" focusFooter="true" columnMoveWithFooter="true"
+            style="width:520px;height:200px;margin:10px;"
+            applyAllColumnStyle="false" scrollByColumn="false">
+            <w2:header id="header1">
+                <w2:row id="hrow1">
+                    <w2:column id="hItem" inputType="text" width="200" value="항목"/>
+                    <w2:column id="hQty"  inputType="text" width="150" value="수량"/>
+                    <w2:column id="hAmt"  inputType="text" width="170" value="금액"/>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="brow1">
+                    <w2:column id="item" inputType="text" width="200" displayMode="label"/>
+                    <w2:column id="qty"  inputType="text" width="150" displayMode="label" displayFormat="#,##0" dataType="number"/>
+                    <w2:column id="amt"  inputType="text" width="170" displayMode="label" displayFormat="#,##0" dataType="number"/>
+                </w2:row>
+            </w2:gBody>
+            <w2:footer id="footer1">
+                <!-- footer 0행 : 합계 -->
+                <w2:row id="frow1">
+                    <w2:column id="f1Label" inputType="text"       width="200" value="합계" textAlign="center"/>
+                    <w2:column id="f1Qty"   inputType="expression" width="150" expression="SUM('qty')" displayFormat="#,##0" dataType="number"/>
+                    <w2:column id="f1Amt"   inputType="expression" width="170" expression="SUM('amt')" displayFormat="#,##0" dataType="number"/>
+                </w2:row>
+                <!-- footer 1행 : 비고 (편집 가능 → 포커스 확인용) -->
+                <w2:row id="frow2">
+                    <w2:column id="f2Label" inputType="text" width="200" value="비고" textAlign="center"/>
+                    <w2:column id="f2Memo1" inputType="text" width="150"/>
+                    <w2:column id="f2Memo2" inputType="text" width="170"/>
+                </w2:row>
+            </w2:footer>
+        </w2:gridView>
+
+        <xf:group class="btns">
+            <xf:trigger type="button" id="btnGetFocusedFooter" style="width:220px;height:28px;" ev:onclick="scwin.btnGetFocusedFooter_onclick">
+                <xf:label><![CDATA[getFocusedFooterIndex]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+    </body>
+</html>

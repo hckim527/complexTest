@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="expr" name="name1" dataType="text" importFormatter="test"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	<w2:data use="true"></w2:data></w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2').setValue('3')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('dataList1').getRowStatus(0)", "U");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2').setValue('2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('dataList1').getRowStatus(0)", "R");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').innerText == '2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.data = [{
+            "col1": "삼림빵",
+            "col2": 2,
+            "col3": 3,
+            "col4": 4,
+            "rowStatus": "R"
+        },
+        {
+            "col1": "마늘빵",
+            "col2": 6,
+            "col3": 2,
+            "col4": 8,
+            "rowStatus": "R"
+        },
+        {
+            "col1": "모카빵",
+            "col2": 5,
+            "col3": 1,
+            "col4": 2,
+            "rowStatus": "R"
+        }
+    ];
+    dataList1.setJSON(data);
+    /* importFormatter 함수를 아래와 같이 정의하면 정상동작하지 않음
+    scwin.test = function(row){
+    	return row.col1;
+    }
+    */
+    scwin.test = function(row) {
+        return row.col1;
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 07-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left: 27px;top: 35px;width:447px;height:153px;" ignoreCellClick="false" fixedColumnWithHidden="true"
+    		useShiftKey="true" sortable="true" showSortableImage="" rowStatusVisible="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="70" value="상품명"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" inputType="text" width="70" value="상품명2"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" value="sort"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" value="재고"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="" id="expr" style="height:20px" inputType="text" width="70" displayFormat="" expression=""></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="select" width="70" allOption="" chooseOption=""
+    					viewType="" displayType="" imageHeight="" depthColumn="">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[가]]></w2:label>
+    							<w2:value><![CDATA[3]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[나]]></w2:label>
+    							<w2:value><![CDATA[1]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[다]]></w2:label>
+    							<w2:value><![CDATA[2]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

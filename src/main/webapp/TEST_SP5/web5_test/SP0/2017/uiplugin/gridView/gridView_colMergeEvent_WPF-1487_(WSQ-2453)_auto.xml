@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+            "col1": "sample1",
+            "col2": "1"
+        },
+        {
+            "col1": "sample1",
+            "col2": "1"
+        },
+        {
+            "col1": "sample1",
+            "col2": "2"
+        },
+        {
+            "col1": "sample2",
+            "col2": "2"
+        },
+        {
+            "col1": "sample2",
+            "col2": "2"
+        },
+        {
+            "col1": "sample2",
+            "col2": "1"
+        },
+        {
+            "col1": "sample2",
+            "col2": "1"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+}
+scwin.gridView1_onafteredit = function(row, col, value) {
+    log = "afterEdit";
+    //alert('afterEdit');
+};
+scwin.trigger1_onclick = function(e) {
+    dataList1.insertRow();
+};
+scwin.gridView1_oncellclick = function(row, col) {
+    console.log('click');
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkError = function() {
+    var log = WebSquare.logger.getErrorLog();
+    return log.indexOf("cannot set property 'innerHTML' of undefined") == -1;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridBodyDefault_rowNumber')[5].innerText == '8'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_5_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_5_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___selectbox_col2_itemTable_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log", "afterEdit");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log = ''");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_5_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_5_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___selectbox_col2_itemTable_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log == 'afterEdit'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkError()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.log = "";
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 04-Apr-2018
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView useFilterList="false" dataList="dataList1"
+    		scrollByColumn="false" summaryAuto="false"
+    		scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: relative;width: 500px;height: 150px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true"
+    		ev:onafteredit="scwin.gridView1_onafteredit" readOnly="false" visibleRowNum="" rowNumVisible="true" ev:onviewchange="" ev:oncellclick="scwin.gridView1_oncellclick">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" value="name2">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" allOption="" chooseOption="">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2"
+    					colMerge="true" style="height:20px"
+    					width="70" inputType="select" displayMode="label" allOption=""
+    					chooseOption="">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[1]]></w2:label>
+    							<w2:value><![CDATA[1]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[2]]></w2:label>
+    							<w2:value><![CDATA[2]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1"
+    		style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

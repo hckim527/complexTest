@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.mapChart1_onmapmouseover = function(properties) {
+    var targetCode = properties.code;
+    d3.selectAll(".w2mapchart_map .municipality-label")
+        .filter(function(d) {
+            return d.properties.code == targetCode;
+        })
+        .style("visibility", "visible");
+};
+scwin.mapChart1_onmapmouseout = function(properties) {
+    var targetCode = properties.code;
+    d3.selectAll(".w2mapchart_map .municipality-label")
+        .filter(function(d) {
+            return d.properties.code == targetCode;
+        })
+        .style("visibility", "hidden");
+};
+scwin.mouseOverBehaviour = function(cl) {
+    var img = document.getElementsByClassName(cl)[0];
+    var ev = document.createEvent("MouseEvents");
+    ev.initEvent("mouseover", true, true);
+    img.dispatchEvent(ev);
+}
+scwin.checkVal = function() {
+    return window.getComputedStyle(document.getElementsByClassName('kv')[0]).getPropertyValue('background-color') == 'rgb(255, 0, 0)';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 2. MapChart영역에 마우스를 오버한다.
+    //2. Mouse over the MapChart area.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('municipality c32')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 지역명과 tooltip(지역명+지역코드)이 보여진다. 또한 색생이 red로 설정되어있어서 빨강색으로 보여진다.
+    //2. Region name and tooltip (area name + area code) are displayed. Also, the color is set to red so it appears red.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'mapChart1_tooltip').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('mapChart1_tooltip').textContent == '강원특별자치도(32)'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 21-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style>
+			.w2mapchart_map .municipality-label {
+				visibility:hidden;
+			}
+			.w2mapchart_tooltip .kv {
+			    background:red;
+			    border:1px solid purple;
+			    border-radius:5px;
+			    font-size:12px;
+			    padding:4px;
+			    color:blue;
+			}     
+		</style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:mapchart style="position: relative;width:616px;height:435px;" 
+    	id="mapChart1" dataMapRatio_level0="simp1"
+    	event_select="onclick" event_drilldown="ondblclick"
+    	event_zoom="none" event_drag="none"
+    	ev:onmapmouseover="scwin.mapChart1_onmapmouseover" 
+    	ev:onmapmouseout="scwin.mapChart1_onmapmouseout"></w2:mapchart>
+    </body>
+</html>
+ 

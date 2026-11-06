@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <script type="text/javascript" lazy="false"><![CDATA[
+// WAEA-912 : xfControl.activate 의 :wq:tabbable jQuery 셀렉터 제거 검증
+//
+// 판정 축 두 개.
+//   (1) 기능 등가성 : Tab 순서가 기대대로인가. 구/신 엔진 모두 PASS 여야 한다.
+//   (2) 수정 반영   : _getTabbableComps 헬퍼가 있는가 / :wq:tabbable 셀렉터 호출이 0 인가.
+//
+// 포커스 이동을 focusin 으로 기록한다. wframe 은 iframe 이라 이벤트가 밖으로 올라오지
+// 않으므로 iframe 문서에 별도로 리스너를 건다.
+
+// 샘플에 등장하는 모든 컴포넌트 id. 여기 없는 id(버튼/로그창)는 기록하지 않는다.
+// readOnly/disabled/hidden 도 목록에 넣는다. 잘못 포커스가 가면 잡아내야 하므로.
+var W912_KNOWN = [
+    "mainBefore", "mainAfter",
+    "subReadOnlyFirst", "subDisabledFirst", "subFirst", "subTextarea", "subLast", "subReadOnlyLast",
+    "udcBefore", "udcAfter",
+    "udcReadOnlyFirst", "udcFirst", "udcTextarea", "udcLast", "udcReadOnlyLast",
+    "hiddenBefore", "hiddenMiddle", "hiddenAfter"
+];
+
+scwin.recorded = [];
+scwin.expected = null;
+scwin.caseName = "";
+scwin.jqSelectorCalls = 0;
+scwin.jqWqCalls = 0;
+
+scwin.appendLog = function(line) {
+    txa_log.setValue(txa_log.getValue() + line + "\n");
+};
+
+// ---- 렌더된 실제 id 는 prefix 가 붙을 수 있다. 뒤에서부터 일치시킨다. ----
+scwin.normalize = function(rawId) {
+    if (!rawId) { return null; }
+    for (var i = 0; i < W912_KNOWN.length; i++) {
+        var k = W912_KNOWN[i];
+        if (rawId === k || rawId.slice(-k.length) === k) { return k; }
+    }
+    return null;
+};
+
+// 포커스 받은 요소가 컴포넌트 내부 input 일 수 있으므로 조상까지 올라간다.
+scwin.idOf = function(el) {
+    var depth = 0;
+    while (el && el.nodeType === 1 && depth < 12) {
+        var n = scwin.normalize(el.id);
+        if (n) { return n; }
+        el = el.parentNode;
+        depth++;
+    }
+    return null;
+};
+
+scwin.onFocusIn = function(e) {
+    var id = scwin.idOf(e.target);
+    if (!id) { return; }
+    var last = scwin.recorded[scwin.recorded.length - 1];
+    if (last === id) { return; }
+    scwin.recorded.push(id);
+    scwin.appendLog("   focus -> " + id);
+};
+
+// ---- 메인 문서 + wframe(iframe) 문서 양쪽에 리스너 설치 ----
+scwin.attachRecorder = function(doc, label) {
+    if (!doc || doc.__waea912_rec) { return false; }
+    doc.addEventListener("focusin", scwin.onFocusIn, true);
+    doc.__waea912_rec = true;
+    scwin.appendLog("  focus 기록기 설치 : " + label);
+    return true;
+};
+scwin.attachAll = function() {
+    scwin.attachRecorder(document, "main document");
+    var frames = document.getElementsByTagName("iframe");
+    for (var i = 0; i < frames.length; i++) {
+        try {
+            scwin.attachRecorder(frames[i].contentDocument, "iframe[" + i + "] " + (frames[i].id || ""));
+        } catch (e) {
+            scwin.appendLog("  iframe[" + i + "] 접근 불가 : " + e.message);
+        }
+    }
+};
+
+// ---- jQuery 스파이 : :wq / :tabbable 셀렉터와 .wq() 플러그인 호출만 센다 ----
+scwin.installJqSpy = function() {
+    if (typeof window.jQuery !== "function") { return "jQuery 자체가 없음"; }
+    if (window.jQuery.__waea912) { return "설치됨(이미)"; }
+
+    var orig = window.jQuery;
+    var spy = function(sel) {
+        if (typeof sel === "string" && (sel.indexOf(":wq") > -1 || sel.indexOf(":tabbable") > -1)) {
+            scwin.jqSelectorCalls++;
+            scwin.appendLog("   [jQuery selector] " + sel);
+        }
+        return orig.apply(this, arguments);
+    };
+    for (var k in orig) {
+        if (Object.prototype.hasOwnProperty.call(orig, k)) { spy[k] = orig[k]; }
+    }
+    spy.fn = orig.fn;
+    spy.prototype = orig.prototype;
+    spy.__waea912 = true;
+
+    if (orig.fn && typeof orig.fn.wq === "function") {
+        var origWq = orig.fn.wq;
+        orig.fn.wq = function() {
+            scwin.jqWqCalls++;
+            return origWq.apply(this, arguments);
+        };
+    }
+
+    window.jQuery = spy;
+    if (window.$ === orig) { window.$ = spy; }
+    return "설치됨";
+};
+
+// ---- 시나리오 ----
+scwin.startCase = function(name, startId, expected) {
+    scwin.recorded = [];
+    scwin.expected = expected;
+    scwin.caseName = name;
+    scwin.jqSelectorCalls = 0;
+    scwin.jqWqCalls = 0;
+
+    scwin.appendLog("--------------------------------------------------------");
+    scwin.appendLog("[시작] " + name);
+    scwin.attachAll();
+    scwin.appendLog("  기대 순서 : " + expected.join(" -> "));
+    scwin.appendLog("  " + startId + " 에 포커스를 줍니다. 이제 Tab 을 " + (expected.length - 1) + "번 누르세요.");
+    scwin.appendLog("  다 누른 뒤 [판정] 버튼을 누르세요.");
+
+    var comp = window[startId];
+    if (comp && typeof comp.focus === "function") {
+        comp.focus();
+    } else {
+        var el = document.getElementById(startId);
+        if (el && el.focus) { el.focus(); }
+        else { scwin.appendLog("  ERROR : " + startId + " 를 찾지 못했습니다."); }
+    }
+};
+
+scwin.btn_case_wframe_onclick = function() {
+    scwin.startCase("① wframe 진입/이탈", "mainBefore",
+        ["mainBefore", "subFirst", "subTextarea", "subLast", "mainAfter"]);
+};
+scwin.btn_case_udc_onclick = function() {
+    scwin.startCase("② UDC 진입/이탈", "udcBefore",
+        ["udcBefore", "udcFirst", "udcTextarea", "udcLast", "udcAfter"]);
+};
+scwin.btn_case_hidden_onclick = function() {
+    scwin.startCase("③ 숨김 컴포넌트 skip", "hiddenBefore",
+        ["hiddenBefore", "hiddenAfter"]);
+};
+
+scwin.btn_judge_onclick = function() {
+    if (!scwin.expected) {
+        scwin.appendLog("먼저 ①~③ 중 하나로 시나리오를 시작하세요.");
+        return;
+    }
+    var act = scwin.recorded;
+    var exp = scwin.expected;
+
+    scwin.appendLog("[판정] " + scwin.caseName);
+    scwin.appendLog("  기대 : " + exp.join(" -> "));
+    scwin.appendLog("  실제 : " + (act.length ? act.join(" -> ") : "(기록 없음)"));
+
+    var ok = (act.length === exp.length);
+    if (ok) {
+        for (var i = 0; i < exp.length; i++) {
+            if (act[i] !== exp[i]) { ok = false; break; }
+        }
+    }
+    scwin.appendLog("  ===> 기능 등가성 : " + (ok ? "PASS" : "FAIL"));
+
+    if (!ok) {
+        var n = Math.max(exp.length, act.length);
+        for (var j = 0; j < n; j++) {
+            if (exp[j] !== act[j]) {
+                scwin.appendLog("       " + (j + 1) + "번째 : 기대=" + (exp[j] || "-") + "  실제=" + (act[j] || "-"));
+            }
+        }
+        scwin.appendLog("       * readOnly/disabled/hidden 컴포넌트가 실제에 찍혔다면 skip 로직이 깨진 것입니다.");
+        scwin.appendLog("       * 실제가 짧다면 Tab 을 덜 눌렀거나 내부 진입/이탈이 안 된 것입니다.");
+    }
+
+    var noJq = (scwin.jqSelectorCalls === 0 && scwin.jqWqCalls === 0);
+    scwin.appendLog("  ===> 수정 반영   : " + (noJq ? "PASS (셀렉터 호출 0)" : "FAIL (jQuery 사용 중)") +
+                    "   [:wq/:tabbable " + scwin.jqSelectorCalls + "회, .wq() " + scwin.jqWqCalls + "회]");
+    if (noJq) {
+        scwin.appendLog("       * 스파이 설치 전에 엔진이 jQuery 참조를 캐시했다면 0 으로 보일 수 있습니다.");
+        scwin.appendLog("       * [환경] 의 _getTabbableComps 존재 여부를 함께 보세요.");
+    }
+    scwin.appendLog("");
+};
+
+scwin.btn_spy_onclick = function() {
+    scwin.appendLog("  jQuery 스파이 : " + scwin.installJqSpy());
+    scwin.appendLog("  * 페이지 로드 직후, 시나리오 시작 전에 눌러야 합니다.");
+};
+
+scwin.btn_env_onclick = function() {
+    var xc = window.WebSquare && WebSquare.xfControl;
+    var proto = xc && xc.prototype;
+    var util = window.WebSquare && WebSquare.util;
+
+    scwin.appendLog("--------------------------------------------------------");
+    scwin.appendLog("[환경]");
+    scwin.appendLog("  jQuery                          = " + (typeof window.jQuery === "function" ? "있음" : "없음"));
+    scwin.appendLog("  xfControl.prototype             = " + (!!proto));
+    scwin.appendLog("  _getTabbableComps               = " + (proto && typeof proto._getTabbableComps === "function"));
+    scwin.appendLog("     -> true 면 수정 반영된 신엔진, false 면 구엔진(또는 구버전 js 캐시).");
+    scwin.appendLog("  util.getNextTabbableComp        = " + (util && typeof util.getNextTabbableComp === "function"));
+    scwin.appendLog("  util.setNextTabID               = " + (util && typeof util.setNextTabID === "function"));
+    scwin.appendLog("  WAEA_912_MAIN_READY             = " + (window.WAEA_912_MAIN_READY === true));
+    scwin.appendLog("  WAEA_912_SUB_READY  (wframe)    = " + (window.WAEA_912_SUB_READY === true));
+    scwin.appendLog("  WAEA_912_UDC_READY  (udc)       = " + (window.WAEA_912_UDC_READY === true));
+    scwin.appendLog("     -> SUB/UDC 가 false 면 wframe/UDC 가 로드되지 않은 것입니다. src 경로를 확인하세요.");
+};
+
+scwin.btn_clear_onclick = function() {
+    txa_log.setValue("");
+};
+
+// ---- 각 input 에 자기 id 와 역할을 적어둔다. 어디를 클릭할지 눈으로 보이게. ----
+scwin.paint = function(comp, text) {
+    if (comp && typeof comp.setValue === "function") { comp.setValue(text); }
+};
+scwin.paintLabels = function() {
+    scwin.paint(mainBefore,   "① 시작 · mainBefore");
+    scwin.paint(mainAfter,    "① 끝 · mainAfter");
+    scwin.paint(udcBefore,    "② 시작 · udcBefore");
+    scwin.paint(udcAfter,     "② 끝 · udcAfter");
+    scwin.paint(hiddenBefore, "③ 시작 · hiddenBefore");
+    scwin.paint(hiddenMiddle, "hiddenMiddle (숨김)");
+    scwin.paint(hiddenAfter,  "③ 끝 · hiddenAfter");
+};
+
+scwin.onpageload = function() {
+    window.WAEA_912_MAIN_READY = true;
+    scwin.paintLabels();
+    scwin.appendLog("WAEA-912 xfControl activate :wq:tabbable 제거 검증");
+    scwin.appendLog("순서 : [환경] -> [jQuery 스파이] -> ① 또는 ② 또는 ③ -> Tab 반복 -> [판정]");
+    scwin.appendLog("각 input 안에 자기 id 가 적혀 있습니다. 시작 버튼을 누르면 포커스가 자동으로 갑니다.");
+    scwin.appendLog("Tab 을 누르는 동안 focus 이동이 아래에 자동 기록됩니다.");
+    scwin.appendLog("");
+    // iframe 로드가 늦으므로 잠시 뒤 한 번 더 붙인다.
+    setTimeout(scwin.attachAll, 800);
+};
+]]></script>
+        <w2:require as="udc_waea912" type="page" variableClone="true" src="xfControl_activate_tabbable_WAEA-912_(WSQ-6342)_udc.xml"></w2:require>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:input id="mainBefore" style="position:absolute;left:20px;top:20px;width:220px;height:24px;" nextTabID="wframe1"></xf:input>
+        <w2:wframe id="wframe1" scope="true" style="position:absolute;left:20px;top:60px;width:460px;height:230px;border:1px solid #999;"
+            src="xfControl_activate_tabbable_WAEA-912_(WSQ-6342)_sub.xml" nextTabID="mainAfter"></w2:wframe>
+        <xf:input id="mainAfter" style="position:absolute;left:20px;top:310px;width:220px;height:24px;"></xf:input>
+
+        <xf:input id="udcBefore" style="position:absolute;left:520px;top:20px;width:220px;height:24px;" nextTabID="udc1"></xf:input>
+        <w2:udc_waea912 id="udc1" style="position:absolute;left:520px;top:60px;width:460px;height:230px;border:1px solid #999;" nextTabID="udcAfter"></w2:udc_waea912>
+        <xf:input id="udcAfter" style="position:absolute;left:520px;top:310px;width:220px;height:24px;"></xf:input>
+
+        <xf:input id="hiddenBefore" style="position:absolute;left:20px;top:360px;width:220px;height:24px;" nextTabID="hiddenMiddle"></xf:input>
+        <xf:input id="hiddenMiddle" style="display:none;position:absolute;left:20px;top:395px;width:220px;height:24px;" nextTabID="hiddenAfter"></xf:input>
+        <xf:input id="hiddenAfter" style="position:absolute;left:20px;top:430px;width:220px;height:24px;"></xf:input>
+
+        <xf:group style="position:absolute;left:520px;top:355px;width:470px;height:110px;">
+            <xf:trigger type="button" id="btn_env" ev:onclick="scwin.btn_env_onclick" style="width:145px;height:28px;margin:2px;">
+                <xf:label><![CDATA[환경 (엔진 판별)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_spy" ev:onclick="scwin.btn_spy_onclick" style="width:145px;height:28px;margin:2px;">
+                <xf:label><![CDATA[jQuery 스파이]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick" style="width:80px;height:28px;margin:2px;">
+                <xf:label><![CDATA[clear]]></xf:label>
+            </xf:trigger>
+
+            <xf:trigger type="button" id="btn_case_wframe" ev:onclick="scwin.btn_case_wframe_onclick" style="width:145px;height:28px;margin:2px;">
+                <xf:label><![CDATA[① wframe 시작]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_case_udc" ev:onclick="scwin.btn_case_udc_onclick" style="width:145px;height:28px;margin:2px;">
+                <xf:label><![CDATA[② UDC 시작]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_case_hidden" ev:onclick="scwin.btn_case_hidden_onclick" style="width:145px;height:28px;margin:2px;">
+                <xf:label><![CDATA[③ hidden 시작]]></xf:label>
+            </xf:trigger>
+
+            <xf:trigger type="button" id="btn_judge" ev:onclick="scwin.btn_judge_onclick" style="width:145px;height:28px;margin:2px;">
+                <xf:label><![CDATA[판정]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <w2:textarea id="txa_log" readOnly="true" style="position:absolute;left:20px;top:480px;width:960px;height:240px;font-family:monospace;font-size:12px;background:#1e1e1e;color:#0f0;"/>
+    </body>
+</html>

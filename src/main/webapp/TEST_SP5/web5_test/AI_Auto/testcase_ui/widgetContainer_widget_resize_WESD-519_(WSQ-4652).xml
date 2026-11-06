@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="STORECD" name="점포코드" dataType="text"></w2:column>
+                        <w2:column id="STORENM" name="점포명" dataType="text"></w2:column>
+                        <w2:column id="CLOSE_SE_CODE" name="마감여부" dataType="text"></w2:column>
+                        <w2:column id="APPLC_DE" name="일자" dataType="date"></w2:column>
+                        <w2:column id="BELOW" name="출근_8시간미만_전주결과" dataType="number"></w2:column>
+                        <w2:column id="ATTEND_8_TM_BELOW_CNT" name="출근_8시간미만_금주계획" dataType="number"></w2:column>
+                        <w2:column id="MONTHN" name="출근_8시간이상_전주결과" dataType="number"></w2:column>
+                        <w2:column id="ATTEND_8_TM_MOTHN_CNT" name="출근_8시간이상_금주계획" dataType="number"></w2:column>
+                        <w2:column id="CAL1" name="기준식수" dataType="number"></w2:column>
+                        <w2:column id="LUNCH_NMPR_CNT" name="중식" dataType="number"></w2:column>
+                        <w2:column id="LNMEAL_NMPR_CNT" name="야식" dataType="number"></w2:column>
+                        <w2:column id="CAL2" name="급식인원_합계" dataType="number"></w2:column>
+                        <w2:column id="RSTRNT_LUNCH_UPC" name="중식단가" dataType="number"></w2:column>
+                        <w2:column id="RSTRNT_LNMEAL_UPC" name="야식단가" dataType="number"></w2:column>
+                        <w2:column id="LUNCH_AMT" name="중식금액" dataType="number"></w2:column>
+                        <w2:column id="LNMEAL_AMT" name="야식금액" dataType="number"></w2:column>
+                        <w2:column id="REMARKS" name="특이사항" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.trigger1_onclick = function(e) {
+    count++;
+    widgetContainer1.addWidgets({
+        id: "widget_" + count,
+        title: "위젯" + count,
+        src: "widget.xml",
+        scope: true,
+        x: 0,
+        y: 0,
+        unitWidth: 1,
+        unitHeight: 10,
+        minUnitWidth: 10,
+        minUnitHeight: 10,
+        minimized: false,
+        resized: false,
+    });
+};
+scwin.trigger2_onclick = function(e) {
+    count1++;
+    widgetContainer2.addWidgets({
+        id: "widget" + count1,
+        title: "위젯" + count1,
+        src: "widget.xml",
+        scope: true,
+        x: 0,
+        y: 0,
+        unitWidth: 1,
+        unitHeight: 10,
+        minimized: false,
+        resized: false,
+    });
+};
+scwin.trigger3_onclick = function(e) {
+    var widgetStr = "";
+    widgetStr += "<w2:widgetContainer xmlns:w2='http://www.inswave.com/websquare' id='widgetContainer3' unitHeightPixel='200' mode='switch' widgetMove='true' cols='3' ";
+    widgetStr += " style='position: relative ;width:100%;height:100%;border:1px solid black;'>";
+    widgetStr += "</w2:widgetContainer>";
+    debugger;
+    WebSquare.util.dynamicCreate("widgetContainer3", "widgetContainer", widgetStr, group1);
+};
+scwin.widgetContainer1_onwidgetmove = function(id, newRect, oldRect) {
+    var widget = widgetContainer1.getWidgetById(id);
+    var widgetInfo = widget.getWidgetInfo();
+    console.log("onwidgetmove:", widgetInfo);
+};
+scwin.widgetContainer1_onwidgetresize = function(id, newRect, oldRect) {
+    console.log("onwidgetresize: ", arguments);
+    console.log("before: ", widgetContainer1.getWidgetById(id).unitHeight)
+    if (newRect.unitHeight <= 2) {
+        widgetContainer1.resizeWidget(id, 4, 4, {
+            force: true
+        });
+    }
+    console.log("after: ", widgetContainer1.getWidgetById(id).unitHeight)
+};
+scwin.widgetContainer2_onwidgetresize = function(id, newRect, oldRect) {
+    console.log("onwidgetresize2: ", arguments);
+    console.log("before2: ", widgetContainer2.getWidgetById(id).unitHeight)
+    if (newRect.unitHeight <= 1) {
+        widgetContainer2.resizeWidget(id, 3, 2, {
+            force: true
+        });
+    }
+    console.log("after2: ", widgetContainer2.getWidgetById(id).unitHeight)
+};
+scwin.trigger4_onclick = function(e) {
+    var x = widgetContainer1.exportWidgets();
+    //JSON.stringify(x,null,"\t");
+    console.log(JSON.stringify(x, null, "\t"));
+    //id가 "1","2" 로 확인됨."widget_1","widget_2" 로 addWidgets 하였으나.
+};
+scwin.trigger5_onclick = function(e) {
+    widgetContainer1.removeWidgetsAll();
+};
+scwin.trigger6_onclick = function(e) {
+    widgetContainer1.enableWidgetResize(scwin.isResizable);
+    scwin.isResizable = !scwin.isResizable;
+};
+scwin.trigger7_onclick = function(e) {
+    widgetContainer2.removeWidgetsAll();
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.count = 0;
+    window.count1 = 0;
+    scwin.isResizable = true;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:group id="" style="position: absolute;width:637px;height:449px;float:left;" class="">
+            <xf:group id="" style="position: relative;height:40px;" class="">
+                <xf:trigger type="button" id="trigger1" style="position: relative;height:25px;width:150px;float: left;"
+                    ev:onclick="scwin.trigger1_onclick">
+                    <xf:label><![CDATA[addWidget]]></xf:label>
+                </xf:trigger>
+                <xf:trigger type="button" style="width:202px;height:25px;position: relative;float:left;" id="trigger4"
+                    ev:onclick="scwin.trigger4_onclick">
+                    <xf:label><![CDATA[widgetContainer1.exportWidgets()]]></xf:label>
+                </xf:trigger>
+                <w2:textbox label="mode=pushpull" id=""
+                    style="position: relative;float: left;font-size:14pt;font-weight:bold;margin-top:10px;margin-left:75px;">
+                </w2:textbox>
+                <xf:trigger ev:onclick="scwin.trigger5_onclick" id="trigger5" style="width:202px;height:25px;position: relative;float:left;"
+                    type="button">
+                    <xf:label><![CDATA[widgetContainer1.removeWidgetsAll()]]></xf:label>
+                </xf:trigger>
+                <xf:trigger ev:onclick="scwin.trigger6_onclick" id="trigger6" style="width:202px;height:25px;position: relative;float:left;"
+                    type="button">
+                    <xf:label><![CDATA[widgetContainer1 toggle resizeWidget]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            <w2:widgetContainer id="widgetContainer1" cols="4" style="position: relative ;width:100%;height:100%;border:1px solid black;" preventMaximizeByTitle="true" horizontalMargin="30" verticalMargin="30"
+                unitHeightPixel="30" mode="pushpull" widgetMove="false" widgetResize="false" maxUnitHeight="355" maxUnitWidth="200" minUnitHeight="1" minUnitWidth="1"
+                ev:onwidgetmove="scwin.widgetContainer1_onwidgetmove" ev:onwidgetresize="scwin.widgetContainer1_onwidgetresize">
+            </w2:widgetContainer>
+        </xf:group>
+        <xf:group class="" id=""
+            style="position: absolute;width:637px;height:449px;float:left;margin-left:-180px;left:860px;top:40px;margin-top:-20px;">
+            <xf:group class="" id="" style="position: relative;height:40px;">
+                <xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2"
+                    style="position: relative;height:25px;width:150px;float: left;" type="button">
+                    <xf:label><![CDATA[addWidget]]></xf:label>
+                </xf:trigger>
+                <w2:textbox id="" label="mode=switch"
+                    style="position: relative;float: left;font-size:14pt;font-weight:bold;margin-top:10px;margin-left:75px;left:118px;top:0px;">
+                </w2:textbox>
+                <xf:trigger ev:onclick="scwin.trigger7_onclick" id="trigger7"
+                    style="position: relative;height:25px;width:150px;float: left;left:-193px;top:1px;" type="button">
+                    <xf:label><![CDATA[removeWidgetsAll]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            <w2:widgetContainer id="widgetContainer2" cols="3" style="position: relative ;width:100%;height:100%;border:1px solid black;"
+                unitHeightPixel="200" mode="switch" widgetMove="true" ev:onwidgetresize="scwin.widgetContainer2_onwidgetresize">
+            </w2:widgetContainer>
+        </xf:group>
+    </body>
+</html>
+ 

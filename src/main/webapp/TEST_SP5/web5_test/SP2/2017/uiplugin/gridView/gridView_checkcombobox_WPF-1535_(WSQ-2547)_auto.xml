@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            			<w2:column id="a" name="a" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" bind="dataList2">
+            		<w2:condition type="filter"><![CDATA[ a == 'a']]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var temp = [{
+        "col1": "aa",
+        "col2": "bb",
+        "col3": "a2"
+    }];
+    dataList1.setJSON(temp);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 checkcombobox를 선택하여 값(a3)을 선택한다.
+    //1. After running the sample file, select checkcombobox and select the value (a3).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox1_itemTable_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. checkcombobox의 값(a3)이 선택되어진다.
+    //1. The value of checkcombobox (a3) is selected.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('checkcombobox1_itemTable_2_checkbox').checked", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('checkcombobox1_label').innerText == 'a3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 'gridViewdataList1.setJSON'버튼을 클릭한다.
+    //2. Click the 'gridViewdataList1.setJSON' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. checkcombobox의 값(a3)이 계속 유지된다. (이전에는 초기화되어짐)
+    //2. The value of checkcombobox (a3) is kept. (Previously initialized)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('checkcombobox1_label').innerText == 'a3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "label": "a1",
+        "value": "a1",
+        "a": "a"
+    }, {
+        "label": "a2",
+        "value": "a2",
+        "a": "a"
+    }, {
+        "label": "b1",
+        "value": "b1",
+        "a": "b"
+    }, {
+        "label": "a3",
+        "value": "a3",
+        "a": "a"
+    }];
+    dataList2.setJSON(jsonData);
+    window.temp = [{
+        "col1": "1",
+        "col2": "2",
+        "col3": "a1"
+    }];
+    dataList1.setJSON(temp);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 31-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" summaryAuto="false" useFilterList="false" scrollByColumn="false" showSortableUseFilter="false"
+    		scrollByColumnAdaptive="false" id="" style="position: absolute ;left:24px;top:82px;width: 504px;height: 235px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name4">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="select" width="70" displayMode="label"
+    					allOption="" chooseOption="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:linkedDataList1">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:checkcombobox appearance="minimal" direction="auto" chooseOption="" id="checkcombobox1"
+    		style="position: absolute ;left:128px;top:26px;width: 189px;height: 29px;" displayMode="label" displayAllOptionLabel="false"
+    		allOption="" disabled="false" submenuSize="auto">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:linkedDataList1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:checkcombobox>
+    	<w2:textbox label="checkcombobox" id="" style="position: absolute ;left: 26px;top: 28px;width:97px;height:23px;"></w2:textbox>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 369px;top: 27px;width:138px;height:41px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[gridView&#xA;dataList1.setJSON]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

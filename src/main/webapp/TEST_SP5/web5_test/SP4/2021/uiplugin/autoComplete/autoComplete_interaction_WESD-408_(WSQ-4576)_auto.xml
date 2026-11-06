@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+            <w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true" style="">
+                <w2:columnInfo>
+                    <w2:column dataType="text" id="label" name="라벨"></w2:column>
+                    <w2:column dataType="text" id="value" name="값"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+            </w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref='' target='data:json,dataList1' action="/JSON/autoComplete.json" method="post" mediatype="application/json"
+        		encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+        		ev:submitdone="scwin.submission1_submitdone" ev:submiterror="">
+        	</xf:submission>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var json = [{
+            "label": "test_1",
+            "value": "01"
+        },
+        {
+            "label": "test_2",
+            "value": "02"
+        },
+        {
+            "label": "test_3",
+            "value": "03"
+        }
+    ]
+    dataList1.setJSON(json);
+    autoComplete1.setItemSet("data:dataList1", "label", "value");
+};
+scwin.onpageunload = function() {};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#autoComplete1_input', 'key-sequence', {
+        sequence: '1'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#autoComplete1_input', 'key-combo', {
+        combo: 'ENTER'
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_itemTable_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_label').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('autoComplete1_itemTable_1').innerText == 'test_1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:autoComplete visibleRowNum="10" chooseOption="" id="autoComplete1"
+            style="left:21px;top:22px;width: 148px;height: 21px;" search="" interactionMode="true" displayMode="label"
+            useKeywordHighlight="true" noResult="useData" submenuSize="auto" editType="select">
+            <w2:choices>
+                <w2:itemset nodeset="">
+                    <w2:label ref=""></w2:label>
+                    <w2:value ref=""></w2:value>
+                </w2:itemset>
+            </w2:choices>
+        </w2:autoComplete>
+    </body>
+</html>
+ 

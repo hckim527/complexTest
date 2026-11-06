@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" removeDummyRowStatus="true" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="a" name="a" dataType="bigDecimal"></w2:column>
+                        <w2:column id="b" name="b" dataType="bigDecimal"></w2:column>
+                        <w2:column id="c" name="c" dataType="bigDecimal"></w2:column>
+                        <w2:column id="calcData" name="calcData" dataType="bigDecimal" expression="calc('(a+b)*c')"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+requires("externalJS/big/big.min.js");
+
+scwin.expected = "469135800246913580024691358002";
+
+scwin.stringify = function(value) {
+    if (value == null) {
+        return value;
+    }
+    return value.toString ? value.toString() : String(value);
+};
+
+scwin.resetGridExpression = function() {
+    var cellInfo = gridView1 && gridView1.getCellInfo("calcGrid");
+    if (cellInfo) {
+        cellInfo.options.expressionFunc = null;
+    }
+};
+
+scwin.refreshGridExpression = function() {
+    scwin.resetGridExpression();
+    if (gridView1 && gridView1.refresh) {
+        gridView1.refresh();
+    }
+};
+
+scwin.isBigReady = function() {
+    try {
+        var value = WebSquare.bigDecimal("1");
+        return !!(value && value.big && typeof value.big.plus === "function");
+    } catch (e) {
+        return false;
+    }
+};
+
+scwin.refreshWhenBigReady = function(retryCount) {
+    retryCount = retryCount || 0;
+    if (scwin.isBigReady()) {
+        scwin.refreshGridExpression();
+        return;
+    }
+    if (retryCount < 100) {
+        setTimeout(function() {
+            scwin.refreshWhenBigReady(retryCount + 1);
+        }, 50);
+    }
+};
+
+scwin.calcGrid = function(rowIndex) {
+    if (!scwin.isBigReady()) {
+        return "";
+    }
+    if (!dataList1 || !dataList1.getRowCount || rowIndex == null || rowIndex < 0 || rowIndex >= dataList1.getRowCount()) {
+        return "";
+    }
+    if (!dataList1.getCellData(rowIndex, "a") || !dataList1.getCellData(rowIndex, "b") || !dataList1.getCellData(rowIndex, "c")) {
+        return "";
+    }
+    return gridView1.getCellInfo("calcGrid").colcalc(rowIndex, "(a+b)*c");
+};
+
+scwin.onpageload = function() {
+    dataList1.setJSON([
+        {
+            "a": "123456789012345678901234567890",
+            "b": "111111111111111111111111111111",
+            "c": "2"
+        },
+        {
+            "a": "1",
+            "b": "2",
+            "c": "3"
+        }
+    ]);
+    scwin.refreshWhenBigReady();
+};
+
+scwin.getExpressionSnapshot = function(rowIndex) {
+    if (!scwin.isBigReady()) {
+        return {
+            gridExpression: "",
+            gridDisplay: "",
+            dataListExpression: ""
+        };
+    }
+    scwin.resetGridExpression();
+    var gridCellInfo = gridView1.getCellInfo("calcGrid");
+    var dataListCellInfo = dataList1.getCellInfo("calcData");
+    var gridExpression = gridCellInfo.getExpressionValue(rowIndex);
+    var dataListExpression = dataListCellInfo.getExpressionValue(rowIndex);
+
+    return {
+        gridExpression: scwin.stringify(gridExpression),
+        gridDisplay: scwin.stringify(gridView1.getCellDisplayData(rowIndex, "calcGrid")),
+        dataListExpression: scwin.stringify(dataListExpression)
+    };
+};
+
+scwin.setValues = function(rowIndex, a, b, c) {
+    dataList1.setCellData(rowIndex, "a", a);
+    dataList1.setCellData(rowIndex, "b", b);
+    dataList1.setCellData(rowIndex, "c", c);
+    scwin.refreshGridExpression();
+    return scwin.getExpressionSnapshot(rowIndex);
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:gridView dataList="data:dataList1" id="gridView1"
+            style="position:absolute;top:30px;left:30px;width:900px;height:140px;">
+            <w2:caption id="caption1" value="WAEA-965 bigDecimal expression precision"></w2:caption>
+            <w2:header id="header1">
+                <w2:row id="row1">
+                    <w2:column id="headerA" inputType="text" value="a" width="220"></w2:column>
+                    <w2:column id="headerB" inputType="text" value="b" width="220"></w2:column>
+                    <w2:column id="headerC" inputType="text" value="c" width="80"></w2:column>
+                    <w2:column id="headerCalc" inputType="text" value="calc('(a+b)*c')" width="320"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="row2">
+                    <w2:column id="a" inputType="text" displayMode="label" dataType="bigDecimal" width="220"></w2:column>
+                    <w2:column id="b" inputType="text" displayMode="label" dataType="bigDecimal" width="220"></w2:column>
+                    <w2:column id="c" inputType="text" displayMode="label" dataType="bigDecimal" width="80"></w2:column>
+                    <w2:column id="calcGrid" inputType="expression" displayMode="label" dataType="bigDecimal"
+                        expression="scwin.calcGrid(rowIndex())" width="320"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>

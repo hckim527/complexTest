@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+<?xml-stylesheet href="/ui/sample/cm/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/ui/sample/cm/css/content.css" type="text/css"?>
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+		<!--
+			################################################################################
+			파일명 : grid_2line_header_select.xml
+			프로그램명 : 그리드  2Line Header Filter 예제
+			설 명 :  그리드  2Line Header Filter 예제
+			작성자 : JuneSoft
+			작성일 : 2016.12.02
+			################################################################################
+		-->
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+    			<w2:dataList id="dlt_DataList" baseNode="list" style="" repeatNode="map" saveRemovedData="true">
+    				<w2:columnInfo>
+    					<w2:column id="itemSelt" name="선택" dataType="text" ignoreStatus="true"></w2:column>
+    					<w2:column id="birthDay" name="생년월일" dataType="text"></w2:column>
+    					<w2:column id="sex" name="성별" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    			<w2:dataList id="dlt_SexList" baseNode="list" style="" repeatNode="map" saveRemovedData="true">
+    				<w2:columnInfo>
+    					<w2:column id="sexLabel" name="성별" dataType="text"></w2:column>
+    					<w2:column id="sexValue" name="성별값" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        scwin.onpageload = function () {
+
+            var arrSex = [ "남", "m", "여", "f" ];
+            dlt_SexList.setData(arrSex);
+
+            var arrData = [ "0", "20100101", "f", "0", "20100101", "m", "0", "20100101", "f", "0", "20100101", "m", "0", "20100101", "f" ];
+            dlt_DataList.setData(arrData);
+        };
+
+        scwin.changeSex = function (value, colIdx) {
+            dlt_DataList.removeColumnFilterAll();
+
+            if (value != "") {
+                dlt_DataList.setColumnFilter("sex", value, "and");
+            }
+        };
+
+        // 행추가
+        scwin.btn_AddRow_onclick = function() {
+            dlt_DataList.insertRow();
+        };
+
+        // 행삭제
+        scwin.btn_DelRow_onclick = function() {
+            var option = {
+                  gridId: "gridView1"
+                , chkColId: "itemSelt"
+                //, userCallBack: "scwin.deleteAfterCallback"
+            };
+            webUtil.deleteGridView(option);
+        };
+		
+		scwin.isWithinPercentage = function(a, b, percentage) {
+		
+			// 두 값의 절대 차이를 계산합니다.
+			var difference = Math.abs(a - b);
+			
+			// a와 b 중 하나의 값의 주어진 비율을 기준으로 차이가 이내인지 확인합니다.
+			var percentageDifferenceA = a * (percentage / 100);
+			var percentageDifferenceB = b * (percentage / 100);
+			
+			// 두 값의 차이가 각각의 비율 이내인지 확인합니다.
+			return difference <= percentageDifferenceA || difference <= percentageDifferenceB;
+		}
+
+		scwin.checkVal = function() {
+			let a = WebSquare.wUnit.getJq('#mf_mf_gridView1_head_selectbox_column11_itemTable').width();
+			let b = WebSquare.wUnit.getJq('#gridView1_column11').width();
+
+			return scwin.isWithinPercentage(a, b, 2);
+		}		
+		scwin.unitTest = function(){
+			//Unit test
+			WebSquare.wUnit.start();
+
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('mf_mf_gridView1_head_selectbox_column11').click()");
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
+			WebSquare.wUnit.addCommand("pause", "500");
+		
+			//Run and Stop test
+			WebSquare.wUnit.run();
+			WebSquare.wUnit.stop();
+		}
+		scwin.unitTest();			
+	]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="sub_content" id="" style="border:1px solid #68ADDC;">
+			<xf:group class="sub_contentgp" id="" style="margin-top:40px;">
+				<xf:group class="contentbox" id="" style="">
+					<xf:group class="w2tb tb sh" id="" style="width:100%;" tagname="table">
+						<w2:attributes>
+							<w2:summary></w2:summary>
+						</w2:attributes>
+						<xf:group tagname="colgroup">
+							<xf:group style="width:90.00px;" tagname="col"></xf:group>
+							<xf:group style="width:300px;" tagname="col"></xf:group>
+							<xf:group style="width:90px" tagname="col"></xf:group>
+							<xf:group style="" tagname="col"></xf:group>
+						</xf:group>
+
+						<xf:group tagname="tr">
+							<xf:group class="w2tb_th" tagname="th">
+								<w2:attributes>
+									<w2:colspan>4</w2:colspan>
+								</w2:attributes>
+							</xf:group>
+						</xf:group>
+						<xf:group tagname="tr">
+							<xf:group class="w2tb_td" tagname="td">
+								<w2:attributes>
+									<w2:colspan>4</w2:colspan>
+								</w2:attributes>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+					<xf:group class="cm_gridbox" id="" style="">
+						<w2:textbox id="" label="renderType component(default)" style=""></w2:textbox>
+						<w2:gridView adaptive="" adaptiveThreshold="" autoFit="" autoFitMinWidth="" class="cm_grid"
+							dataList="data:dlt_DataList" dragEndFunction="" editModeEvent="onclick" enterKeyMove="" fixedColumnWithHidden="true"
+							focusFlow="linear" focusMode="" id="gridView1" keyMoveEditMode="" readOnly="" rowNumHeaderValue="순번" rowNumVisible="true"
+							scrollByColumn="false" style="height:164px;" useShiftKey="true" visibleRowNum="10" rowNumWidth="40" rowStatusHeaderValue="상태"
+							rowStatusVisible="true" rowStatusWidth="40" showSortableImage="" sortable="true" tooltipDisplay="true">
+							<w2:header style="" id="header2">
+								<w2:row style="" id="row3">
+									<w2:column width="70" inputType="text" style="height:20px" id="column1" blockSelect="false"
+										displayMode="label" value="선택">
+									</w2:column>
+									<w2:column width="86" inputType="text" style="height:42px;" id="column7" blockSelect="false"
+										displayMode="label" value="생년월일" colSpan="" rowSpan="2">
+									</w2:column>
+									<w2:column width="96" inputType="text" style="height:20px" id="column5" blockSelect="false"
+										displayMode="label" value="성별">
+									</w2:column>
+								</w2:row>
+								<w2:row style="" id="row5">
+									<w2:column width="70" inputType="checkbox" style="height:20px" id="h_itemSelt" blockSelect="false"
+										displayMode="label" value="itemSelt">
+									</w2:column>
+									<w2:column width="96" inputType="select" style="height:20px" id="column11" blockSelect="false" renderType=""
+										displayMode="label" allOption="" chooseOption="true" onChangeFunction="scwin.changeSex">
+										<w2:choices>
+											<w2:itemset nodeset="data:dlt_SexList">
+												<w2:label ref="sexLabel"></w2:label>
+												<w2:value ref="sexValue"></w2:value>
+											</w2:itemset>
+										</w2:choices>
+									</w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody style="" id="gBody2">
+								<w2:row style="" id="row4">
+									<w2:column width="70" inputType="checkbox" style="height:20px" id="itemSelt" blockSelect="false"
+										displayMode="label">
+									</w2:column>
+									<w2:column width="86" inputType="text" style="height:20px" id="birthDay" blockSelect="false"
+										displayMode="label">
+									</w2:column>
+									<w2:column width="96" inputType="select" style="height:20px" id="sex" blockSelect="false"
+										displayMode="label" viewType="icon" allOption="" chooseOption="">
+										<w2:choices>
+											<w2:itemset nodeset="data:dlt_SexList">
+												<w2:label ref="sexLabel"></w2:label>
+												<w2:value ref="sexValue"></w2:value>
+											</w2:itemset>
+										</w2:choices>
+									</w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView>
+						<w2:textbox id="" label="renderType native" style=""></w2:textbox>
+						<w2:gridView adaptive="" adaptiveThreshold="" autoFit="" autoFitMinWidth="" class="cm_grid"
+							dataList="data:dlt_DataList" dragEndFunction="" editModeEvent="onclick" enterKeyMove="" fixedColumnWithHidden="true"
+							focusFlow="linear" focusMode="" id="gridView2" keyMoveEditMode="" readOnly="" rowNumHeaderValue="순번" rowNumVisible="true"
+							scrollByColumn="false" style="height:164px;" useShiftKey="true" visibleRowNum="10" rowNumWidth="40" rowStatusHeaderValue="상태"
+							rowStatusVisible="true" rowStatusWidth="40" showSortableImage="" sortable="true" tooltipDisplay="true">
+							<w2:header style="" id="header2">
+								<w2:row style="" id="row3">
+									<w2:column width="70" inputType="text" style="height:20px" id="column1" blockSelect="false"
+										displayMode="label" value="선택">
+									</w2:column>
+									<w2:column width="86" inputType="text" style="height:42px;" id="column7" blockSelect="false"
+										displayMode="label" value="생년월일" colSpan="" rowSpan="2">
+									</w2:column>
+									<w2:column width="96" inputType="text" style="height:20px" id="column5" blockSelect="false"
+										displayMode="label" value="성별">
+									</w2:column>
+								</w2:row>
+								<w2:row style="" id="row5">
+									<w2:column width="70" inputType="checkbox" style="height:20px" id="h_itemSelt" blockSelect="false"
+										displayMode="label" value="itemSelt">
+									</w2:column>
+									<w2:column width="96" inputType="select" style="height:20px" id="column11" blockSelect="false" renderType="native"
+										displayMode="label" allOption="" chooseOption="true" onChangeFunction="scwin.changeSex">
+										<w2:choices>
+											<w2:itemset nodeset="data:dlt_SexList">
+												<w2:label ref="sexLabel"></w2:label>
+												<w2:value ref="sexValue"></w2:value>
+											</w2:itemset>
+										</w2:choices>
+									</w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody style="" id="gBody2">
+								<w2:row style="" id="row4">
+									<w2:column width="70" inputType="checkbox" style="height:20px" id="itemSelt" blockSelect="false"
+										displayMode="label">
+									</w2:column>
+									<w2:column width="86" inputType="text" style="height:20px" id="birthDay" blockSelect="false"
+										displayMode="label">
+									</w2:column>
+									<w2:column width="96" inputType="select" style="height:20px" id="sex" blockSelect="false"
+										displayMode="label" viewType="icon" allOption="" chooseOption="">
+										<w2:choices>
+											<w2:itemset nodeset="data:dlt_SexList">
+												<w2:label ref="sexLabel"></w2:label>
+												<w2:value ref="sexValue"></w2:value>
+											</w2:itemset>
+										</w2:choices>
+									</w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView>
+						<table summary="" style="width:100%;" id="table1" class="w2tb">
+							<caption></caption>
+							<colgroup>
+								<col style="width:25.00%"></col>
+								<col style="width:25.00%"></col>
+								<col style="width:25.00%"></col>
+								<col style="width:25.00%"></col>
+							</colgroup>
+							<tr>
+								<th scope="row" style="" class="w2tb_th"></th>
+								<td style="" class="w2tb_td">
+									<xf:select1 id="selectbox1" chooseOption="" style="width: 148px;height: 21px;" submenuSize="auto" title="1111111"
+										allOption="" disabled="false" direction="auto" appearance="minimal" disabledClass="w2selectbox_disabled" renderType="native"
+										ref="">
+										<xf:choices>
+											<xf:itemset nodeset="data:dlt_SexList">
+												<xf:label ref="sexLabel"></xf:label>
+												<xf:value ref="sexValue"></xf:value>
+											</xf:itemset>
+										</xf:choices>
+									</xf:select1>
+								</td>
+								<th scope="row" style="" class="w2tb_th"></th>
+								<td style="" class="w2tb_td"></td>
+							</tr>
+							<tr>
+								<th scope="row" style="" class="w2tb_th"></th>
+								<td style="" class="w2tb_td"></td>
+								<th scope="row" style="" class="w2tb_th"></th>
+								<td style="" class="w2tb_td"></td>
+							</tr>
+							<tr>
+								<th scope="row" style="" class="w2tb_th"></th>
+								<td style="" class="w2tb_td"></td>
+								<th scope="row" style="" class="w2tb_th"></th>
+								<td style="" class="w2tb_td"></td>
+							</tr>
+						</table>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

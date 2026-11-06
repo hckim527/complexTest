@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+
+			scwin.onpageload = function () {
+			};
+
+			scwin.onpageunload = function () {
+
+			};
+
+	scwin.fireOver = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('onmouseover');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('mouseover', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.onmouseover == 'function') {
+			node.onmouseover();
+		}
+	}
+	scwin.mouseOverBehaviour = function(id) {
+		var el = WebSquare.wUnit.getDomById($p.id + id);
+		scwin.fireOver(el);
+	}
+	scwin.checkVal = function() {
+		const tooltipElement = WebSquare.wUnit.getDomById('grd_list_tooltip');
+		let reVal = false;
+		
+		if (tooltipElement) {
+			let displayValue = tooltipElement.style.display;
+			console.log('tooltip 요소의 display 값:', displayValue);
+			reVal = WebSquare.wUnit.getDomById('grd_list_tooltip').style.display != 'block';
+		} else {
+			console.log('요소가 존재하지 않음: grd_list_tooltip');
+			reVal = true;
+		}
+		return reVal;
+	}		
+	scwin.checkVal = function() {
+		const attr_cellpadding = WebSquare.wUnit.getDomById('wq_uuid_0_balloonTip_mytable').getAttribute('cellpadding')
+		const attr_cellspacing = WebSquare.wUnit.getDomById('wq_uuid_0_balloonTip_mytable').getAttribute('cellspacing')
+		return attr_cellpadding === null && attr_cellspacing === null;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('a1')");
+		WebSquare.wUnit.addCommand('pause', '500');
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand('pause', '500');
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+			
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<xf:input id="a1" style="position: relative;width: 144px;height: 21px;" tooltip="test11"></xf:input>
+	</body>
+</html>

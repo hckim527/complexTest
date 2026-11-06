@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__isCreatedPop = function(selector) {
+    return WebSquare.wUnit.getJq(selector).find(selector + "_header_title").text() == "TestPage1" && (WebSquare.wUnit.getJq(selector).length > 0);
+}
+scwin.__isDisabled = function(selector) {
+    return WebSquare.wUnit.getJq(selector).css("z-index") < 4000;
+}
+scwin.__clickButton = function(fid, selector) {
+    var iframe = WebSquare.wUnit.getDomById(fid);
+    var innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;
+    var button = innerDoc.getElementById(selector);
+    button.click();
+}
+scwin.setVal = function() {
+    scwin.__clickButton('popup1_iframe', $p.id+'trigger4');
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 브라우저에서 openPopup2 버튼을 클릭한다.
+    //2. Click the openPopup2 button in your browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "2000");
+    // verify step 2. TestPage1 팝업이 생성된다.
+    //2. A popup of TestPage1 is created.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCreatedPop('#popup1')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 생성된 TestPage1 팝업을 임의로 이동 후 popup 버튼을 클릭한다.
+    //3. Move the generated TestPage1 popup randomly and click the popup button.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 3. 두번째 TestPage1 팝업이 생성되면서 그전 팝업이 Modal 로 가려지고 비활성화된다. (그전버전에서는 modal 로 가려지지 않고, 비활성화되지 않음.)
+    //3. The second TestPage1 popup is generated, and the previous popup is blocked and becomes inactive. (In previous versions, it was not covered by modal, but it was not disabled.)
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCreatedPop('#popup2')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isDisabled('#popup1')", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 4. 두번째 생성된 TestPage1 팝업을 임의로 이동 후 popup 버튼을 클릭한다.
+    //4. Move the second created TestPage1 popup randomly and click the popup button.
+    WebSquare.wUnit.addCommand("set", "scwin.__clickButton('popup2_iframe', $p.id+'trigger5')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 4. 세번째 TestPage1 팝업이 생성되면서 그전 팝업이 Modal 로 가려지고 비활성화된다. (그전버전에서는 modal 로 가려지지 않고, 비활성화되지 않음.)
+    //4. As the third TestPage1 popup is created, the previous popup is masked to Modal and deactivated. (In previous versions, it was not covered by modal, but it was not disabled.)
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCreatedPop('#popup3')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isDisabled('#popup2')", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 13-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:trigger id="trigger2" 
+			style="position:absolute;word-wrap:break-word;top:30px;left:256px;width:170px;height:21px;text-align:center;"
+			type="button">
+			<xf:label>openPopup2</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+			requires("uiplugin.popup");
+			var options = { 
+	          id : "popup1", 
+	          type : "window",    
+	          width: "300px", 
+	          height: "300px", 
+	          popupName : "TestPage1", 
+	          modal : true, 
+	          useIFrame : true,
+	          resizable : false, 
+	          status : false, 
+	          menubar : false,
+	          scrollbars : false, 
+	          title : true
+	          ,useModalStack : true
+	        };
+	        pop = $w.openPopup("openPopup_WEF-1630_(WSQ-2715)_sub1.xml",  options );
+
+			 ]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

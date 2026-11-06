@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="ds_cmts_num" repeatNode="map" />
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[a]]></col1>
+							<col2><![CDATA[1]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[b]]></col1>
+							<col2><![CDATA[2]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[c]]></col1>
+							<col2><![CDATA[3]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map" refreshMode="replace">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[qq]]></col1>
+							<col2><![CDATA[23]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[ww]]></col1>
+							<col2><![CDATA[124]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[ee]]></col1>
+							<col2><![CDATA[232]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    //alert ("바인딩");
+    log = "바인딩";
+    dataList2.setJSON([{
+        "col1": "12321",
+        "col2": "11",
+        "rowStatus": "R"
+    }, {
+        "col1": "1232",
+        "col2": "22",
+        "rowStatus": "R"
+    }, {
+        "col1": "521323",
+        "col2": "22322",
+        "rowStatus": "R"
+    }, {
+        "col1": "e23232e",
+        "col2": "33",
+        "rowStatus": "R"
+    }]);
+};
+scwin.checkVal = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'div_search_cob_cmts_num_itemTable_0')).getPropertyValue('background-color') == 'rgb(237, 243, 251)';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에 SelectBox 에서 3번째 데이터인 "ee" 를 선택한다.
+    //1. Select the third data "ee" in the SelectBox in the browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_itemTable_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 'ee' 가 선택된다.
+    //1. 'ee' is selected.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_label').textContent == 'ee'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 바인딩 버튼을 클릭한다.
+    //2. Click the Bind button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 바인딩 팝업이 생성되면서 데이터리스트가 바인딩된다.
+    //2. 바인딩 팝업이 생성되면서 데이터리스트가 바인딩된다.
+    WebSquare.wUnit.addCommand("assert", "log", "바인딩");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. SelectBox 에 ▼ 버튼을 클릭한다.
+    //3. SelectBox 에 ▼ 버튼을 클릭한다.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 리스트가 펼쳐진다. 이때, 포커스 (회색) 는 제일 상단인 -전체- 로 된다. (전버전에서는 3번째 데이터인 '521323' 으로 되어 있었음.)
+    //3. The list is expanded. At this time, the focus (gray) becomes the top-in-the-whole. (In the previous version, the third data was '521323'.)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = undefined;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 02-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:select1 allOption="true" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+			displayMode="label" id="div_search_cob_cmts_num" optionOrder="false" style="" submenuSize="auto" emptyItem="true" chooseOptionLabel=""
+			ev:onchange="scwin.div_search_cob_cmts_num_OnChanged">
+			<xf:choices>
+				<xf:itemset nodeset="data:dataList2">
+					<xf:label ref="col1"></xf:label>
+					<xf:value ref="col2"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select1>
+		<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[바인딩]]>
+			</xf:label>
+		</xf:trigger>
+<!--		<w2:autoComplete visibleRowNum="5" id="autoComplete1" style="width: 148px;height: 21px;" search="start" interactionMode=""-->
+<!--			displayMode="label" useKeywordHighlight="false" submenuSize="auto" editType="select" allOption="" chooseOption="">-->
+<!--			<w2:choices>-->
+<!--				<w2:itemset nodeset="data:dataList2">-->
+<!--					<w2:label ref="col1"></w2:label>-->
+<!--					<w2:value ref="col2"></w2:value>-->
+<!--				</w2:itemset>-->
+<!--			</w2:choices>-->
+<!--		</w2:autoComplete>-->
+	</body>
+</html>
+ 

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/SWING/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/SWING/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="inputTypeList" ev:oncelldatachange="scwin.inputTypeList_oncelldatachange">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2">
+					<w2:columnInfo>
+						<w2:column id="label" dataType="text"></w2:column>
+						<w2:column id="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList3">
+					<w2:columnInfo>
+						<w2:column id="label" dataType="text"></w2:column>
+						<w2:column id="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.getType = function(info) {
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var returnInfo;
+    var inputType = inputTypeList.getCellData(rowIndex, colIndex);
+    switch (inputType) {
+        case "radio":
+            returnInfo = {
+                id: "dynamic_radio_" + rowIndex + "_" + colIndex,
+                inputType: "radio",
+                options: {
+                    groupName: "radio_" + rowIndex
+                }
+            }
+            break;
+        case "checkbox":
+            returnInfo = {
+                id: "dynamic_checkbox_" + rowIndex + "_" + colIndex,
+                inputType: "checkbox",
+                options: {}
+            }
+            break;
+        case "button":
+            returnInfo = {
+                id: "dynamic_button_" + rowIndex + "_" + colIndex,
+                inputType: "button",
+                options: {}
+            }
+            break;
+        case "calendar":
+            returnInfo = {
+                id: "dynamic_calendar_" + rowIndex + "_" + colIndex,
+                inputType: "calendar",
+                options: {
+                    viewType: "icon"
+                }
+            }
+            break;
+        case "image":
+            returnInfo = {
+                id: "dynamic_image_" + rowIndex + "_" + colIndex,
+                inputType: "image",
+                options: {
+                    imageSrc: "/SAMPLE/W5/project/dynamic/img.gif"
+                }
+            }
+            break;
+        case "link":
+            returnInfo = {
+                id: "dynamic_link_" + rowIndex + "_" + colIndex,
+                inputType: "link",
+                options: {}
+            }
+            break;
+        case "select":
+            returnInfo = {
+                id: "dynamic_select_" + rowIndex + "_" + colIndex,
+                inputType: "select",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            }
+            break;
+        case "autoComplete":
+            returnInfo = {
+                id: "dynamic_autoComplete_" + rowIndex + "_" + colIndex,
+                inputType: "autoComplete",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            }
+            break;
+        case "checkcombobox":
+            returnInfo = {
+                id: "dynamic_checkcombobox_" + rowIndex + "_" + colIndex,
+                inputType: "checkcombobox",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            }
+            break;
+        case "textarea":
+            returnInfo = {
+                id: "dynamic_textarea_" + rowIndex + "_" + colIndex,
+                inputType: "textarea",
+                options: {}
+            }
+            break;
+        case "text":
+            returnInfo = {
+                id: "dynamic_text_" + rowIndex + "_" + colIndex,
+                inputType: "text",
+                options: {}
+            }
+            break;
+        case "textImage":
+            returnInfo = {
+                id: "dynamic_textImage_" + rowIndex + "_" + colIndex,
+                inputType: "textImage",
+                options: {
+                    viewType: "icon",
+                    imageSrc: "/SAMPLE/W5/project/dynamic/alz.jpg",
+                    textAlign: "center"
+                }
+            }
+            break;
+    }
+    if (returnInfo) {
+        ngmf.trace("[typeGetter] (" + rowIndex + ", " + colIndex + ") : " + returnInfo.inputType);
+    }
+    return returnInfo;
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.b1_onclick = function(e) {
+    var rowIndex = WebSquare.util.getNumber(rowTb.getValue());
+    var inputType = s1.getValue();
+    for (var i = 0; i < inputTypeList.getColCnt(); i++) {
+        inputTypeList.setCellData(rowIndex, i, inputType);
+    }
+    gridView1.refreshRow(rowIndex);
+};
+scwin.b2_onclick = function(e) {
+    var colIndex = WebSquare.util.getNumber(colTb.getValue());
+    var inputType = s2.getValue();
+    for (var i = 0; i < inputTypeList.getRowCount(); i++) {
+        inputTypeList.setCellData(i, colIndex, inputType);
+    }
+    gridView1.refreshColumn(colIndex);
+};
+scwin.b3_onclick = function(e) {
+    var colIndex = WebSquare.util.getNumber(cellColTb.getValue());
+    var rowIndex = WebSquare.util.getNumber(cellRowTb.getValue());
+    var inputType = s3.getValue();
+    inputTypeList.setCellData(rowIndex, colIndex, inputType);
+    gridView1.refreshCell(rowIndex, colIndex);
+};
+scwin.inputTypeList_oncelldatachange = function(info) {
+    //debugger;
+};
+scwin.onpageload = function() {
+    if (typeof scwin.onpageload === "function") {
+        //scwin.onpageload();
+    }
+    if (!scwin.promise) {
+        scwin.promise = {};
+    }
+    window.dataArr = [
+        "radio", "radio",
+        "checkbox", "checkbox",
+        "button", "button",
+        "calendar", "calendar",
+        "image", "image",
+        "link", "link",
+        "select", "select",
+        "autoComplete", "autoComplete",
+        "checkcombobox", "checkcombobox",
+        "textarea", "textarea",
+        "text", "text",
+        "textImage", "textImage"
+    ];
+    dataList2.setData(dataArr);
+    dataList3.setData(dataArr);
+    window._dataArr = [];
+    for (var i = 0; i < 300; i++) {
+        _dataArr.push("");
+    }
+    dataList1.setData(_dataArr.slice(0));
+    inputTypeList.setData(_dataArr.slice(0));
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="cont_wrap type1" id="" style="">
+			<xf:group class="grpbox" id="" style="">
+				<xf:group class="stit_01" id="">
+					<w2:textbox id="" label="그리드 inputTpye 동적 변경" style="" tagname="h3"></w2:textbox>
+				</xf:group>
+				<xf:group class="sub_cont" id="">
+					<w2:textbox id="" label="그리드 inputType을 동적으로 변경 할 수 있다." style="" tagname=""></w2:textbox>
+				</xf:group>
+				<xf:group class="sub_cont" id="" style="">
+					<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" rowNumVisible="true"
+						style="width:700px;height:300px; border: 1px solid black;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+						fixedColumnWithHidden="true" useShiftKey="true" class="grid_01">
+						<w2:header id="header1" style="">
+							<w2:row id="row2" style="">
+								<w2:column id="header1" style="" inputType="text" width="*" value="col1"></w2:column>
+								<w2:column id="header2" style="" inputType="text" width="*" value="col2"></w2:column>
+								<w2:column id="header3" style="" inputType="text" width="*" value="col3"></w2:column>
+								<w2:column id="header4" style="" inputType="text" width="*" value="col4"></w2:column>
+								<w2:column id="header5" style="" inputType="text" width="*" value="col5"></w2:column>
+							</w2:row>
+						</w2:header>
+						<w2:gBody id="gBody4" style="">
+							<w2:row id="row5" style="">
+								<w2:column id="col1" inputType="custom" typeGetter="scwin.getType" dateValidCheck="true"></w2:column>
+								<w2:column id="col2" inputType="custom" typeGetter="scwin.getType" dateValidCheck="true"></w2:column>
+								<w2:column id="col3" inputType="custom" typeGetter="scwin.getType" dateValidCheck="true"></w2:column>
+								<w2:column id="col4" inputType="custom" typeGetter="scwin.getType" dateValidCheck="true"></w2:column>
+								<w2:column id="col5" inputType="calendar" typeGetter="scwin.getType" dateValidCheck="true"></w2:column>
+							</w2:row>
+						</w2:gBody>
+					</w2:gridView>
+				</xf:group>
+				<xf:group class="sub_cont" id="" style="">
+					<xf:group class="stit_02" id="">
+						<w2:textbox id="" label="Row 갱신" style="" tagname="h4"></w2:textbox>
+					</xf:group>
+					<xf:input id="rowTb" style="height: 36px;width:200px;" nextTabID="s1"></xf:input>
+					<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="s1"
+						style="height: 36px;width:200px;margin-left:10px;" displayMode="label" optionOrder="false" allOption="" disabled="false" submenuSize="auto"
+						nextTabID="b1">
+						<xf:choices>
+							<xf:itemset nodeset="data:dataList2">
+								<xf:label ref="label"></xf:label>
+								<xf:value ref="value"></xf:value>
+							</xf:itemset>
+						</xf:choices>
+					</xf:select1>
+					<xf:trigger type="button" id="b1" style="height: 36px;width: 213px;margin-left:10px;" ev:onclick="scwin.b1_onclick"
+						nextTabID="colTb">
+						<xf:label><![CDATA[갱신]]></xf:label>
+					</xf:trigger>
+					<xf:group class="stit_02" id="" style="">
+						<w2:textbox id="" label="Column 갱신" style="" tagname="h4"></w2:textbox>
+					</xf:group>
+					<xf:input id="colTb" style="height: 36px;width:200px;" nextTabID="s2"></xf:input>
+					<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+						displayMode="label" id="s2" optionOrder="false" style="height: 36px;
+width:200px;
+margin-left:10px;
+" submenuSize="auto" nextTabID="b2">
+						<xf:choices>
+							<xf:itemset nodeset="data:dataList2">
+								<xf:label ref="label"></xf:label>
+								<xf:value ref="value"></xf:value>
+							</xf:itemset>
+						</xf:choices>
+					</xf:select1>
+					<xf:trigger id="b2" style="height: 36px;width: 213px;margin-left:10px;" type="button" ev:onclick="scwin.b2_onclick"
+						nextTabID="cellRowTb">
+						<xf:label><![CDATA[갱신]]></xf:label>
+					</xf:trigger>
+					<xf:group class="stit_02" id="" style="">
+						<w2:textbox id="" label="Cell 갱신" style="" tagname="h4"></w2:textbox>
+					</xf:group>
+					<xf:input id="cellRowTb" style="height:36px;width:85px;" nextTabID="cellColTb"></xf:input>
+					<xf:input id="cellColTb" style="height:36px;width:85px;margin-left:10px;" nextTabID="s3"></xf:input>
+					<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+						displayMode="label" id="s3" optionOrder="false" style="height: 36px;width:200px;margin-left:30px;" submenuSize="auto" nextTabID="b3">
+						<xf:choices>
+							<xf:itemset nodeset="data:dataList2">
+								<xf:label ref="label"></xf:label>
+								<xf:value ref="value"></xf:value>
+							</xf:itemset>
+						</xf:choices>
+					</xf:select1>
+					<xf:trigger id="b3" style="height: 36px;width: 213px;margin-left:10px;" type="button" ev:onclick="scwin.b3_onclick"
+						nextTabID="">
+						<xf:label><![CDATA[갱신]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</body>
+</html>
+ 

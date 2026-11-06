@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+            		<w2:condition type="filter"><![CDATA[]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_format = function(data, formattedData, row, col) {
+    gridView1.setCellColor(row, col, "red");
+    return formattedData;
+};
+scwin.onpageload = function() {
+    window.jsonData = [{
+        "col1": 1,
+        "col2": 3
+    }, {
+        "col1": 2,
+        "col2": 5
+    }];
+    dataList1.setJSON(jsonData);
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="linkedDataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left: 39px;top: 67px;width: 389px;height: 147px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="70" inputType="text" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column10" style="height:20px" inputType="expression" width="70" displayMode="label"
+    					expression="parseFloat(display('col1')) + parseFloat(display('col2'))" customFormatter="fn_format">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger id="trigger1" style="position: absolute ;left:481px;top:62px;width: 100px;height: 30px;" type="button">
+    		<xf:label><![CDATA[excel down]]></xf:label>
+    		<script ev:event="onclick" type="javascript"><![CDATA[
+    			
+    			var options = {};
+    			options.fileName= "test1.xlsx";
+    			//options.type = "1";
+    			//options.startRowIndex = "5";
+    			//options.evenRowBackgroundColor = "#f5f5f5"; // 짝수행 배경색 
+    			//options.oddRowBackgroundColor = "#f5f5f5"; // 짝수행 배경색
+    			//options.evenRowBackgroundColor = "#7EFF51"; // 홀수행 배경색  
+    			//options.oddRowBackgroundColor = "#7EFF51";  // 홀수행 배경색 
+    			
+    			gridView1.advancedExcelDownload( options );
+    			/*
+    			var infoArr = [];
+				var infoObj = { 
+			        rowIndex:   1, 
+			        colIndex:   1, 
+			        rowSpan:    2, 
+			        colSpan:    3, 
+			        text:       "조건: " + input1.getValue(),
+			        textAlign:  "center" 
+			    }; 
+			    infoArr.push( infoObj );
+    			gridView1.advancedExcelDownload( options, infoArr );
+    			*/
+    		 ]]></script>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dl_select" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="value" name="name1" dataType="text"></w2:column>
+            			<w2:column id="label" name="name2" dataType="text"></w2:column>
+            			<w2:column id="a" name="a" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.autoComplete1_onviewchange = function(info) {
+    if (info.newValue == "G") {
+        autoComplete1.setValue(info.oldValue);
+    }
+};
+scwin._triggerKeyboardEvent = function(el, keyCode) {
+    var eventObj = document.createEventObject ?
+        document.createEventObject() : document.createEvent("Events");
+    if (eventObj.initEvent) {
+        eventObj.initEvent("keydown", true, true);
+    }
+    eventObj.keyCode = keyCode;
+    eventObj.which = keyCode;
+    el.dispatchEvent ? el.dispatchEvent(eventObj) : el.fireEvent("onkeydown", eventObj);
+}
+scwin.callFun1 = function() {
+    scwin._triggerKeyboardEvent(WebSquare.wUnit.getDomById($p.id + 'autoComplete1_label'), 13);
+}
+scwin.callFun2 = function() {
+    scwin._triggerKeyboardEvent(WebSquare.wUnit.getDomById($p.id + 'autoComplete1_input'), 13);
+}
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1').setText('[100] Nt');");
+    WebSquare.wUnit.addCommand("set", "scwin.callFun1()");
+    WebSquare.wUnit.addCommand("set", "scwin.callFun2()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete1').getSelectedIndex() == 0", "false");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+            "value": "G",
+            "label": "[400] G"
+        },
+        {
+            "value": "Y1",
+            "label": "[300] UY"
+        },
+        {
+            "value": "Y2",
+            "label": "[200] UY2"
+        },
+        {
+            "value": "N",
+            "label": "[100] Nt"
+        }
+    ];
+    dl_select.setJSON(jsonData);
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete visibleRowNum="5" chooseOption="" id="autoComplete1" style="position: absolute ;left: 40px;top: 22px;width: 214px;height: 48px;"
+    		searchTarget="both" caseSensitive="false"
+    		search="contain" interactionMode="" displayMode="label" 
+    		useKeywordHighlight="false" submenuSize="auto" editType="select" allOption="" 
+    		noResult="first">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dl_select">
+    				<w2:label ref="label"></w2:label>
+    				<w2:value ref="value"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    </body>
+</html>
+ 

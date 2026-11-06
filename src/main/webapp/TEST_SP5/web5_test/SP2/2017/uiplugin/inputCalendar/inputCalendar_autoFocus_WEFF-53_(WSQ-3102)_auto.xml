@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    if (scwin.isIE() && ((scwin.isIE() == 9) || (scwin.isIE() == 10))) {
+        // is IE9 or IE10
+        scwin.simulateWrapper('#inputCalendar1_input', 'key-sequence', {
+            sequence: '20170101'
+        });
+        WebSquare.wUnit.getDomById('input1').focus()
+    } else {
+        // is IE 11 and later or not IE
+        scwin.simulateWrapper('#inputCalendar1_input', 'key-sequence', {
+            sequence: '20170101'
+        });
+    }
+}
+scwin.setSimulate2 = function() {
+    if (scwin.isIE() && scwin.isIE() <= 10) {
+        // is IE version less than 11
+        scwin.simulateWrapper('#input1', 'key-sequence', {
+            sequence: 'aaa'
+        })
+        WebSquare.wUnit.getObjById('inputCalendar1_input').focus()
+    } else {
+        // is IE 11 and later or not IE
+        scwin.simulateWrapper('#input1', 'key-sequence', {
+            sequence: 'aaa'
+        })
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플 실행 후 inputCalendar에 날짜 8자리를 입력한다.
+    //1. After running the sample, enter the 8-digit date in inputCalendar.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_input').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 8번째 자리 입력 후 Focus가 inputbox로 이동되어 보여진다.
+    //1. After entering the 8th digit, the focus moves to the input box.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#input1').hasClass('w2input_focus')", "true");
+    WebSquare.wUnit.addCommand("pause", "5500");
+    //Test step 2. inputbox에 3자리를 입력한다.
+    //2. Enter three digits in the input box.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 3번째 자리 입력 후 Focus가 inputCalendar로 이동되어 보여진다.
+    //2. After inputting 3rd digit, Focus is moved to inputCalendar.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar1_input').hasClass('w2inputCalendar_focus')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar weekStartsOn="0" rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar1"
+    		nextTabID="input1" renderDiv="true" style="position: absolute;width:324px;height:96px;left:92px;top:61px;" focusOnDateSelect="false"
+    		footerDiv="false" maxByteLength="8" autoFocus="true">
+    	</w2:inputCalendar>
+    	<xf:input id="input1" style="position: absolute;width:329px;height:80px;left:92px;top:208px;" nextTabID="inputCalendar1"
+    		autoFocus="true" maxlength="" maxByteLength="3">
+    	</xf:input>
+    	<!--  <w2:inputCalendar calendarValueType="yearMonthDateHour" focusOnDateSelect="false" footerDiv="false" id="inputCalendar2"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:92px;top:196px;" weekStartsOn="0">
+    		</w2:inputCalendar>
+    		<w2:inputCalendar calendarValueType="yearMonthDateTime" focusOnDateSelect="false" footerDiv="false" id="inputCalendar3"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:91px;top:342px;" weekStartsOn="0">
+    		</w2:inputCalendar>
+    		<w2:inputCalendar calendarValueType="yearMonthDateTimeSec" focusOnDateSelect="false" footerDiv="false" id="inputCalendar4"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:90px;top:480px;" weekStartsOn="0">
+    		</w2:inputCalendar>
+    		<w2:inputCalendar calendarValueType="yearMonth" focusOnDateSelect="false" footerDiv="false" id="inputCalendar5"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:89px;top:603px;" weekStartsOn="0">
+    		</w2:inputCalendar>-->
+    </body>
+</html>
+ 

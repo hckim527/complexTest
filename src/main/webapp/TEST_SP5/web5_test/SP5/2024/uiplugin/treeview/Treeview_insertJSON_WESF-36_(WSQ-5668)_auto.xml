@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+            	<w2:dataList id="dataList1" baseNode="vector" style="" repeatNode="data/table01" valueAttribute="value">
+					<w2:columnInfo>
+						<w2:column id="pro_code" name="pro_code" dataType="text"></w2:column>
+						<w2:column id="gong_code" name="gong_code" dataType="text"></w2:column>
+						<w2:column id="gong_depth" name="gong_depth" dataType="text"></w2:column>
+						<w2:column id="gong_nm" name="gong_nm" dataType="text"></w2:column>
+						<w2:column id="volumn" name="volumn" dataType="text"></w2:column>
+						<w2:column id="material_cost" name="material_cost" dataType="text"></w2:column>
+						<w2:column id="labor_cost" name="labor_cost" dataType="text"></w2:column>
+						<w2:column id="guard_cost" name="guard_cost" dataType="text"></w2:column>
+						<w2:column id="cost_except" name="cost_except" dataType="text"></w2:column>
+						<w2:column id="gong_type" name="gong_type" dataType="text"></w2:column>
+						<w2:column id="gover_type" name="gover_type" dataType="text"></w2:column>
+						<w2:column id="calc_reason" name="calc_reason" dataType="text"></w2:column>
+						<w2:column id="marks" name="marks" dataType="text"></w2:column>
+						<w2:column id="regist_no" name="regist_no" dataType="text"></w2:column>
+						<w2:column id="regist_date" name="regist_date" dataType="text"></w2:column>
+						<w2:column id="modify_no" name="modify_no" dataType="text"></w2:column>
+						<w2:column id="modify_date" name="modify_date" dataType="text"></w2:column>
+                        <w2:column id="image" name="image" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+                        <w2:row>
+                            <pro_code><![CDATA[82356500]]></pro_code>
+                            <gong_code><![CDATA[01]]></gong_code>
+                            <gong_depth><![CDATA[1]]></gong_depth>
+                            <gong_nm><![CDATA[AA]]></gong_nm>
+                        </w2:row>
+                    </w2:data>
+				</w2:dataList>
+            </w2:dataCollection>
+            <xf:submission id="submission1" ref="" target='data:json,[{"id":"dataList1"}]' action="treedata_small.json" method="post" mediatype="application/json" encoding="UTF-8" mode="asynchronous" ev:submitdone="scwin.submission1_submitdone">
+                </xf:submission>
+        </xf:model>
+        <style type="text/css">
+        	.aaa {
+        		color : red;
+        	}
+        	
+        	.bbb {
+        		background-color : red;
+        		color : white;
+        	}
+
+            .searched {
+                background-color : yellow;
+                color : black;
+            }
+        </style>
+        <script type="javascript" lazy="false"><![CDATA[
+scwin.dummyCnt = 0;
+scwin.onpageload = function() {
+treeview1.spanAll(true);
+}
+scwin.t_get_onclick = function(e) {
+};
+scwin.submission1_submitdone = function() {
+    treeview1.spanAll(true);
+}
+scwin.treeview1_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {
+    treeview1.moveNode(dragNode.index, dropNode.index, true);
+}
+
+scwin.btn_insertJSON = function() {
+    treeview1.toggleChild(null, 1);
+    scwin.dummyCnt++;
+    var row = dataList1.getRowCount();
+    var depth = 2;
+    var jsonData = [{
+        "gong_code": "insertJSONTestA_" + scwin.dummyCnt,
+        "gong_depth": depth,
+        "gong_nm": "testA_" + scwin.dummyCnt
+    }];
+    dataList1.insertJSON(row, jsonData);
+    var row = dataList1.getRowCount();
+    var jsonData2 = [{
+        "gong_code": "insertJSONTestB_" + scwin.dummyCnt,
+        "gong_depth": depth + 1,
+        "gong_nm": "testB_" + scwin.dummyCnt
+    }];
+    setTimeout(function(){
+
+        dataList1.insertJSON(row, jsonData2);
+    },20)
+}
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('treeview1_main_div').children.length == 3;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('treeview1_node_1').children[2].click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_insertJSON').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+
+		]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="" style="width:740px;height:600px;">
+    		<xf:group id="" style="height:560px;width:300px;float:left">
+    			<w2:treeview id="treeview1" dataType="listed" renderType="virtual" style="position: relative;width:300px;height:120px;" lineShow="" useDrag="true"
+    				tooltipGroupClass="false" refreshCheckboxModel="true" labelonClickClass="bbb" labelclass="aaa" showCheckbox="true" showDepth="3"
+    				dynamicAppend="true" falseValue="F" trueValue="T" checkAllChildNodes="true" ev:ondrop="scwin.treeview1_ondrop">
+    				<w2:itemset nodeset="data:dataList1">
+    					<w2:label ref="gong_nm"></w2:label>
+    					<w2:value ref="gong_code"></w2:value>
+    					<w2:depth ref="gong_depth"></w2:depth>
+    					<w2:folder ref=""></w2:folder>
+    					<w2:checkbox ref="gover_type"></w2:checkbox>
+    					<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    					<w2:image ref=""></w2:image>
+    					<w2:iconImage ref="image"></w2:iconImage>
+    					<w2:selectedImage ref=""></w2:selectedImage>
+    					<w2:expandedImage ref=""></w2:expandedImage>
+    					<w2:leafImage ref=""></w2:leafImage>
+    				</w2:itemset>
+    			</w2:treeview>
+    		</xf:group>
+    		<xf:group id="" style="position:relative;width:420px;height:620px;float:right;">
+                <xf:group id="" style="position: relative;height: 100px;" class="">
+                    <w2:textbox label="노드 중복오류 테스트" id=""
+                        style="position: relative;height:50px;font-size:14pt;width:500px;">
+                    </w2:textbox>
+                </xf:group>
+                <xf:group id="" style="height:70px;">
+                    <xf:trigger id="btn_insertJSON" style="position: relative;height:30px;font-size:12px;width:100px;"
+                        ev:onclick="scwin.btn_insertJSON" type="button">
+                        <xf:label><![CDATA[insertJSON1]]></xf:label>
+                    </xf:trigger>
+                    <w2:span id="" style="position: relative ;" label=" testA_1, testB_1 노드가 각각 하나씩만 생성되어야 함"></w2:span>
+                </xf:group>
+    		</xf:group>
+    	</xf:group>
+    </body>
+</html>

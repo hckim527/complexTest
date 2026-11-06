@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dataList1" baseNode="list"
+        			saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="col2" name="name2"
+        					dataType="text">
+        				</w2:column>
+        			</w2:columnInfo>
+        			<w2:data use="true">
+        				<w2:row>
+        					<col1><![CDATA[1]]></col1>
+        					<col2><![CDATA[2]]></col2>
+        				</w2:row>
+        			</w2:data>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+<!--          	<xf:submission id="submission1" ref='data:json,{"id":"dataList1","action":"all"}' target="" action="subMission_Abort_WPF-1522_(WSQ-2485)_sleep.jsp" method="post" mediatype="application/json" encoding="UTF-8"
+        		instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.submission1_submitdone"
+        		ev:submiterror="">
+        	</xf:submission>	-->
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var tmpOpt = {
+        id: "submission123",
+        ref: "",
+        target: "data:json,dataList1",
+        action: "subMission_Abort_WPF-1522_(WSQ-2485)_sleep.jsp",
+        mediatype: "application/json",
+        processMsg: "처리중입니다.",
+        abortTrigger: "true",
+        submitDoneHandler: function(e) {
+            //alert("완료");
+            //showAlert = true;
+            localStorage.setItem('showAlert', 'true');
+        }
+    }
+    $p.createSubmission(tmpOpt);
+    $p.executeSubmission("submission123");
+};
+scwin.trigger2_onclick = function(e) {
+    WebSquare.ModelUtil.abort("submission1");
+};
+scwin.submission1_submitdone = function(e) {
+    //alert("완료");
+    //showAlert = true;
+    localStorage.setItem('showAlert', 'true');
+};
+scwin.__isCreatedProcessMsg = function() {
+    return WebSquare.wUnit.getJq("#___processbar2_i").length > 0;
+}
+scwin.__isCanceledProcess = function() {
+    return WebSquare.wUnit.getJq("#___processbar2_i").css("display") == "none";
+}
+scwin.__isCancelButton = function() {
+    var iframe = WebSquare.wUnit.getDomById("___processbar2_i").childNodes[0];
+    var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+    var button = innerDoc.getElementById("abortButton");
+    if (button) {
+        return true;
+    }
+    return false;
+}
+scwin.__clickCancelButton = function() {
+    var iframe = WebSquare.wUnit.getDomById("___processbar2_i").childNodes[0];
+    var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+    var button = innerDoc.getElementById("abortButton");
+    return button.click();
+}
+scwin.checkVal = function() {
+    //alert(localStorage.getItem('showAlert'));
+    return localStorage.getItem('showAlert') == 'true';
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 2. 브라우저에서 create 버튼을 클릭한다.
+    //Click create button in browser
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. ProcessMsg 가 생성된다.
+    //ProcessMsg is created.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCreatedProcessMsg()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 3. ProcessMsg 안에 취소버튼을 클릭한다. 
+    //Click cancel button in ProcessMsg
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCancelButton()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.__clickCancelButton()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 3. Submission 이 취소된다.
+    //3. Submission is canceled.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCanceledProcess()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 4. 다시 create 버튼을 클릭후 5초를 기다린다.
+    //4. Click the create button again and wait 5 seconds.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "5000");
+    //Verify step 4. 완료 팝업이 생성된다.
+    //4. A completion popup is created.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.showAlert = false;
+    //Function unitTest
+    //Created by: Sang.Do
+    //Created date: 13-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1"
+    		style="position: absolute ;left: 175px;top: 94px;width: 197px;height: 40px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[create]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2"
+    		style="position: absolute ;left:389px;top:95px;width: 212px;height: 38px;"
+    		ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[abort]]></xf:label>
+    	</xf:trigger>
+    	<w2:tabControl confirmTrueAction="exist" useTabKeyOnly="true"
+    		id="tabControl1"
+    		style="position: absolute ;left: 289px;top: 242px;width: 429px;height: 238px;"
+    		useConfirmMessage="false" confirmFalseAction="new"
+    		alwaysDraw="false" tabScroll="true" mobileTabScroll="true">
+    		<w2:tabs label="" id="tabs1" style="width:70px;height:30px;"
+    			disabled="false">
+    		</w2:tabs>
+    		<w2:content id="content1" style="height:208px"
+    			alwaysDraw="false">
+    		</w2:content>
+    	</w2:tabControl>
+    	<w2:gridView dataList="dataList1" id=""
+    		applyAllColumnStyle="false"
+    		style="position: absolute;width: 500px;height: 150px;left:226px;top:495px;"
+    		scrollByColumn="false" useShiftKey="true"
+    		defaultCellHeight="20">
+    		<w2:caption id="caption1" style=""
+    			value="this is a grid caption.">
+    		</w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style=""
+    					inputType="text" width="70" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style=""
+    					width="70" inputType="text" value="name2">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style=""
+    					inputType="text" width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style=""
+    					width="70" inputType="text">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

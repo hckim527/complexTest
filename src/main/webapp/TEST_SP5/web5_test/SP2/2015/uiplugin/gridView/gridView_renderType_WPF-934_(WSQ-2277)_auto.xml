@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dl_select1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dl_select2" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            			<w2:column id="select1_value" name="value" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dl_select3" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            			<w2:column id="select1_value" name="value" dataType="text"></w2:column>
+            			<w2:column id="select2_value" name="value" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" style="" bind="dl_select2">
+            		<w2:condition type="filter"><![CDATA[select1_value==val("selectbox1")]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    log = "selectbox2 value : " + selectbox2.getValue() + "selectbox2 getSelectedIndex ==: " + selectbox2.getSelectedIndex();
+    //alert("selectbox2 value : " + selectbox2.getValue() + "\nselectbox2 getSelectedIndex ==: " + selectbox2.getSelectedIndex());
+    alertVal = selectbox2.getValue() + selectbox2.getSelectedIndex();
+};
+scwin.trigger3_onclick = function(e) {
+    log1 = "selectbox4 value : " + selectbox4.getValue() + "selectbox4 getSelectedIndex ==: " + selectbox4.getSelectedIndex();
+    //alert("selectbox4 value : " + selectbox4.getValue() + "\nselectbox4 getSelectedIndex ==: " + selectbox4.getSelectedIndex());
+    alertVal = selectbox4.getValue() + selectbox4.getSelectedIndex() + "";
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectbox1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectbox1_itemTable_2').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('selectbox1_label').textContent == 'a3'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("assert", "log", "selectbox2 value : nullselectbox2 getSelectedIndex ==: 0");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+
+    WebSquare.wUnit.addCommand("assert", "log1", "selectbox4 value : nullselectbox4 getSelectedIndex ==: 0");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.alertVal = "";
+    window.jsonData1 = [{
+        "label": "a1",
+        "value": "a1"
+    }, {
+        "label": "a2",
+        "value": "a2"
+    }, {
+        "label": "a3",
+        "value": "a3"
+    }];
+    window.jsonData2 = [{
+            "label": "a1_b1",
+            "value": "b1",
+            "select1_value": "a1"
+        }, {
+            "label": "a1_b2",
+            "value": "b2",
+            "select1_value": "a1"
+        },
+        {
+            "label": "a1_b3",
+            "value": "b3",
+            "select1_value": "a1"
+        }, {
+            "label": "a2_b4",
+            "value": "b4",
+            "select1_value": "a2"
+        }
+    ];
+    dl_select1.setJSON(jsonData1);
+    dl_select2.setJSON(jsonData2);
+    window.log;
+	window.log1;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 21-Feb-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectbox1"
+    		style="position: absolute ;left:28px;top:73px;width: 148px;height: 21px;" displayMode="label" optionOrder="false" allOption=""
+    		disabled="false" submenuSize="auto">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dl_select1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:select1>
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectbox2"
+    		style="position: absolute ;left:234px;top:73px;width: 148px;height: 21px;" displayMode="label" optionOrder="false" allOption=""
+    		disabled="false" submenuSize="auto">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:linkedDataList1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:select1>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left:30px;top:18px;width: 170px;height: 30px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[selectbox2.getValue / getIndex]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3"
+    		style="position: absolute ;left:29px;top:128px;width:463px;height:30px;" type="button">
+    		<xf:label><![CDATA[selectbox4.getValue / getIndex (renderType=select)]]></xf:label>
+    	</xf:trigger>
+    	<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false" disabledClass="w2selectbox_disabled"
+    		displayMode="label" id="selectbox4" optionOrder="false" style="position: absolute ;left:234px;top:173px;width: 148px;height: 21px;"
+    		submenuSize="auto" renderType="select">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:linkedDataList1">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:select1>
+    </body>
+</html>
+ 

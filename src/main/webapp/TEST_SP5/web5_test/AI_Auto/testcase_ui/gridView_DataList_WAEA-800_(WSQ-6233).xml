@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataMap id="dataMap_cfg">
+                <w2:keyInfo>
+                    <w2:key id="initRows" name="initRows" dataType="text"></w2:key>
+                    <w2:key id="setCellN" name="setCellN" dataType="text"></w2:key>
+                    <w2:key id="insertN" name="insertN" dataType="text"></w2:key>
+                    <w2:key id="removeN" name="removeN" dataType="text"></w2:key>
+                </w2:keyInfo>
+            </w2:dataMap>
+            <w2:dataList id="list1" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="ID" name="ID" dataType="text"></w2:column>
+                    <w2:column id="NAME" name="Name" dataType="text"></w2:column>
+                    <w2:column id="VALUE" name="Value" dataType="number"></w2:column>
+                    <w2:column id="STATUS" name="Status" dataType="text"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.log = function(msg) {
+        var cur = txa_log.getValue();
+        var ts = new Date().toLocaleTimeString();
+        var line = "[" + ts + "] " + msg;
+        txa_log.setValue(cur ? cur + "\n" + line : line);
+    };
+
+    scwin.onpageload = function() {
+        dataMap_cfg.set("initRows", "100");
+        dataMap_cfg.set("setCellN", "100");
+        dataMap_cfg.set("insertN", "50");
+        dataMap_cfg.set("removeN", "20");
+        scwin.log("WAEA-800 핫패스 카운터+flush 검증 샘플");
+        scwin.log("순서: ① 성능수집 ON → ② 초기데이터 로드 → ③ 시나리오 A~D → ④ Report 조회");
+        scwin.log("현재 _on=" + String(WebSquare._performance._on));
+    };
+
+    /* ===== 수집 제어 ===== */
+    scwin.btn_perfOn_onclick = function() {
+        WebSquare.util.setPerformanceUse(true);
+        scwin.log("_performance ON — _on=" + String(WebSquare._performance._on));
+    };
+    scwin.btn_perfOff_onclick = function() {
+        WebSquare.util.setPerformanceUse(false);
+        scwin.log("_performance OFF");
+    };
+    scwin.btn_clearBuffer_onclick = function() {
+        WebSquare._performance.clearBuffer();
+        scwin.log("clearBuffer() — measure entries = " + performance.getEntriesByType("measure").length);
+    };
+    scwin.btn_clearLog_onclick = function() {
+        txa_log.setValue("");
+    };
+
+    /* ===== 초기 데이터 ===== */
+    scwin.btn_load_init_onclick = function() {
+        var n = parseInt(dataMap_cfg.get("initRows") || "100", 10);
+        var arr = [];
+        for (var i = 0; i < n; i++) {
+            arr.push({ ID: "ID_" + i, NAME: "Name_" + i, VALUE: i, STATUS: (i % 2 === 0 ? "Y" : "N") });
+        }
+        list1.setJSON(arr);
+        scwin.log("[init] list1.setJSON — " + n + "행 (setData 진입 시 직전 카운터 flush 자동 발생)");
+    };
+
+    /* ===== 시나리오 A: setBroadcast(false) → setCellData × N → setBroadcast(true) ===== */
+    scwin.btn_scenarioA_onclick = function() {
+        var n = parseInt(dataMap_cfg.get("setCellN") || "100", 10);
+        if (list1.getRowCount() === 0) {
+            scwin.log("[A] 초기 데이터 없음 — '초기데이터 로드' 먼저 실행하세요.");
+            return;
+        }
+        var rowCnt = list1.getRowCount();
+        scwin.log("[A] setBroadcast(false) → setCellData × " + n + " → setBroadcast(true) 시작");
+        list1.setBroadcast(false);
+        for (var i = 0; i < n; i++) {
+            list1.setCellData(i % rowCnt, "VALUE", i * 10);
+        }
+        list1.setBroadcast(true, true);
+        scwin.log("[A] 완료 — broadcast 트랜잭션 dump (broadcastBatchSize=" + n + " 예상)");
+    };
+
+    /* ===== 시나리오 B: insertRow × N → setData reset ===== */
+    scwin.btn_scenarioB_onclick = function() {
+        var n = parseInt(dataMap_cfg.get("insertN") || "50", 10);
+        scwin.log("[B] insertRow × " + n + " → setData 진입 시 flush 시작");
+        list1.setBroadcast(false);
+        for (var i = 0; i < n; i++) {
+            var ridx = list1.insertRow(0);
+            list1.setCellData(ridx, "ID", "NEW_" + i);
+            list1.setCellData(ridx, "NAME", "Inserted_" + i);
+        }
+        list1.setBroadcast(true, true);
+        // 이후 setData 진입 직전에 잔여 카운터 flush 됨
+        var resetArr = [];
+        for (var k = 0; k < 10; k++) {
+            resetArr.push({ ID: "RST_" + k, NAME: "Reset_" + k, VALUE: k, STATUS: "R" });
+        }
+        list1.setJSON(resetArr);
+        scwin.log("[B] 완료 — insertCount=" + n + ", setCellCount=" + (n*2) + " 예상 (broadcast 트랜잭션 1회), 이후 setData reset");
+    };
+
+    /* ===== 시나리오 C: 단건 setCellData 반복 (사용자 셀 편집 시뮬레이션) ===== */
+    scwin.btn_scenarioC_onclick = function() {
+        if (list1.getRowCount() === 0) {
+            scwin.log("[C] 초기 데이터 없음 — '초기데이터 로드' 먼저 실행하세요.");
+            return;
+        }
+        scwin.log("[C] 단건 setCellData 5회 (broadcast 매번 발생, flush 트리거 없음 → 명시 flush 필요)");
+        for (var i = 0; i < 5; i++) {
+            list1.setCellData(i, "STATUS", "C" + i);
+        }
+        scwin.log("[C] 5회 호출 완료. 명시 flush API (flushHotPathStats) 호출 예정");
+        list1.flushHotPathStats();
+        scwin.log("[C] flushHotPathStats() 호출 — wq.dataCollection.list1.flush measure 1건 dump");
+    };
+
+    /* ===== 시나리오 D: removeRows 다건 ===== */
+    scwin.btn_scenarioD_onclick = function() {
+        var n = parseInt(dataMap_cfg.get("removeN") || "20", 10);
+        // 행 부족 시 자동 보충 (시나리오 B 후 행 수가 줄어든 상태에서도 단독 실행 가능하도록)
+        if (list1.getRowCount() < n) {
+            var need = n - list1.getRowCount();
+            var arr = [];
+            for (var k = 0; k < need; k++) {
+                arr.push({ ID: "FILL_" + k, NAME: "Fill_" + k, VALUE: k, STATUS: "F" });
+            }
+            list1.setJSON(arr, true);
+            scwin.log("[D] 행 부족 — setJSON(append) " + need + "행 자동 보충 (현재 " + list1.getRowCount() + "행)");
+        }
+        var idxArr = [];
+        for (var i = 0; i < n; i++) idxArr.push(i);
+        scwin.log("[D] setBroadcast(false) → removeRows([0.." + (n-1) + "]) → setBroadcast(true)");
+        list1.setBroadcast(false);
+        list1.removeRows(idxArr);
+        list1.setBroadcast(true, true);
+        scwin.log("[D] 완료 — removeCount=" + n + " 예상");
+    };
+
+    /* ===== Report 조회 (같은 id 합산 표시) ===== */
+    scwin.btn_report_onclick = function() {
+        var rep = WebSquare._performance.getReport();
+        scwin.log("── _performance.getReport() ──");
+        scwin.log("  components 카테고리: " + Object.keys(rep.components).length + "종");
+        scwin.log("  dataCollection raw entries: " + rep.dataCollection.length + "건 (같은 id 합산해서 표시)");
+        // 같은 detail.id 끼리 합산
+        var agg = {};
+        var order = [];
+        for (var i = 0; i < rep.dataCollection.length; i++) {
+            var e = rep.dataCollection[i];
+            if (!e.detail) continue;
+            var key = e.detail.id;
+            if (!agg[key]) {
+                agg[key] = {
+                    "id": key, "type": e.detail.type, "scopeId": e.detail.scopeId,
+                    "flushCount": 0, "reasons": {},
+                    "setCellCount": 0, "setCellTime": 0,
+                    "setRowCount": 0, "setRowTime": 0,
+                    "insertCount": 0, "insertTime": 0,
+                    "removeCount": 0, "removeTime": 0,
+                    "setDataCount": 0, "setDataTime": 0, "setDataRows": 0,
+                    "broadcastBatchSizeMax": 0, "broadcastDurationSum": 0,
+                    "rowCountAtLastFlush": 0
+                };
+                order.push(key);
+            }
+            var a = agg[key];
+            a.flushCount++;
+            a.reasons[e.detail.flushReason] = (a.reasons[e.detail.flushReason] || 0) + 1;
+            a.setCellCount += e.detail.setCellCount;
+            a.setCellTime += e.detail.setCellTime;
+            a.setRowCount += e.detail.setRowCount;
+            a.setRowTime += e.detail.setRowTime;
+            a.insertCount += e.detail.insertCount;
+            a.insertTime += e.detail.insertTime;
+            a.removeCount += e.detail.removeCount;
+            a.removeTime += e.detail.removeTime;
+            a.setDataCount += (e.detail.setDataCount || 0);
+            a.setDataTime += (e.detail.setDataTime || 0);
+            a.setDataRows += (e.detail.setDataRows || 0);
+            if (e.detail.broadcastBatchSize > a.broadcastBatchSizeMax) a.broadcastBatchSizeMax = e.detail.broadcastBatchSize;
+            a.broadcastDurationSum += e.detail.broadcastDuration;
+            a.rowCountAtLastFlush = e.detail.rowCountAtFlush;
+        }
+        for (var k = 0; k < order.length; k++) {
+            var id = order[k];
+            var a = agg[id];
+            var reasons = [];
+            for (var rk in a.reasons) reasons.push(rk + "×" + a.reasons[rk]);
+            scwin.log("  [" + id + "] (" + a.type + ") flush " + a.flushCount + "회 [" + reasons.join(", ") + "]");
+            scwin.log("      setCell : " + a.setCellCount + "회 / " + a.setCellTime.toFixed(2) + "ms");
+            scwin.log("      setRow  : " + a.setRowCount + "회 / " + a.setRowTime.toFixed(2) + "ms");
+            scwin.log("      insert  : " + a.insertCount + "회 / " + a.insertTime.toFixed(2) + "ms");
+            scwin.log("      remove  : " + a.removeCount + "회 / " + a.removeTime.toFixed(2) + "ms");
+            scwin.log("      setData : " + a.setDataCount + "회 / " + a.setDataTime.toFixed(2) + "ms / " + a.setDataRows + "행");
+            scwin.log("      bcBatchMax=" + a.broadcastBatchSizeMax + ", bcDurSum=" + a.broadcastDurationSum.toFixed(2) + "ms" +
+                      ", rowCnt=" + a.rowCountAtLastFlush);
+        }
+    };
+
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_main" style="width:1100px; padding:10px;">
+        <!-- 상단 수집 제어 -->
+        <xf:group style="margin-bottom:8px; padding:6px; border:1px solid #888; background:#f5f5f5;">
+            <xf:trigger type="button" id="btn_perfOn" ev:onclick="scwin.btn_perfOn_onclick" style="width:110px; height:28px;">
+                <xf:label><![CDATA[성능수집 ON]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_perfOff" ev:onclick="scwin.btn_perfOff_onclick" style="width:110px; height:28px;">
+                <xf:label><![CDATA[성능수집 OFF]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clearBuffer" ev:onclick="scwin.btn_clearBuffer_onclick" style="width:110px; height:28px;">
+                <xf:label><![CDATA[clearBuffer()]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_report" ev:onclick="scwin.btn_report_onclick" style="width:140px; height:28px;">
+                <xf:label><![CDATA[Report 조회]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clearLog" ev:onclick="scwin.btn_clearLog_onclick" style="width:80px; height:28px;">
+                <xf:label><![CDATA[로그삭제]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <!-- 파라미터 입력 -->
+        <xf:group style="margin-bottom:8px; padding:6px; border:1px solid #ccc;">
+            <w2:span><![CDATA[초기 행수: ]]></w2:span>
+            <xf:input id="ipt_initRows" ref="data:dataMap_cfg.initRows" style="width:60px; height:25px;"></xf:input>
+            <w2:span><![CDATA[ A.setCell N: ]]></w2:span>
+            <xf:input id="ipt_setCellN" ref="data:dataMap_cfg.setCellN" style="width:60px; height:25px;"></xf:input>
+            <w2:span><![CDATA[ B.insert N: ]]></w2:span>
+            <xf:input id="ipt_insertN" ref="data:dataMap_cfg.insertN" style="width:60px; height:25px;"></xf:input>
+            <w2:span><![CDATA[ D.remove N: ]]></w2:span>
+            <xf:input id="ipt_removeN" ref="data:dataMap_cfg.removeN" style="width:60px; height:25px;"></xf:input>
+        </xf:group>
+
+        <!-- 시나리오 버튼 -->
+        <xf:group style="margin-bottom:8px; padding:6px; border:1px solid #4caf50; background:#f0f8f0;">
+            <xf:trigger type="button" id="btn_load_init" ev:onclick="scwin.btn_load_init_onclick" style="width:160px; height:30px;">
+                <xf:label><![CDATA[① 초기 데이터 로드]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_scenarioA" ev:onclick="scwin.btn_scenarioA_onclick" style="width:230px; height:30px;">
+                <xf:label><![CDATA[② A: setBroadcast → setCellData × N]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_scenarioB" ev:onclick="scwin.btn_scenarioB_onclick" style="width:200px; height:30px;">
+                <xf:label><![CDATA[③ B: insertRow × N → reset]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_scenarioC" ev:onclick="scwin.btn_scenarioC_onclick" style="width:230px; height:30px;">
+                <xf:label><![CDATA[④ C: 단건 setCellData + 명시 flush]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_scenarioD" ev:onclick="scwin.btn_scenarioD_onclick" style="width:200px; height:30px;">
+                <xf:label><![CDATA[⑤ D: removeRows 다건]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <!-- gridView -->
+        <w2:gridView id="grd_main" dataList="data:list1" defaultCellHeight="20" style="width:1080px; height:280px;">
+            <w2:header>
+                <w2:row>
+                    <w2:column id="hd_ID" value="ID" width="240"></w2:column>
+                    <w2:column id="hd_NAME" value="Name" width="280"></w2:column>
+                    <w2:column id="hd_VALUE" value="Value" width="240"></w2:column>
+                    <w2:column id="hd_STATUS" value="Status" width="280"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody>
+                <w2:row>
+                    <w2:column id="ID" width="240"></w2:column>
+                    <w2:column id="NAME" width="280"></w2:column>
+                    <w2:column id="VALUE" width="240" displayMode="label"></w2:column>
+                    <w2:column id="STATUS" width="280"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+
+        <!-- 로그 -->
+        <w2:textarea id="txa_log" style="width:1080px; height:300px; font-family:monospace; font-size:12px; background:#1e1e1e; color:#0f0;" readOnly="true"/>
+    </xf:group>
+</body>
+</html>

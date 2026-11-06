@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[]]></col1>
+            				<col2><![CDATA[222]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[333]]></col1>
+            				<col2><![CDATA[444]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.setVal = function() {
+    scwin.fireDbClick(WebSquare.wUnit.getDomById('gridView1_cell_0_0'));
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_0").innerText == '-999';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getObjById($p.id+"wq_uuid_4").getValue() == '-999';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 그리드뷰의 첫번째 컬럼에 -999값을 입력한다.
+    //1. After running the sample file, enter a value of -999 in the first column of the grid view.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col1').setValue(-999)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. -999값이 입력된다.(이전에는 -99까지만 입력됨)
+    //1. The value of -999 is entered (Previously only up to -99)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. inputbox를 클릭하고 -999값을 입력한다.
+    //2. Click inputbox and enter a value of -999.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_4').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_4').setValue(-999)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_4').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. -999값이 입력된다.(이전에는 -99까지만 입력됨)
+    //2. The value of -999 is entered (previously only -99 is entered)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 28-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="position: relative;width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name2"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70" adjustMaxLength="true" displayFormat=""
+    					maxLength="3" editModeEvent="" dataType="number">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" width="70" inputType="text" adjustMaxLength=""></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:input id="" style="position: relative;width: 144px;height: 21px;" adjustMaxLength="true" dataType="number" maxlength="3"></xf:input>
+    </body>
+</html>
+ 

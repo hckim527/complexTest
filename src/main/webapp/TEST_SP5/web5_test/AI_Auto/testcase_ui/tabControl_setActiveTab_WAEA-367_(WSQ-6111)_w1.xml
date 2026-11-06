@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="number"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="number"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="number"></w2:column>
+                        <w2:column id="col5" name="name5" dataType="number"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="false">
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+    scwin.onpageload = function() {
+        scwin.trigger1_onclick();
+        gridView1.setFocusedCell(0,0);
+    };
+    
+    scwin.onpageunload = function() {
+        
+    };
+
+    scwin.trigger1_onclick = function() {
+        var dummy = 1234567890;
+        var data = [];
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 5; j++) {
+                data.push(dummy);
+            }
+
+        } 
+        dataList1.setData(data);
+    }
+
+    scwin.gridView_displayFormatter = function(v) {
+        var s = "";
+        var cnt = 0;
+        for (var i = v.length - 1; i >= 0; i--,cnt++) {
+            if (cnt % 3 === 0 && cnt > 0) {
+                s = "," + s
+            }
+            s = v[i] + s;
+            
+        }
+        return s;
+    }
+    
+    ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:gridView autiFit="allColumn" class="tbl_list" dataList="data:dataList1" id="gridView1" style="width:520px;height:300px;" senseReader="true">
+            <w2:caption id="caption1" value="this is a grid caption."/>
+            <w2:header id="header1">
+                <w2:row id="row1">
+                    <w2:column displayMode="label" id="hc1" inputType="text" value="col1" width="100"/>
+                    <w2:column displayMode="label" id="hc2" inputType="text" value="col2(apply)" width="100"/>
+                    <w2:column displayMode="label" id="hc3" inputType="text" value="col3(text)" width="100"/>
+                    <w2:column displayMode="label" id="hc4" inputType="text" value="col4(num)" width="100"/>
+                    <w2:column displayMode="label" id="hc5" inputType="text" value="col5(num)" width="100"/>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="row2">
+                    <w2:column displayMode="label" inputType="text" id="col1" width="100" dataType="number"/>
+                    <w2:column displayMode="label" inputType="text" id="col2" width="100" dataType="number" readOnly="false" displayFormat="#,###" applyFormat="all"/>
+                    <w2:column displayMode="label" inputType="text" id="col3" width="100" readOnly="false" displayFormat="#,###" dataType="text"/>
+                    <w2:column displayMode="label" inputType="text" id="col4" width="100" displayFormat="#,###" dataType="number" readOnly="false"/>
+                    <w2:column displayMode="label" inputType="text" id="col5" width="100" displayFormatter="scwin.gridView_displayFormatter" dataType="number" readOnly="false"/>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <xf:trigger type="button" style="position:relative;width: 180px;height: 30px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+            <xf:label>
+                <![CDATA[get data]]>
+            </xf:label>
+        </xf:trigger>
+    </body>
+</html>

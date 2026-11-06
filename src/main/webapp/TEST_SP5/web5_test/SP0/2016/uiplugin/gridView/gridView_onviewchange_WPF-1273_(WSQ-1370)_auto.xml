@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="calendar1" dataType="text"></w2:column>
+						<w2:column id="col3" name="calendar2" dataType="text"></w2:column>
+						<w2:column id="col4" name="calendar3" dataType="text"></w2:column>
+						<w2:column id="col5" name="calendar4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="calendar1" dataType="text"></w2:column>
+						<w2:column id="col3" name="calendar2" dataType="text"></w2:column>
+						<w2:column id="col4" name="calendar3" dataType="text"></w2:column>
+						<w2:column id="col5" name="calendar4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onLoadComplete = function() {
+    dataList1.setJSON([{
+        "col1": "AAAA",
+        "col2": "20160205",
+        "col3": "201301",
+        "col4": "20110205",
+        "col5": "20110205"
+    }]);
+    dataList2.setJSON([{
+        "col1": "AAAA",
+        "col2": "20160205",
+        "col3": "201301",
+        "col4": "20110205",
+        "col5": "20110205"
+    }]);
+};
+scwin.gridView1_onviewchange = function(info) {
+    alert("onviewchange fire1 ==: \n" + JSON.stringify(info, null, 4));
+    var colID = gridView1.getColumnID(info.colIndex);
+    dataList1.setCellData(info.rowIndex, colID, info.oldValue);
+    alert("dataList set 값 확인 ==: " + dataList1.getCellData(info.rowIndex, colID));
+};
+scwin.gridView2_onviewchange = function(info) {
+    //alert("onviewchange fire2 ==: \n" + JSON.stringify(info, null, 4));
+    data = info;
+	debugger;
+    var colID = gridView2.getColumnID(info.colIndex);
+    dataList2.setCellData(info.rowIndex, colID, info.oldValue);
+    //alert("dataList set 값 확인 ==: " + dataList2.getCellData(info.rowIndex, colID));
+};
+scwin.customDateFormatter = function(value, formattedValue, rowIndwx, colIndex) {
+    return value;
+};
+scwin.displayDateFormatter = function(value) {
+    return value;
+};
+scwin.checkVal1 = function() {
+	return data.oldValue == '20160205';
+}
+scwin.checkVal2 = function() {
+	return data.oldValue == '20160205';
+}
+scwin.unitTest = function() {
+    //init
+	WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_cell_0_0_calendar_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('mf_mf_gridView2_cell_0_0_calendar_calendar_cell_2_6').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", 'true');
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. 날짜를 지우고 직접 입력하고 Focus Out 한다.
+    //5. Clear the date, enter it directly and focus out.
+    //Verify step 5. The corresponding onviewchange event is applied and a pop-up is generated. (info.oldValue) (info.newValue value is used instead of info.oldValue value.)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_cell_0_0_calendar_input').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_cell_0_0_calendar_input').value = '20160220'");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_cell_0_0_calendar_input').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", 'true');
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.data = null;
+    scwin.onLoadComplete();
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:textbox label="GridView Event" id="" style="padding:0 0 15px 0;margin:0px;" tagname="h3"></w2:textbox>
+		<w2:textbox id="txt1" label='1. senseReader value="false"' style="padding:5px 0 5px 15px;margin:0px;" tagname="h4"></w2:textbox>
+		<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1"
+			style="width: 100%;min-width:800px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true"
+			useShiftKey="true" ev:onviewchange="scwin.gridView1_onviewchange" senseReader="false">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" id="column1" style="height:20px;" width="220" inputType="text" displayMode="label"
+						value="calendar&lt;br/&gt;calendarValueType=yearMonthDate">
+					</w2:column>
+					<w2:column blockSelect="false" id="column5" style="height:20px;" inputType="text" width="220" displayMode="label"
+						value="calendar&lt;br/&gt;calendarValueType=yearMonth">
+					</w2:column>
+					<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="220" displayMode="label"
+						value="calendar&lt;br/&gt;displayFormatter">
+					</w2:column>
+					<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="220" displayMode="label"
+						value="calendar&lt;br/&gt;displayFormat">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="col2" style="height:20px" width="120" inputType="calendar" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="col3" style="height:20px" inputType="calendar" width="220" displayMode="label"
+						calendarValueType="yearMonth">
+					</w2:column>
+					<w2:column blockSelect="false" id="col4" style="height:20px" inputType="calendar" width="220" displayMode="label"
+						displayFormat="" displayFormatter="scwin.displayDateFormatter">
+					</w2:column>
+					<w2:column blockSelect="false" id="col5" style="height:20px" inputType="calendar" width="220" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+
+		<w2:textbox id="textbox1" label='2. senseReader value="true"' style="padding:5px 0 5px 15px;margin:0px;" tagname="h4"></w2:textbox>
+		<w2:gridView dataList="dataList2" ev:onviewchange="scwin.gridView2_onviewchange" fixedColumnWithHidden="true" id="gridView2"
+			ignoreCellClick="false" ignoreToggleOnDisabled="false" scrollByColumn="false" scrollByColumnAdaptive="false" senseReader="true"
+			style="width: 100%;min-width:800px;height: 150px;" summaryAuto="false" useShiftKey="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:20px;"
+						value="calendar&lt;br/&gt;calendarValueType=yearMonthDate" width="220">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="column5" inputType="text" style="height:20px;"
+						value="calendar&lt;br/&gt;calendarValueType=yearMonth" width="220">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px;"
+						value="calendar&lt;br/&gt;displayFormatter" width="220">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" style="height:20px;"
+						value="calendar&lt;br/&gt;displayFormat" width="220">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" displayMode="label" id="col2" inputType="calendar" style="height:20px" width="120"></w2:column>
+					<w2:column blockSelect="false" calendarValueType="yearMonth" displayMode="label" id="col3" inputType="calendar"
+						style="height:20px" width="220">
+					</w2:column>
+					<w2:column blockSelect="false" displayFormat="" displayFormatter="scwin.displayDateFormatter" displayMode="label"
+						id="col4" inputType="calendar" style="height:20px" width="220">
+					</w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="col5" inputType="calendar" style="height:20px" width="220"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>
+ 

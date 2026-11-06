@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1" dataType="text"></w2:column>
+        				<w2:column id="col2" name="name2" dataType="text"></w2:column>
+        				<w2:column id="col3" name="name3" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        			<w2:data use="false"></w2:data>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="data:json,dataList1" target="data:json,dataList1" action="autoComplete_gridViewItemSet_interactionMode_WESD-1271_(WSQ-5232).json" method="post" mediatype="application/json"
+        		encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+        		ev:submitdone="" ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+	//$p.executeSubmission("submission1");
+
+	var dataJson = [
+		{ "col1": "101", "col2": "201", "col3": "301" },
+		{ "col1": "102", "col2": "202", "col3": "302" },
+		{ "col1": "103", "col2": "203", "col3": "303" },
+		{ "col1": "104", "col2": "204", "col3": "304" },
+		{ "col1": "105", "col2": "205", "col3": "305" }
+	]
+	dataList1.setJSON(dataJson);
+
+	var obj = {
+		"nodeset": "data:dataList1",
+		"label": "col1",
+		"value": "col2",
+		"visibleRowNum" : 10,
+		"width": 400,
+		"height": 300,
+		"item": [{ "ref": "col1", "header": "col1" }, { "ref": "col2", "header": "col2" }, { "ref": "col3", "header": "col3" }]
+	}
+	autoComplete1.setGridItemset(obj)
+};
+
+scwin.onpageunload = function () {
+
+};
+
+scwin.setData = function () {
+	$p.executeSubmission("submission1");
+}
+
+	scwin.checkVal1 = function() {
+		var log = WebSquare.logger.getLog();
+		return log.indexOf("setRowVisible error") < 0;		
+	}		
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_gridViewItemTable_gridView_cell_1_0').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete editType="select" id="autoComplete1" useKeywordHighlight="false" style="width: 148px;height: 21px;"
+    		submenuSize="auto" search="contain" useLocale="false" allOption="" ref="" searchTarget="both" allowEmptySubmission="true" noResult="noEnd" displayMode="label" interactionEnterKey="true" chooseOption="true" submissionFunc="scwin.setData" interactionMode="true">
+    		<w2:choices>
+    			<w2:gridViewItemset hideHeader="" rowMouseOver="" nodeset="data:dataList1" width="400" selectedRowColor="blue" label="col1"
+    				visibleRowNum="" autoFit="" value="col2" rowMouseOverColor="" height="300">
+    				<w2:item ref="col1" hidden="" header="" style="" headerStyle=""></w2:item>
+    				<w2:item ref="col2" hidden="" header="" style="" headerStyle=""></w2:item>
+    				<w2:item ref="col3" hidden="" header="" style="" headerStyle=""></w2:item>
+    			</w2:gridViewItemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    </body>
+</html>

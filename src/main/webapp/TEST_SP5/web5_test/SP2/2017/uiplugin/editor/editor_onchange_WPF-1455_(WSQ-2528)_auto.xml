@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+}		
+scwin.editor1_onchange = function() {
+    var result = WebSquare.wUnit.getDomById($p.id + 'result');
+    result.value += "onchange occured. \n";
+};
+scwin._checkvalue = function() {
+    return result.getValue().replace(/\r?\n/g, '');
+}
+scwin.checkVal = function() {
+    //return scwin._checkvalue() == 'onchange occured. onchange occured. ';
+    return scwin._checkvalue() == 'onchange occured. ';	
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 0. IE6, IE7확인은 config.xml에서 editor속성제거 후 확인가능함
+    //0. IE6, IE7 OK can be checked after removing editor attribute in config.xml
+    //Test step 1. 샘플파일을 실행 후 editor에 임의의 값을 입력 후 마우스의 포커스를 eidtor 밖으로 이동하고 클릭한다.
+    //1. After executing sample file, input arbitrary value to editor and move mouse focus out of eidtor and click.
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('editor1').setText('aaaaa')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('result').focus()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 1. 오른쪽의 textarea영역에 ''onchange occured'값이 보여진다.(정상적인 onchange 이벤트 발생함)
+    //1. The 'onchange occured' value is shown in the textarea area on the right (a normal onchange event occurs).
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:editor id="editor1" enableOnChangeEvent='true' style="position: absolute;width: 500px;height: 300px;left:70px;top:55px;"
+    		ev:onchange="scwin.editor1_onchange">
+    	</w2:editor>
+    	<xf:textarea id="result" style="position: absolute;width:300px;height:305px;left:620px;top:52px;"></xf:textarea>
+    </body>
+</html>
+ 

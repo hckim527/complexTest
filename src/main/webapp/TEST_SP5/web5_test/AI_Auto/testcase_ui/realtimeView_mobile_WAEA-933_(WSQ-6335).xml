@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" repeatNode="map" saveRemovedData="true" 
+                    ev:ondataload="scwin.dataList1_ondataload">
+					<w2:columnInfo>
+						<w2:column id="time" name="시간" dataType="time" />
+						<w2:column id="price" name="체결가" dataType="number" />
+						<w2:column id="changeAmountIcon" name="등락폭아이콘" dataType="text" />
+						<w2:column id="changeAmount" name="등락폭" dataType="number" />
+						<w2:column id="changeRate" name="등락률" dataType="number" />
+						<w2:column id="volume" name="체결량" dataType="number" />
+						<w2:column id="tradeVolume" name="거래량" dataType="number" />
+						<w2:column id="exchange" name="체결거래소" dataType="text" />
+					</w2:columnInfo>
+					<w2:data use="false">
+						<w2:row>
+							<time><![CDATA[170101]]></time>
+							<price><![CDATA[48493]]></price>
+							<changeAmountIcon><![CDATA[]]></changeAmountIcon>
+							<changeAmount><![CDATA[485]]></changeAmount>
+							<changeRate><![CDATA[0.40]]></changeRate>
+							<volume><![CDATA[392]]></volume>
+							<tradeVolume><![CDATA[234539848]]></tradeVolume>
+							<exchange><![CDATA[KRX]]></exchange>
+						</w2:row>
+						<w2:row>
+							<time><![CDATA[170101]]></time>
+							<price><![CDATA[48493]]></price>
+							<changeAmountIcon><![CDATA[]]></changeAmountIcon>
+							<changeAmount><![CDATA[485]]></changeAmount>
+							<changeRate><![CDATA[0.40]]></changeRate>
+							<volume><![CDATA[392]]></volume>
+							<tradeVolume><![CDATA[234539848]]></tradeVolume>
+							<exchange><![CDATA[KRX]]></exchange>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	//fpsSelect.setValue(10);
+	//scwin.generateSampleData();
+};
+scwin.fpsSelect_onchange = function(info) {
+	// FPS 설정
+	var fps = parseInt(info.newValue);
+	realtimeView1.setTargetFps(fps);
+
+	// UI 업데이트
+	//targetFpsText.setLabel(fps === 0 ? '제한없음' : fps);
+}
+scwin.generateSampleData = function() {
+	var basePrice = 56000; // 기준 체결가
+	var data = [];
+	var exchangeTypes = ["KRX", "NXT"];
+
+	for (var i = 0; i < 3; i++) {
+		var price = basePrice + (Math.random() - 0.5) * 1000;        // 체결가
+		var prevPrice = price + (Math.random() - 0.5) * 500;         // 전일가
+		var change = price - prevPrice;                              // 등락폭
+		var changeRate = (change / prevPrice) * 100;                 // 등락률 %
+
+		// Raw 데이터로 변경 - 포매팅은 realtimeView에서 자동으로 처리
+		var date = new Date();
+		data.push({
+			time: date.getHours().toString().padStart(2, '0') + 
+				  date.getMinutes().toString().padStart(2, '0') + 
+				  date.getSeconds().toString().padStart(2, '0'),               // HHmmss 형태의 raw 시간
+			price: Math.round(price),                                           // 숫자 그대로
+			changeAmountIcon: "",                                               // 아이콘용 빈 데이터
+			changeAmount: Math.round(change),                                   // 숫자 그대로
+			changeRate: parseFloat(changeRate.toFixed(2)),                      // 숫자 그대로
+			volume: Math.floor(Math.random() * 1000),                          // 숫자 그대로
+			tradeVolume: Math.floor(Math.random() * 30000000),                 // 숫자 그대로
+			exchange: exchangeTypes[Math.floor(Math.random() * 2)]             // 텍스트 그대로
+		});
+	}
+
+	// 데이터 삽입
+	dataList1.insertJSON(0, data);
+	//dataList1.setJSON(data);
+	//dataList1.setCellData(1, "exchange", "TEST");
+	//dataList1.setRowJSON(1, {"time": 111111, "price":22222});
+	
+
+	// 현재 행 개수 확인
+	var cnt = dataList1.getRowCount();
+
+	// 최대 50개까지만 유지
+	var maxRows = 5000;
+	if (cnt > maxRows) {
+		var excess = cnt - maxRows;
+		var rowsToRemove = [];
+		for (var i = 0; i < excess; i++) {
+			rowsToRemove.push(cnt - 1 - i); // 끝에서부터 제거
+		}
+		dataList1.removeRows(rowsToRemove);
+	}
+	//dataList1.removeRows([0,1]);
+	//dataList1.removeRow(1);
+	//dataList1.removeAll();
+	
+	// 스타일 적용 함수
+	scwin.setStyle();
+
+	realtimeView1.redraw();
+};
+
+scwin.setStyle = function() {
+	var rowCount = dataList1.getRowCount();
+	for (var i = 0; i < rowCount; i++) {
+		// 등락폭 스타일 적용
+		var changeVal = parseInt(dataList1.getCellData(i, "changeAmount"));
+		if (changeVal > 0) {
+			// 상승
+			realtimeView1.setCellStyle(i, "changeAmount", "color", "red");
+			realtimeView1.setCellStyle(i, "changeAmountIcon", "background-image", "url('/ai_dev/cline/realtimeView/bg/bg-up.svg') no-repeat left center");
+		} else if (changeVal < 0) {
+			// 하락
+			realtimeView1.setCellStyle(i, "changeAmount", "color", "blue");
+			realtimeView1.setCellStyle(i, "changeAmountIcon", "background-image", "url('/ai_dev/cline/realtimeView/bg/bg-down.svg') no-repeat left center");
+		}
+
+		// 등락률 스타일 적용
+		realtimeView1.setCellStyle(i, "changeRate", "color", changeVal > 0 ? "red" : (changeVal < 0 ? "blue" : "black"));
+	}
+}
+
+scwin.formatChangeRate = function(rate) {
+    var numRate = parseFloat(rate);
+    if (isNaN(numRate)) return "0.00%";
+
+    // -0.00% 방지
+    if (Math.abs(numRate) < 0.005) numRate = 0;
+
+    return (numRate > 0 ? "+" : (numRate < 0 ? "" : "")) + numRate.toFixed(2) + "%";
+};
+scwin.start1 = function() {
+	statusText.setLabel('실행 중');
+
+	//scwin.generateSampleData();
+	
+	// updateInterval 설정 → setJSON() 호출 주기적으로 실행
+	scwin.updateInterval = setInterval(() => {
+		scwin.generateSampleData();
+		
+		// UI 업데이트
+		var fps = realtimeView1.fps;
+		//fpsText.setLabel(fps === 0 ? '제한없음' : fps);
+	}, 100);
+}
+scwin.stop1 = function() {
+	statusText.setLabel('중지');
+	
+	if (scwin.updateInterval) {
+		clearInterval(scwin.updateInterval);
+		scwin.updateInterval = null;
+	}
+}
+scwin.clear = function() {
+	realtimeView1.clear(); // 모든 데이터를 초기화하고 최초 상태로 되돌림
+}
+
+scwin.importantTest = function() {
+	// 첫번째 컬럼 purple 색이 입혀져야 함
+	realtimeView1.setCellStyle(0, "time", "color", "orange");
+	realtimeView1.setCellStyle(0, "time", "color", "purple !important");
+	
+	// 화면에 반영
+	realtimeView1.redraw();
+}
+
+// requestAnimationFrame을 사용한 실시간 업데이트 함수들
+scwin.start2 = function() {
+	statusText.setLabel('실행 중');
+	
+	// 이전 애니메이션이 실행 중이면 중지
+	if (scwin.animationId) {
+		cancelAnimationFrame(scwin.animationId);
+	}
+	
+	// FPS 제어를 위한 시간 초기화
+	scwin.lastUpdateTime = performance.now();
+	
+	// requestAnimationFrame 루프 시작
+	scwin.animationLoop();
+
+	//scwin.generateSampleData();
+}
+
+scwin.stop2 = function() {
+	statusText.setLabel('중지');
+	
+	if (scwin.animationId) {
+		cancelAnimationFrame(scwin.animationId);
+		scwin.animationId = null;
+	}
+}
+
+scwin.animationLoop = function() {
+	var currentTime = performance.now();
+	var targetInterval = 100; // 100ms
+	
+	// FPS 제한 확인
+	if (currentTime - scwin.lastUpdateTime >= targetInterval) {
+		scwin.generateSampleData();
+		scwin.lastUpdateTime = currentTime;
+	}
+	
+	// 다음 프레임 요청
+	scwin.animationId = requestAnimationFrame(scwin.animationLoop);
+}
+
+scwin.excelTest = function() {
+	var options = {};
+	options.fileName = "canvas0804_useDataFormatUseStyle.xlsx";
+	options.useDataFormat = true;
+	options.useStyle = true;
+	options.removeColumns = ['2'];
+	realtimeView1.advancedExcelDownload(options);
+}
+]]></script>
+
+	<style type="text/css"><![CDATA[
+
+.container1 {
+	width: 625px;
+	max-width: calc(100vw - 20px);
+    margin: 0 auto;
+    padding: 10px;
+	box-sizing: border-box;
+}
+.header1 {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+	box-sizing: border-box;
+}
+
+/* 모던한 버튼 스타일 */
+.w2trigger {
+    padding: 8px 16px;
+    margin: 4px;
+    cursor: pointer;
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    color: #495057;
+    font-size: 14px;
+    font-weight: normal;
+	font-family:Malgun Gothic;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    vertical-align: middle;
+}
+
+.w2trigger:hover {
+    border-color: #007bff;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    box-shadow: 0 2px 6px rgba(0,123,255,0.15);
+    transform: translateY(-1px);
+}
+
+.w2trigger:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+}
+
+/* 셀렉트박스 스타일 */
+.w2selectbox {
+    margin: 4px;
+    padding: 6px 12px;
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    background: white;
+    color: #495057;
+    font-size: 12px;
+	font-family:Malgun Gothic;
+    display: inline-block;
+    vertical-align: middle;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+}
+
+.w2selectbox:hover {
+    border-color: #007bff;
+    box-shadow: 0 2px 6px rgba(0,123,255,0.15);
+}
+
+.w2selectbox:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    outline: none;
+}
+
+/* 텍스트박스 스타일 */
+.w2textbox {
+    margin: 2px 4px;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: #495057;
+    font-size: 12px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* 상태 표시 텍스트 스타일 */
+.status {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.status-value {
+    font-weight: 500;
+    color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: 4px;
+    padding: 2px 8px;
+}
+
+.performance {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.performance-value {
+    font-weight: 500;
+    color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 4px;
+    padding: 2px 8px;
+}
+
+.memory {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.memory-value {
+    font-weight: 500;
+    color: #fd7e14;
+    background: rgba(253, 126, 20, 0.1);
+    border-radius: 4px;
+    padding: 2px 8px;
+}
+
+/* FPS 컨트롤 그룹 스타일 */
+.fps-control {
+    display: inline-block;
+    margin: 8px 16px 8px 0;
+    padding: 8px 12px;
+    background: rgba(0, 123, 255, 0.05);
+    border: 1px solid rgba(0, 123, 255, 0.2);
+    border-radius: 6px;
+    vertical-align: middle;
+}
+
+.fps-control .w2textbox {
+    font-weight: 600;
+    color: #007bff;
+    margin-right: 8px;
+}
+
+@media (max-width: 640px) {
+	.container1 {
+		width: 100%;
+		max-width: none;
+		padding: 8px;
+	}
+}
+	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+	    <xf:group class="container1">
+			<xf:group class="header1">
+				<xf:group class="controls">
+					<w2:textbox id="title" label="실시간 주식 거래 내역" style="display:block;font-size:20px;text-align:center;"/>
+					<!-- <xf:trigger type="button" style="width:248px;height:39px;" id="startBtn" ev:onclick="scwin.start1">
+						<xf:label><![CDATA[실시간 시작 - setInterval]]></xf:label>
+					</xf:trigger>
+					<xf:trigger type="button" style="width:248px;height:39px;" id="stopBtn" ev:onclick="scwin.stop1">
+						<xf:label><![CDATA[실시간 중지 - setInterval]]></xf:label>
+					</xf:trigger> -->
+					<w2:textbox id="spacer1" label="" style="display:block;"/>
+					<xf:trigger type="button" style="width:248px;height:39px;" id="startBtn2" ev:onclick="scwin.start2">
+						<xf:label><![CDATA[실시간 시작]]></xf:label>
+					</xf:trigger>
+					
+					<xf:trigger type="button" style="width:248px;height:39px;" id="stopBtn2" ev:onclick="scwin.stop2">
+						<xf:label><![CDATA[실시간 중지]]></xf:label>
+					</xf:trigger>
+					<w2:textbox id="spacer2" label="" style="display:block;"/>
+					<!-- <xf:trigger type="button" style="width:248px;height:39px;" id="clearBtn" ev:onclick="scwin.clear">
+						<xf:label><![CDATA[데이터 초기화]]></xf:label>
+					</xf:trigger> -->
+					<!-- <xf:trigger type="button" style="width:248px;height:39px;" id="importantTestBtn" ev:onclick="scwin.importantTest">
+						<xf:label><![CDATA[!important 테스트]]></xf:label>
+					</xf:trigger> -->
+					<xf:trigger type="button" style="width:248px;height:39px;" id="excelTestBtn" ev:onclick="scwin.excelTest">
+						<xf:label><![CDATA[엑셀 다운로드]]></xf:label>
+					</xf:trigger>
+					<w2:textbox id="spacer3" label="" style="display:block;"/>
+					<xf:group class="fps-control">
+						<w2:textbox for="fpsSelect">FPS 제한:</w2:textbox>
+						<xf:select1 id="fpsSelect" chooseOption="true" style="position: relative;width: 148px;height: 30px;" appearance="minimal" 
+							ev:onchange="scwin.fpsSelect_onchange">
+							<xf:choices>
+								<xf:item>
+									<xf:label><![CDATA[5 FPS]]></xf:label>
+									<xf:value><![CDATA[5]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[10 FPS]]></xf:label>
+									<xf:value><![CDATA[10]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[20 FPS]]></xf:label>
+									<xf:value><![CDATA[20]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[30 FPS]]></xf:label>
+									<xf:value><![CDATA[30]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[60 FPS]]></xf:label>
+									<xf:value><![CDATA[60]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[120 FPS]]></xf:label>
+									<xf:value><![CDATA[120]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[제한 없음]]></xf:label>
+									<xf:value><![CDATA[0]]></xf:value>
+								</xf:item>
+							</xf:choices>
+						</xf:select1>
+					</xf:group>
+
+					<!-- 상태 표시 영역 -->
+					<w2:textbox id="statusLabel" label="상태:" class="status" style="display:inline-block;margin-right:5px;"/>
+					<w2:textbox id="statusText" label="중지" class="status-value" style="display:inline-block;margin-right:20px;"/>
+					<!-- 성능 표시 영역 -->
+					<!-- <w2:textbox id="performanceLabel" label="FPS:" class="performance" style="display:inline-block;margin-right:5px;"/>
+					<w2:textbox id="fpsText" label="0" class="performance-value" style="display:inline-block;margin-right:5px;"/>
+					<w2:textbox id="targetFpsLabel" label="/ 목표:" class="performance" style="display:inline-block;margin-right:5px;"/>
+					<w2:textbox id="targetFpsText" label="10" class="performance-value" style="display:inline-block;margin-right:20px;"/> -->
+				</xf:group>
+			</xf:group>
+			
+			<!-- <xf:group style="position:relative;width:700px; height:530px;box-shadow: 0 2px 8px rgba(0,0,0,0.1);"> -->
+			<!-- <xf:group style="position:relative;width:620px; height:524px;box-shadow: 0 2px 8px rgba(0,0,0,0.1);"> -->
+			<!-- <xf:group style="position:relative;width:550px; height:524px;"> -->
+			<xf:group style="position:relative;width:100%; height:511px;">
+				<w2:realtimeView id="realtimeView1" 
+					style="width: 100%;height: 100%;" 
+
+					dataList="dataList1"
+
+					defaultHeaderCellHeight="30"
+					defaultCellHeight="30"
+
+					visibleRowNum="20"
+					autoFit="lastColumn" 
+
+					oddRowBackgroundColor="rgb(255, 255, 255)"
+					evenRowBackgroundColor="rgb(255, 255, 255)"
+
+					focusMode="both"
+					selectedCellColor=""
+					selectedRowColor=""
+
+					columnResize="true"
+					dataDragDrop="true"
+
+					>
+					<w2:header id="header1" style="background-color: #537aa7;" >
+						<w2:row id="row1" style="" >
+							<w2:column width="80" id="column7" value="시간" style="font-size:12px;font-weight:normal;color:#fff;font-family:Malgun Gothic;" />
+							<w2:column width="100" id="column6" value="체결가" style="font-size:12px;font-weight:normal;color:#fff;font-family:Malgun Gothic;" />
+							<w2:column width="100" id="column5" value="등락폭" colSpan="2" style="font-size:12px;font-weight:normal;color:#fff;font-family:Malgun Gothic;" />
+							<w2:column width="80" id="column4" value="등락률" style="font-size:12px;font-weight:normal;color:#fff;font-family:Malgun Gothic;" />
+							<w2:column width="80" id="column3" value="체결량" style="font-size:12px;font-weight:normal;color:#fff;font-family:Malgun Gothic;" />
+							<w2:column width="100" id="column2" value="거래량" style="font-size:12px;font-weight:normal;color:#fff;font-family:Malgun Gothic;" />
+							<w2:column width="80" id="column1" value="체결거래소" style="font-size:12px;font-weight:normal;color:#fff;font-family:Malgun Gothic;" />
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1" style="" >
+						<w2:row id="row2" style="" >
+							<w2:column width="70" id="time" value="" dataType="time" displayFormat="HH:mm:ss" style="text-align:center;font-size:12px;font-weight:normal;color:#020203;font-family:Malgun Gothic;" />
+							<w2:column width="70" id="price" value="" dataType="number" displayFormat="#,###" excelFormat = "#,##0" style="text-align:right;font-size:12px;font-weight:bold;color:#020203;font-family:Malgun Gothic" />
+							<w2:column width="20" id="changeAmountIcon" value="" dataType="text" style="font-size:0px;border-right: 0;" />
+							<w2:column width="80" id="changeAmount" value="" dataType="number" displayFormat="#,###" excelFormat = "#,##0" style="text-align:right;font-size:12px;font-weight:normal;color:#020203;font-family:Malgun Gothic;" />
+							<w2:column width="70" id="changeRate" value="" dataType="number" displayFormatter="scwin.formatChangeRate" excelCellType="text" style="text-align:right;font-size:12px;font-weight:normal;color:#020203;font-family:Malgun Gothic;" />
+							<w2:column width="70" id="volume" value="" dataType="number" displayFormat="#,###" excelFormat = "#,##0" style="text-align:right;font-size:12px;font-weight:normal;color:#020203;font-family:Malgun Gothic;" />
+							<w2:column width="70" id="tradeVolume" value="" dataType="number" displayFormat="#,###" excelFormat = "#,##0" style="text-align:right;font-size:12px;font-weight:normal;color:#020203;font-family:Malgun Gothic;" />
+							<w2:column width="70" id="exchange" value="" dataType="text" style="text-align:center;font-size:12px;font-weight:normal;color:#020203;font-family:Malgun Gothic;background-color:rgb(252, 240, 136);" />
+						</w2:row>
+					</w2:gBody>
+				</w2:realtimeView>
+        	</xf:group>
+		</xf:group>
+    </body>
+</html>

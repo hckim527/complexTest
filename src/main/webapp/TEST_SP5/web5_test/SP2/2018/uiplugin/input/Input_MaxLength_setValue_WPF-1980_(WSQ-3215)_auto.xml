@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.invaildFn = function(a, b) {
+    var type = this.getType();
+    console.log(type);
+};
+scwin.input1_onviewchange = function(info) {
+    console.log("onviewchange");
+};
+scwin.input1_onchange = function() {
+    console.log("onchange");
+};
+scwin.input1_onkeypress = function(e) {
+    //debugger;
+};
+scwin.trigger1_onclick = function(e) {
+    var obj = WebSquare.util.getChildren("", {
+        excludePlugin: "group trigger"
+    });
+    //alert(obj[1].validate());
+    log1 = obj[1].validate();
+};
+scwin.trigger2_onclick = function(e) {
+    var obj = WebSquare.util.getChildren("", {
+        excludePlugin: "group trigger"
+    });
+    //alert(obj[0].validate());
+    log = obj[0].validate();
+};
+scwin.trigger3_onclick = function(e) {
+    input1.setValue("1234567.90");
+};
+scwin.trigger4_onclick = function(e) {
+    input2.setValue("12345678");
+};
+scwin.checkVal1 = function() {
+    return log == false;
+}
+scwin.checkVal2 = function() {
+    return log1 == false;
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 1번 버튼을 클릭 후 3번 버튼을 클릭한다.
+    //1. After running the sample, click button 1 and then button 3.
+    //Verify step 1. A false value is returned.(Previously, the value of true is retrun)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 2번 버튼을 클릭 후 4번 버튼을 클릭한다.
+    //2. Click button 2 and then button 4.
+    //Verify step 2. A false value is returned.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log1 = undefined;
+    window.log = undefined;
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 22-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="width:110px;height:25px;position: absolute;left:247px;top:332px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[4번 number check]]></xf:label>
+    	</xf:trigger>
+    	<xf:input applyFormat="" invalidMessageFunc="scwin.invaildFn" fireEventOnInvalid="" mandatory="" displayFormat="#,###.#0"
+    		invalidMessage="" ev:onviewchange="scwin.input1_onviewchange" displaymessage="" id="input1" dataType="float" maxlength="4.2"
+    		style="position: absolute;width:270px;height:58px;left:26px;top:141px;font-size:12pt;" ev:onchange="scwin.input1_onchange">
+    	</xf:input>
+    	<xf:input adjustMaxLength="" id="input2" style="position: absolute;width:270px;height:59px;left:25px;top:208px;" maxlength="6"
+    		dataType="number" maxByteLength="6" invalidMessageFunc="scwin.invaildFn">
+    	</xf:input>
+    	<w2:textbox id="" style="position: absolute;width:150px;height:59px;left:304px;top:142px;font-size:13pt;"
+    		label="dataType : float&lt;br/&gt;maxLength : 4.2">
+    	</w2:textbox>
+    	<w2:textbox id="" label="dataType : number&lt;br/&gt;maxLength : 6"
+    		style="position: absolute;width:150px;height:59px;left:303px;top:208px;font-size:13pt;">
+    	</w2:textbox>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2"
+    		style="width:110px;height:25px;position: absolute;left:27px;top:332px;" type="button">
+    		<xf:label><![CDATA[3번 float check]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3" style="position: absolute;width:216px;height:26px;left:26px;top:291px;" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[1번 input1.setValue("1234567.90");]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger4" style="position: absolute;width:207px;height:30px;left:246px;top:289px;" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[2번 input2.setValue("12345678");]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    windowContainer1.createWindow("test_popup", null, "windowContainer_SKT-571_(WSQ-1152)_sub1.xml");
+    windowContainer1.createWindow("test_popup2", null, "windowContainer_SKT-571_(WSQ-1152)_sub2.xml");
+};
+scwin.__windowCreated = function() {
+    return scwin.getNumEleChildren("#windowContainer1_window") == 2 && (scwin.getNumEleChildren("#windowContainer1_name") == 2);
+}
+scwin.getNumEleChildren = function(id) {
+    return WebSquare.wUnit.getJq(id).children().length;
+}
+scwin.__isShowPopup = function() {
+    var container = WebSquare.wUnit.getJq("#windowContainer1_subWindow0");
+    var iframe = WebSquare.wUnit.getJq(container).find('#'+$p.id+'windowContainer1_subWindow0_iframe').contents();
+    var pop = iframe.find("#popup1");
+    return pop.length > 0 && WebSquare.wUnit.getJq(container).css("display") == "block";
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. test_popup 창과 test_popup2 창이 생성된다.
+    //1. The test_popup window and the test_popup2 window are created.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    // verify step 1. 샘플파일을 실행 후 popup 버튼을 클릭한다. 
+    //1. Run the sample file and click the popup button.
+    WebSquare.wUnit.addCommand("assert", "scwin.__windowCreated()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. test_popup창 내에 focus_test라는 창이 열리면서 [1234]라는 알림창이 뜹니다.
+    //2. In the test_popup window, a window called focus_test will open and 
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#windowContainer1_subWindow0_iframe').contents().find('#'+$p.id+'trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 2. test_popup 창으로 포커스 이동 (test_popup nameLayer영역을 클릭)후 test_popup창 내에 있는 popup 버튼을 클릭한다.
+    //2. Move the focus to the test_popup window (click the test_popup nameLayer area) and click the popup button in the test_popup window.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#windowContainer1_subWindow0_iframe').contents().find('#popup1').length > 0", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. test_popup2 창으로 포커스 이동한 다음, 다시 test_popup창으로 이동한다.
+    //3. Move the focus to the test_popup2 window and move back to the test_popup window.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 3. 정상적으로 화면이 유지되면서 보여진다.(이전에는 알림창이 또 보여졌음)
+    //3. The screen is displayed normally (previously the notification window is shown again).
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowPopup()", "true");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('count')", "1");
+    WebSquare.wUnit.addCommand("set", "localStorage.removeItem('count')");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 16-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:windowContainer id="windowContainer1" windowAutoResize="false" style="position: relative;width: 500px;height: 300px;"
+    		sequentialArrangeRowNum="2" tooltipDisplay="true" stopToggleOnLast="false" windowTooltipDisplay="true" useControlIconTitle="false"
+    		useFixButton="false" horizontalArrangeNum="2" verticalArrangeNum="2" windowMaxNum="5" tooltipGroupClass="false" class=""
+    		hideTitleOnMaximize="false" spaInitCount="0" useStatusMsg="true" useCloseButton="false" windowMaximizeAll="false"
+    		fixArrangeFullScreen="false" sequentialArrangeColNum="2" toolbarPosition="bottom" useDrag="true">
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 140px;height: 35px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[popup]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

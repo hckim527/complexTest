@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            			<w2:column id="a" name="a" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.__hasErrorLog = function() {
+    var err = WebSquare.logger.getErrorLog();
+    return err ? true : false;
+}
+scwin.__isSameWidth = function() {
+    var width = WebSquare.wUnit.getJq("#checkcombobox1_itemTable_1_checkbox").width() + WebSquare.wUnit.getJq("#checkcombobox1_itemTable_1 label").width();
+    var selectbox = WebSquare.wUnit.getJq("#checkcombobox1_main_tbody").width();
+    if (selectbox >= width) {
+        return true;
+    }
+    return false;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 ctrl+마우스우클릭으로 로그보기를 선택한다.
+    //1. Run the sample file and select ctrl + right-click to view the log.
+    // verify step 1. 로그가 정상으로 보여진다.(이전에는 Cannot read property "style" of null 발생)
+    //1. The log is displayed as normal.(Formerly Can not read property "style" of null)
+    WebSquare.wUnit.addCommand("assert", "scwin.__hasErrorLog()", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 콤보박스를 클릭한다.
+    //2. Click the combo box.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. 콤보박스 데이터중 가장 긴 텍스트만큼 콤보박스 넓이로 보여진다.
+    //2. The longest text in combo box data is displayed as combo box width.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isSameWidth()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "label": "a1",
+        "value": "a1",
+        "a": "a"
+    }, {
+        "label": "aaaaaaaaa2",
+        "value": "a2",
+        "a": "a"
+    }, {
+        "label": "b1",
+        "value": "b1",
+        "a": "b"
+    }, {
+        "label": "a3",
+        "value": "a3",
+        "a": "a"
+    }];
+    dataList2.setJSON(jsonData);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 13-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	
+    	<xf:checkcombobox appearance="minimal" direction="auto" chooseOption="" id="checkcombobox1"
+    		style="position: absolute ;left:128px;top:26px;width: 189px;height: 29px;" displayMode="label" displayAllOptionLabel="false"
+    		allOption="" disabled="false" submenuSize="auto" labelWidthAuto="true">
+    		<xf:choices>
+    			<xf:itemset nodeset="data:dataList2">
+    				<xf:label ref="label"></xf:label>
+    				<xf:value ref="value"></xf:value>
+    			</xf:itemset>
+    		</xf:choices>
+    	</xf:checkcombobox>
+    	<w2:textbox label="checkcombobox" id="" style="position: absolute ;left: 26px;top: 28px;width:97px;height:23px;"></w2:textbox>
+    	
+    </body>
+</html>
+ 

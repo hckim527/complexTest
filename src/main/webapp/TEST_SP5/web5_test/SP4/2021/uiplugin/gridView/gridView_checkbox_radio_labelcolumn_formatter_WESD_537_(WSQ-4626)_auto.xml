@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="chk" dataType="text"></w2:column>
+                        <w2:column id="col2" name="radio" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    dataList1.setData(["Y", "", "123", "ms", "N", "", "251", "apple"]);
+};
+scwin.onpageunload = function() {};
+scwin.gridView_onviewchange = function(info) {
+    debugger;
+};
+scwin.gridView_oncellclick = function(info) {
+    console.log("oncellclick");
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#G_gridView1__col3', 'key-sequence', {
+        sequence: '456'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#G_gridView1__col4', 'key-sequence', {
+        sequence: 'intel'
+    });
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).innerText == value) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+$p.id+'gridView1_cell_0_0').children[1].innerText == '456 ms 선택'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_3')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+$p.id+'gridView1_cell_0_1').children[1].innerText == '456 intel 선택'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:textbox class="w2_proc_text_msg" label="senseReader=false" id="" style=""></w2:textbox>
+        <w2:textbox class="w2_proc_text_msg" label="checkboxLabel=선택, checkboxLabelColumn=col3,col4" id="" style=""></w2:textbox>
+        <w2:textbox class="w2_proc_text_msg" label="radioLabel=선택, cradioLabelColumn=col3,col4" id="" style=""></w2:textbox>
+        <w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1" checkOnCellClick="" ev:onviewchange="scwin.gridView_onviewchange" ev:oncellclick="scwin.gridView_oncellclick"
+            style="position:relative;width: 614px;height: 304px;">
+            <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header1" style="">
+                <w2:row id="row1" style="">
+                    <w2:column id="column7" style="" inputType="text" width="150" value="checkbox" displayMode="label"></w2:column>
+                    <w2:column id="column5" style="" inputType="text" width="150" value="radio" displayMode="label"></w2:column>
+                    <w2:column id="column3" style="" inputType="text" width="150" value="order num" displayMode="label"></w2:column>
+                    <w2:column id="column1" style="" inputType="text" width="150" value="com" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1" style="">
+                <w2:row id="row2" style="">
+                    <w2:column id="col1" checkboxLabel="선택" checkboxLabelColumn="col3,col4" inputType="checkbox" width="150" value="" displayMode="label"></w2:column>
+                    <w2:column id="col2" radioLabel="선택" radioLabelColumn="col3,col4" inputType="radio" width="150" value="" displayMode="label"></w2:column>
+                    <w2:column id="col3" style="" inputType="text" width="150" value="" displayMode="label"></w2:column>
+                    <w2:column id="col4" style="" inputType="text" width="150" value="" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <w2:textbox class="w2_proc_text_msg" label="senseReader=true" id="" style=""></w2:textbox>
+        <w2:textbox class="w2_proc_text_msg" label="checkboxLabel=선택, checkboxLabelColumn=col3,col4" id="" style=""></w2:textbox>
+        <w2:textbox class="w2_proc_text_msg" label="radioLabel=선택, cradioLabelColumn=col3,col4" id="" style=""></w2:textbox>
+        <w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView2" senseReader="true" checkOnCellClick="" ev:onviewchange="scwin.gridView_onviewchange" ev:oncellclick="scwin.gridView_oncellclick" style="position:relative;width: 614px;height: 304px;">
+            <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header1" style="">
+                <w2:row id="row1" style="">
+                    <w2:column id="column7" style="" inputType="text" width="150" value="checkbox" displayMode="label"></w2:column>
+                    <w2:column id="column5" style="" inputType="text" width="150" value="radio" displayMode="label"></w2:column>
+                    <w2:column id="column3" style="" inputType="text" width="150" value="order num" displayMode="label"></w2:column>
+                    <w2:column id="column1" style="" inputType="text" width="150" value="com" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1" style="">
+                <w2:row id="row2" style="">
+                    <w2:column id="col1" checkboxLabel="선택" checkboxLabelColumn="col3,col4" inputType="checkbox" width="150" value="" displayMode="label"></w2:column>
+                    <w2:column id="col2" radioLabel="선택" radioLabelColumn="col3,col4" inputType="radio" width="150" value="" displayMode="label"></w2:column>
+                    <w2:column id="col3" style="" inputType="text" width="150" value="" displayMode="label"></w2:column>
+                    <w2:column id="col4" style="" inputType="text" width="150" value="" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>
+ 

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col2><![CDATA[aa]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[b]]></col1>
+            				<col2><![CDATA[bb]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[c]]></col1>
+            				<col2><![CDATA[cc]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[d]]></col1>
+            				<col2><![CDATA[dd]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    gridView1.setColumnDisableEdit(1, true);
+    //gridView1.disableEdit(true);
+};
+scwin.trigger2_onclick = function(e) {
+    gridView1.setColumnDisableEdit(1, false);
+    //gridView1.disableEdit(false);
+};
+scwin.trigger3_onclick = function(e) {
+    //debugger;
+    autoComplete1.disableEdit(true);
+};
+scwin.trigger4_onclick = function(e) {
+    //debugger;
+    autoComplete1.disableEdit(false);
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.setVal = function() {
+    scwin.fireDbClick(WebSquare.wUnit.getObjById('gridView1_cell_0_1'));
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 'gridView1.disableEdit(true)'버튼을 클릭하고 name2항목의 컬럼을 더블클릭한다.
+    //1. After running the sample, click the 'gridView1.disableEdit (true)' button and double-click the column of the name2 item.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. gridView의 name2항목의 selectbox의 List가 모두 보여진다.(이전에는 List가 모두 보여지지 않음)
+    //1. List all the selectboxes of the name2 item in the gridView (previously the List is not shown)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___autoComplete_0_col2_col2_itemTable').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 'disableEdit(true)'버튼을 클릭하고 autoComplete selectbox를 더블클릭한다.
+    //2. Click the 'disableEdit (true)' button and the autoComplete Double-click the selectbox.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1___autoComplete_0_col2_col2_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. autoComplete selectbox의 List가 모두 보여진다.(이전에는 List가 모두 보여지지 않음)
+    //2. Show all List of autoComplete selectbox (Previously not all List is shown)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_itemTable').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_input').style.display == 'none'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step  3. 'disableEdit(false)'버튼을 클릭하고 autoComplete selectbox를 더블클릭하여 enable되어지고 edit모드로 보여지는지 확인한다.
+    //3. Click the 'disableEdit (false)' button and double-click the autoComplete selectbox to make sure it is enabled and visible in edit mode.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. enable되어지고 edit모드로 되어진다.
+    //3. Enabled and put into edit mode.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_input').style.display == 'block'", "true");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_label').style.display == 'none'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    };
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 02-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList2" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" id="gridView1" style="position: absolute;width:207px;height:150px;" ignoreCellClick="false"
+    		syncScroll="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true" rowNumVisible="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name2" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="select" width="70" value="" displayMode="label"
+    					allOption="" chooseOption="" ref="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList1">
+    							<w2:label ref="col1"></w2:label>
+    							<w2:value ref="col2"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" width="70" inputType="autoComplete" value="" displayMode="label"
+    					allOption="" chooseOption="" ref="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList1">
+    							<w2:label ref="col2"></w2:label>
+    							<w2:value ref="col1"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:192px;height:23px;left:211px;top:0px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[gridView1.disableEdit(true)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="position: absolute;width:192px;height:23px;left:211px;top:30px;" type="button"
+    		ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[gridView1.disableEdit(false);]]></xf:label>
+    	</xf:trigger>
+    	<w2:autoComplete chooseOption="" search="start" displayMode="label" useKeywordHighlight="false" submenuSize="auto" visibleRowNum="5"
+    		id="autoComplete1" style="position: absolute;width: 148px;height: 21px;left:4px;top:220px;" interactionMode="" editType="select" allOption=""
+    		ref="">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList1">
+    				<w2:label ref="col2"></w2:label>
+    				<w2:value ref="col1"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3"
+    		style="position: absolute;width:192px;height:23px;left:211px;top:220px;" type="button">
+    		<xf:label><![CDATA[disableEdit(true)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger4_onclick" id="trigger4"
+    		style="position: absolute;width:192px;height:23px;left:211px;top:250px;" type="button">
+    		<xf:label><![CDATA[disableEdit(false)]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

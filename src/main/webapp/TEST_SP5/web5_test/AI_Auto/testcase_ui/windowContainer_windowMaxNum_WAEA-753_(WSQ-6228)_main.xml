@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+	    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.winSeq = 0;
+
+scwin.onpageload = function() {
+	windowContainer1.createWindow({
+		"title" : "테스트1",
+		"src" : "windowContainer_windowMaxNum_WAEA-753_(WSQ-6228)_menu1.xml",
+		"windowId" : "window1",
+		"frameMode" : "wframe"
+	});
+	windowContainer1.createWindow({
+		"title" : "테스트2",
+		"src" : "windowContainer_windowMaxNum_WAEA-753_(WSQ-6228)_menu2.xml",
+		"windowId" : "window2",
+		"frameMode" : "wframe"
+	});
+	windowContainer1.createWindow({
+		"title" : "테스트3",
+		"src" : "windowContainer_windowMaxNum_WAEA-753_(WSQ-6228)_menu3.xml",
+		"windowId" : "window3",
+		"frameMode" : "wframe"
+	});
+};
+
+// windowMaxNum=5 상태에서 createWindow 호출 시 동작 확인
+scwin.btnAddWindow_onclick = function() {
+	scwin.winSeq++;
+	var idx = scwin.winSeq;
+	windowContainer1.createWindow({
+		"title" : "신규" + idx,
+		"src" : "windowContainer_windowMaxNum_WAEA-753_(WSQ-6228)_menu" + (((idx - 1) % 4) + 1) + ".xml",
+		"windowId" : "extraWindow" + idx,
+		"frameMode" : "wframe"
+	});
+};
+
+// ▼ 신규 이벤트: windowMaxNum 초과 시 호출됨 (FIFO 재오픈)
+// closeWindow는 내부적으로 100ms 후 실제 창 제거가 이루어지므로(currentWindowNum 감소도 이때 발생),
+// 바로 createWindow를 호출하면 여전히 max 상태로 인식되어 onwindowmaxnumexceeded가 재발화(무한루프)된다.
+// 따라서 close가 완전히 반영될 때까지 지연을 두고 재오픈한다.
+scwin.windowContainer1_onwindowmaxnumexceeded = function(info) {
+	windowContainer1.closeWindow(info.oldestWindowId);
+
+	setTimeout(function() {
+		windowContainer1.createWindow({
+			"title" : info.title,
+			"src" : info.src,
+			"windowTitle" : info.windowTitle,
+			"windowId" : info.windowId,
+			"frameMode" : "wframe"
+		});
+	}, 150); // window.close 의 내부 지연(100ms) 보다 큰 값
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group style="padding:8px;display:block;">
+    		<xf:trigger id="btnAddWindow" class="w2trigger_btn_gray" style="" ev:onclick="scwin.btnAddWindow_onclick">
+    			<xf:label>+ window 추가 (createWindow)</xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<w2:windowContainer id="windowContainer1" style="position:relative;width:800px;height:600px;" defaultHeight="300"
+			windowMaxNum="5"
+			ev:onwindowmaxnumexceeded="scwin.windowContainer1_onwindowmaxnumexceeded">
+    		<w2:windowToolbar>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    	<xf:group class="tabbox" id="" style=""></xf:group>
+    </body>
+</html>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+				<w2:dataList id="dc_list" baseNode="list" saveRemovedData="true" repeatNode="map">
+				<w2:columnInfo>
+					<w2:column id="MEAS_ID" name="MEAS_ID" dataType="text"></w2:column>
+					<w2:column id="MEAS_SRT" name="MEAS_SRT" dataType="text"></w2:column>
+					<w2:column id="CATEGRY1" name="CATEGRY1" dataType="text"></w2:column>
+					<w2:column id="" name="" dataType="text"></w2:column>
+					<w2:column id="DM024" name="DM024" dataType="text"></w2:column>
+					<w2:column id="DM026" name="DM026" dataType="text"></w2:column>
+					<w2:column id="DM028" name="DM028" dataType="text"></w2:column>
+					<w2:column id="MEAS_DESC" name="MEAS_DESC" dataType="text"></w2:column>
+					<w2:column id="M1_VAL" name="M1_VAL" dataType="text"></w2:column>
+					<w2:column id="M2_VAL" name="M2_VAL" dataType="text"></w2:column>
+					<w2:column id="M3_VAL" name="M3_VAL" dataType="text"></w2:column>
+					<w2:column id="M4_VAL" name="M4_VAL" dataType="text"></w2:column>
+					<w2:column id="M5_VAL" name="M5_VAL" dataType="text"></w2:column>
+					<w2:column id="M6_VAL" name="M6_VAL" dataType="text"></w2:column>
+				</w2:columnInfo>
+			</w2:dataList>            
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.getHeightofCell = function() {
+    return parseInt(WebSquare.wUnit.getDomById($p.id + "grdList_cell_0_5").style.height);
+}
+scwin.getTopStyleInput = function(id) {
+    return parseInt(WebSquare.wUnit.getDomById($p.id + id).style.top);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#G_grdList__M1_VAL', 'key-combo', {
+        combo: 'DOWN_ARROW'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#G_grdList__M2_VAL', 'key-combo', {
+        combo: 'DOWN_ARROW'
+    });
+}
+scwin.setVal1 = function() {
+	topInputInit = scwin.getTopStyleInput('G_'+$p.id+'grdList__M1_VAL');
+}
+scwin.setVal2 = function() {
+	topInputAfterChange = scwin.getTopStyleInput('G_'+$p.id+'grdList__M1_VAL');
+}
+scwin.setVal3 = function() {
+	topInputInit = scwin.getTopStyleInput('G_'+$p.id+'grdList__M2_VAL');
+}
+scwin.setVal4 = function() {
+	topInputAfterChange = scwin.getTopStyleInput('G_'+$p.id+'grdList__M2_VAL')
+}
+scwin.checkVal1 = function(id) {
+    return topInputAfterChange > topInputInit + scwin.getHeightofCell()*2;
+}
+scwin.checkVal2 = function(id) {
+    return (topInputAfterChange >= topInputInit + scwin.getHeightofCell()) && (topInputAfterChange < topInputInit + scwin.getHeightofCell()*2);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grdList_cell_9_4').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grdList_cell_9_5').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal3()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal4()");
+
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    dc_list.setData([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+    grdList.setReadOnly("cell", 10, "M1_VAL", true);
+    grdList.setReadOnly("cell", 11, "M1_VAL", true);
+    window.topInputInit;
+	window.topInputAfterChange;
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 09-Mar-2018
+    //end     	
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+<w2:gridView autoFit="" rowMouseOverColor="#fcf6fa"
+							id="grdList" style="height:100%;" 
+							selectedRowColor="#e7c4c4" class="cm_grid" fixedColumnWithHidden="true"
+							selectedCellColor="#e7c4c4" dataList="dc_list" focusMode="cell"
+							readOnly="false" useShiftKey="false" scrollByColumn="false"
+							dataDragSelect="false"
+							ev:onafteredit=""
+							oddEvenColorDisplay="false" ev:oneditend=""  ev:onviewchange="" keyMoveEditMode="true" enterKeyMove="right" editModeEvent="onclick" ignoreNonEditableCell="true" moveKeyEditMode="true" adaptive="crosstab">
+							<w2:header id="gHeader" style="">
+								<w2:row>
+									<w2:column id="hDM024" style="height:20px;" inputType="text"
+										width="70" value="EIS1">
+									</w2:column>
+									<w2:column id="hDM026" style="height:20px;" inputType="text"
+										width="70" value="EIS2">
+									</w2:column>
+									<w2:column id="hDM028" style="height:20px;" inputType="text"
+										width="70" value="EIS3">
+									</w2:column>
+								<w2:column id="HMEAS_DESC" style="height:20px" width="200" inputType="text"
+										value="Category" readOnly="false">
+								</w2:column>
+									<w2:column id="m1Val" style="height:20px;" inputType="text"
+										width="70" value="2016 - M01">
+									</w2:column>
+									<w2:column id="m2Val" style="height:20px;" inputType="text"
+										width="70" value="2016 - M02">
+									</w2:column>
+									<w2:column id="m3Val" style="height:20px;" inputType="text"
+										width="70" value="2016 - M03">
+									</w2:column>
+									<w2:column id="m4Val" style="height:20px;" inputType="text"
+										width="70" value="2016 - M04">
+									</w2:column>
+									<w2:column id="m5Val" style="height:20px;" inputType="text"
+										width="70" value="2016 - M05">
+									</w2:column>
+									<w2:column id="m6Val" style="height:20px;" inputType="text"
+										width="70" value="2016 - M06">
+									</w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody id="gBody" style="">
+								<w2:row>
+								<w2:column id="DM024" style="height:20px" width="70"
+										textAlign="left"  readOnly="false">
+								</w2:column>
+								<w2:column id="DM026" style="height:20px" width="70"
+										textAlign="left"  readOnly="false">
+								</w2:column>
+								<w2:column id="DM028" style="height:20px" width="70"
+										textAlign="left"  readOnly="false">
+								</w2:column>
+								<w2:column id="MEAS_DESC" style="height:20px" width="200"
+										textAlign="left" readOnly="false">
+								</w2:column>
+								<w2:column id="M1_VAL" style="height:20px" width="70"
+										textAlign="right" displayFormat="###,###,###,###,###" readOnly="false">
+								</w2:column>
+								<w2:column id="M2_VAL" style="height:20px" width="70"
+										textAlign="right" displayFormat="###,###,###,###,###" readOnly="false">
+								</w2:column>
+								<w2:column id="M3_VAL" style="height:20px" width="70"
+										textAlign="right" displayFormat="###,###,###,###,###" readOnly="false">
+								</w2:column>
+								<w2:column id="M4_VAL" style="height:20px" width="70"
+										textAlign="right" displayFormat="###,###,###,###,###" readOnly="false">
+								</w2:column>
+								<w2:column id="M5_VAL" style="height:20px" width="70"
+										textAlign="right" displayFormat="###,###,###,###,###" readOnly="false">
+								</w2:column>
+								<w2:column id="M6_VAL" style="height:20px" width="70"
+										textAlign="right" displayFormat="###,###,###,###,###" readOnly="false">
+								</w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView> 
+    </body>
+</html>
+ 

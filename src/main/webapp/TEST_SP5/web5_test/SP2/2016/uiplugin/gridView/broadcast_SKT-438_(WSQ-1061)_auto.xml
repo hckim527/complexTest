@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[1]]></col1>
+							<col2><![CDATA[1]]></col2>
+							<col3><![CDATA[1]]></col3>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[2]]></col1>
+							<col2><![CDATA[2]]></col2>
+							<col3><![CDATA[2]]></col3>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[3]]></col1>
+							<col2><![CDATA[3]]></col2>
+							<col3><![CDATA[3]]></col3>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[1]]></col1>
+							<col2><![CDATA[1]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[2]]></col1>
+							<col2><![CDATA[2]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[3]]></col1>
+							<col2><![CDATA[3]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList1.setBroadcast(false);
+};
+scwin.trigger2_onclick = function(e) {
+    dataList1.setBroadcast(true);
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.setVal = function() {
+    scwin.fireDbClick(WebSquare.wUnit.getObjById('wq_uuid_5_cell_0_0'));
+}
+scwin.checkVal1 = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'wq_uuid_5_cell_0_0').innerText == '333';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'wq_uuid_5_cell_0_0').innerText == '333';
+}
+scwin.checkVal3 = function() {
+    return WebSquare.wUnit.getObjById($p.id+"wq_uuid_9").getValue() == '33';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일 실행 후 그리드뷰의 첫번째 필드에 마우스를 클릭하고 우측하단의 inputbox에 값을 수정한다.
+    //1. After executing the sample file, click mouse on the first field of the grid view and modify the value in the inputbox on the bottom right.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_5__col1').setValue(333)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 그리드뷰의 첫번째 필드에 값이 수정된다.(이전버전에서는 수정되지 않음)
+    //1. The value is modified in the first field of the grid view (not modified in previous versions).
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. broadcase fals버튼을 클릭하고 동일하게  inputbox에 값을 수정한다.
+    //2. Click on the broadcase fals button and modify the value in the input box.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_9').setValue('33')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 그리드뷰의 첫번째 필드에 값이 수정되지 않는다.(정상임)
+    //2. Values are not modified in the first field of the grid view (normal)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /*
+    	Broadcast 사용시 selectbox를 사용할수 없음.(2016.03.16 요청)
+    */
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 28-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id=""
+			style="position: absolute;width:640px;height:272px;left:138px;top:122px;" fixedColumnWithHidden="true" useShiftKey="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+					<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" value="name2"></w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4" style="">
+				<w2:row id="row5" style="">
+					<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="position: absolute;width:165px;height:23px;left:137px;top:68px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[broadcase fals]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="trigger2" style="position: absolute;width:165px;height:23px;left:330px;top:68px;" type="button" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[broadcase true]]></xf:label>
+		</xf:trigger>
+		<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id=""
+			style="position: absolute;width: 148px;height: 21px;left:139px;top:431px;" displayMode="label" optionOrder="false" allOption="" disabled="false"
+			submenuSize="auto" ref="data:dataList1.col1" selectedData="false">
+			<xf:choices>
+				<xf:itemset nodeset="data:dataList2">
+					<xf:label ref="col1"></xf:label>
+					<xf:value ref="col2"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select1>
+		<xf:input id="" style="position: absolute;width: 144px;height: 21px;left:314px;top:431px;" ref="data:dataList1.col1"></xf:input>
+	</body>
+</html>
+ 

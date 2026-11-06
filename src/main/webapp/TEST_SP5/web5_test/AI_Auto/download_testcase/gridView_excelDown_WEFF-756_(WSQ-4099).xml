@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" saveRemovedData="true">
+            	    <w2:columnInfo>
+            	        <w2:column id="col1" name="종류" dataType="text"></w2:column>
+            	        <w2:column id="col2" name="금액" dataType="number"></w2:column>
+            	        <w2:column id="col3" name="name3" dataType="number"></w2:column>
+            	        <w2:column id="col4" name="name4" dataType="number"></w2:column>
+            	    </w2:columnInfo>
+            	    <w2:data xmlns="" use="false"></w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+            "col1": "KRW",
+            "col2": "5000000.1",
+            "col3": "100.1"
+        },
+        {
+            "col1": "USD",
+            "col2": "21500",
+            "col3": "100"
+        },
+        {
+            "col1": "USD",
+            "col2": "3150000",
+            "col3": "100"
+        },
+        {
+            "col1": "달러",
+            "col2": "81500",
+            "col3": "100"
+        },
+        {
+            "col1": "원화",
+            "col2": "1000000000",
+            "col3": "100"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    var options = {};
+    options.fileName = "useDataFormat.xlsx"
+    options.type = "1";
+    options.startRowIndex = 0;
+    options.startColumnIndex = 0;
+    options.useDataFormat = "true";
+    gridView1.advancedExcelDownload(options);
+};
+scwin.trigger2_onclick = function(e) {
+    var options = {};
+    options.fileName = "useDataFormat.xlsx"
+    options.type = "1";
+    options.startRowIndex = 0;
+    options.startColumnIndex = 0;
+    options.useDataFormat = "false";
+    gridView1.advancedExcelDownload(options);
+};
+scwin.displayFormatter = function(value) {
+    value = Math.ceil(value);
+    console.log("before: ", value);
+    value = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    console.log("after: ", value);
+    return value;
+};
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:20px;" id="" class="">
+            <xf:trigger type="button" style="width: 180px;height: 100px;margin-bottom: 30px;" id="trigger1"
+                ev:onclick="scwin.trigger1_onclick">
+                <xf:label><![CDATA[useDataFormat="true"]]></xf:label>
+            </xf:trigger>
+            <xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2" style="width: 180px;height: 100px;margin-bottom: 30px;margin-left:35px;"
+                type="button">
+                <xf:label><![CDATA[useDataFormat="false"]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <w2:gridView id="gridView1" ignoreToggleOnDisabled="false" syncScroll="false" useShiftKey="true" style="width:611px;height:150px;"
+            scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" summaryAuto="false" summaryOnlyAuto="false"
+            applyAllColumnStyle="false" dataList="data:dataList1" ignoreCellClick="false">
+            <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header1" style="">
+                <w2:row id="row1" style="">
+                    <w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="height:20px;" inputType="text" width="120" value="종류"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column1" removeBorderStyle="false" style="height:20px;" width="144" inputType="text" value="금액"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column6" removeBorderStyle="false" style="height:20px;" width="144" inputType="text" value="금액"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column4" removeBorderStyle="false" style="height:20px;" inputType="text" width="120" value="expression"
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1" style="">
+                <w2:row id="row2" style="">
+                    <w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="textImage" width="120" value=""
+                        displayMode="label" imageSrc="/img01.jpg" imageWidth="30" imageHeight="30">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" width="144" inputType="text" value=""
+                        displayFormat="#,##0[ceil]" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" width="144" inputType="text" value=""
+                        displayFormat="#,##0[floor]" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col4" removeBorderStyle="false" style="" inputType="expression" width="120" value=""
+                        displayMode="label" expression="sum('col2') + sum('col3')" displayFormat="#,##0" dataType="number">
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>
+ 

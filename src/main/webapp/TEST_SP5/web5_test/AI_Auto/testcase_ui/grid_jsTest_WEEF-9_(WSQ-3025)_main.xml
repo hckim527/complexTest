@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                    <response>
+                        <vector_grid>
+                            <data>
+                                <col1>m_0a</col1>
+                                <col2>m_0b</col2>
+                                <col3>m_0c</col3>
+                            </data>
+                            <data>
+                                <col1>m_1a</col1>
+                                <col2>m_1b</col2>
+                                <col3>m_1c</col3>
+                            </data>
+                            <data>
+                                <col1>m_2a</col1>
+                                <col2>m_2b</col2>
+                                <col3>m_2c</col3>
+                            </data>
+                        </vector_grid>
+                        <vector2_grid>
+                            <data>
+                                <col1>m2_0a</col1>
+                                <col2>m2_0b</col2>
+                                <col3>m2_0c</col3>
+                            </data>
+                            <data>
+                                <col1>m2_1a</col1>
+                                <col2>m2_1b</col2>
+                                <col3>m2_1c</col3>
+                            </data>
+                            <data>
+                                <col1>m2_2a</col1>
+                                <col2>m2_2b</col2>
+                                <col3>m2_2c</col3>
+                            </data>
+                        </vector2_grid>
+                        <seldata_grid>
+                            <data>
+                                <label>m_a</label>
+                                <value>m_0a</value>
+                            </data>
+                            <data>
+                                <label>m_b</label>
+                                <value>m_1a</value>
+                            </data>
+                            <data>
+                                <label>m_c</label>
+                                <value>m_2a</value>
+                            </data>
+                            <data>
+                                <label>m2_a</label>
+                                <value>m2_0a</value>
+                            </data>
+                            <data>
+                                <label>m2_b</label>
+                                <value>m2_1a</value>
+                            </data>
+                            <data>
+                                <label>m2_c</label>
+                                <value>m2_2a</value>
+                            </data>
+                        </seldata_grid>
+                    </response>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+    // 1. 다른 프레임에 있는 instane를 통째로 가져오는 방법  
+    WebSquare.ModelUtil.getInstanceByXPath("response/vector_common/data", undefined, "wf_common");
+    WebSquare.ModelUtil.getInstanceByXPath("response/vector2_wframe/data", undefined, "wf_wframe1");
+    // 2. 다른 프레임에 있는 instance 노드에 접근 
+    WebSquare.ModelUtil.findInstanceNodes("response/vector_common/data", undefined, "wf_common");
+    WebSquare.ModelUtil.findInstanceNodes("response/vector_frame/data", undefined, "wf_wframe1");
+    // 3. 다른 프레임에 있는 instance 값 바꾸기      	
+    WebSquare.ModelUtil.setInstanceValue({
+        xpath: "response/vector_common/data[1]/col2",
+        scopeId: "wf_common",
+        value: "test_aaa"
+    });
+    WebSquare.ModelUtil.setInstanceValue({
+        xpath: "response/vector_wframe/data[2]/col2",
+        scopeId: "wf_wframe1",
+        value: "test_bbb"
+    });
+}
+scwin.trigger1_onclick = function(e) {
+    // dataScope : "" 으로 인자를 전달하면 최상위 화면에 있는 instance를 기준으로 한다.
+    grid1.setRef({
+        ref: "response/vector2_grid",
+        baseNode: "vector2_grid",
+        dataScope: ""
+    });
+};
+scwin.onpageload = function() {
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:wframe id="wf_common" style="width: 0px;height: 0px;display:none;" src="grid_jsTest_WEEF-9_(WSQ-3025)_common.xml" scope="true"></w2:wframe>
+    	<xf:group id="" style="position:relative;height:380px;">
+    		<w2:textbox label="Main" id="" style="width:362px;height:69px;font-size:24pt;"></w2:textbox>
+            <w2:wframe id="wf_wframe11" style="position:relative;width: 530px;height: 200px;" src="grid_jsTest_WEEF-9_(WSQ-3025)_wframe2.xml" scope="true" scopeExternal="true"></w2:wframe>
+    	</xf:group>
+        
+    	<w2:wframe id="wf_wframe1" style="position:relative;width: 530px;height: 1030px;" src="grid_jsTest_WEEF-9_(WSQ-3025)_wframe1.xml" scope="true" scopeExternal="true"></w2:wframe>
+    </body>
+</html>
+ 

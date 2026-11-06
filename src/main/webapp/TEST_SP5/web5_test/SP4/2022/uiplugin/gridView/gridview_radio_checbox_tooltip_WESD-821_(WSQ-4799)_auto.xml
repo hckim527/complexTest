@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<vector>
+                		<data>
+                            <radio>0</radio>
+                            <radio1>0</radio1>
+                			<chk>1</chk>
+                			<col1>1111</col1>
+                            <col2>a1</col2>
+                		</data>
+                		<data>
+                            <radio>0</radio>
+                            <radio1>0</radio1>
+                			<chk>0</chk>
+                			<col1>2222</col1>
+                            <col2>a1</col2>
+                		</data>
+                		<data>
+                            <radio>0</radio>
+                            <radio1>0</radio1>
+                			<chk>1</chk>
+                			<col1>3333</col1>
+                            <col2>a1</col2>
+                		</data>
+                		<data>
+                            <radio>0</radio>
+                            <radio1>0</radio1>
+                			<chk>1</chk>
+                			<col1>4444</col1>
+                            <col2>a1</col2>
+                		</data>
+                		<data>
+                            <radio>0</radio>
+                            <radio1>0</radio1>
+                			<chk>0</chk>
+                			<col1>5555</col1>
+                            <col2>a1</col2>
+                		</data>
+                		<data>
+                            <radio>0</radio>
+                            <radio1>0</radio1>
+                			<chk>1</chk>
+                			<col1>6666</col1>
+                            <col2>a1</col2>
+                		</data>
+                	</vector>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    grid1.checkAll("chk", "1");
+};
+scwin.tooltipFormatter = function(rowIndex, colIndex, label) {
+    var inputType = grid1.getCellInfo(colIndex).options.inputType;
+    label += "_" + inputType + "_custom_tooltip";
+    return label;
+}
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 style 부분을 확인한다.
+    //1. Check the style section in the Source tab.
+    //Test step 2. IE 브라우저에서 name1 컬럼에 ... 부분을 마우스 오버한다.
+    //2. In the IE browser, mouse over the ... column in the name1 column.
+    //Verify step 2. A tooltip is created. (Previous versions did not create a tooltip when that style was applied)
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'grid1_cell_0_2')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_tooltip').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_tooltip').text() == '1111_checkbox_custom_tooltip'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid ref="vector" baseNode="vector" repeatNode="data" id="grid1" style="width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true" tooltipDisplay="true" tooltipShowAlways="true" tooltipFormatter="scwin.tooltipFormatter">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+                    <w2:column blockSelect="false" id="column7" style="" inputType="radio" width="70" value="" displayMode="label"></w2:column>
+                    <w2:column blockSelect="false" id="column5" style="" inputType="radio" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="checkbox" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+                    <w2:column blockSelect="false" id="radio1" style="" inputType="radio" width="70" value="" displayMode="label" radioLabelColumn=""></w2:column>
+                    <w2:column blockSelect="false" id="radio" style="" inputType="radio" width="70" value="" displayMode="label" radioLabelColumn="col1"></w2:column>
+    				<w2:column blockSelect="false" id="chk" style="" inputType="checkbox" width="70" value="" displayMode="label" checkboxLabelColumn="col1"></w2:column>
+    				<w2:column blockSelect="false" id="col1" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[checkAll]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

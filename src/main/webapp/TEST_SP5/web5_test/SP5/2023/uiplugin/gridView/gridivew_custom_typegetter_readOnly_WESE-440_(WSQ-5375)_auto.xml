@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dlt_list" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col3><![CDATA[11]]></col3>
+            				<col4><![CDATA[222]]></col4>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dlt_code" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="code" name="코드" dataType="text"></w2:column>
+            			<w2:column id="name" name="코드명" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<code><![CDATA[a]]></code>
+            				<name><![CDATA[readOnly]]></name>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[b]]></code>
+            				<name><![CDATA[disabled]]></name>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+
+scwin.getCustomType = function(info){
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var returnInfo ;
+    
+    var _col1 = dlt_list.getCellData( rowIndex ,'col1' );
+    if( _col1 == 'a' ){
+        returnInfo = {
+            id : "dynamic_text_readOnly_" + rowIndex + "_" + colIndex,
+            inputType : "text",
+            options : {
+                readOnly: true
+            }
+        }
+        
+    }else {
+        returnInfo = {
+            id : "dynamic_text_disabled_" + rowIndex + "_" + colIndex,
+            inputType : "text",
+            options : {
+                disabled: true
+            }
+        }
+    }
+    
+    return returnInfo;
+    
+};
+
+scwin.grd1_onafteredit = function(row,col,value) {
+    var colId = this.getColumnID( col );
+    if (colId == "col1"){
+        this.refreshCell( row , "col2" );
+        dlt_list.setCellData( row , "col2" , "" );
+    }
+};
+
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkVal1 = function() {
+	return WebSquare.wUnit.getJq('#grd1_cell_0_1').hasClass('w2grid_default_readonly');
+}
+scwin.checkVal2 = function() {
+	return WebSquare.wUnit.getDomById('G_'+$p.id+'grd1__dynamic_text_readOnly_0_1') == null;
+}
+scwin.unitTest = function() {
+
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grd1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+	WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+	WebSquare.wUnit.addCommand("pause", "500");
+	
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="padding: 10px;"><w2:textbox style="margin-bottom: 10px;" id="" label="inputType 이 custom 인 컬럼의 경우 typeGetter를 통해 readOnly 나 diabled 적용하면 해당 셀을 클릭 했을 때 inputbox가 나타납니다.&lt;br/&gt;(물론 readOnly나 disabled 속성은 적용 됩니다.)&lt;br/&gt;custom 이 아닌 경우에는 readOnly 나 diabled 적용하면 입력 하는 inputbox가 안보이는데, &amp;nbsp;&lt;br/&gt;custom 인 컬럼의 경우에도 readOnly 나 diabled을 적용했을 때 &amp;nbsp;inputbox가 나타나지 않도록 적용 부탁드립니다.&lt;br/&gt;&lt;br/&gt;아래 그리드 뷰에서 custom 셀을 클릭해 보면 &amp;nbsp;readOnly 나 diabled 경우 모두 입력용 inputbox가 보입니다.&lt;br/&gt;이 부분이 나타나지 않도록(개발자 도구 요소 검색 중 &lt;br/&gt;G_mf_grd1__dynamic_text_readOnly_0_1, G_mf_grd1__dynamic_text_disabled_0_1 가 나타나지 않도록) &lt;br/&gt;수정요청 드립니다." tagname="h3" escape="false"></w2:textbox><xf:group style="padding: 10px;" id="">
+    		<w2:gridView scrollByColumnAdaptive="false" checkAllType="false" dataList="data:dlt_list" scrollByColumn="false" style="height: 150px;" id="grd1" defaultCellHeight="20" ev:onafteredit="scwin.grd1_onafteredit">
+    			<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    			<w2:header style="" id="header2">
+    				<w2:row style="" id="row3">
+    					<w2:column width="93" inputType="text" style="" id="column6" value="값 변경" displayMode="label"></w2:column>
+    					<w2:column width="120" inputType="text" style="" id="column5" value="custom" displayMode="label"></w2:column>
+    					<w2:column width="100" inputType="text" style="" id="column4" value="readOnly" displayMode="label"></w2:column>
+    					<w2:column width="100" inputType="text" style="" id="column3" value="disabled" displayMode="label"></w2:column>
+    				</w2:row>
+    			</w2:header>
+    			<w2:gBody style="" id="gBody2">
+    				<w2:row style="" id="row4">
+    					<w2:column ref="" chooseOption="" width="93" inputType="select" style="" id="col1" allOption="" value="" displayMode="label" viewType="icon">
+    						<w2:choices>
+    							<w2:itemset nodeset="data:dlt_code">
+    								<w2:label ref="name"></w2:label>
+    								<w2:value ref="code"></w2:value>
+    							</w2:itemset>
+    						</w2:choices>
+    					</w2:column>
+    					<w2:column width="120" inputType="custom" style="" id="col2" value="" displayMode="label" typeGetter="scwin.getCustomType"></w2:column>
+    					<w2:column width="100" inputType="text" style="" id="col3" value="" displayMode="label" readOnly="true"></w2:column>
+    					<w2:column width="100" inputType="text" style="" disabled="true" id="col4" value="" displayMode="label"></w2:column>
+    				</w2:row>
+    			</w2:gBody>
+    		</w2:gridView>
+    	</xf:group></xf:group></body>
+</html>

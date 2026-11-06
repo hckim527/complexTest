@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[a]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[b]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.tabControl1_ontabclick = function(tabID, idx) {
+    //alert("tab-event발생");
+    window.log = "tab-event발생";
+};
+scwin.trigger2_onclick = function(e) {
+    grd.setDisabled("grid", true);
+    alert("grid-disabled");
+};
+scwin.trigger1_onclick = function(e) {
+    tabControl1.disableTab(0);
+    //alert("tab-disabled");
+    window.log1 = "tab-disabled";
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 좌측상단의 탭을 마우스로 클릭한다.
+    //1. Run the sample file and click the tab in the upper left corner.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tabs1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify  1. tab-event발생 알림창이 보여진다.
+    // 1. A tab-event notification window is displayed.
+    WebSquare.wUnit.addCommand("assert", "window.log", "tab-event발생");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 우측하단의 tab-disable버튼을 클릭한다.
+    //2. Click the tab-disable button in the lower right corner.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. tab이 비활성화 되면서 tab-disabled 알림창이 보여진다.
+    //2. The tab is disabled and a tab-disabled notification window is displayed.
+    WebSquare.wUnit.addCommand("assert", "window.log1", "tab-disabled");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 좌측상단의 disable된 탭을 다시 마우스로 클릭한다.
+    //3. Click the disabled tab in the upper left corner again with the mouse.
+    WebSquare.wUnit.addCommand("set", "window.log = undefined");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tabs1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 아무반응도 일어나지 않는다.(이전에는 알림창 발생함)
+    //3. No response occurs (previously a notification window appears).
+    WebSquare.wUnit.addCommand("assert", "window.log == 'tab-event발생'", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = undefined;
+	window.log1 = undefined;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:tabControl confirmTrueAction="exist" useTabKeyOnly="true" id="tabControl1" preventTabClickEvent="true"
+    		style="position: relative ;width: 500px;height: 200px;" useConfirmMessage="false" confirmFalseAction="new"
+    		ev:ontabclick="scwin.tabControl1_ontabclick">
+    		<w2:tabs label="" id="tabs1" style="width:70px;height:30px;" disabled="false" ></w2:tabs>
+    		<w2:content id="content1" style="height:170px" alwaysDraw="false">
+    			<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="grd"
+    				style="position: relative;width: 400px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true">
+    				<w2:header id="header1" style="">
+    					<w2:row id="row1" style="">
+    						<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name1"></w2:column>
+    						<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name2"></w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody1" style="">
+    					<w2:row id="row2" style="">
+    						<w2:column blockSelect="false" id="col1" style="" inputType="checkbox" width="70"></w2:column>
+    						<w2:column blockSelect="false" id="col2" style="" width="70" inputType="text"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    	</w2:tabControl>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[grid-disable]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger1" ev:ondblclick="scwin.trigger1_ondblclick"
+    		style="position: relative;width: 80px;height: 23px;left:3px;top:0px;" type="button" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[tab-disable]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.gridView1_oncontextopen = function(row, col) {
+    // return false; // 컨텍스트 메뉴를 보여주지 않습니다.
+    // return { hideSystemMenu: true }; // 전체 시스템 메뉴를 보여주지 않습니다.
+    if (col == 0) {
+        return {
+            hideSystemMenu: ["ColumnHide"], // 특정 항목의 시스템 메뉴를 보여주지 않습니다.
+            appendMenu: [{
+                label: "특별한 컬럼 숨기기",
+                // 사용자 메뉴의 표시 문자열
+                userMenuId: "userColumnHide",
+                // 사용자 메뉴의 id, 해당 컨텍스트 메뉴가 클릭될때, 입력값으로 전달됨
+                className: "userMenu"
+                // 사용자 메뉴의 스타일 클래스 이름 
+            }], // 시스템 메뉴 아래에, 사용자 메뉴를 추가합니다.
+        };
+    } else if (col == 1) {
+        return {
+            hideSystemMenu: true
+            //hideSystemMenu: [ "ColumnHide","ColumnFix","Group","ColumnAdjustWidth","ColumnAdjustAuto" ]// 특정 항목의 시스템 메뉴를 보여주지 않습니다.
+        };
+    }
+};
+scwin.gridView1_oncontextclick = function(row, col, userMenuId, isSystemMenu, systemMenu) {
+    if (isSystemMenu) {
+        alert(systemMenu + " clicked at (" + col + "," + row + ")!");
+    } else {
+        alert(userMenuId + " clicked at (" + col + "," + row + ")!");
+    }
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    // SysteMenu
+    // - ColumnHide : 선택 컬럼 숨기기
+    // - ColumnShowAll : 전체 컬럼 숨기기 해제
+    // - ColumnFix : 선택 컬럼 틀고정
+    // - ColumnUnfixAll : 전체 컬럼 틀고정 취소
+    // - ColumnAdjustWidth : 선택 컬럼 크기 자동 맞추기
+    // - ColumnAdjustAuto : 전체 컬럼 크기 자동 맞추기
+    // - FoldAll : 전체 그룹 접기
+    // - UnfoldAll : 전체 그룹 펼치기
+    // - Group : 전체 그룹 해제
+    // - Ungroup : 선택 컬럼 그룹 해제
+    // - UngroupAll : 선택 컬럼 그룹
+    // 컨텍스트 메뉴를 열기 전에 호출되어, 컨텍스트 메뉴를 구성할 수있게 합니다.
+    // result
+    // - false : 컴텍스트 메뉴가 열리지 않습니다.
+    // - hideSystemMenu
+    // 컨텍스트 메뉴가 클릭 된 후 호출됩니다. 시스템 메뉴는 시스템 기능이 완료된 후 호출됩니다.
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView autoFit="allColumn" dataList="dataList1" fixedColumnWithHidden="true" id="gridView" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" scrollByColumn="false" scrollByColumnAdaptive="false" focusAutoRemove="true"
+    		style="position: relative;width:100%;height:100%;" summaryAuto="false" tooltipDisplay="true" tooltipFormatter="scwin.$w.test"
+    		tooltipShowAlways="true" useShiftKey="true" contextMenu="true" ev:oncontextopen="scwin.gridView1_oncontextopen" ev:oncontextclick="scwin.gridView1_oncontextclick">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="column5" inputType="text" style="height:20px;" value="name1"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px;" value="빈 contextMenu"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:20px;" value="name3"
+    					width="70">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:20px" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	cal.disableDate("20230829, 20230830");
+    cal2.disableDate("20230829, 20230830");
+};
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#cal2_input', 'key-sequence', {
+			sequence: '20230829'
+		});
+	}
+	scwin.setSimulate2 = function() {
+		scwin.simulateWrapper('#cal_input', 'key-sequence', {
+			sequence: '20230829'
+		});
+	}	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('mf_cal2_calendar_selectbox_year_label').innerText != '2023년';
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal2_input').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		//WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal2_input').focus()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_input').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal2_img').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+]]></script>
+        <style type="text/css"><![CDATA[
+        .w2calendar_class1 .w2calendar_date_disable{
+        color:#d7d7d7;
+        }       
+         ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="" style="width:694px;height:428px;">
+    		<w2:textbox id="" label='disableDate("20230829, 20230830")' style="width:469px;height:35px;"></w2:textbox>
+    		<w2:inputCalendar id="cal" style="width: 150px;height: 23px;" calendarValueType="yearMonthDate"></w2:inputCalendar>
+            <w2:textbox id="" label='disableDate("20230829, 20230830"), disableDateValidSet 설정(disableBeforeDate, disableAfterDate 와 더불어 disableDate 까지 동작하게 수정)' style="width:469px;height:35px;"></w2:textbox>
+            <w2:inputCalendar id="cal2" style="width: 150px;height: 23px;" calendarValueType="yearMonthDate" calendarclass="myCss" disableDateValidSet="true"></w2:inputCalendar>            
+    	</xf:group>
+    </body>
+</html>

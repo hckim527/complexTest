@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__isShowButtonOnTop = function(parentClass, clsLeft, clsRight) {
+    var header = WebSquare.wUnit.getJq(parentClass);
+    var elLeft = WebSquare.wUnit.getJq(header).find(clsLeft);
+    var elRight = WebSquare.wUnit.getJq(header).find(clsRight);
+    if (!elLeft || !elRight) {
+        return false;
+    }
+    return WebSquare.wUnit.getJq(elLeft).css("left") < WebSquare.wUnit.getJq(elRight).css("left");
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행한다.
+    //1. Run the sample file.
+    // verify step 1. calendar상단 우측에 today버튼과 닫기 버튼이 보여진다.
+    //1. Today button and close button are displayed on the top right of calendar.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowButtonOnTop('#calendar2 .w2calendar_header', '.w2calendar_go_today', '.w2calendar_date_cancel')", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 2. 실행된 화면의 inputcalendar의 달력이미지를 클릭한다.(오른쪽 달력이미지)
+    //2. Click the calendar image of inputcalendar on the screen that was executed (right calendar image).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_img').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. calendar가 보여지고 상단 우측에 today버튼과 닫기 버튼이 보여진다. 
+    //2. The calendar is shown and the today button and the close button are shown on the top right.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowButtonOnTop('#'+$p.id+'inputCalendar2_calendar .w2calendar_header', '.w2calendar_go_today', '.w2calendar_date_cancel')", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 07-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+		
+		/*년월 화살표 네비게이션 제거   */ 	
+    	.w2calendar_header_last_year {display:none;}
+    	.w2calendar_header_last_month {display:none;}
+    	.w2calendar_header_next_year {display:none;}
+    	.w2calendar_header_next_month {display:none;}
+    	
+    	/*년월 실렉트 왼쪽 정렬 */
+    	.w2calendar_selectbox_year {left:5px;}
+    	.w2calendar_selectbox_month{left: 72px;}
+    	
+    	/* 오늘버튼 위치값 */
+    	.w2calendar_go_today {top: 4px; left: 128px;}
+    	
+    	/* inputCalendar의 경우 닫기 버튼 위치값*/
+    	.w2calendar_date_cancel {position:relative; top: -13px; left: 175px;} 
+    	
+    	    	
+    	/* 달력푸터 제거 */
+    	.w2calendar_footer {display: none;}
+    	.w2calendar_class1 {height:170px;}
+    	
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:calendar weekStartsOn="0" id="calendar2" style="position: absolute ;left:29px;top:19px;" footerDiv="" class=""
+    		cancelButtonShow="true" topLayout="true" renderType="component">
+    	</w2:calendar>
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar2" renderDiv="true"
+    		style="position: absolute ;left:258px;top:21px;width: 150px;height: 23px;" rightAlign="false" focusOnDateSelect="false"
+    		footerDiv="false" calendarValueType="yearMonthDate" class="" userData1="" cancelButtonShow="true" handleIconClick="scwin.iconclick"
+    		topLayout="true">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

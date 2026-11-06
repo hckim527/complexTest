@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+	requires("uiplugin.popup");
+
+	
+	scwin.onpageload = function() {
+
+	};
+
+	scwin.onpageunload = function() {
+
+	};
+
+	scwin.createPopup = function(id, url, top, left, closeAction) {
+		var options = {
+			id : id,
+			type : "wframePopup",
+			width : "230px",
+			height : "150px",
+
+			top : top + "px",
+			left : left + "px",
+
+			popupName : id,
+			modal : true,
+			useModalStack : true,
+			alwaysOnTop : false,
+			resizable : true,
+			status : true,
+			menubar : false,
+			scrollbars : false,
+			title : false,
+			closeAction : closeAction
+		};
+
+		scwin.$w.openPopup(url, options);
+	}
+
+	scwin.btnPop_onclick = function(e) {
+		scwin.createPopup("popup1", "popup_useModalStack_WEFF-299_(WSQ-3618)_sub1.xml", 100, 50, "scwin.callback");
+	};
+
+
+	scwin.callback = function(){
+		scwin.createPopup("popup2", "popup_useModalStack_WEFF-299_(WSQ-3618)_sub2.xml", 100, 150);
+		scwin.createPopup("popup3", "popup_useModalStack_WEFF-299_(WSQ-3618)_sub2.xml", 100, 400);
+        scwin.createPopup("popup4", "popup_useModalStack_WEFF-299_(WSQ-3618)_sub2.xml", 100, 650);
+		//scwin.createPopup("popup5", "popup_useModalStack_WEFF-299_(WSQ-3618)_sub2.xml", 300, 150);
+		//scwin.createPopup("popup6", "popup_useModalStack_WEFF-299_(WSQ-3618)_sub2.xml", 300, 400);
+        //scwin.createPopup("popup7", "popup_useModalStack_WEFF-299_(WSQ-3618)_sub2.xml", 300, 650);
+        return true;
+	};
+	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('popup3').style.zIndex != '';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnPop').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup1_wframe_btnClose').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()	
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="btnPop" style="width: 80px;height: 23px;" ev:onclick="scwin.btnPop_onclick">
+    		<xf:label><![CDATA[popup]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

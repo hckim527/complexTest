@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dlTrvMenuL" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="menuNm" name="name1" dataType="text"></w2:column>
+            			<w2:column id="menuId" name="name2" dataType="text"></w2:column>
+            			<w2:column id="menuLvl" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.cnt = 0;
+    var jsonData = [{
+        "menuNm": "openTab",
+        "menuId": "openTab",
+        "menuLvl": "1"
+    }];
+    dlTrvMenuL.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.openMenuTab = async function() {
+    var tabObj = {
+        label: "임시화면" + scwin.cnt,
+        closable: true,
+        openAction: "select"
+    };
+    var contObj = {
+        frameMode: "wframe",
+        scope: true,
+        src: "treeview_tabControl_WPFF-419_(WSQ-4148)_sub.xml",
+        alwaysDraw: false,
+        style: "height:237px",
+        title: "test",
+        dataObject: {
+            type: "json",
+            name: "paramTest",
+            data: {
+                "test1": "d_test11",
+                "test2": "d_test22"
+            }
+        }
+    };
+    var strMenuId = "test111" + scwin.cnt++;
+    var ret = await tabControl1.addTab(strMenuId, tabObj, contObj);
+    var numTabIdx = tabControl1.getTabIndex(strMenuId);
+    tabControl1.setSelectedTabIndex(numTabIdx);
+};
+scwin.trigger1_onclick = function(e) {
+    scwin.openMenuTab();
+};
+scwin.treeview1_onlabelclick = function(value, nodeElement, index) {
+    scwin.openMenuTab();
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:tabControl useMoveNextTabFocus="false" id="tabControl1"
+    		style="position: absolute ;left:221px;top:66px;width: 461px;height: 267px;" confirmTrueAction="exist" useTabKeyOnly="true"
+    		useConfirmMessage="false" confirmFalseAction="new" alwaysDraw="false" focusOnStart="false">
+    	</w2:tabControl>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 70px;top: 13px;width: 99px;height: 35px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[addTab]]></xf:label>
+    	</xf:trigger>
+    	<w2:treeview class="mn_tvw type2" dataType="listed" id="treeview1" lineShow="false" rowHeight="25" showCheckbox="false"
+    		showTreeDepth="4" style="position: absolute ;left:21px;top:84px;width: 174px;height: 244px;" tooltipGroupClass="false" useDrag=""
+    		ev:onlabelclick="scwin.treeview1_onlabelclick" alwaysDraw="true" tooltipDisplay="true" tooltipTime="1" trueValue="Y" falseValue="N"
+    		renderType="virtual">
+    		<w2:itemset nodeset="data:dlTrvMenuL">
+    			<w2:label ref="menuNm"></w2:label>
+    			<w2:value ref="menuId"></w2:value>
+    			<w2:depth ref="menuLvl"></w2:depth>
+    			<w2:folder ref="folder"></w2:folder>
+    			<w2:checkbox ref="bMyAt"></w2:checkbox>
+    			<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=""></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    	<w2:textbox label='renderType="virtual"' id="" style="position: absolute ;left: 16px;top: 57px;width: 129px;height: 19px;"></w2:textbox>
+    </body>
+</html>
+ 

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="chk1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col1" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="chk2" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col1" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1.checkAll(0, "Y");
+};
+scwin.trigger2_onclick = function(e) {
+    gridView2.checkAll(0, "1");
+};
+scwin.__select = function(id) {
+    if (WebSquare.wUnit.getDomById($p.id + id).getElementsByTagName("input")[0].checked) {
+        return true;
+    }
+    return false;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__select($p.id+'gridView1_cell_1_0')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.__select($p.id+'gridView2_cell_1_0')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+	
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    dataList1.setData(['Y', '1111', '2222', 'N', '3333', '4444']);
+    dataList2.setData(['1', '5555', '6666', '0', '7777', '8888']);
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 08-Feb-2018
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1" style="width:400px;height:150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn" readOnly="true" visibleRowNum="10">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px" inputType="checkbox" width="70" displayMode="label" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="chk1" style="height:20px" inputType="checkbox" width="70" displayMode="label" trueValue="Y" falseValue="N" valueType="other" readOnly="false"></w2:column>
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView><xf:trigger type="button" id="trigger1" style="height: 23px;width:120px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[gridView1 checkAll]]></xf:label>
+    	</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="height: 23px;width:120px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[gridView2 checkAll]]></xf:label>
+    	</xf:trigger>    	
+    	
+    	<w2:gridView dataList="dataList2" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView2" style="width: 400px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn" readOnly="true" visibleRowNum="10">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px" inputType="checkbox" width="70" displayMode="label" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="chk2" style="height:20px" inputType="checkbox" width="70" displayMode="label" trueValue="1" falseValue="0" valueType="other" readOnly="false"></w2:column>
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

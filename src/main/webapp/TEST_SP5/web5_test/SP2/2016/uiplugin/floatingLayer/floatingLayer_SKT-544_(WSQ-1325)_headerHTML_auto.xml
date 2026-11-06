@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.floatingLayer1_headerHTML = function() {
+    var ret = "";
+    switch (scwin.condition) {
+        case 1:
+            ret = "<span> test1 </span>";
+            break;
+        case 2:
+            ret = "<span> test2 </span>";
+            break;
+        default:
+            ret = "<span> test </span>";
+            break;
+    }
+    return ret;
+}
+scwin.trigger1_onclick = function(e) {
+    scwin.condition = 1;
+    floatingLayer1.setHeaderHTML(scwin.floatingLayer1_headerHTML);
+};
+scwin.trigger2_onclick = function(e) {
+    scwin.condition = 2;
+    floatingLayer1.setHeaderHTML(scwin.floatingLayer1_headerHTML);
+};
+scwin.checktype1 = function() {
+    return typeof WebSquare.wUnit.getDomById('floatingLayer1_headerHTML') == 'object' && WebSquare.wUnit.getDomById('floatingLayer1_headerHTML').innerText.trim() == 'test1';
+}
+scwin.checktype2 = function() {
+    return typeof WebSquare.wUnit.getDomById('loatingLayer1_headerHTML') == 'object' && WebSquare.wUnit.getDomById('floatingLayer1_headerHTML').innerText.trim() == 'test2';
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 1번의 샘플파일을 실행 후 headerHTML1 버튼을 클릭한다.
+    //1. Run sample file 1 and click the headerHTML1 button.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. 타이틀이 test1으로 변경된다.
+    //1. The title is changed to test1.
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype1()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Test step 2. headerHTML2 버튼을 클릭한다.
+    //2. Click the headerHTML2 button.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. test2로 변경된다.
+    //2. Change to test2.
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.condition = 0;
+    scwin.floatingLayer2_headerHTML = "<span> floatingLayer_2 </span>";
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 28-Mar-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:floatingLayer id="floatingLayer1" title="floatingLayer1" style="position: relative;width:300px;height:140px;">
+    	</w2:floatingLayer>
+    	<w2:floatingLayer id="floatingLayer2" title="floatingLayer2" style="position: relative;width:300px;height:140px;"
+    		headerHTML="scwin.floatingLayer2_headerHTML">
+    	</w2:floatingLayer>
+    	<xf:group id="" style="position:relative;height:88px;">
+    		<xf:group id="" style="height:44px;">
+    			<xf:trigger id="trigger1" style="position: relative;width:350px;height:44px;" type="button"
+    				ev:onclick="scwin.trigger1_onclick">
+    				<xf:label><![CDATA[setHeaderHTML (scwin.floatingLayer1_headerHTML1);]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    		<xf:group id="" style="height:44px;">
+    			<xf:trigger id="trigger2" style="position: relative;width:350px;height:44px;" type="button"
+    				ev:onclick="scwin.trigger2_onclick">
+    				<xf:label><![CDATA[setHeaderHTML (scwin.floatingLayer1_headerHTML2);]]></xf:label>
+    			</xf:trigger>
+    		</xf:group>
+    	</xf:group>
+    	
+    </body>
+</html>
+ 

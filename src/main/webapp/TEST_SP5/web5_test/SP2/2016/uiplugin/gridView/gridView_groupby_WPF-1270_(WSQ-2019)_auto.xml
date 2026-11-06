@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dl_gridViewData" baseNode="list" style="" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="branch" name="대리점" dataType="text"></w2:column>
+						<w2:column id="market" name="제조사" dataType="text"></w2:column>
+						<w2:column id="model" name="제품명" dataType="text"></w2:column>
+						<w2:column id="sale_number" name="판매수량" dataType="number"></w2:column>
+						<w2:column id="sale_price" name="판매액" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="submission1" ref="" target="data:json,dl_gridViewData" action="gridView_groupby_WPF-1270_(WSQ-2019)_data.json"
+				method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+				processMsg="" ev:submit="" ev:submitdone="scwin.submission1_submitdone" ev:submiterror="">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onLoadComplete = function() {
+    scwin.$w.executeSubmission("submission1");
+};
+scwin.submission1_submitdone = function(e) {
+    // scwin.setGridViewGroupBy1();
+    // scwin.setGridViewGroupBy2();
+};
+scwin.countFormatFunction = function(value) {
+    return "총판매수량 : " + value + " 개 ";
+};
+scwin.sumFormatFunction = function(value) {
+    return "총판매액 : " + value + " 원 ";
+};
+scwin.gridView1_ongroupby = function(options) {
+    var sDate = new Date();
+    // options.hideHeader = true;		// [true | false] 상단 숨김 여부 default:false.
+    // options.hideFooter = true;		// [true | false] 하단 숨김 여부 default:false.
+    options.closeGroup = false;
+    // options.sortIndex = ["branch"];
+    // options.sortOrder = ["1"];
+    options.rowNumHeader = {
+        colSpan: "6",
+        inputType: "expression",
+        expression: "toggle() + depthStr() + ' [ ' + count() + ' 건 ] '",
+        align: "left"
+    };
+    options.rowNumFooter = {
+        colSpan: "4"
+    };
+    options.groupbyFooter = [{
+        inputType: "expression",
+        expression: "SUM('sale_number')",
+        displayFormatter: "scwin.countFormatFunction",
+        align: "center"
+    }, {
+        inputType: "expression",
+        expression: "SUM('sale_price')",
+        displayFormatter: "scwin.sumFormatFunction",
+        align: "center"
+    }];
+    gridView1.groupby(options);
+    var eDate = new Date();
+    txt1.setValue("1. options.closeGroup = false;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;duration[" + (eDate - sDate) + "ms]");
+};
+scwin.gridView2_ongroupby = function(options) {
+    var sDate = new Date();
+    // options.hideHeader = true;		// [true | false] 상단 숨김 여부 default:false.
+    // options.hideFooter = true;		// [true | false] 하단 숨김 여부 default:false.
+    options.closeGroup = true;
+    // options.sortIndex = ["branch"];
+    // options.sortOrder = ["1"];
+    options.rowNumHeader = {
+        colSpan: "6",
+        inputType: "expression",
+        expression: "toggle() + depthStr() + ' [ ' + count() + ' 건 ] '",
+        align: "left"
+    };
+    options.rowNumFooter = {
+        colSpan: "4"
+    };
+    options.groupbyFooter = [{
+        inputType: "expression",
+        expression: "SUM('sale_number')",
+        displayFormatter: "scwin.countFormatFunction",
+        align: "center"
+    }, {
+        inputType: "expression",
+        expression: "SUM('sale_price')",
+        displayFormatter: "scwin.sumFormatFunction",
+        align: "center"
+    }];
+    gridView2.groupby(options);
+    var eDate = new Date();
+    txt2.setValue("2. options.closeGroup = true;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;duration[" + (eDate - sDate) + "ms]");
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.getTime = function() {
+    var time = WebSquare.wUnit.getJq(".w2textbox")[2].innerText;
+    time = time.slice(time.indexOf("[") + 1, time.indexOf("ms]"));
+    return parseInt(time, 10) < 500 ? true : false;
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#gridView1_column9', 'drag-n-drop', {
+        dx: 0,
+        dy: -60
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#gridView2_column9', 'drag-n-drop', {
+        dx: 0,
+        dy: -60
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 상단의 그리드(options.closeGroup = false; 일경우)와 하단의 그리드(options.closeGroup = true; 일경우) 대리점항목명을 마우스로 드래그하여 위로 끌어다 놓는다. 
+    //1. Run the sample file and drag it to the top grid (if options.closeGroup = false;) and the bottom grid (if options.closeGroup = true;
+    //Verify step 1. The upper grid and the lower grid are grouped by the agency name and the time (duration 370 ms) is shown.
+    WebSquare.wUnit.addCommand("pause", "800");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').length == 1", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value').text() == '대리점'", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column:last').length == 1", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value:last').text() == '대리점'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.getTime()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.onLoadComplete();
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 26-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:textbox id="" label="GridView GroupBy" style="padding:15px 0 15px 0;margin:0px;" tagname="h3"></w2:textbox>
+		<w2:textbox id="txt1" label="1. options.closeGroup = false;" style="padding:5px 0 5px 15px;margin:0px;" tagname="h4"></w2:textbox>
+		<w2:gridView dataList="dl_gridViewData" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1"
+			style="width: 100%;min-width:800px;height: 300px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true"
+			useShiftKey="true" rowNumVisible="true" rowNumHeaderValue="No." groupbyZoneHeight="70" groupbyZone="true" sortable="true" ev:ongroupby="scwin.gridView1_ongroupby">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="200" displayMode="label" value="대리점">
+					</w2:column>
+					<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="200" displayMode="label" value="제조사">
+					</w2:column>
+					<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="200" displayMode="label" value="제품명">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="200" displayMode="label" value="판매수량">
+					</w2:column>
+					<w2:column blockSelect="false" id="column1" style="height:20px" width="200" inputType="text" displayMode="label" value="판매액">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="branch" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="market" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="model" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="sale_number" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="sale_price" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:textbox id="txt2" label="2. options.closeGroup = true;" style="padding:15px 0 5px 15px;margin:0px;" tagname="h4"></w2:textbox>
+		<w2:gridView dataList="dl_gridViewData" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView2"
+			style="width: 100%;min-width:800px;height: 300px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true"
+			useShiftKey="true" rowNumVisible="true" rowNumHeaderValue="No." groupbyZoneHeight="70" groupbyZone="true" sortable="true" ev:ongroupby="scwin.gridView2_ongroupby">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="200" displayMode="label" value="대리점">
+					</w2:column>
+					<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="200" displayMode="label" value="제조사">
+					</w2:column>
+					<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="200" displayMode="label" value="제품명">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="200" displayMode="label" value="판매수량">
+					</w2:column>
+					<w2:column blockSelect="false" id="column1" style="height:20px" width="200" inputType="text" displayMode="label" value="판매액">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="branch" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="market" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="model" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="sale_number" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="sale_price" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>
+ 

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_reset_onclick = function(e) {
+    dataList1.removeColumnFilterAll();
+    var jsonData2 = [{
+        col1: "0001",
+        col2: "0001",
+        col3: "0001",
+        col4: "0001"
+    }, {
+        col1: "0002",
+        col2: "0002",
+        col3: "0002",
+        col4: "0002"
+    }, {
+        col1: "0003",
+        col2: "0003",
+        col3: "0003",
+        col4: "0003"
+    }, {
+        col1: "0004",
+        col2: "0004",
+        col3: "0004",
+        col4: "0004"
+    }, {
+        col1: "0005",
+        col2: "0005",
+        col3: "0005",
+        col4: "0005"
+    }, {
+        col1: "0006",
+        col2: "0006",
+        col3: "0006",
+        col4: "0006"
+    }, {
+        col1: "0007",
+        col2: "0007",
+        col3: "0007",
+        col4: "0007"
+    }];
+    dataList1.setJSON(jsonData2);
+};
+scwin.__clickFilter = function(p) {
+    var el = WebSquare.wUnit.getDomById($p.id + "gridView1_customFilter_list").getElementsByClassName('w2list_listRow');
+    return el[p].childNodes[0].click();
+}
+scwin.__checkExceptFilter = function(val) {
+    var count = 0;
+    WebSquare.wUnit.getJq("#gridView1_body_tbody tr").find("td").not("#_headerRowStatus").each(function() {
+        if (WebSquare.wUnit.getJq(this).text() == val) {
+            count++;
+        }
+    });
+    return count == 0;
+}
+scwin.__isShowFilter = function(val) {
+    var div = WebSquare.wUnit.getJq("#gridView1_customFilter_list").find(".w2list_listRow");
+    return div.length == val;
+}
+scwin.__isShowInitData = function() {
+    return WebSquare.wUnit.getJq("#gridView1_body_tbody tr").length == dataList1.getRowCount();
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 브라우저에서 name1 컬럼의 '0001' 을 필터를 체크해지한다.
+    //1. In your browser, uncheck the '0001' filter in the name1 column.    
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column11_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_customFilter_list').querySelectorAll('div')[2].click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+	
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowFilter(4)", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column11_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 1. '0001' 데이터가 필터해지되면서 '0001' 데이터를 제외한 '0002' 데이터가 표시된다.
+    //1. '0001' data is filtered and '0002' data is displayed except for '0001' data.
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkExceptFilter('0001')", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 2. 재조회(필터제거) 버튼을 클릭한다.
+    //2. Click the Re-query (Remove Filter) button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_reset').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. 필터가 초기화되면서 초기화 데이터가 표시된다.
+    //2. The filter is initialized and the initialization data is displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowInitData()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 3. 다시 name1 컬럼의 '0001' 을 필터를 체크해지한다.
+    //3. Check the filter '0001' in the name1 column again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column11_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_customFilter_list').querySelectorAll('div')[2].click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowFilter(9)", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column11_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 3. '0001' 데이터가 필터해지되면서 '0001' 데이터를 제외한 나머지 데이터가 표시된다.
+    //3. '0001' data is filtered out, and the remaining data except '0001' data is displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkExceptFilter('0001')", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.jsonData = [{
+        col1: "0001",
+        col2: "0001",
+        col3: "0001",
+        col4: "0001"
+    }, {
+        col1: "0002",
+        col2: "0002",
+        col3: "0002",
+        col4: "0002"
+    }];
+    dataList1.setJSON(jsonData);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 08-Feb-2018
+    window.time = 1;
+    //end unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" style="position: relative ;width:180px;height:23px;left:5px;top:10px;" id="btn_reset" ev:onclick="scwin.btn_reset_onclick">
+    		<xf:label><![CDATA[재조회(필터제거)]]></xf:label>
+    	</xf:trigger>
+
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" rowStatusVisible="true" style="position: relative ;left:5px;top:20px;width:461px;height:337px;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" sortable="true" useFilterList="true" visibleRowNum="all">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="100" displayMode="label" value="name1" useFilter="true"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="100" displayMode="label" value="name2" useFilter="true"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="100" displayMode="label" value="name3"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="100" inputType="text" displayMode="label" value="name4"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="96" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+
+    </body>
+</html>
+ 

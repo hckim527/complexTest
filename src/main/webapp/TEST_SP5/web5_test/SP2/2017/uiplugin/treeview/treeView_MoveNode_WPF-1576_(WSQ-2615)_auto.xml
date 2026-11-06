@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dl_tree" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            			<w2:column id="depth" name="depth" dataType="text"></w2:column>
+            			<w2:column id="folder" name="folder" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<label><![CDATA[1]]></label>
+            				<value><![CDATA[1]]></value>
+            				<depth><![CDATA[1]]></depth>
+            				<folder><![CDATA[f]]></folder>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[1-1]]></label>
+            				<value><![CDATA[1-1]]></value>
+            				<depth><![CDATA[2]]></depth>
+            				<folder><![CDATA[f]]></folder>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[1-2]]></label>
+            				<value><![CDATA[1-2]]></value>
+            				<depth><![CDATA[2]]></depth>
+            				<folder><![CDATA[f]]></folder>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[1-2-1]]></label>
+            				<value><![CDATA[1-2-1]]></value>
+            				<depth><![CDATA[3]]></depth>
+            				<folder><![CDATA[f]]></folder>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[1-2-2]]></label>
+            				<value><![CDATA[1-2-2]]></value>
+            				<depth><![CDATA[3]]></depth>
+            				<folder><![CDATA[t]]></folder>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[2]]></label>
+            				<value><![CDATA[2]]></value>
+            				<depth><![CDATA[1]]></depth>
+            				<folder><![CDATA[f]]></folder>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[3]]></label>
+            				<value><![CDATA[3]]></value>
+            				<depth><![CDATA[1]]></depth>
+            				<folder><![CDATA[t]]></folder>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[3-1]]></label>
+            				<value><![CDATA[3-1]]></value>
+            				<depth><![CDATA[2]]></depth>
+            				<folder><![CDATA[f]]></folder>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    window.listElemStr = "";
+    listElemStr += "<w2:list xmlns:w2=\"http://www.inswave.com/websquare\" tagName='ul' style='' class='w2grid_contextMenu'>";
+    listElemStr += "	<w2:listRow tagName='li' style='height: 20px; display:block; border-top: 0px; border-left:0px; border-right:0px;' class='w2grid_contextMenu_row'>";
+    listElemStr += "		<w2:listColumn id='col1' inputType='text' style='padding-left: 10px' class='w2grid_contextMenu_column' />";
+    listElemStr += "	</w2:listRow>";
+    listElemStr += "</w2:list>";
+    window.jsonData = [{
+        "col1": "자식노드로 추가"
+    }, {
+        "col1": "형제노드로 추가"
+    }];
+    window.listElem = WebSquare.xml.parse(listElemStr, true);
+    window.listXML = listElem.documentElement;
+    window.contextMenu = new WebSquare.uiplugin.list("treeView_contextMenu_list", "", listXML);
+    contextMenu.writeTo(WebSquare.getBody());
+    contextMenu.setJSON(jsonData);
+    contextMenu.hide();
+    contextMenu.setSize(180, 40);
+    contextMenu.activate();
+    scwin.setContextMenuAction();
+}
+scwin.setContextMenuAction = function() {
+    contextMenu.event.addListener(contextMenu.render, "onclick", function(e) {
+        WebSquare.event.stopPropagation(e);
+        var it = window.contextMenu.event.getTargetIterator(e, this.render);
+        var targetRow;
+        while (it.next()) {
+            if (it.match("w2grid_contextMenu_column")) {
+                targetRow = it.getElement().parentNode;
+                break;
+            }
+            if (it.match("w2grid_contextMenu_row")) {
+                targetRow = it.getElement();
+                break;
+            }
+            if (it.match("w2grid_contextMenu")) {
+                break;
+            }
+        }
+        if (targetRow.innerText == '형제노드로 추가') {
+            treeview.moveNode(dragInfo.dragNode.index, dragInfo.dropNode.index, false);
+        } else if (targetRow.innerText == '자식노드로 추가') {
+            treeview.moveNode(dragInfo.dragNode.index, dragInfo.dropNode.index, true);
+        }
+        window.contextMenu.hide();
+    });
+}
+scwin.treeview_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {
+    contextMenu.show();
+    contextMenu.setPosition(WebSquare.event.getMouseX(e), WebSquare.event.getMouseY(e));
+    dragInfo = {
+        dragNode: dragNode,
+        dropNode: dropNode,
+        dragControl: dragControl,
+        event: e
+    };
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#treeview_label_2', 'drag-n-drop', {
+        dx: 10,
+        dy: 70
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#treeview_label_6', 'drag-n-drop', {
+        dx: 10,
+        dy: 20
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_contextMenu_column')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#treeview_node_6').text() == '1-1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. '1' 노드하위에 '1-1' 을 Drag 해서 '2' 에 Drop 후 '자식노드로 추가' 메뉴를 클릭한다
+    //3. Drag '1-1' to the '1' node and drop it to '2' and click the 'Add as child node' menu.
+    //Verify step 3. '1-1' is moved under the '2' node.
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_contextMenu_column')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#treeview_label_7').text() == '1-1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.contextMenu = null;
+    window.dragInfo = {};
+    scwin.init();
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:treeview useDrag="true" id="treeview" renderType="table"
+    		style="position: absolute;border: 1px solid #000000;width:200px;height:387px;left:126px;top:73px;" lineShow="" tooltipGroupClass="false" dataType="listed"
+    		ev:ondrop="scwin.treeview_ondrop" trueValue="t" falseValue="f" forceFolder="false">
+    		<w2:itemset nodeset="data:dl_tree">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="value"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref="folder"></w2:folder>
+    			<w2:checkbox ref=""></w2:checkbox>
+    			<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=""></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    </body>
+</html>
+ 

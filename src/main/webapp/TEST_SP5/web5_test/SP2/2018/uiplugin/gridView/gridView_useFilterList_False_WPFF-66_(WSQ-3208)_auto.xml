@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="false">
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+            		<w2:condition type="filter"><![CDATA[col1==ref('data:dataList2.col1')]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).textContent == value) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 name1 header의 역삼각형모양을 클릭한다.
+    //1. After running the sample, click the inverted triangle of the name1 header.
+    //Verify step 1. The custom filter screen is displayed.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column5_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_customFilter').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 찾을조건의 selectbox List data를 확인한다.
+    //2. Check the selectbox List data of the search condition.
+    //Verify step 2. It is shown as label value (A, B, C)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_item_0_autocomplete_column5_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_item_0_autocomplete_column5_itemTable_0', 'A')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_item_0_autocomplete_column5_itemTable_1', 'B')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_item_0_autocomplete_column5_itemTable_2', 'C')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 23-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView applyAllColumnStyle="false" dataList="data:dataList1" defaultCellHeight="20" id="gridView1" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" scrollByColumn="false" scrollByColumnAdaptive="false" style="width: 500px;height: 150px;"
+    		summaryAuto="false" summaryOnlyAuto="false" syncScroll="false" useFilterList="" useShiftKey="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="100" value="name1" displayMode="label" useFilter="true" filterDisplayMode=""></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="select" width="100" value="" displayMode="label"
+    					allOption="" chooseOption="" ref="" filterDisplayMode="label">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[A]]></w2:label>
+    							<w2:value><![CDATA[1]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[B]]></w2:label>
+    							<w2:value><![CDATA[2]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[C]]></w2:label>
+    							<w2:value><![CDATA[3]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

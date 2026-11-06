@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:mfeSubmission/>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    imports("externalJS/big/big.min.js");
+};
+
+// WAEA-678: bigDecimal 올바른 사용 예시
+scwin.button1_onclick = function (e) {
+    var num1 = WebSquare.bigDecimal("100");
+    var num2 = WebSquare.bigDecimal("4");
+
+    // [1] 간단한 연산은 인스턴스 메소드 사용 — 함수 지역변수를 그대로 사용할 수 있습니다.
+    console.log("num1.plus(num2)   : " + num1.plus(num2));    // 104
+    console.log("num1.minus(num2)  : " + num1.minus(num2));   // 96
+    console.log("num1.times(num2)  : " + num1.times(num2));   // 400
+    console.log("num1.divide(num2) : " + num1.divide(num2));  // 25
+
+    // [2] 문자열 연산식 calc() — 함수 지역변수는 반드시 두 번째 인자 cover에
+    //     { 변수명: 값 } 형태로 전달해야 합니다. (JavaScript 언어 제약상
+    //     함수 지역변수를 인자 없이 자동 인식하는 것은 불가능합니다.)
+    var ret = WebSquare.bigDecimal.calc("num1 + num2", { num1: num1, num2: num2 });
+    console.log('calc("num1 + num2", { num1: num1, num2: num2 }) : ' + ret); // 104
+
+    // [3] 괄호/우선순위가 포함된 복합 연산식 — 큰 수도 정밀도 손실 없이 연산됩니다.
+    var a = WebSquare.bigDecimal("123456789012345678901234567890");
+    var b = WebSquare.bigDecimal("111111111111111111111111111111");
+    var c = WebSquare.bigDecimal("2");
+    var ret2 = WebSquare.bigDecimal.calc("(a + b) * c", { a: a, b: b, c: c });
+    console.log('calc("(a + b) * c", { a: a, b: b, c: c }) : ' + ret2); // 469135800246913580024691358002
+
+    // [참고] 전역 변수는 cover 없이 변수명만으로 사용할 수 있습니다.
+    window.gNum1 = WebSquare.bigDecimal("7");
+    window.gNum2 = WebSquare.bigDecimal("3");
+    console.log('calc("gNum1 * gNum2") : ' + WebSquare.bigDecimal.calc("gNum1 * gNum2")); // 21
+
+    // [참고] 함수 지역변수를 cover 없이 사용하면 아래와 같이 에러가 발생합니다.
+    try {
+        WebSquare.bigDecimal.calc("num1 + num2");
+    } catch (err) {
+        console.log("cover 미전달 시 에러 : " + err.message);
+    }
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <w2:button style="width: 80px;height: 23px;" id="button1" label="실행" ev:onclick="scwin.button1_onclick"></w2:button>
+    </body>
+</html>

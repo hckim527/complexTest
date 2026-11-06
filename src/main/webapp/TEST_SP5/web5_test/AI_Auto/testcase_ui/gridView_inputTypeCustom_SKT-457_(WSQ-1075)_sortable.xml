@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" >
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+                <w2:dataList id="inputTypeList" ev:oncelldatachange="scwin.inputTypeList_oncelldatachange">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                        <w2:column id="col5" name="name5" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dataList2">
+                    <w2:columnInfo>
+                        <w2:column id="label" dataType="text"></w2:column>
+                        <w2:column id="value" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dataList3">
+                    <w2:columnInfo>
+                        <w2:column id="label" dataType="text"></w2:column>
+                        <w2:column id="value" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.getType = function(info) {
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var returnInfo;
+    var inputType = inputTypeList.getCellData(rowIndex, colIndex);
+    switch (inputType) {
+        case "radio":
+            returnInfo = {
+                id: "dynamic_radio_" + rowIndex + "_" + colIndex,
+                inputType: "radio",
+                options: {
+                    groupName: "radio_" + rowIndex
+                }
+            }
+            break;
+        case "checkbox":
+            returnInfo = {
+                id: "dynamic_checkbox_" + rowIndex + "_" + colIndex,
+                inputType: "checkbox",
+                options: {}
+            }
+            break;
+        case "button":
+            returnInfo = {
+                id: "dynamic_button_" + rowIndex + "_" + colIndex,
+                inputType: "button",
+                options: {}
+            }
+            break;
+        case "calendar":
+            returnInfo = {
+                id: "dynamic_calendar_" + rowIndex + "_" + colIndex,
+                inputType: "calendar",
+                options: {
+                    viewType: "icon",
+                    dataValidCheck: true
+                }
+            }
+            break;
+        case "image":
+            returnInfo = {
+                id: "dynamic_image_" + rowIndex + "_" + colIndex,
+                inputType: "image",
+                options: {
+                    imageSrc: "/SAMPLE/W5/project/dynamic/img.gif"
+                }
+            }
+            break;
+        case "link":
+            returnInfo = {
+                id: "dynamic_link_" + rowIndex + "_" + colIndex,
+                inputType: "link",
+                options: {}
+            }
+            break;
+        case "select":
+            returnInfo = {
+                id: "dynamic_select_" + rowIndex + "_" + colIndex,
+                inputType: "select",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            }
+            break;
+        case "autoComplete":
+            returnInfo = {
+                id: "dynamic_autoComplete_" + rowIndex + "_" + colIndex,
+                inputType: "autoComplete",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            }
+            break;
+        case "checkcombobox":
+            returnInfo = {
+                id: "dynamic_checkcombobox_" + rowIndex + "_" + colIndex,
+                inputType: "checkcombobox",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList3",
+                    label: "label",
+                    value: "value"
+                }
+            }
+            break;
+        case "textarea":
+            returnInfo = {
+                id: "dynamic_textarea_" + rowIndex + "_" + colIndex,
+                inputType: "textarea",
+                options: {}
+            }
+            break;
+        case "text":
+            returnInfo = {
+                id: "dynamic_text_" + rowIndex + "_" + colIndex,
+                inputType: "text",
+                options: {}
+            }
+            break;
+        case "textImage":
+            if (globalViewType) {
+                returnInfo = {
+                    id: "dynamic_textImage_" + rowIndex + "_" + colIndex,
+                    inputType: "textImage",
+                    options: {
+                        viewType: "icon",
+                        imageSrc: "/SAMPLE/W5/project/dynamic/alz.jpg",
+                        textAlign: "center"
+                    }
+                }
+            } else {
+                returnInfo = {
+                    id: "dynamic_textImage_2_" + rowIndex + "_" + colIndex,
+                    inputType: "textImage",
+                    options: {
+                        imageSrc: "/SAMPLE/W5/project/dynamic/alz.jpg",
+                        textAlign: "center"
+                    }
+                }
+            }
+            break;
+        default:
+            returnInfo = {
+                id: "dynamic_text_" + rowIndex + "_" + colIndex,
+                inputType: "text",
+                options: {}
+            }
+            break;
+    }
+    if (returnInfo) {
+        console.log("[typeGetter] (" + rowIndex + ", " + colIndex + ") : " + returnInfo.inputType);
+    }
+    return returnInfo;
+}
+// SP2 호환: typeGetter="getType" 이름 해석이 strictMode(단일 스코프 탐색)에서 실패하더라도
+// 전역 fallback(new Function("return getType"))으로 찾을 수 있도록 전역에도 노출한다.
+// (같은 함수 객체이므로 내부의 inputTypeList 등 컴포넌트 참조 스코프는 그대로 유지됨)
+window.getType = scwin.getType;
+window.globalViewType = true;
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.globalViewType = true;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.b1_onclick = function(e) {
+    var rowIndex = WebSquare.util.getNumber(rowTb.getValue());
+    gridView1.refreshRow(rowIndex);
+};
+scwin.b2_onclick = function(e) {
+    var colIndex = WebSquare.util.getNumber(colTb.getValue());
+    gridView1.refreshColumn(colIndex);
+};
+scwin.b3_onclick = function(e) {
+    var colIndex = WebSquare.util.getNumber(cellColTb.getValue());
+    var rowIndex = WebSquare.util.getNumber(cellRowTb.getValue());
+    gridView1.refreshCell(rowIndex, colIndex);
+};
+scwin.inputTypeList_oncelldatachange = function(info) {
+    gridView1.refreshCell(info.rowIndex, info.colID);
+};
+scwin.gridView1_oncellclick = function(row, col) {
+    console.log(" row: " + row + ", col: " + col + " oncellclick : fired");
+};
+scwin.trigger1_onclick = function(e) {
+    var options = {};
+    options.type = "1";
+    options.fileName = "test.xls";
+    options.headerExist = "1"; //헤더의 존재 여부 입니다.
+    options.startRowIndex = "0"; //excel파일에서 gird의 데이터가 시작되 row의 index입니다..(헤더 포함)
+    options.startColumnIndex = "0"; //excel파일에서 gird의 데이터가 시작되는 column의 index입니다.(헤더 포함)
+    options.sheetNo = 0; //excel의 sheet번호입니다.
+    options.append = "0"; //append 여부입니다. 0이면 append하지 않고 새로 쓰고 1이면 그리드의 뒤쪽에 데이터를 추가로 붙여줍니다.
+    options.hidden = "0"; //1이면 그리드에서 엑셀 다운로드시에 hidden을 포함했다는 의미입니다. 즉 upload시에 그리드의 hidden Column에 값을 는다는 의미입니다.
+    gridView1.advancedExcelDownload(options);
+};
+scwin.trigger2_onclick = function(e) {
+    var options = {
+        fileName: "saveCSV.csv",
+        type: "1",
+        delim: ";"
+    };
+    gridView1.saveCSV(options);
+};
+scwin.gridView2_onviewchange = function(info) {};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.dataArr = [
+        "radio", "radio",
+        "checkbox", "checkbox",
+        "button", "button",
+        "calendar", "calendar",
+        "image", "image",
+        "link", "link",
+        "select", "select",
+        "autoComplete", "autoComplete",
+        "checkcombobox", "checkcombobox",
+        "textarea", "textarea",
+        "text", "text",
+        "textImage", "textImage"
+    ];
+    dataList2.setData(dataArr);
+    dataList3.setData([
+        "radio", "1",
+        "checkbox", "2",
+        "button", "3",
+        "calendar", "4",
+        "image", "5",
+        "link", "6",
+        "select", "7",
+        "autoComplete", "8",
+        "checkcombobox", "9",
+        "textarea", "10",
+        "text", "11",
+        "textImage", "12"
+    ]);
+    window._dataArr = [];
+    for (var i = 0; i < 300; i++) {
+        _dataArr.push("");
+    }
+    dataList1.setData(_dataArr.slice(0));
+    inputTypeList.setData(_dataArr.slice(0, 65));
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" rowNumVisible="true" sortable="true"
+    		style="position: relative;width:700px;height:300px;left:63px;top:34px; border: 1px solid black;float:left;clear:none;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" ev:oncellclick="scwin.gridView1_oncellclick">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column id="header1" style="height:20px" inputType="text" width="*" value="col1"></w2:column>
+    				<w2:column id="header2" style="height:20px" inputType="text" width="*" value="col2"></w2:column>
+    				<w2:column id="header3" style="height:20px" inputType="text" width="*" value="col3"></w2:column>
+    				<w2:column id="header4" style="height:20px" inputType="text" width="*" value="col4"></w2:column>
+    				<w2:column id="header5" style="height:20px" inputType="text" width="*" value="col5"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column id="col1" inputType="custom" typeGetter="getType"></w2:column>
+    				<w2:column id="col2" inputType="custom" typeGetter="getType"></w2:column>
+    				<w2:column id="col3" inputType="custom" typeGetter="getType"></w2:column>
+    				<w2:column id="col4" inputType="custom" typeGetter="getType"></w2:column>
+    				<w2:column id="col5" inputType="custom" typeGetter="getType"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:textbox label="1. Row 갱신 " id=""
+    		style="position: absolute ;height:32px;font-size: 20px;width:234px;left:60px;font-weight: bold;top:708px;">
+    	</w2:textbox>
+    	<w2:textbox id="" label="2. Column 갱신"
+    		style="position: absolute ;height:32px;font-size: 20px;width:234px;left:60px;font-weight: bold;top:797px;">
+    	</w2:textbox>
+    	<w2:textbox id="" label="3. Cell 갱신"
+    		style="position: absolute ;height:32px;font-size: 20px;width:234px;left:60px;font-weight: bold;top:882px;">
+    	</w2:textbox>
+    	<xf:input id="rowTb" style="position: absolute ;height: 36px;width:200px;left:70px;top:742px;"></xf:input>
+    	<xf:input id="colTb" style="position: absolute ;height: 36px;width:200px;left:70px;top:829px;"></xf:input>
+    	<xf:input id="cellRowTb" style="position: absolute ;height:36px;width:85px;left:70px;top:919px;"></xf:input>
+    	<xf:input id="cellColTb" style="position: absolute ;height:36px;width:85px;left:187px;top:919px;"></xf:input>
+    	<xf:trigger type="button" id="b1" style="position: absolute ;height: 38px;width: 213px;left:295px;top:742px;"
+    		ev:onclick="scwin.b1_onclick">
+    		<xf:label><![CDATA[갱신]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="b2" style="position: absolute ;height: 38px;width: 213px;left:295px;top:829px;" type="button"
+    		ev:onclick="scwin.b2_onclick">
+    		<xf:label><![CDATA[갱신]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="b3" style="position: absolute ;height: 38px;width: 213px;left:295px;top:919px;" type="button"
+    		ev:onclick="scwin.b3_onclick">
+    		<xf:label><![CDATA[갱신]]></xf:label>
+    	</xf:trigger>
+    	<w2:gridView dataList="inputTypeList" ev:oncellclick="scwin.gridView1_oncellclick" fixedColumnWithHidden="true" id="gridView2"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" rowNumVisible="true" scrollByColumn="false"
+    		style="position: relative;width:700px;height:300px;left:61px;top:62px; border: 1px solid black;float:left;clear:none;margin-top:25px;" useShiftKey="true" sortable="true" ev:onviewchange="scwin.gridView2_onviewchange">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column id="header1" inputType="text" style="height:20px" value="col1" width="*"></w2:column>
+    				<w2:column id="header2" inputType="text" style="height:20px" value="col2" width="*"></w2:column>
+    				<w2:column id="header3" inputType="text" style="height:20px" value="col3" width="*"></w2:column>
+    				<w2:column id="header4" inputType="text" style="height:20px" value="col4" width="*"></w2:column>
+    				<w2:column id="header5" inputType="text" style="height:20px" value="col5" width="*"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column id="col1" inputType="select" typeGetter="getType" allOption="" chooseOption="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column id="col2" inputType="select" typeGetter="getType">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column id="col3" inputType="select" typeGetter="getType">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column id="col4" inputType="select" typeGetter="getType">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column id="col5" inputType="select" typeGetter="getType">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dataList2">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

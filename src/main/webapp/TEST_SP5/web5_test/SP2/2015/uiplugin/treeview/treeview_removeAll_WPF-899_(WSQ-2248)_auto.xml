@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="depth" name="name2" dataType="text"></w2:column>
+            			<w2:column id="value" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger3_onclick = function(e) {
+    dataList1.removeAll();
+};
+scwin.getErrorLog = function() {
+    var temp = WebSquare.logger.getErrorLog();
+    return temp;
+    // return temp.indexOf("error문구");
+    // return temp.indexOf("error");
+}
+scwin.unitTest = function() {
+    //Unit tets
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 1. treeview_removeAll_WPF-899_(WSQ-2248).xml 실행한다.- Execute treeview_removeAll_WPF-899_ (WSQ-2248) .xml.
+    //Verify 1. treeview_removeAll_WPF-899_(WSQ-2248).xml 실행된다.-treeview_removeAll_WPF-899_ (WSQ-2248) .xml is executed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById($p.id+'treeview2_label_1').innerText == 'test1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 2. test1 node를 선택한다. - 2. Select the test1 node.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById($p.id+'treeview2_label_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 3. 'dataList1.removeALL();' 버튼을 클릭하고 ctrl + 마우스우클릭 > 로그보기를 통해 정상로그를 확인한다.
+    //3. 'dataList1.removeALL ();' Click the button and ctrl + right-click> View log to check the normal log.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 3. 정상적으로 상단의 Tree내역이 삭제되고 로그보기에 에러없이 보여진다. (이전에는 로그보기 에러 발생함)
+    //3. The top tree is deleted normally and the log view is displayed without error.(Previously there was a log view error)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'treeview2_label_1') == null", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.getErrorLog() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+            "label": "test1",
+            "depth": "1",
+            "value": "test1"
+        },
+        {
+            "label": "test2",
+            "depth": "2",
+            "value": "test2"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 18-Jan-2018
+    // End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:treeview useDrag="" id="treeview2" style="position: relative;width: 200px;height: 200px;left:67px;top:18px;" lineShow=""
+    		tooltipGroupClass="false" dataType="listed">
+    		<w2:itemset nodeset="data:dataList1">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="value"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref=""></w2:folder>
+    			<w2:checkbox ref=""></w2:checkbox>
+    			<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=""></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    	<xf:trigger type="button" id="trigger3" style="position: relative;width:222px;height:23px;left:128px;top:40px;"
+    		ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[dataList1.removeAll();]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

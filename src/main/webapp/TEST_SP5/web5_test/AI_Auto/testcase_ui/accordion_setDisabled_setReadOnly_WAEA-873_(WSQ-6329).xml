@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] accordion setDisabled / setReadOnly 메소드 미동작 결함 재현" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성 (Jira 등록용 결함 재현 샘플 - accordion setDisabled / setReadOnly 미동작)" meta_date="20260526" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[// 결함 재현 시나리오 설명
+scwin.tData = {
+    "description" : "[FAIL] accordion 컴포넌트의 setDisabled(true) / setReadOnly(true) 호출 후에도 panelTitle 클릭으로 패널이 토글되고 onclick / onpanelload / onpanelunload 이벤트가 발생하는 결함 재현",
+    "validation" : [
+        "setDisabled(true) 호출 후 가이드 @spec : 컴포넌트에 대한 입력, 포커스, 이벤트 등이 차단되어야 합니다.",
+        "setReadOnly(true) 호출 후 가이드 @spec : 입력 및 편집이 차단되어야 합니다.",
+        "실제 동작 : setDisabled / setReadOnly true 설정 후에도 panelTitle 클릭으로 패널이 열림/닫힘 토글되고 onclick / onpanelload / onpanelunload 이벤트가 모두 발생합니다 (options 값만 저장될 뿐 동작 차단/UI 반영 없음)."
+    ]
+}
+
+
+
+scwin.onpageload = function () {
+
+};
+
+
+
+// setDisabled(true)
+scwin.btn_setDisabledTrue_onclick = function (e) {
+    target_accordion.setDisabled(true);
+    scwin.setReturnValue("[setDisabled(true) 호출] getDisabled() = " + target_accordion.getDisabled());
+};
+
+// setDisabled(false)
+scwin.btn_setDisabledFalse_onclick = function (e) {
+    target_accordion.setDisabled(false);
+    scwin.setReturnValue("[setDisabled(false) 호출] getDisabled() = " + target_accordion.getDisabled());
+};
+
+// setReadOnly(true)
+scwin.btn_setReadOnlyTrue_onclick = function (e) {
+    target_accordion.setReadOnly(true);
+    scwin.setReturnValue("[setReadOnly(true) 호출] getReadOnly() = " + target_accordion.getReadOnly());
+};
+
+// setReadOnly(false)
+scwin.btn_setReadOnlyFalse_onclick = function (e) {
+    target_accordion.setReadOnly(false);
+    scwin.setReturnValue("[setReadOnly(false) 호출] getReadOnly() = " + target_accordion.getReadOnly());
+};
+
+
+
+// target_accordion 이벤트 핸들러 (차단 여부 확인용)
+scwin.target_accordion_onclick = function (panel, open) {
+    scwin.setReturnValue("=====target_accordion_onclick===== (disabled : " + target_accordion.getDisabled() + " / readOnly : " + target_accordion.getReadOnly() + ")");
+    scwin.setReturnValue("panel.id : " + (panel ? panel.id : "null") + " / open : " + open);
+};
+
+scwin.target_accordion_onpanelload = function (panelID, userID) {
+    scwin.setReturnValue("=====target_accordion_onpanelload===== panelID : " + panelID);
+};
+
+scwin.target_accordion_onpanelunload = function (panelID, userID) {
+    scwin.setReturnValue("=====target_accordion_onpanelunload===== panelID : " + panelID);
+};
+
+
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정 (독립 실행용)
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="tc_body_main" id="" style="display: flex;">
+			<xf:group class="tc_body_right" id="body_right" style="">
+				<xf:group style="" id="grp_sample">
+					<w2:textbox style="" id="" label="■ 테스트 샘플 (accordion, onclick/onpanelload/onpanelunload 이벤트 연결)" class="tc_tbx_label_1" escape="false"></w2:textbox>
+					<xf:group style="display:flex; gap:40px;" id="grp_comp" class="tc_group_basic">
+						<xf:group style="">
+							<w2:textbox style="width:100%; padding:5px;" id="" label="[accordion] setDisabled(true) / setReadOnly(true) 상태에서도 panelTitle 클릭 시 패널 토글 및 이벤트 발생됨" class="tc_tbx_label_2" escape="false"></w2:textbox>
+							<w2:accordion id="target_accordion" style="width:260px; height:300px;"
+								ev:onclick="scwin.target_accordion_onclick"
+								ev:onpanelload="scwin.target_accordion_onpanelload"
+								ev:onpanelunload="scwin.target_accordion_onpanelunload">
+								<w2:panels style="" id="panels1" class="">
+									<w2:panelTitle style="" id="panelTitle1" label="panelTitle1"></w2:panelTitle>
+									<w2:panelContent style="" id="panelContent1">
+										<w2:button style="width:80px; height:23px;" id="" label="panel1"></w2:button>
+										<xf:input id="input1" style="width: 144px;height: 21px;"></xf:input>
+									</w2:panelContent>
+								</w2:panels>
+								<w2:panels style="" id="panels2" class="">
+									<w2:panelTitle style="" id="panelTitle2" label="panelTitle2"></w2:panelTitle>
+									<w2:panelContent style="" id="panelContent2">
+										<w2:button style="width:80px; height:23px;" id="" label="panel2"></w2:button>
+									</w2:panelContent>
+								</w2:panels>
+							</w2:accordion>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+				<xf:group id="grp_parameter">
+					<xf:group style="display:flex; gap:10px; flex-wrap:wrap;" id="grp_etc">
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_setDisabledTrue_onclick" id="btn_setDisabledTrue" label="setDisabled(true)"></w2:button>
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_setDisabledFalse_onclick" id="btn_setDisabledFalse" label="setDisabled(false)"></w2:button>
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_setReadOnlyTrue_onclick" id="btn_setReadOnlyTrue" label="setReadOnly(true)"></w2:button>
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_setReadOnlyFalse_onclick" id="btn_setReadOnlyFalse" label="setReadOnly(false)"></w2:button>
+					</xf:group>
+				</xf:group>
+				<xf:group class="" id="grp_bottom" style="">
+					<w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+					<xf:group id="" style="display: flex;justify-content: flex-end">
+						<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+					</xf:group>
+					<xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 240px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+		<script type='text/javascript' src='/ROBOT_AUTO_LIB/bililiteRange.js'></script>
+		<script type='text/javascript' src='/ROBOT_AUTO_LIB/jquery.simulate.js'></script>
+		<script type='text/javascript' src='/ROBOT_AUTO_LIB/jquery.simulate.ext.js'></script>
+		<script type='text/javascript' src='/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js'></script>
+		<script type='text/javascript' src='/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js'></script>
+		<script type='text/javascript' src='/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js'></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" id="dataList1" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[11]]></col1>
+            				<col2><![CDATA[12]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[21]]></col1>
+            				<col2><![CDATA[22]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[31]]></col1>
+            				<col2><![CDATA[32]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[41]]></col1>
+            				<col2><![CDATA[42]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" id="dataList2" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1111]]></col1>
+            				<col2><![CDATA[1112]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2221]]></col1>
+            				<col2><![CDATA[2222]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.refreshTextbox = function() {
+    var rowStatusTxt = "";
+    var json1 = dataList1.getAllJSON();
+    var json2 = dataList2.getAllJSON();
+    rowStatusTxt += "[dataList1]\n";
+    for (var i = 0; i < json1.length; i++) {
+        rowStatusTxt += json1[i].rowStatus + "\n";
+    }
+    rowStatusTxt += "\n[dataList2]\n";
+    for (var j = 0; j < json2.length; j++) {
+        rowStatusTxt += json2[j].rowStatus + "\n";
+    }
+    textbox1.setValue(rowStatusTxt);
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#G_gridView2__col2', 'key-sequence', {
+        sequence: '1'
+    });
+}
+scwin.compareTwoArrays = function(arr1, arr2) {
+    return arr1.length == arr2.length && arr1.every(function(v, i) {
+        return v === arr2[i]
+    })
+}
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
+    //Verify step 5. RowStatus 가 Update / Update 로 변경된다.
+    //5. RowStatus changes to Update / Update.
+    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['U', 'U'])", "true");
+    //Test step 6. dataList2.setData 버튼을 클릭한다.
+    //6. Click the dataList2.setData button.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    //Verify step 6. dataList2 의 데이터가 변경된다.
+    //6. The data in dataList2 is changed.
+    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
+    //Test step 7. 임의로 dataList2 컬럼을 수정한다.
+    //7. Optionally modify the dataList2 column.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['D', 'U', 'D', 'U'])", "true");
+    //Test step 8. 브라우저에서 dataList2.setXML 버튼을 클릭한다.
+    //8. In your browser, click the dataList2.setXML button.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    //Verify step 8. dataList2 의 데이터가 변경된다.
+    //8. The data in dataList2 is changed.
+    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
+    //Test step 9. 임의로 dataList2 컬럼을 수정한다.
+    //9. Optionally modify the dataList2 column.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
+    //Verify step 9. RowStatus 가 U / U / U / U로 변경된다.
+    //9. RowStatus is changed to U / U / U / U.
+    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['U', 'U', 'U', 'U'])", "true");
+    //Test step 10. 브라우저에서 dataList2.setJSON 버튼을 클릭한다.
+    //10. In your browser, click the dataList2.setJSON button.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    //Verify step 10. dataList2 의 데이터가 변경된다.
+    //10. The data in dataList2 is changed.
+    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
+    //Test step 11. 임의로 dataList2 컬럼을 수정한다.
+    //11. Optionally modify the dataList2 column.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
+    //Verify step 11. RowStatus 가U / U / U / U로 변경된다.
+    //11. RowStatus is changed to U / U / U / U.
+    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['U', 'U', 'U', 'U'])", "true");
+    //Test step 12. 브라우저에서 dataList2.setArray 버튼을 클릭한다.
+    //12. In your browser, click the dataList2.setArray button.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
+    //Verify step 12. dataList2 의 데이터가 변경된다.
+    //12. The data in dataList2 is changed.
+    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
+    //Test step 13. 임의로 dataList2 컬럼을 수정한다.
+    //13. Optionally modify the dataList2 column.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['D', 'U', 'D', 'U'])", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //debugger
+    scwin.refreshTextbox();
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 27-Mar-2018
+    window.valBeforeChange;
+	window.valAfterChange;
+    //end
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="position: relative;width:360px;height:230px;"
+    		fixedColumnWithHidden="true" useShiftKey="true" rowStatusVisible="true" rowStatusHeaderValue="Row Status" rowStatusWidth="80">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" value="name2"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	
+    	<w2:gridView dataList="dataList2" scrollByColumn="false" id="gridView2" style="position: relative;width:360px;height:230px;"
+    		fixedColumnWithHidden="true" useShiftKey="true" rowStatusVisible="true" rowStatusWidth="80" rowStatusHeaderValue="Row Status">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" value="name2"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:textbox label="" id="textbox1" style="position: relative;width:360px;height:156px;"></w2:textbox><xf:trigger type="button" id="trigger1" style="position: relative;height: 23px;width:200px;display:block;">
+    		<xf:label><![CDATA[dataList2.setData]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[//debugger
+    			var data = dataList1.getAllData();
+    			var rowStatus = ["D", "U", "D", "U"];
+    			dataList2.setData(data, false, null, rowStatus);
+    			scwin.refreshTextbox();
+    		 ]]></script>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;height: 23px;width:200px;display:block;">
+    		<xf:label><![CDATA[dataList2.setXML]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[//debugger
+    			var xml = dataList1.getAllXML();
+    			dataList2.setXML(xml, false, null, true);
+    			scwin.refreshTextbox();
+    		 ]]></script>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3" style="position: relative;height: 23px;width:200px;display:block;">
+    		<xf:label><![CDATA[dataList2.setJSON]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[//debugger
+    			var jsonData = dataList1.getAllJSON();
+    			dataList2.setJSON(jsonData, false, null, true);
+    			scwin.refreshTextbox();
+    		 ]]></script>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger4" style="position: relative;height: 23px;width:200px;display:block;">
+    		<xf:label><![CDATA[dataList2.setArray]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[//debugger
+    			var array = dataList1.getAllArray();
+    			array.rowStatus = ["D", "U", "D", "U"];
+    			dataList2.setArray(array, false, null, true);
+    			scwin.refreshTextbox();
+    		 ]]></script>
+    	</xf:trigger>
+
+    </body>
+</html>
+ 

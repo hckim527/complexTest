@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<root>
+                		<ui>
+                			<vector1>
+                				<vector1_row>
+                					<col1>col1_0_1_vector4</col1>
+		                			<col2>col2_0_2_vector4</col2>
+		                			<col3>col3_0_3_vector4</col3>
+                				</vector1_row>
+                			</vector1>
+                		</ui>
+                		<data>
+                			<vector1></vector1>
+                		</data>
+                	</root>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger3_onclick = function(e) {
+    for (var i = 0; i < grid1.getRowCount(); i++) {
+        if (i != 0 && i != 4 && i != 6 && i != 8 && i != 10 && i != 11 && i != 12 && i != 13) {
+            grid1.setRowVisible(i, false);
+        }
+    }
+};
+scwin.rgb2hex = function(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}
+scwin._checkRgb = function(id) {
+    var rgb = WebSquare.wUnit.getJq(id).css("background-color");
+    var color;
+    if (rgb.indexOf("rgb") != -1) {
+        color = scwin.rgb2hex(rgb);
+        return color;
+    } else {
+        return rgb;
+    }
+}
+
+scwin.checkVal1 = function() {
+    return scwin._checkRgb('#grid1_cell_6_0') == '#000000' || scwin._checkRgb('#grid1_cell_6_0') == 'transparent';
+}
+scwin.checkVal2 = function() {
+    return scwin._checkRgb('#grid1_cell_8_0') == '#fca73c';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_6_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_scrollY_div').scrollTop = 50");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_8_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    window.arr = [];
+    for (var i = 0; i < 21; i++) {
+        arr.push("row_" + i);
+        arr.push("data1");
+        arr.push("data2");
+    }
+    grid1.setData(arr);
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:grid baseNode="vector1" repeatNode="vector1_row" ref="" id="grid1" style="width:100%;height:100px;" fixedColumnWithHidden="true" useShiftKey="true" visibleRowNum="7" defaultCellHeight="24" autoFit="allColumn" tooltipDisplay="true" autoFitMinWidth="" evenRowBackgroundColor="#FFFFFF">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="120" value="" displayMode="label" readOnly=""></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="120" value="" displayMode="label" colMerge=""></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	
+    	<xf:trigger type="button" id="trigger3" style="width:146px;height:23px;" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[setRowVisible]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html> 

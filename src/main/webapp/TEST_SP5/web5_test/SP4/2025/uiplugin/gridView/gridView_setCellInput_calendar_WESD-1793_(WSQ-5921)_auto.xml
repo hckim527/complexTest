@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" ev:oncelldatachange="">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[ 
+         
+         
+	scwin.init = function(){
+		var jsonData=[{"col1":"1"},{"col1":"2"},{"col1":"1"},{"col1":"1"},{"col1":"2"}
+		,{"col1":"1"},{"col1":"2"},{"col1":"1"},{"col1":"1"},{"col1":"2"}
+		,{"col1":"1"},{"col1":"2"},{"col1":"1"},{"col1":"1"},{"col1":"2"}
+		,{"col1":"1"},{"col1":"2"},{"col1":"1"},{"col1":"1"},{"col1":"2"}
+		,{"col1":"1"},{"col1":"2"},{"col1":"1"},{"col1":"1"},{"col1":"2"}];
+		dataList1.setJSON(jsonData);
+		
+
+		$p.data.setBroadcast(false);
+		for(var i=0; i<gridView1.getRowCount(); i++){
+			var col1Data = dataList1.getCellData(i, "col1");
+			var obj = {};
+			if(col1Data == 1){
+				obj = {
+					inputType : "calendar",
+					options : {
+						viewType : "icon",
+						calendarValueType : "yearMonth"
+						,displayFormat : "yyyy"
+						,dataType : "date"
+					}
+				}
+			}else{
+				obj = {
+					inputType : "link",
+					options : {
+						displayFormatter: "scwin.getUserCsNo"
+					}
+				}
+			}
+			gridView1.setCellInputType( i , "col2" , obj );
+			
+		}
+
+		$p.data.setBroadcast(true);
+	};
+
+	scwin.getUserCsNo = function(a,b,c,d){
+		//debugger;
+		return "formatter"+a;
+	}
+
+	scwin.gridView1_onviewchange = function(info) {
+		if(gridView1.getColumnID(info.colIndex) == "col1"){
+			if(info.newValue == 1){
+				var obj = {
+					inputType : "calendar",
+					options : {
+						viewType : "icon",
+						calendarValueType : "yearMonth"
+					}
+				}
+			}else{
+				var obj = {
+					inputType : "calendar",
+					options : {
+						viewType : "icon",
+						calendarValueType : "yearMonthDate"
+					}
+				}
+			}
+
+		}
+		gridView1.setCellInputType( info.rowIndex , "col2" , obj );
+	};
+	
+	
+	        
+	scwin.onpageload = function() {
+		scwin.init();
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	
+	scwin.button1_onclick = function(e) {
+		grp1.show("");
+	};
+	
+	scwin.checkVal1 = function() {
+		return !WebSquare.wUnit.getDomById("gridView1_dynamic_calendar_0_1").classList.contains("br");
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+		WebSquare.wUnit.addCommand("pause", "400");				
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+	]]></script>
+        <style type="text/css"><![CDATA[
+            .br {border-right:1px solid red;}
+         ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	        <xf:trigger type="button" localeRef="" style="width:110px;height: 23px;" id="trigger3" ev:onclick="scwin.button1_onclick">
+                        <xf:label><![CDATA[show]]></xf:label>
+                    </xf:trigger>
+    	<w2:textbox label="gridView.setCellInputType();" id="" style="width: 500px;height: 30px;font-size:200%;padding:5px;"></w2:textbox>
+    	<xf:group id="grp1" style="display:none;">
+	    	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+
+            accessibility="true"
+            senseReader="true"
+            focusMove="false"
+            keyMoveEditMode="true"
+            captionAuto="true"
+            autoResizeEmbeddedInput="true"
+            sortHeaderDiv="true"
+            scrollFocus="true"
+            titleAuto="true"
+            applyScopeHeaders="true"
+
+	    		setCellInputTypeCustom="true" scrollByColumnAdaptive="false" id="gridView1" style="width: 500px;height: 150px;" ignoreCellClick="false"
+	    		syncScroll="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true"
+	    		ev:onviewchange="scwin.gridView1_onviewchange">
+	    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+	    		<w2:header id="header1" style="">
+	    			<w2:row id="row1" style="">
+	    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3" displayMode="label"></w2:column>
+	    			</w2:row>
+	    		</w2:header>
+	    		<w2:gBody id="gBody1" style="">
+	    			<w2:row id="row2" style="">
+	    				<w2:column blockSelect="false" id="col1" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="col2" style="" class="br" inputType="custom" width="70" value="" displayMode="label"></w2:column>
+	    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+	    			</w2:row>
+	    		</w2:gBody>
+	    	</w2:gridView>
+    	</xf:group>
+    </body>
+</html>

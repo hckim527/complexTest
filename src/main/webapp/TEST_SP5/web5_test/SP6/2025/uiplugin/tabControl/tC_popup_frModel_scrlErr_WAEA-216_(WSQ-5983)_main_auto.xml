@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>				
+    	<w2:type>COMPONENT</w2:type>
+    	<w2:buildDate />
+    	<w2:MSA />
+    	<xf:model>
+    		<w2:dataCollection baseNode="map" />
+    		<w2:workflowCollection />
+    	</xf:model>
+    	<w2:layoutInfo />
+    	<w2:publicInfo method="" />
+    	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+
+};
+
+scwin.openPage = function(srd){
+    var tabId = "Test"+String(Math.random()).substring(2);
+    var tabOptions = {
+            "label": "Test"+String(Math.random()).substring(2), 
+            "title": "dataObject",
+            "openAction": "new",
+            "closable": "true"
+        };
+    var contentOptions = {   
+            "src": srd,
+            "frameMode" : "pageFrame",
+            "scope" : true, 
+            "alwaysDraw": "true"
+        };
+    wdc_main.addTab(tabId, tabOptions, contentOptions)
+        .then(function(_tabId){
+            wdc_main.setSelectedTabIndex(wdc_main.getSelectedTabIndex(_tabId));
+        });
+};
+
+scwin.trigger1_onclick = function(e) {
+    scwin.openPage("tC_popup_frModel_scrlErr_WAEA-216_(WSQ-5983)_sub.xml");
+};
+
+
+	scwin.setSimulate1 = function() {
+		WebSquare.wUnit.getDomById('wdc_main_container').querySelectorAll('input')[1].scrollIntoView(({behavior:'smooth', block:'start'}));
+	}
+	scwin.setOffset = function() {
+		window.offset = WebSquare.wUnit.getDomById('wdc_main_container').querySelectorAll('input')[1].getBoundingClientRect().top;
+	}	
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.checkVal = function() {
+		return window.offset == WebSquare.wUnit.getDomById('wdc_main_container').querySelectorAll('input')[1].getBoundingClientRect().top;
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wdc_main_tabhost').querySelectorAll('a')[1].click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "700");		
+		WebSquare.wUnit.addCommand("set", "scwin.setOffset()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wdc_main_container').querySelectorAll('input')[1].click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()	
+	
+]]></script>
+    	<style type="text/css"><![CDATA[.w2tabcontrol_container {height: 100%;}
+.w2tabcontrol_contents {overflow: auto;}]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="width: 100%;height: 500px;display: flex;flex-direction: row">
+    	<xf:group id="" style="width:70%;height:100%;">
+    		<w2:tabControl id="wdc_main" alwaysDraw="false" style="width: 100%;height: 100%;display: block;">
+    			<w2:tabs disabled="false" style="width:70px;height:30px;" id="tabs1"></w2:tabs>
+    			<w2:content alwaysDraw="false" style="height:100%;width: 100%;" id="content1"></w2:content>
+    		</w2:tabControl>
+    	</xf:group>
+    	<xf:group id="" style="width: 29%;height:100%;display: inline-block;">
+    		<xf:group tagname="table" style="width:100%;" id="" class="w2tb">
+    			<w2:attributes>
+    				<w2:summary></w2:summary>
+    			</w2:attributes>
+    			<xf:group tagname="caption"></xf:group>
+    			<xf:group tagname="colgroup">
+    				<xf:group tagname="col" style="width:150px;"></xf:group>
+    				<xf:group tagname="col" style=""></xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group tagname="th" style="" class="w2tb_th">
+    					<w2:attributes>
+    						<w2:scope>row</w2:scope>
+    					</w2:attributes>
+    				</xf:group>
+    				<xf:group tagname="td" style="" class="w2tb_td">
+    					<xf:trigger type="button" id="trigger1" style="height: 23px;padding: 0 5px;" ev:onclick="scwin.trigger1_onclick">
+    						<xf:label><![CDATA[기본 페이지]]></xf:label>
+    					</xf:trigger>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group tagname="th" style="" class="w2tb_th">
+    					<w2:attributes>
+    						<w2:scope>row</w2:scope>
+    					</w2:attributes>
+    				</xf:group>
+    				<xf:group tagname="td" style="" class="w2tb_td">
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr" style="">
+    				<xf:group tagname="th" style="" class="w2tb_th"><w2:attributes>
+    						<w2:scope>row</w2:scope>
+    					</w2:attributes></xf:group>
+    				<xf:group tagname="td" style="" class="w2tb_td">
+    				</xf:group>
+    			</xf:group>
+    		<xf:group tagname="tr"><xf:group tagname="th" class="w2tb_th"><w2:attributes><w2:scope>row</w2:scope></w2:attributes></xf:group>
+    			<xf:group tagname="td" class="w2tb_td">
+    				<w2:attributes></w2:attributes>
+    			</xf:group></xf:group><xf:group tagname="tr"><xf:group tagname="th" class="w2tb_th"><w2:attributes><w2:scope>row</w2:scope></w2:attributes></xf:group>
+	<xf:group tagname="td" class="w2tb_td">
+		<w2:attributes></w2:attributes>
+	</xf:group></xf:group></xf:group>
+    	</xf:group></xf:group></body>
+</html>

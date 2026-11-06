@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dlGrid" saveRemovedData="true" initRowPosition="">
+                    <w2:columnInfo>
+                        <w2:column id="lv1" name="lv1" dataType="text"></w2:column>
+                        <w2:column id="lv2" name="lv2" dataType="text"></w2:column>
+                        <w2:column id="lv2_2" name="lv2_2" dataType="text"></w2:column>
+                        <w2:column id="lv2_3" name="lv2_3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList baseNode="list" id="dlCode" repeatNode="map" style="" initRowPosition="">
+                    <w2:columnInfo>
+                        <w2:column dataType="text" id="lv1" name="lv1"></w2:column>
+                        <w2:column dataType="text" id="lv2" name="lv2"></w2:column>
+                        <w2:column dataType="text" id="label" name="label"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:linkedDataList bind="dlCode" id="ldlCode">
+                    <w2:condition type="filter"><![CDATA[lv1==ref('dlGrid.lv1')]]></w2:condition>
+                    <w2:condition type="sort"><![CDATA[]]>
+                    </w2:condition>
+                </w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.dlGridData = [{
+            "lv1": "1",
+        },
+        {
+            "lv1": "2",
+        }
+    ];
+    scwin.dlCodeData = [{
+            "lv1": "1",
+            "lv2": "1-1",
+            "label": "일-일"
+        },
+        {
+            "lv1": "1",
+            "lv2": "1-2",
+            "label": "일-이"
+        },
+        {
+            "lv1": "1",
+            "lv2": "1-3",
+            "label": "일-삼"
+        },
+        {
+            "lv1": "2",
+            "lv2": "2-1",
+            "label": "이-일"
+        },
+        {
+            "lv1": "2",
+            "lv2": "2-2",
+            "label": "이-이"
+        },
+        {
+            "lv1": "2",
+            "lv2": "2-3",
+            "label": "이-삼"
+        },
+        {
+            "lv1": "3",
+            "lv2": "3-1",
+            "label": "삼-일"
+        },
+        {
+            "lv1": "3",
+            "lv2": "3-2",
+            "label": "삼-이"
+        },
+        {
+            "lv1": "3",
+            "lv2": "3-3",
+            "label": "삼-삼"
+        }
+    ];
+    dlCode.setJSON(scwin.dlCodeData);
+    dlGrid.setJSON(scwin.dlGridData);
+};
+scwin.onpageunload = function() {};
+scwin.btnAddRow_onclick = function(e) {
+    dlGrid.insertRow(0);
+};
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#autoComplete1_input', 'key-combo', {
+        combo: 'ENTER'
+    });
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getObjById("grd_cell_1_0").getAttribute('readonly') == 'true';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gvGridList1_cell_0_0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'G_'+$p.id+'gvGridList1__lv1').value = 2");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gvGridList1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gvGridList1_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gvGridList1_cell_1_0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'G_'+$p.id+'gvGridList1__lv1').value = 3");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gvGridList1_cell_1_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gvGridList1_cell_1_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'G_'+$p.id+'gvGridList1___selectbox_lv2_2_gridViewItemTable_gridView_cell_1_1').innerText == '3-1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+]]></script>
+            <w2:require src="/NP2020/com/udc/COM0003Udc.xml"></w2:require>
+        </head>
+        <body ev:onpageload="scwin.onpageload">
+            <xf:group class="wrap" id="" style="">
+                <xf:trigger type="button" style="width: 80px;height: 23px;" id="btnAddRow"
+                    ev:onclick="scwin.btnAddRow_onclick">
+                    <xf:label><![CDATA[addRow]]></xf:label>
+                </xf:trigger>
+                <w2:gridView id="gvGridList1" style="width: 100%;height: 200px;" dataList="data:dlGrid" autoFit="none"
+                    rowStatusVisible="true" class="cm_grid edit" ev:oncellclick="" ev:onrowstatusclick="" ev:oneditkeyup=""
+                    ev:oneditkeydown="" setCellInputTypeCustom="true" ev:onviewchange="" dynamic="true">
+                    <w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+                    <w2:header style="" id="header1">
+                        <w2:row style="" id="row3">
+                            <w2:column removeBorderStyle="false" width="150" inputType="text" style="height:20px;" id="column1"
+                                value="lv1" blockSelect="false" displayMode="label">
+                            </w2:column>
+                            <w2:column removeBorderStyle="false" width="200" inputType="text" style="height:20px;" id="column2"
+                                value="lv2&lt;br/&gt;(selectBox &gt; itmeSet)" blockSelect="false" displayMode="label">
+                            </w2:column>
+                            <w2:column removeBorderStyle="false" width="200" inputType="text" style="height:20px;" id="column4"
+                                value="lv2&lt;br/&gt;(selectBox &gt; gridViewItmeSet)" blockSelect="false" displayMode="label">
+                            </w2:column>
+                            <w2:column removeBorderStyle="false" width="200" inputType="text" style="height:20px;" id="column6"
+                                value="lv2&lt;br/&gt;(autoComplete &gt; gridViewItmeSet)" blockSelect="false" displayMode="label">
+                            </w2:column>
+                        </w2:row>
+                    </w2:header>
+                    <w2:gBody style="height:20px" id="gBody1">
+                        <w2:row style="" id="row2">
+                            <w2:column removeBorderStyle="false" width="150" inputType="text" style="" id="lv1" value=""
+                                blockSelect="false" displayMode="label">
+                            </w2:column>
+                            <w2:column removeBorderStyle="false" width="150" inputType="select" style="" id="lv2" value=""
+                                blockSelect="false" displayMode="label" allOption="" chooseOption="true" ref="" chooseOptionLabel="- 선택 -">
+                                <w2:choices>
+                                    <w2:itemset nodeset="data:ldlCode">
+                                        <w2:label ref="lv2"></w2:label>
+                                        <w2:value ref="lv2"></w2:value>
+                                    </w2:itemset>
+                                </w2:choices>
+                            </w2:column>
+                            <w2:column removeBorderStyle="false" width="150" inputType="select" style="" id="lv2_2" value=""
+                                blockSelect="false" displayMode="label" chooseOption="true" chooseOptionLabel="- 선택 -">
+                                <w2:choices>
+                                    <w2:gridViewItemset hideHeader="" rowNumVisible="" nodeset="data:ldlCode" selectedRowColor=""
+                                        label="lv2" rowStatusVislble="" rowMouseOver="" width="300px;" visibleRowNum="" autoFit="" value="lv2"
+                                        rowMouseOverColor="" height="200px;">
+                                        <w2:item ref="lv1" hidden="" header="lv1" style="" headerStyle=""></w2:item>
+                                        <w2:item ref="lv2" hidden="" header="lv2" style="" headerStyle=""></w2:item>
+                                        <w2:item ref="label" hidden="" header="label" style="" headerStyle=""></w2:item>
+                                    </w2:gridViewItemset>
+                                </w2:choices>
+                            </w2:column>
+                            <w2:column removeBorderStyle="false" width="200" inputType="autoComplete" style="" id="lv2_3" value=""
+                                blockSelect="false" displayMode="label" chooseOptionLabel="- 선택 -" chooseOption="true">
+                                <w2:choices>
+                                    <w2:gridViewItemset hideHeader="" rowNumVisible="" nodeset="data:ldlCode" selectedRowColor=""
+                                        label="lv2" rowStatusVislble="" rowMouseOver="" width="300" visibleRowNum="" value="lv2" rowMouseOverColor=""
+                                        height="200">
+                                        <w2:item ref="lv1" hidden="" header="lv1" style="" headerStyle=""></w2:item>
+                                        <w2:item ref="lv2" hidden="" header="lv2" style="" headerStyle=""></w2:item>
+                                        <w2:item ref="label" hidden="" header="label" style="" headerStyle=""></w2:item>
+                                    </w2:gridViewItemset>
+                                </w2:choices>
+                            </w2:column>
+                        </w2:row>
+                    </w2:gBody>
+                </w2:gridView>
+            </xf:group>
+        </body>
+    </html> 

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns=""></data>
+    		</xf:instance>
+    		<w2:dataCollection>
+    			<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="label" name="label" dataType="text"></w2:column>
+    					<w2:column id="value" name="value" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    				<w2:data></w2:data>
+    			</w2:dataList>
+    			<w2:dataList id="dataList2" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="label" name="label" dataType="text"></w2:column>
+    					<w2:column id="value" name="value" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    				<w2:data></w2:data>
+    			</w2:dataList>
+    		</w2:dataCollection>
+
+    		<xf:submission id="submission1" ref="data:json" target="data:dataList2" action="test.do" method="post"
+    			mediatype="application/json" encoding="UTF-8" instance="" replace="instance" errorHandler="" customHandler="" mode="synchronous"
+    			processMsg="">
+    			<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    autoComplete2.setItemSet("data:dataList2", "label", "value");
+    autoComplete2.openTable();
+}
+]]></script>
+    		</xf:submission>
+
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_autoComplete = function(keyStr) {
+    //var sendDataStr = {"key":keyStr};
+    //$w.executeSubmission( "submission1" , sendDataStr);
+    console.log("keyStr:" + keyStr);
+    /*var jsonData2 = [{"label":"식약처","value":"식약처"},{"label":"서울시 광진구","value":"서울시 광진구"}
+    		,{"label":"경기도 고양시","value":"경기도 고양시"},{"label":"식품 의약품 안전","value":"식품 의약품 안전"}
+    		,{"label":"test2","value":"test2"}];
+    dataList2.setJSON( jsonData2 );*/
+    if (keyStr == "bbb") {
+        dataList2.setJSON({});
+    } else {
+        dataList2.setJSON(jsonData2);
+    }
+    autoComplete2.setItemSet("data:dataList2", "label", "value");
+    /*var doc = dataList2.getAllXML();
+    WebSquare.ModelUtil.setInstanceNode( doc , "test" , "" , "replace" );
+    autoComplete2.setItemSet( "test/list/map" ,"label" , "value" );*/
+    autoComplete2.openTable();
+}
+scwin.autoComplete2_oneditend = function() {
+    console.log("end1:" + autoComplete2.getText());
+    //if(dataList2.getRowCount() ==0) autoComplete2.initAutoComplete();
+    console.log("end2:" + autoComplete2.getText());
+};
+scwin.onpageload = function() {
+    window.jsonData = [{
+        "label": "식약처",
+        "value": "식약처"
+    }, {
+        "label": "서울시 광진구",
+        "value": "식약처1"
+    }, {
+        "label": "경기도 고양시",
+        "value": "식약처2test"
+    }, {
+        "label": "식품 의약품 안전",
+        "value": "test"
+    }, {
+        "label": "test2",
+        "value": "test2"
+    }];
+    dataList1.setJSON(jsonData);
+    window.jsonData2 = [{
+        "label": "식약처",
+        "value": "식약처"
+    }, {
+        "label": "서울시 광진구",
+        "value": "서울시 광진구"
+    }, {
+        "label": "경기도 고양시",
+        "value": "경기도 고양시"
+    }, {
+        "label": "식품 의약품 안전",
+        "value": "식품 의약품 안전"
+    }, {
+        "label": "test2",
+        "value": "test2"
+    }];
+    dataList2.setJSON(jsonData2);
+    autoComplete2.setItemSet("data:dataList2", "label", "value");
+    //-----------------------------------------------------
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+    		//.w2autoComplete_label {text-align:left;} 
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:autoComplete id="autoComplete1" style="position: absolute ;left:44px;top:51px;width: 258px;height: 59px;" search="contain"
+    		interactionMode="" displayMode="label" useKeywordHighlight="true" editType="select" submenuSize="auto" allowEmptySubmission="true"
+    		editModeEvent="onfocus" noResult="clear" searchTarget="both" textAlign="left" allOption="" chooseOption="true" chooseOptionLabel="">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList1">
+    				<w2:label ref="label"></w2:label>
+    				<w2:value ref="value"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<w2:textbox id="textbox1" style="position: absolute ;left:16px;top:21px;width:195px;height:29px;" label="기본 autoComplete"></w2:textbox>
+    	<w2:textbox id="textbox2" style="position: absolute ;left:340px;top:24px;width:195px;height:29px;"
+    		label="Submission autoComplete">
+    	</w2:textbox>
+
+    	<w2:autoComplete interactionMode="true" id="autoComplete2" useKeywordHighlight="true"
+    		style="position: absolute ;left:336px;top:58px;width: 210px;height: 51px;" search="contain" displayMode="label"
+    		allowEmptySubmission="true" editType="select" submissionFunc="fn_autoComplete" noResult="clear"
+    		ev:oneditend="scwin.autoComplete2_oneditend" allOption="" chooseOption="true" chooseOptionLabel="">
+    		<script ev:event="onchange" type="javascript"><![CDATA[
+    			console.log("onchange:"+autoComplete2.getText());
+    		 ]]></script>
+
+
+    		<w2:choices></w2:choices>
+    	</w2:autoComplete>
+    </body>
+</html>
+ 

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__isShowHeaderFooter = function() {
+    var trs = WebSquare.wUnit.getJq("#grid1_body_tbody").find("tr").not(".w2grid_hidedRow");
+    var numTdHF = WebSquare.wUnit.getJq(trs).find("td.w2grid_groupby_depth_0").length;
+    var count = 0;
+    trs.each(function() {
+        WebSquare.wUnit.getJq(this).find('td').each(function() {
+            if (WebSquare.wUnit.getJq(this).hasClass("w2grid_groupby_depth_0")) {
+                count++;
+            }
+        });
+    });
+    return (trs.length == 9) && (count == numTdHF);
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. 브라우저에서 확인한다.
+    //3. Check in browser
+    // verify step 3. Header 와 Footer 부분이 표현된다.
+    //3. Header and Footer parts are represented.
+    WebSquare.wUnit.addCommand("assert", "scwin.__isShowHeaderFooter()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonObj = [{
+        dt: "20140101",
+        name: "a",
+        accept: "1",
+        complete: "1"
+    }, {
+        dt: "20140101",
+        name: "a",
+        accept: "1",
+        complete: "1"
+    }, {
+        dt: "20140101",
+        name: "b",
+        accept: "2",
+        complete: "2"
+    }, {
+        dt: "20140102",
+        name: "b",
+        accept: "3",
+        complete: "3"
+    }, {
+        dt: "20140102",
+        name: "a",
+        accept: "4",
+        complete: "4"
+    }];
+    grid1.setJSON(jsonObj);
+    window.options = {
+        sortIndex: [0],
+        sortOrder: [1],
+        hideFooter: false,
+        hideHeader: false,
+        groupbyHeader: {
+            depth_0: [{
+                colSpan: "3",
+                value: "일자별 합계"
+            }, {
+                inputType: "expression",
+                expression: " SUM('complete')",
+                className: "aaa"
+            }]
+        }
+    };
+    grid1.groupby(options);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 12-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[ 
+    		.w2grid_groupby_depth_0{
+				background-color: green;
+			}
+			
+			.w2grid_groupby_depth_1{
+				background-color: yellow;
+			}
+			
+			.aaa {
+				background-color: pink;
+			}
+    	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid baseNode="vector" repeatNode="data/INFO" id="grid1"
+    		style="position: absolute ;left:172px;top:12px;width:365px;height:325px;" sortable="true" rowNumVisible="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column id="column7" style="height:20px" inputType="text" width="70" value="일자"></w2:column>
+    				<w2:column id="column5" style="height:20px" inputType="text" width="70" value="이름"></w2:column>
+    				<w2:column id="column3" style="height:20px" inputType="text" width="70" value="접수건"></w2:column>
+    				<w2:column id="column1" style="height:20px" width="70" inputType="text" value="완료건"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column id="dt" style="height:20px" inputType="text" width="70" colMerge=""></w2:column>
+    				<w2:column id="name" style="height:20px" inputType="text" width="70"></w2:column>
+    				<w2:column id="accept" style="height:20px" inputType="text" width="70" dataType="number"></w2:column>
+    				<w2:column id="complete" style="height:20px" width="70" inputType="text" dataType="number"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    </body>
+</html>
+ 

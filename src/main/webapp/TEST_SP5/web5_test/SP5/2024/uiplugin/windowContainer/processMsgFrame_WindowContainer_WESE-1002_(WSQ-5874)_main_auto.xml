@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		windowContainer1.createWindow({
+			"title" : "Source", 
+			"src" : "processMsgFrame_WindowContainer_WESE-1002_(WSQ-5874)_sub1.xml", 
+			"windowId" : "window1", 
+			"frameMode" : "wframe"
+		});	
+
+		WebSquare.layer.showProcessMessage("windowContainer_test.."); // 로딩바 show
+        $p.setTimeout(function(){
+            WebSquare.layer.hideProcessMessage(); // 로딩바 hide
+        }, {delay:3000, key:""}); 
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+
+	scwin.checkVal1 = function() {
+		let re_val = false;
+		let resources = performance.getEntriesByType("resource");
+		let target = resources.find(function(entry) {
+		return entry.name.indexOf("progressingbar.gif") !== -1;
+		});
+		
+		debugger;
+		if (target) {
+			// progressingbar.gif 파일이 존재할 경우 해당 Request URL 출력
+			console.log("progressingbar.gif 파일이 존재합니다.");
+			console.log("Request URL:", target.name);
+		} else {
+			console.log("progressingbar.gif 파일이 존재하지 않습니다.");
+		}
+		
+		//"websquare" 문자열 뒤에 / 하나만 있는지 확인
+		//let regex = /websquare(\/)(?!\/)/;
+		//return regex.test(target.name);
+
+		// "websquare" 문자열이 URL에서 처음 나타나는 위치 찾기
+		var index = target.name.indexOf("websquare");
+		if (index !== -1) {
+			// "websquare"의 길이 다음에 오는 문자가 체크 대상
+			var after = target.name.substr(index + "websquare".length, 2); // 두 문자 (첫 문자는 반드시 '/', 그 다음은 '/'가 아니어야 함)
+
+			if (after.charAt(0) === "/" && after.charAt(1) !== "/") {
+				console.log("websquare 뒤에 '/'가 한 개만 존재합니다.");
+				re_val=true;
+			} else {
+				console.log("websquare 뒤에 '/'가 한 개만 존재하지 않습니다.");
+			}
+		} else {
+			console.log("URL에 'websquare'가 존재하지 않습니다.");
+		}
+		return re_val;		
+		
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_subWindow0_wframe_trigger2').click()");
+		WebSquare.wUnit.addCommand("pause", "1400");	
+		WebSquare.wUnit.addCommand("pause", "400");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:windowContainer sequentialArrangeColNum="2" verticalArrangeNum="2" controlIconPosition="left" windowMaximizeAll="false" id="windowContainer1"
+    		useStatusMsg="true" hideTitleOnMaximize="false" spaInitCount="0" useNameContainer="false" useControlIconTitle="false"
+    		tooltipDisplay="true" style="position:relative;width:696px;height:473px;padding:20px;margin:50px 0px 0px 100px;border:solid 1px gray;" sequentialArrangeRowNum="2" fixArrangeFullScreen="false"
+    		useFixButton="false" windowAutoResize="false" windowMaxNum="5" useCloseButton="false" stopMinimizeOnNameLayer="false"
+    		toolbarPosition="bottom" stopToggleOnLast="false" horizontalArrangeNum="2" useCustomMsg="false" tooltipGroupClass="false"
+    		windowTooltipDisplay="true" frameMode="wframe" processMsgFrame="false">
+    		<w2:windowToolbar>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    </body>
+</html>

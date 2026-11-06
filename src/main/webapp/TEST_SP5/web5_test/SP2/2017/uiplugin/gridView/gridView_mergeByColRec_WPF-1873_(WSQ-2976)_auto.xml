@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                        <w2:column id="col5" name="name5" dataType="text"></w2:column>
+                        <w2:column id="col6" name="name6" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">	
+                        <w2:row>
+                            <label><![CDATA[byrestriccol : 같은 column 내에서 연속적으로 데이터가 같으면서 동시에 자신의 왼쪽에 위치한 column이 merge된 경우 해당 row들을 merge한다. (n+1컬럼에 n컬럼을 upperColumn으로 지정한 형태)]]></label>
+                            <value><![CDATA[byrestriccol]]></value>
+                        </w2:row><w2:row>
+                            <label><![CDATA[byrestricrow : 같은 row 내에서 연속적으로 데이터가 같으면서 동시에 자신의 위쪽에 위치한 row가 merge된 경우 해당 row들을 merge한다. (n+행에 n행을 upperRow으로 지정한 형태)]]></label>
+                            <value><![CDATA[byrestricrow]]></value>
+                        </w2:row>
+            		</w2:data>
+            	</w2:dataList>
+                <w2:dataList id="dataList3" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="label" name="label" dataType="text"></w2:column>
+                        <w2:column id="value" name="value" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <label><![CDATA[never : merge를 해제한다. grid1.clearMerge(); 와 동일.]]></label>
+                            <value><![CDATA[never]]></value>
+                        </w2:row>
+                        <w2:row>
+                            <label><![CDATA[bycol : 같은 column 내에서 연속적으로 데이터가 같은 row들을 merge한다.]]></label>
+                            <value><![CDATA[bycol]]></value>
+                        </w2:row><w2:row>
+                            <label><![CDATA[byrow : 같은 row 내에서 연속적으로 데이터가 같은 column들을 merge한다.]]></label>
+                            <value><![CDATA[byrow]]></value>
+                        </w2:row>
+                        
+                        <w2:row>
+                            <label><![CDATA[bycolrec : bycol후, merge되지 않은 cell들을 대상으로 byrow를 실행한다.]]></label>
+                            <value><![CDATA[bycolrec]]></value>
+                        </w2:row><w2:row>
+                            <label><![CDATA[byrowrec : byrow후, merge되지 않은 cell들을 대상으로 bycol을 수행한다.]]></label>
+                            <value><![CDATA[byrowrec]]></value>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var data1 = [1, 1, 2, 4, 4, 4, 1, 1, 2, 4, 4, 4, 1, 3, 2, 4, 4, 5, 1, 3, 3, 5, 5, 5];
+    dataList1.setData(data1);
+    grid1.setData(data1);
+}
+scwin.radio2_onviewchange = function(info) {
+    grid1.mergeCells(info.value);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. 샘플파일을 실행 후 bycol, bycolrec, byrow, byrowrec를 수행하여 merge를 확인한다.
+    //1. Run the sample file and check the merge by performing bycol, bycolrec, byrow, and byrowrec.
+    //Verify step 1. Merge works normally for row and col of same data.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('radio2_input_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_0').attr('rowspan') == '4'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_1').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_2').attr('rowspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_3').attr('rowspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_4').attr('rowspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_5').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_1').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_5').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('radio2_input_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_0').attr('colspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_1_0').attr('colspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_3_1').attr('colspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_3').attr('colspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_1_3').attr('colspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_3').attr('colspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_3_3').attr('colspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('radio2_input_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_0').attr('rowspan') == '4'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_1').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_2').attr('rowspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_3').attr('rowspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_5').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_1').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_5').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('radio2_input_4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_0').attr('colspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_0').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_0').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_2').attr('rowspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_3').attr('colspan') == '3'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_3').attr('rowspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_3').attr('colspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_3').attr('colspan') == '2'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_3_1').attr('colspan') == '2'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+	scwin.init()
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 26-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="" style="position: relative;height: 150px;width: 600px;" class="">
+    		<w2:textbox label="동적 컬럼병합 예제 - bycol,byrow,bycolrec,byrowrec" id=""
+    			style="position: relative;width: 700px;height: 100px;font-size:24pt;">
+    		</w2:textbox>
+    		<w2:anchor id="" style="position: relative;width: 300px;height: 30px;" outerDiv="false"
+    			href="https://inswave.com/jira/browse/WPF-1911">
+    			<xf:label><![CDATA[https://inswave.com/jira/browse/WPF-1911]]></xf:label>
+    		</w2:anchor>
+
+    		
+    	</xf:group>
+    	<xf:group id="" style="height:170px;">
+    		<w2:grid id="grid1" applyAllColumnStyle="false"
+    			style="position: relative;width:900px;height:150px;" useShiftKey="true" scrollByColumn="false" rowStatusVisible="true"
+    			defaultCellHeight="20" rowNumVisible="true" columnMove="true">
+    			<w2:header id="header1" style="">
+    				<w2:row id="row1" style="">
+    					<w2:column id="column21" blockSelect="false" width="80" inputType="text" value="name1"></w2:column>
+    					<w2:column id="column19" blockSelect="false" width="80" inputType="text" value="name2" textAlign="left"></w2:column>
+                        <w2:column id="column17" blockSelect="false" width="80" inputType="text" value="name3" textAlign="left"></w2:column>
+                        <w2:column id="column15" blockSelect="false" width="80" inputType="text" value="name4"></w2:column>
+                        <w2:column id="column13" blockSelect="false" width="80" inputType="text" value="name5" textAlign="left"></w2:column>
+                        <w2:column id="column11" blockSelect="false" width="80" inputType="text" value="name6" textAlign="left"></w2:column>
+    				</w2:row>
+    			</w2:header>
+    			<w2:gBody id="gBody1" style="">
+    				<w2:row id="row2" style="">
+    					<w2:column id="col1" blockSelect="false" width="70" inputType="text"></w2:column>
+    					<w2:column id="col2" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col3" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col4" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col5" blockSelect="false" width="70" inputType="text"></w2:column>
+                        <w2:column id="col6" blockSelect="false" width="70" inputType="text"></w2:column>
+    				</w2:row>
+    			</w2:gBody>
+    		</w2:grid>
+           
+    	</xf:group>
+
+    	<xf:group id="" style="position: relative;width: 700px;height: 110px;" class="">
+            <xf:group id="" style="position: relative;width: 600px;height: 100x;" class="">
+                <xf:select1 id="radio2" ref="" cols="" selectedIndex="-1" appearance="full"
+                    style="position: relative;width: 450px;height: 150px;border: 3px solid black;" ev:onviewchange="scwin.radio2_onviewchange"
+                    rows="">
+                    <xf:choices>
+                        <xf:itemset nodeset="data:dataList3">
+                            <xf:label ref="label"></xf:label>
+                            <xf:value ref="value"></xf:value>
+                        </xf:itemset>
+                    </xf:choices>
+                </xf:select1>
+            </xf:group>
+    	</xf:group>
+    </body>
+</html>
+ 

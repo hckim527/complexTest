@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
+scwin.checkTextArea = function() {
+    if (scwin.isIE() == 8) {
+        return WebSquare.wUnit.getJq("#textarea1").val() == "setPlaceHolder";
+    } else {
+        return textarea1.getAttribute("placeholder") == "setPlaceHolder" && WebSquare.wUnit.getJq("#textarea1").val() == "setPlaceHolder";
+    }
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 초기화면에 "setPlaceHolder"값이 보여지는지 확인한다.
+    //1. After running the sample, check that the "setPlaceHolder" value is shown on the initial screen
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 1. "setPlaceHolder"값이 보여지는지 확인한다.(이전에는 초기화면에 "setPlaceHolder"값이 보여지지 않음)
+    //1. Make sure that the "setPlaceHolder" value is shown (previously the "setPlaceHolder" value is not shown on the initial screen)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkTextArea()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    textarea1.setPlaceholder("setPlaceHolder");
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 14-Jun-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:textarea style="width: 300px;height: 100px;" id="textarea1" placeholder=""></xf:textarea>
+    </body>
+</html>
+ 

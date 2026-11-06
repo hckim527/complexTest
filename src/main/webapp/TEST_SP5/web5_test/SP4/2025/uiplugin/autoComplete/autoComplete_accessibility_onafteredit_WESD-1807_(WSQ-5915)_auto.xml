@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+
+                <w2:dataMap baseNode="a" id="dataMap1">
+                    <w2:keyInfo>
+                        <w2:key id="key1" name="name1" dataType="text"></w2:key>
+                        <w2:key id="key2" name="name2" dataType="text"></w2:key>
+                    </w2:keyInfo>
+                </w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		var jsonData = [{col1:"한글테스트가나다러", col2:"test1"}
+						,{col1:"가나더라", col2:"aaa"}
+						,{col1:"웹스퀘어1", col2:"abc"}
+						,{col1:"웹스퀘어2", col2:"TEST2"}
+						,{col1:"ABD", col2:"ABD"}];
+		dataList1.setJSON(jsonData);
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+    scwin.autoComplete1_onafteredit = function(info){
+        //debugger;
+        //alert("info");
+	window.info="info";
+
+    }
+
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#gridView2_button_0_9', 'key-combo', {
+			combo: 'TAB'
+		});
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#autoComplete1_input', 'key-sequence', {
+			sequence: 'A'
+		});
+	}	
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+
+	scwin.checkVal = function() {
+		return window.info == "info";
+	}
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "1000");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_input').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_input').focus()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete1_itemTable_option2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()		
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete editType="select" id="autoComplete1" interactionMode="" useKeywordHighlight="true" style="width : 200px;height:25px" 
+            visibleColumnFalseValue="#" ref="data:dataMap1.key1"
+    		submenuSize="auto" search="contain" allOption="true" chooseOption="false"  searchTarget="label" displayMode=""
+
+            accessibility="true" 
+            ev:onafteredit="scwin.autoComplete1_onafteredit"
+
+    		chooseOptionLabel="---select---" class="" caseSensitive="false">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList1">
+    				<w2:label ref="col1"></w2:label>
+    				<w2:value ref="col2"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    </body>
+</html>

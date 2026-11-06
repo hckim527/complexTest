@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenId="MF004S01" meta_screenName="서버사이드 동작" meta_author="Inswave Systems">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate />
+        <w2:MSA />
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column dataType="text" name="Column1" id="Column1"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection />
+        </xf:model>
+        <w2:layoutInfo />
+        <w2:publicInfo method="" />
+        <script lazy="false" type="text/javascript"><![CDATA[
+
+scwin.onpageload = function () {
+    
+};
+
+scwin.btn_read_onclick = function (e) {
+    var data = [];
+    data[3000000 - 1] = "lastRow";
+    dataList1.setData(data);
+};
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('gridView1_cell_21_0').innerText == 'lastRow';
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "1000");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_read').click()");
+		WebSquare.wUnit.addCommand("pause", "700");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_scrollY_div').scrollTop = 100000000");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_scrollY_div').scrollTop = 10000000");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_scrollY_div').scrollTop = 100000000");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");		
+		WebSquare.wUnit.addCommand("pause", "500");	
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	
+
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:trigger class="btn_cm " id="btn_read" style="" type="button" ev:onclick="scwin.btn_read_onclick">
+            <xf:label><![CDATA[조회]]></xf:label>
+        </xf:trigger>
+        <w2:gridView dataList="data:dataList1" focusMode="row" id="gridView1" style="width:300px;height: 500px;" defaultCellHeight="20" rowNumVisible="true" rowNumWidth="100">
+            <w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+            <w2:header style="" id="header1">
+                <w2:row style="" id="row1">
+                    <w2:column width="70" inputType="text" style="" id="column1" value="Column1" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody style="" id="gBody1">
+                <w2:row style="" id="row2">
+                    <w2:column width="70" inputType="text" style="" id="Column1" value="" displayMode="label" textAlign="left"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>

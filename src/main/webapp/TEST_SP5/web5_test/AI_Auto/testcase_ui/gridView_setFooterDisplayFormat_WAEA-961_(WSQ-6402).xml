@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" id="dlt_bind" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="c0" name="c0" dataType="text"></w2:column>
+                        <w2:column id="c1" name="c1" dataType="text"></w2:column>
+                        <w2:column id="c2" name="c2" dataType="text"></w2:column>
+                        <w2:column id="c3" name="c3" dataType="text"></w2:column>
+                        <w2:column id="c4" name="c4" dataType="text"></w2:column>
+                        <w2:column id="c5" name="c5" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true"></w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// ===== 리턴 값 출력 영역 (body_bottom.xml inline 복사) =====
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+
+
+
+// 사전 조건 : Body 데이터 2행 세팅(그리드 표시용). Footer 셀 초기값은 value 속성으로 부여됨.
+scwin.onpageload = function () {
+    dlt_bind.setJSON([
+        { c0: "a1", c1: "b1", c2: "c1", c3: "d1", c4: "e1", c5: "f1" },
+        { c0: "a2", c1: "b2", c2: "c2", c3: "d2", c4: "e2", c5: "f2" }
+    ], false);
+};
+
+
+
+// 대상 Footer Cell 6종 (인덱스/ID/dataType/적용 마스크) : number 외 숫자형(float/bigDecimal)까지 포함
+scwin.CASES = [
+    { idx: 0, id: "fnum",    type: "number",     fmt: "#,##0.00" },
+    { idx: 1, id: "ffloat",  type: "float",      fmt: "#,##0.00" },
+    { idx: 2, id: "fbigdec", type: "bigDecimal", fmt: "#,##0.00" },
+    { idx: 3, id: "ftext",   type: "text",       fmt: "###-####" },
+    { idx: 4, id: "fdate",   type: "date",       fmt: "yyyy-MM-dd" },
+    { idx: 5, id: "ftime",   type: "time",       fmt: "HH:mm:ss" }
+];
+
+// Footer 셀의 화면 표시값(td textContent) 조회
+scwin.footerTdText = function (footerId) {
+    var td = document.querySelector("[id$='target1_" + footerId + "']");
+    return td ? td.textContent.trim() : "(no td)";
+};
+
+
+
+// [결함 자동 재현] 6개 dataType Footer 셀에 setFooterDisplayFormat 적용 후,
+//  formatter 반영값(getFooterData 'displayData') vs 화면 표시값(td) 대조
+scwin.btn_reproduce_onclick = function () {
+    scwin.btn_clear_onclick();
+
+    // 각 Footer 셀에 dataType 에 맞는 displayFormat 적용
+    scwin.CASES.forEach(function (c) {
+        target1.setFooterDisplayFormat(c.idx, c.fmt);
+    });
+
+    setTimeout(function () {
+        scwin.CASES.forEach(function (c) {
+            var dd = target1.getFooterData(c.idx, "displayData"); // formatter 반영값
+            var td = scwin.footerTdText(c.id);                    // 화면 표시값
+            var mark = (dd === td) ? "화면반영 O" : "화면반영 X (formatter 만 갱신)";
+            scwin.setReturnValue("[" + c.type + "] setFooterDisplayFormat(" + c.idx + ", '" + c.fmt + "')  ->  getFooterData=" + dd + "  /  화면표시값=" + td + "   => " + mark);
+        });
+        scwin.setReturnValue("");
+        scwin.setReturnValue("[기대] number/float/bigDecimal/text/date/time 모두 화면(td)에 displayFormat 반영 (가이드 @param 마스크 명시)");
+        scwin.setReturnValue("[실제] dataType='number' 인 셀만 화면 반영. float/bigDecimal/text/date/time 은 formatter(데이터)만 갱신되고 화면 td 미반영 => 결함 (통화형 euro/rupee 등도 동일하게 미반영)");
+    }, 300);
+};
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding: 10px;" id="grp_root">
+            <w2:textbox style="" id="" label="[FAIL] gridView.setFooterDisplayFormat() 호출 시 화면(Footer 셀 td) 재렌더가 dataType='number' 인 셀만 반영되고, number 를 제외한 모든 dataType(float/bigDecimal/text/date/time 및 통화형 euro/rupee 등) Footer 셀은 formatter(데이터)만 갱신될 뿐 화면에 반영되지 않는 결함 재현" class="" escape="false"></w2:textbox>
+
+            <w2:textbox style="margin-top:8px;" id="" label="Footer Cell : 0:fnum(number) / 1:ffloat(float) / 2:fbigdec(bigDecimal) / 3:ftext(text) / 4:fdate(date) / 5:ftime(time). 초기값 숫자형 1234567.891 / text 1234567 / date 20250115 / time 143025" class="" escape="false"></w2:textbox>
+
+            <w2:gridView checkAllType="include" id="target1" style="width:660px;height:160px;margin-top:8px;" dataList="data:dlt_bind">
+                <w2:caption style="" id="caption1" value="setFooterDisplayFormat 결함 재현 그리드"></w2:caption>
+                <w2:header style="" id="header1">
+                    <w2:row style="" id="hrow1">
+                        <w2:column width="110" inputType="text" id="h0" value="0:number"></w2:column>
+                        <w2:column width="110" inputType="text" id="h1" value="1:float"></w2:column>
+                        <w2:column width="110" inputType="text" id="h2" value="2:bigDecimal"></w2:column>
+                        <w2:column width="110" inputType="text" id="h3" value="3:text"></w2:column>
+                        <w2:column width="110" inputType="text" id="h4" value="4:date"></w2:column>
+                        <w2:column width="110" inputType="text" id="h5" value="5:time"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody style="" id="gbody1">
+                    <w2:row style="" id="brow1">
+                        <w2:column width="110" inputType="text" id="c0" dataList="c0"></w2:column>
+                        <w2:column width="110" inputType="text" id="c1" dataList="c1"></w2:column>
+                        <w2:column width="110" inputType="text" id="c2" dataList="c2"></w2:column>
+                        <w2:column width="110" inputType="text" id="c3" dataList="c3"></w2:column>
+                        <w2:column width="110" inputType="text" id="c4" dataList="c4"></w2:column>
+                        <w2:column width="110" inputType="text" id="c5" dataList="c5"></w2:column>
+                    </w2:row>
+                </w2:gBody>
+                <w2:footer style="" id="footer1">
+                    <w2:row style="" id="frow1">
+                        <w2:column width="110" inputType="text" dataType="number" id="fnum" value="1234567.891"></w2:column>
+                        <w2:column width="110" inputType="text" dataType="float" id="ffloat" value="1234567.891"></w2:column>
+                        <w2:column width="110" inputType="text" dataType="bigDecimal" id="fbigdec" value="1234567.891"></w2:column>
+                        <w2:column width="110" inputType="text" dataType="text" id="ftext" value="1234567"></w2:column>
+                        <w2:column width="110" inputType="text" dataType="date" id="fdate" value="20250115"></w2:column>
+                        <w2:column width="110" inputType="text" dataType="time" id="ftime" value="143025"></w2:column>
+                    </w2:row>
+                </w2:footer>
+            </w2:gridView>
+
+            <xf:group style="margin-top:10px;display:flex;gap:6px;" id="grp_buttons">
+                <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_reproduce_onclick" id="btn_reproduce" label="결함 재현" style=""></w2:button>
+            </xf:group>
+
+            <xf:group class="" id="grp_bottom" style="margin-top:10px;">
+                <w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+                <xf:group id="" style="display: flex;justify-content: flex-end">
+                    <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+                </xf:group>
+                <xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 220px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

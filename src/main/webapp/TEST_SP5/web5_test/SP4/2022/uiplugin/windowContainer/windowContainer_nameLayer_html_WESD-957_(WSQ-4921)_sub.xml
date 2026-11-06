@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""></data>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataMap baseNode="map" id="dma_fileDesc">
+					<w2:keyInfo>
+						<w2:key id="title" name="화면타이틀" dataType="text"></w2:key>
+						<w2:key id="desc" name="화면설명" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<title><![CDATA[
+GridView - Multiple ExcelDownload  
+						]]></title>
+						<desc><![CDATA[
+<pre style="font-size:14px;">
+여러개의 그리드뷰의 데이터를 하나의 엑셀파일로 다운로드 하는 기능을 제공한다. 
+관련 옵션은 API 문서 참고하시기 바랍니다. 
+
+예시) 
+	var options = {
+		common: {
+			fileName : "multiple_excel_down.xlsx"
+		},
+		excelInfo: [
+			{
+				gridId : "gridView1"
+				,sheetName : "첫번째 sheet"
+			},
+			{
+				gridId : "gridView2"
+				,sheetName : "두번째 sheet"
+			}
+		]
+	};
+	com.data.downloadMultipleGridView(options); 	
+</pre>
+						]]></desc>
+					</w2:data>
+				</w2:dataMap>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" style="" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="name" name="이름" dataType="text"></w2:column>
+						<w2:column id="age" name="나이" dataType="text"></w2:column>
+						<w2:column id="hp" name="핸폰" dataType="text"></w2:column>
+						<w2:column id="address" name="주소" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+       
+	scwin.onpageload = function() {
+		scwin.search();
+	};
+
+	scwin.onpageunload = function() {
+
+	};
+
+	
+	//====================================================//
+	//====================================================//
+	//====================================================//
+
+
+	scwin.search = function() {
+		var data1 = [
+		    { "col1": "1111", "col2": "2222" },
+		    { "col1": "3333", "col2": "4444" }
+		];
+		dataList1.setJSON(data1);
+		
+		var data2 = [
+		    { "name": "장그래", "age": "30", "hp": "1234", "address": "인천" },
+		    { "name": "안영이", "age": "31", "hp": "2345", "address": "부산" },
+		    { "name": "김동식", "age": "32", "hp": "3456", "address": "서울" },
+		    { "name": "오상식", "age": "33", "hp": "4567", "address": "광주" },
+		    { "name": "김동식", "age": "32", "hp": "3456", "address": "서울" }
+		];		
+		dataList2.setJSON(data2);
+	};
+	
+
+	/*
+	*	다중 GridView 하나의 엑셀파일로 시트 나눠서 다운로드 
+	*		options 
+	*			options.common	: 다운로드 할 엑셀파일 정보  
+	*			options.excelInfo	: 시트별 다운로드 처리할 그리드뷰 정보 (array)  
+	*/
+	scwin.multiExcelDownload = function(){
+		var options = {
+			common: {
+				fileName : "excel_multi_down.xlsx"
+			},
+			excelInfo: [
+				{
+					gridId : "grd_temp1"
+					,sheetName : "첫번째 sheet"
+				},
+				{
+					gridId : "grd_temp2"
+					,sheetName : "두번째 sheet"
+				}
+			]
+		};
+		debugger;
+		//GridwView 의 데이터를 엑셀 파일로 저장한다. (다중 GridView 를 하나의 엑셀파일에 저장) 
+		//com.data.downloadMultipleGridView(options);
+	
+		scwin._downloadMultipleGridView(options);	            
+	};	
+	
+	
+	scwin.multiDataListDownload = function(){
+		debugger;
+		var options = {
+			scope : $p.getFrame(),
+			common: {
+				fileName : "excel_multi_data.xlsx"
+			},
+			excelInfo: [
+				{
+					dataListId : "dataList1",
+					infoArr : [{}],
+					wframeId: $p.getFrameId()
+				}
+			]
+		};
+		
+		//com.data.downloadMultipleDataList(options);
+		
+		scwin._downloadMultipleDataList(options);	
+	};		
+	
+	
+	scwin.btn_search_onclick = function() {
+		scwin.search();
+		
+	};
+	
+	scwin.btn_multiDataList_onclick = function() {
+		scwin.multiDataListDownload(); 
+	};
+	
+	
+	//=========================================================================================//
+	//=========================================================================================//
+
+	
+	scwin._downloadMultipleDataList = function (optionsParam) {
+		var options = {
+			scope : $p.getFrame(),
+			common: {
+				fileName : optionsParam.common.fileName || "dataList.xlsx",
+				showProcess :  optionsParam.common.showProcess || true,
+				autoSizeColumn : optionsParam.common.autoSizeColumn || true,
+				multipleSheet : optionsParam.common.multipleSheet || true,
+				printSet : optionsParam.common.printSet || {},
+				dataListDownloadURL : "http://localhost:8080/sp4_20220408/websquare/dataListToExcel.wq",
+				useDataFormat: optionsParam.common.useDataFormat || true
+			},
+			excelInfo: []
+		};
+	
+		if (optionsParam.excelInfo.length > 0) {
+			var excelInfoCount = optionsParam.excelInfo.length;
+	
+			for (var idx = 0; idx < excelInfoCount; idx++) {
+				var wframeId = optionsParam.excelInfo[idx].wframeId || $p.getFrameId();
+				var dataListId = optionsParam.excelInfo[idx].dataListId;
+				
+
+	
+				var excelInfo = {
+					dataListId : dataListId,
+					sheetName : optionsParam.excelInfo[idx].sheetName || dataListId,
+					removeColumns : optionsParam.excelInfo[idx].removeColumns || "",
+					foldColumns : optionsParam.excelInfo[idx].foldColumns || "",
+					startRowIndex : optionsParam.excelInfo[idx].startRowIndex || 0,
+					startColumnIndex : optionsParam.excelInfo[idx].startColumnIndex || 0,
+					headerColor : optionsParam.excelInfo[idx].headerColor || "#33CCCC",
+					bodyColor : optionsParam.excelInfo[idx].bodyColor || "#FFFFFF",
+					wframeId : wframeId,
+					scope : wframeId,
+					infoArr : optionsParam.excelInfo[idx].infoArr
+				};
+	
+				options.excelInfo.push(excelInfo);
+			}
+		} else {
+			// console.log("[com.data.downloadMultipleDataList] options.excelInfo 정보가 입력되지 않았습니다.");
+			return;
+		}
+		debugger;
+		WebSquare.util.multipleDataListDownload(options);
+	};	
+	
+	
+	
+	
+	]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="contentWrap" id="" style="">
+			<w2:wframe id="wfm_contentHeader" src="/ui/SP/contentHeader.xml"></w2:wframe>
+			<w2:wframe id="wfm_contentDesc" src="/ui/SP/contentDesc.xml"></w2:wframe>
+			<xf:group id="" style="" class="section">
+				<xf:group id="" style="" class="defaultbox">
+					<xf:group id="" style="" class="ofh">
+						<w2:span id="spn_excelCnt" dataType="number" style="" class="df_total" label="" displayFormat="총 #,###건"></w2:span>
+						<xf:group id="" style="" class="ml5 fr">
+							<w2:anchor class="btn_gcm mr5" clickEventElement="outerDiv" id="btn_multiDataList" outerDiv="true" style="" ev:onclick="scwin.btn_multiDataList_onclick">
+								<xf:label><![CDATA[멀티dataList 다운로드]]></xf:label>
+							</w2:anchor>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+				<xf:group id="" class="Hlayout_box">
+					<xf:group style="width: 30%;" id="" class="Hlayout_left">
+						<w2:gridView scrollByColumn="false" ev:onfilereadend="" columnMoveWithFooter="" fixedColumnWithHidden="true"
+							dataList="data:dataList1" ignoreCellClick="false" style="height:300px;" columnMove="" autoFit="allColumn" visibleRowNum=""
+							id="grd_temp1" ev:onafteredit="" class="cm_grid">
+							<w2:header id="header1" style="">
+								<w2:row id="row2" style="">
+									<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+										value="name1">
+									</w2:column>
+									<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+										value="name2">
+									</w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody id="gBody4" style="">
+								<w2:row id="row5" style="">
+									<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+									<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView>
+					</xf:group>
+					<xf:group style="" id="" class="Hlayout_right">
+						<w2:gridView columnMoveWithFooter="" ev:onfilereadend="" fixedColumnWithHidden="true" dataList="data:dataList2"
+							columnMove="" ignoreCellClick="false" style="height:300px;" autoFit="allColumn" ev:onafteredit="" id="grd_temp2" visibleRowNum=""
+							class="cm_grid">
+							<w2:header id="header2" style="">
+								<w2:row id="row3" style="">
+									<w2:column id="column15" style="height:20px" inputType="text" width="70" value="이름"></w2:column>
+									<w2:column id="column13" style="height:20px" inputType="text" width="70" value="나이"></w2:column>
+									<w2:column id="column11" style="height:20px" inputType="text" width="70" value="핸폰"></w2:column>
+									<w2:column id="column9" style="height:20px" width="70" inputType="text" value="주소"></w2:column>
+								</w2:row>
+							</w2:header>
+							<w2:gBody id="gBody2" style="">
+								<w2:row id="row4" style="">
+									<w2:column id="name" style="height:20px" inputType="text" width="70"></w2:column>
+									<w2:column id="age" style="height:20px" inputType="text" width="70"></w2:column>
+									<w2:column id="hp" style="height:20px" inputType="text" width="70"></w2:column>
+									<w2:column id="address" style="height:20px" width="70" inputType="text"></w2:column>
+								</w2:row>
+							</w2:gBody>
+						</w2:gridView>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

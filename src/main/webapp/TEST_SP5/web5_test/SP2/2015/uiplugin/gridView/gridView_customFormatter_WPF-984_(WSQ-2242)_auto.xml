@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+            	<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="a" name="customFormatter" dataType="text"></w2:column>
+            			<w2:column id="b" name="escapeFormatter" dataType="text"></w2:column>
+            			<w2:column id="c" name="c" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var options = {};
+    options.fileName = "테스트.xlsx";
+    options.type = "1";
+    options.rowNumVisible = true;
+    gridView1.advancedExcelDownload(options);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. customFormatter_WPF-984_(WSQ-2242).xml 실행한다- Run customFormatter_WPF-984_ (WSQ-2242) .xml.
+    //Verify 1. customFormatter_WPF-984_(WSQ-2242).xml 실행된다. -	customFormatter_WPF-984_ (WSQ-2242) .xml is executed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('dataList1').getCellData(1,0) == 'a2'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 2. customFormatter항목의 a2값을 a1으로 수정한다.-	Modify the a2 value of the customFormatter item to a1.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').setCellData(1,0,'a1')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 2. 컬럼값이 a1_red로 수정되고 색상도 빨강색으로 보여진다. - The column value is modified to a1_red and the color is also shown in red.
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('dataList1').getCellData(1,0) == 'a1'","true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_1_0').innerText", "a1_red");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_0').style.color == 'red'", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+            "a": "a1",
+            "b": "b1",
+            "c": "c1"
+        }, {
+            "a": "a2",
+            "b": "b2",
+            "c": "c2"
+        },
+        {
+            "a": "a1",
+            "b": "b3",
+            "c": "c3"
+        }, {
+            "a": "a1",
+            "b": "b4",
+            "c": "c4"
+        },
+        {
+            "a": "a3",
+            "b": "b5",
+            "c": "c5"
+        }, {
+            "a": "a1",
+            "b": "b6",
+            "c": "c6"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+    scwin.fn_customFormatter = function(data, displaydata, rowIdx, colIdx) {
+        if (data == "a1") {
+            gridView1.setCellColor(rowIdx, 0, "red");
+            return data + "_red";
+        } else {
+            return data;
+        }
+    }
+    /*       	
+           	scwin.fn_customFormatter = function(data, displaydata, rowIdx, colIdx){
+           		if(data == "a1"){
+           			gridView1.setCellColor( rowIdx , 0 , "red" );
+           			return data+"_red";
+           		}else{
+           			return data;
+           		}
+           	}
+    */
+    scwin.fn_escapeFormatter = function(data, rowIdx, colIdx) {
+        if (data == "b1" || data == "b4") {
+            gridView1.setCellColor(rowIdx, colIdx, "red");
+            //gridView1.setCellColor( rowIdx , 0 , "red" );
+            return data + "_red";
+        } else {
+            return data;
+        }
+    }
+    /*        	
+            	scwin.fn_escapeFormatter = function(data, rowIdx, colIdx){
+            		if(data == "b1" || data == "b4"){
+            			gridView1.setCellColor( rowIdx , colIdx , "red" );
+            			return data+"_red";
+            		}else{
+            			return data;
+            		}
+            	}        	
+    */
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 18-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+    		style="position: absolute ;left:35px;top:63px;width:469px;height:201px;" fixedColumnWithHidden="true" useShiftKey="false" rowNumVisible="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="120" displayMode="label"
+    					value="customFormatter">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="120" displayMode="label"
+    					value="escapeFormatter">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="120" inputType="text" displayMode="label"
+    					value="c">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="a" style="height:20px" inputType="text" width="35" displayMode="label"
+    					customFormatter="scwin.fn_customFormatter">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="b" style="height:20px" inputType="text" width="120" displayMode="label" escapeFormatter="scwin.fn_escapeFormatter"></w2:column>
+    				<w2:column blockSelect="false" id="c" style="height:20px" width="120" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left:40px;top:19px;width: 100px;height: 30px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[excel down]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

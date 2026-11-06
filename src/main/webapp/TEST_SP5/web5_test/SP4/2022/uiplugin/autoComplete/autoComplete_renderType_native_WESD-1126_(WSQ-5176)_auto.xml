@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text"></w2:column>
+    					<w2:column id="col3" name="name3" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    			<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>    			
+    			<w2:dataMap baseNode="map" id="dataMap1">
+    				<w2:keyInfo>
+    					<w2:key id="key1" name="name1" dataType="text"></w2:key>
+    					<w2:key id="key2" name="name2" dataType="text"></w2:key>
+    				</w2:keyInfo>
+    			</w2:dataMap>    			          
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    var arr = ["test1","t1","","test2","t2","","test3-f","t3","false","aaa1","a1","","aaa2","a2","","bbb1","b1","","bbb2","b2",""];
+    dataList1.setData(arr);	
+};
+
+scwin.testFn = function(keyStr){
+	var jsonData = [{"col1":"붕어빵9", "col2":"붕어빵9"},
+        {"col1":"새우빵9", "col2":"새우빵9"},
+        {"col1":"이상빵9", "col2":"이상빵9"}];
+
+    if (keyStr == "붕어빵9") {
+       dataList2.setJSON([{"col1":"붕어빵9", "col2":"붕어빵9"}]);
+    } else if (keyStr == "새우빵9") {
+        dataList2.setJSON([{"col1":"새우빵9", "col2":"새우빵9"}]);
+    } else if (keyStr == "이상빵9") {
+        dataList2.setJSON([{"col1":"이상빵9", "col2":"이상빵9"}]);
+    } else {
+        dataList2.setJSON(jsonData);
+    }
+
+    autoComplete2.setItemSet( "data:dataList2" ,"col1" , "col2" );
+    autoComplete2.openTable(); 
+        
+}
+
+	scwin.checkVal = function() {
+		return document.getElementsByTagName('table').length == 0;
+	}
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()
+	
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:autoComplete editType="select" id="autoComplete1" useKeywordHighlight="false" style="width: 148px;height: 21px;"
+    		submenuSize="auto" search="start" useLocale="false" renderType="native" ref="data:dataMap1.key1" allOption="" chooseOption="">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList1">
+    				<w2:label ref="col1"></w2:label>
+    				<w2:value ref="col2"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<w2:textbox id="textbox1" label="" style="width: 150px;height: 23px;" ref="data:dataMap1.key1"></w2:textbox>
+    	<w2:autoComplete editType="select" id="autoComplete2" useKeywordHighlight="false" style="width: 148px;height: 21px;"
+    		submenuSize="auto" search="start" useLocale="false" renderType="native" ref="data:dataMap1.key2" interactionMode="true"
+    		submissionFunc="scwin.testFn">
+    	</w2:autoComplete>
+    	<w2:textbox id="" label="" style="width: 150px;height: 23px;" ref="data:dataMap1.key2"></w2:textbox>
+    </body>
+</html>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 grid의 두번째 컬럼에 한글을 입력한다.
+    //1. After running the sample, type Hangul in the second column of the grid.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'grid1_cell_0_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#G_grid1__column2').val('한글을')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 한글이 입력되어 진다.
+    //1. Hangul is input.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_grid1__column2').val() == '한글을'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 입력상태에서 포커스를 아웃시킨다.
+    //2. Turn the focus off in the input state.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_0_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 입력중인 한글이 사라진다(정상)
+    //2. Hangul is disappearing (normal)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_0_1').innerText == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    grid1.insertRow();
+    grid1.insertRow();
+    grid1.insertRow();
+    grid1.insertRow();
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 22-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid baseNode="vector" repeatNode="data/INFO" id="grid1"
+    		style="position: relative;width:895px;height:150px;left:94px;top:74px;margin-left:15px;" fixedColumnWithHidden="true"
+    		useShiftKey="true" autoFit="allColumn">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="253" displayMode="label" value='한글만 입력(영문 삭제 실시간으로 가능)&lt;br/&gt;dataType = "text"'></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="215" inputType="text" displayMode="label" value='영문만 입력(한글 삭제 onblur발생 후에만 가능) &lt;br/&gt;dataType = "text"'></w2:column>
+    				<w2:column blockSelect="false" id="column2" style="height:20px;" width="288" inputType="text" displayMode="label" value='숫자만 입력(한글 영문 삭제 실시간으로 가능) &lt;br/&gt;dataType = "number"'></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column4" style="height:20px" inputType="text" width="300" displayMode="label"
+    					dataType="text" allowChar="ㄱ-힣" applyFormat="display">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column2" style="height:20px" width="300" inputType="text" displayMode="label"
+    					dataType="text" ignoreChar="ㄱ-힣" applyFormat="display">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="300" inputType="text" displayMode="label"
+    					dataType="number" applyFormat="all">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	<xf:input id="input1" style="position: absolute;width:278px;height:100px;left:108px;top:321px;" adjustMaxLength="false" applyFormat="display" allowChar="ㄱ-힣" ignoreChar=""></xf:input>
+    	<w2:textbox label='한글만 입력(영문 삭제 실시간으로 가능)&lt;br/&gt;dataType = "text"&lt;br/&gt;applyFormat = "display"' id=""
+    		style="position: absolute;width:261px;height:52px;left:112px;top:265px;">
+    	</w2:textbox>
+    	<xf:input adjustMaxLength="false" id="input2" style="position: absolute;width:278px;height:100px;left:676px;top:318px;" applyFormat="display" ignoreChar="ㄱ-힣"></xf:input>
+    	<w2:textbox label='영문만 입력(한글 삭제 onblur발생 후에만 가능)&lt;br/&gt;dataType = "text"&lt;br/&gt;applyFormat = "display"' id=""
+    		style="position: absolute;width:258px;height:48px;left:675px;top:271px;">
+    	</w2:textbox>
+    	<xf:input adjustMaxLength="false" id="input3" style="position: absolute;width:278px;height:100px;left:108px;top:526px;" dataType="number" applyFormat="all"></xf:input>
+    	<w2:textbox id="" label='숫자만 입력(한글 영문 삭제 실시간으로 가능)&lt;br/&gt;dataType = "number"&lt;br/&gt;applyFormat = "all"'
+    		style="position: absolute;width:263px;height:49px;left:112px;top:470px;">
+    	</w2:textbox>
+    </body>
+</html>
+ 

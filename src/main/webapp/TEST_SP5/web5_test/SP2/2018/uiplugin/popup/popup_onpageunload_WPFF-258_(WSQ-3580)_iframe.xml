@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    console.log('onpageload ' + $p.getFrameId() + ' Frame');
+    requires("uiplugin.popup");
+    scwin.popupId = $p.getParameter("popupID");
+    console.log("$p.getRuntimeId(\"scwin\") : " + $p.getRuntimeId("scwin"));
+    // $p.parent().scwin 에 접근하면 현재 팝업창(popup_wframe2.xml)을 호출한 상위 팝업(poup_wframe1.xml)의 scwin 객체가
+    // 아닌 최상위 프레임의 scwin 객체가 반환된다.
+    $p.log("onpageload $p.getFrameId() : " + $p.getFrameId());
+    $p.log("onpageload scwin.popupId : " + scwin.popupId);
+    // 부모 팝업 화면의 onpageload에서 다시 자식 팝업(WFrame)을 호출하면 부모 팝업 화면의 onpageload와 postScript가 2번씩 호출됨
+    $p.top().textbox_status.setValue("onpageload : " + scwin.popupId);
+};
+scwin.onpageunload = function() {
+    //alert("0");
+    $p.log("onpageunload $p.getFrameId() : " + $p.getFrameId());
+    //alert("1");
+    $p.log("onpageunload scwin.popupId : " + scwin.popupId);
+    //alert("2");
+    $p.top().textbox_status.setValue("onpageunload : " + scwin.popupId);
+};
+scwin.grd_memberList_onrowindexchange = function(row, oldRow) {
+    var id = $p.parent().dlt_memberList.getCellData(row, "id");
+    var name = $p.parent().dlt_memberList.getCellData(row, "name");
+    ibx_idName1.setValue("Popup1 - [" + id + "] - " + name);
+};
+scwin.ibx_openPopup_onclick = function(e) {
+    var options = {
+        id: "popup2",
+        //type : "window",
+        type: "iframePopup",
+        width: "600px",
+        height: "400px",
+        top: "130px",
+        left: "400px",
+        popupName: "openPopup2",
+        modal: true,
+        //useIFrame : true,
+        scrollbars: "true",
+        resizable: "true",
+        menubar: true,
+        //frameMode : "wframe",
+        useModalStack: true,
+        alwaysOnTop: false
+    };
+    $p.openPopup("popup_iframe2.xml", options);
+};
+scwin.btn_trigger1_onclick = function(e) {
+    var options = {
+        id: "popup2",
+        //type : "window",
+        type: "wframePopup",
+        width: "500px",
+        height: "300px",
+        top: "130px",
+        left: "400px",
+        popupName: "openPopup2",
+        modal: true,
+        //useIFrame : true,
+        scrollbars: "true",
+        resizable: "true",
+        menubar: true,
+        //frameMode : "wframe",
+        useModalStack: true,
+        alwaysOnTop: false
+    };
+    $p.openPopup("popup_wframe2.xml", options);
+};
+scwin.setIdName = function(value) {
+    ibx_idName1.setValue(value);
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group tagname="table" style="width:100%;" id="" class="w2tb">
+    		<w2:attributes>
+    			<w2:summary></w2:summary>
+    		</w2:attributes>
+    		<xf:group tagname="caption"></xf:group>
+    		<xf:group tagname="colgroup">
+    			<xf:group tagname="col" style="width:25.00%;"></xf:group>
+    			<xf:group tagname="col" style="width:25.00%"></xf:group>
+    			<xf:group tagname="col" style="width:25.00%"></xf:group>
+    			<xf:group tagname="col" style="width:25.00%"></xf:group>
+    		</xf:group>
+    		<xf:group tagname="tr" style="">
+    			<xf:group tagname="th" style="" class="w2tb_th">
+    				아이디&amp;nbsp;+&amp;nbsp;성명
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group tagname="td" style="" class="w2tb_td">
+    				<xf:input adjustMaxLength="false" id="ibx_idName1" style="width: 144px;height: 21px;" class="fm_w100"></xf:input>
+    			</xf:group>
+    			<xf:group tagname="th" style="" class="w2tb_th">
+    				<w2:attributes>
+    					<w2:scope>row</w2:scope>
+    				</w2:attributes>
+    			</xf:group>
+    			<xf:group tagname="td" style="" class="w2tb_td"></xf:group>
+    		</xf:group>
+    	</xf:group>
+    	<xf:trigger ev:onclick="scwin.ibx_openPopup_onclick" id="ibx_openPopup"
+    		style="width: 80px;height: 23px;margin-top:5px;margin-left:5px;" type="button">
+    		<xf:label><![CDATA[팝업 오픈2]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.btn_trigger1_onclick" id="btn_trigger1"
+    		style="width: 80px;height: 23px;margin-top:5px;margin-left:5px;" type="button">
+    		<xf:label><![CDATA[팝업 오픈3]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

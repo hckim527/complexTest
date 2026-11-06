@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2006/xforms">
+    <head>
+        <w2:config>
+            <WebSquare xmlns="http://www.w3.org/1999/xhtml">
+                <spa>
+                    <scopeGlobalVariable value="scvar"/>
+                </spa>
+            </WebSquare>
+        </w2:config>
+        <xf:model/>
+        <w2:global>
+            <w2:var id="TOP_name" description="최상위 변수" value="TOP"/>
+            <w2:var id="SHARED_name" description="중복 선언 - 최초 파싱" value="FROM_TOP"/>
+        </w2:global>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        scwin.log = function (msg) {
+            var prev = txa_log.getValue() || "";
+            txa_log.setValue(prev + msg + "\n");
+        };
+        scwin.onpageload = function () {
+            scwin.log("=== [최상위] onpageload ===");
+            scwin.log("TOP_name = [" + scvar.TOP_name + "] (TOP 기대)");
+            scwin.log("키 목록 = " + Object.keys(scvar).join(", "));
+        };
+        scwin.btn_check_onclick = function () {
+            scwin.log("=== includeFrame scope 공유 결과 ===");
+            scwin.log("scvar 키 목록 = " + Object.keys(scvar).join(", "));
+            scwin.log("TOP_name = [" + scvar.TOP_name + "] (TOP 기대 - 부모 변수 보존)");
+            scwin.log("INC1_name = [" + scvar.INC1_name + "] (ONE 기대 - include1 병합)");
+            scwin.log("INC2_name = [" + scvar.INC2_name + "] (TWO 기대 - include2 병합)");
+            scwin.log("SHARED_name = [" + scvar.SHARED_name + "] (FROM_INC2 기대 - 나중 파싱 우선)");
+            scwin.log("맨이름 window.scvar 잔여 = " + (typeof window["scvar"]) + " (undefined 기대)");
+        };
+        ]]>
+        </script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:10px;">
+            <w2:textbox label="WAEA-1019 includeFrame scope 공유 검증" style="font-weight:bold;"></w2:textbox>
+            <xf:trigger id="btn_check" type="button" ev:onclick="scwin.btn_check_onclick">
+                <xf:label><![CDATA[결과 확인]]></xf:label>
+            </xf:trigger>
+            <w2:textarea id="txa_log" style="width:820px; height:300px;"></w2:textarea>
+            <w2:includeFrame id="inc1" src="wframe_scopeGlobalVariable_WAEA-1019_(WSQ-6415)_inc_child1.xml" style="width:400px; height:60px; border:1px dotted green;"></w2:includeFrame>
+            <w2:includeFrame id="inc2" src="wframe_scopeGlobalVariable_WAEA-1019_(WSQ-6415)_inc_child2.xml" style="width:400px; height:60px; border:1px dotted green;"></w2:includeFrame>
+        </xf:group>
+    </body>
+</html>

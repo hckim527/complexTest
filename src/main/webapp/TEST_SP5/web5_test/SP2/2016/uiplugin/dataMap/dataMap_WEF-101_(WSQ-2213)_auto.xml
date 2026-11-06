@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:config>
+            <WebSquare>
+                <engine>
+                    <module src="externalJS/big/big.min.js"/>
+                </engine>
+            </WebSquare>
+        </w2:config>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataMap baseNode="map" id="dma_OfficeInfo" style="">
+    				<w2:keyInfo>
+    					<w2:key id="officeCd" name="사업소코드" dataType="text"></w2:key>
+    					<w2:key id="officeNm" name="사업소명" dataType="text"></w2:key>
+    					<w2:key id="cntrKndCd" name="계약코드" dataType="text"></w2:key>
+    					<w2:key id="cntrKndNm" name="계약명" dataType="text"></w2:key>
+    					<w2:key id="cntrAmt" name="계약금액" dataType="number"></w2:key>
+    					<w2:key id="cntrPwr" name="계약전력" dataType="bigDecimal" keepEmptyString="true"></w2:key>
+    					<w2:key id="addr" name="주소" dataType="text"></w2:key>
+    					<w2:key id="tel" name="전화번호" dataType="text"></w2:key>
+    					<w2:key id="closeYmd" name="납기일" dataType="text"></w2:key>
+    				</w2:keyInfo>
+    				<w2:data use="true">
+    					<officeCd><![CDATA[4721]]></officeCd>
+    					<officeNm><![CDATA[서대전지사]]></officeNm>
+    					<cntrKndCd><![CDATA[100]]></cntrKndCd>
+    					<cntrKndNm><![CDATA[주택용전력]]></cntrKndNm>
+    					<cntrAmt><![CDATA[1230000]]></cntrAmt>
+    					<cntrPwr><![CDATA[30000.00]]></cntrPwr>
+    					<addr><![CDATA[[52312] 대구 광역시 동구 서래동 23 서래로 12]]></addr>
+    					<tel><![CDATA[0242347343]]></tel>
+    					<closeYmd><![CDATA[25]]></closeYmd>
+    				</w2:data>
+    			</w2:dataMap>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>    		
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_trigger1_onclick = function(e) {
+    dma_OfficeInfo.set("cntrAmt", "");
+    dma_OfficeInfo.set("cntrPwr", "");
+};
+scwin.__setValue = function(id, value) {
+    var input = WebSquare.wUnit.getDomById($p.id + id);
+    input.value = value;
+}
+scwin.__getVal = function(id) {
+    var input = WebSquare.wUnit.getDomById($p.id + id);
+    return input.value;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    // Test step 2. 브라우저에서 초기화 버튼을 클릭한다.
+    //2. Click the Reset button in your browser.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 2. 기본적으로 입력되어 있던 계약전력 / 계약금액 란이 초기화된다.
+    //2. The Contract Power / Contract Amount column, which was entered by default, is initialized. 
+    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_27') == ''", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_33') == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 3. 초기화된 계약전력과 계약금액 란에 임의의 금액숫자를 입력한다.
+    //3. Enter an arbitrary amount of money in the initial contract power and contract amount field.
+    WebSquare.wUnit.addCommand("set", "scwin.__setValue($p.id+'wq_uuid_27', '12,345')");
+    WebSquare.wUnit.addCommand("set", "scwin.__setValue($p.id+'wq_uuid_33', '1,234,567')");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 3. 임의의 계약전력과 금액숫자가 입력된다.
+    //3. An arbitrary contract power and a number of amounts are entered.
+    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_27') == '12,345'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_33') == '1,234,567'", "true");
+    //Test step 4. 다시 초기화 버튼을 클릭한다.
+    //4. Click the Reinitialize button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 4. 입력된 임의의 계약전력과 금액숫자가 초기화된다
+    //4. The entered arbitrary contract power and the number of money are initialized.
+    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_27') == ''", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_33') == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 31-Jan-2018
+    //end unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group class="" id="" style="">
+    		<xf:group class="" id="" style="">
+    			
+    		</xf:group>
+    		<xf:group class="" id="" style="">
+    			<w2:textbox class="" dataType="" id="" label="DataMap Sample" style=""></w2:textbox>
+    		</xf:group>
+    		<xf:group adaptive="" adaptiveThreshold="" class="" id="grp_group" style="width:716.00px;" tagname="table">
+    			<w2:attributes>
+    				<w2:summary></w2:summary>
+    			</w2:attributes>
+    			<xf:group tagname="colgroup">
+    				<xf:group style="width:112px;" tagname="col"></xf:group>
+    				<xf:group style="width:602px;" tagname="col"></xf:group>
+    			</xf:group>
+    			<xf:group style="" tagname="tr">
+    				<xf:group class="" style="" tagname="th">
+    					<w2:textbox id="" label="사업소" style="margin-top:0px;"></w2:textbox>
+    				</xf:group>
+    				<xf:group class="" style="" tagname="td">
+    					<xf:input id="" style="width:41px;height:18px;" ref="data:dma_OfficeInfo.officeCd"></xf:input>
+    					<xf:input id="" style="width:152px;height:18px;margin-left:5px;" ref="data:dma_OfficeInfo.officeNm"></xf:input>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group class="" style="" tagname="th">
+    					<w2:textbox id="" label="계약종별" style=""></w2:textbox>
+    				</xf:group>
+    				<xf:group class="" style="" tagname="td">
+    					<xf:input id="" style="width:41px;height:18px;" ref="data:dma_OfficeInfo.cntrKndCd"></xf:input>
+    					<xf:input id="" style="width:152px;height:18px;margin-left:5px;" ref="data:dma_OfficeInfo.cntrKndNm"></xf:input>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group class="" style="" tagname="th">
+    					<w2:textbox id="" label="계약전력" style=""></w2:textbox>
+    				</xf:group>
+    				<xf:group class="" style="" tagname="td">
+    					<xf:input id="" style="width:85px;height:18px;text-align:right;float:left;" ref="data:dma_OfficeInfo.cntrPwr"
+    						displayFormat="#,###" dataType="bigDecimal">
+    					</xf:input>
+    					<w2:textbox label="Kw" id="" style=";position:relative;float:left;" class="ett"></w2:textbox>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group class="" style="" tagname="th">
+    					<w2:textbox id="" label="계약금액" style=""></w2:textbox>
+    				</xf:group>
+    				<xf:group class="" style="" tagname="td">
+    					<xf:input id="" style="width:137px;height:18px;text-align:right;float:left;" ref="data:dma_OfficeInfo.cntrAmt"
+    						displayFormat="#,###" dataType="number">
+    					</xf:input>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group class="" style="" tagname="th">
+    					<w2:textbox id="" label="주소" style=""></w2:textbox>
+    				</xf:group>
+    				<xf:group class="" style="" tagname="td">
+    					<xf:input id="" style="width:585px;height:18px;" ref="data:dma_OfficeInfo.addr"></xf:input>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group class="" tagname="th">
+    					<w2:textbox id="" label="전화번호" style=""></w2:textbox>
+    				</xf:group>
+    				<xf:group class="" tagname="td">
+    					<xf:input id="" style="width:261px;height:18px;" ref="data:dma_OfficeInfo.tel"></xf:input>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group tagname="tr">
+    				<xf:group class="" tagname="th">
+    					<w2:textbox id="" label="납기일" style=""></w2:textbox>
+    				</xf:group>
+    				<xf:group class="" tagname="td">
+    					<xf:input id="" style="width:42px;height:18px;float:left;" ref="data:dma_OfficeInfo.closeYmd"></xf:input>
+    					<w2:textbox class="ett" id="" label="일" style=";float:left;"></w2:textbox>
+    				</xf:group>
+    			</xf:group>
+    		</xf:group>
+    	</xf:group>
+
+    	<xf:trigger type="button" id="btn_trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.btn_trigger1_onclick">
+    		<xf:label><![CDATA[초기화]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map"
+                    id="dataList1" saveRemovedData="" removedDataMatch="" removeDummyRowStatus="">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1"
+                            dataType="text">
+                        </w2:column>
+                        <w2:column id="col2" name="name2"
+                            dataType="text">
+                        </w2:column>
+                        <w2:column id="col3" name="name3"
+                            dataType="text">
+                        </w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <col1><![CDATA[1]]></col1>
+                            <col2><![CDATA[2]]></col2>
+                            <col3><![CDATA[3]]></col3>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[4]]></col1>
+                            <col2><![CDATA[5]]></col2>
+                            <col3><![CDATA[6]]></col3>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[7]]></col1>
+                            <col2><![CDATA[8]]></col2>
+                            <col3><![CDATA[9]]></col3>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript"><![CDATA[
+    
+    scwin.insertbtn_onclick = function(e) {
+		dataList1.insertRow( dataList1.getRowCount() );
+	};
+	
+	/*
+	scwin.deletebtn_onclick = function(e) {
+        var focusedRowIndex = gridView1.getFocusedRowIndex();
+        if (!isNaN(focusedRowIndex) && focusedRowIndex > -1) {
+            dataList1.deleteRow( focusedRowIndex );
+        }
+	};
+	*/
+
+    scwin.deletebtn_onclick = function(e) {
+        var focusedRowIndex = gridView1.getFocusedRowIndex();
+        if (!isNaN(focusedRowIndex) && focusedRowIndex > -1) {
+            dataList1.deleteRow( focusedRowIndex );
+        }
+    };
+
+    scwin.deleteRows_onclick = function(e) {
+        var dataLen = dataList1.getDataLength();
+        var arr = [];
+        for (var i = 0; i < dataLen; i++) {
+            arr.push(i);
+        }
+        dataList1.deleteRows(arr);
+    };
+	
+	scwin.unDeleteRows_onclick = function(e) {
+        var dataLen = dataList1.getDataLength();
+        var arr = [];
+        for (var i = 0; i < dataLen; i++) {
+            arr.push(i);
+        }
+        dataList1.undeleteRows(arr);
+	};
+    
+	scwin.removeAll_onclick = function(e) {
+        dataList1.removeAll();
+        console.log( dataList1.getModifiedXML() );
+	};
+
+	scwin.checkVal = function() {
+		let tbody = WebSquare.wUnit.getDomById('gridView1_body_tbody');
+		let allRows = tbody.querySelectorAll('tr');
+		//let hiddenRows = tbody.querySelectorAll('tr[style="display: none;"]');
+		// display: none; 이 포함된 tr 요소 찾기
+		let hiddenRows = Array.from(allRows).filter(function(row) {
+			return row.getAttribute('style') && row.getAttribute('style').includes('display: none;');
+		});		
+		let visibleRowCount = allRows.length - hiddenRows.length;	
+		return visibleRowCount == 2;
+	}	
+	
+	scwin.unitTest = function(){
+		//init
+		WebSquare.wUnit.start();
+
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('deletebtn').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+		
+	
+	]]></script>
+    </head>
+    <body>
+        <xf:group class="" id="" style="">
+            <xf:trigger type="button" style="width: 120px;height: 23px;"
+                id="insertbtn" ev:onclick="scwin.insertbtn_onclick">
+                <xf:label><![CDATA[insert]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="width: 120px;height: 23px;"
+                id="deletebtn" ev:onclick="scwin.deletebtn_onclick">
+                <xf:label><![CDATA[delete]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="width: 120px;height: 23px;"
+                id="deleterowsbtn" ev:onclick="scwin.deleteRows_onclick">
+                <xf:label><![CDATA[deleteRows All]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="width: 120px;height: 23px;"
+                id="undeleterowsbtn" ev:onclick="scwin.unDeleteRows_onclick">
+                <xf:label><![CDATA[unDeleteRows All]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="width: 120px;height: 23px;"
+                id="removebtn" ev:onclick="scwin.removebtn_onclick">
+                <xf:label><![CDATA[remove]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" style="width: 120px;height: 23px;"
+                id="removeAll" ev:onclick="scwin.removeAll_onclick">
+                <xf:label><![CDATA[removeAll]]></xf:label>
+            </xf:trigger>
+            <w2:gridView autoFit="" autoFitMinWidth="500" hideDeletedRow="true"
+                dataList="dataList1" fixedColumnWithHidden="true"
+                id="gridView1" ignoreCellClick="false"
+                ignoreToggleOnDisabled="false" scrollByColumn="false"
+                scrollByColumnAdaptive="false" sortable="true"
+                showSortableUseFilter="false" style="height: 150px;"
+                summaryAuto="false" summaryOnlyAuto="false"
+                useFilterList="false" useShiftKey="true"
+                rowStatusVisible="true" rowNumVisible="true">
+                <w2:caption style="" id="caption1"
+                    value="this is a grid caption.">
+                </w2:caption>
+                <w2:header style="" id="header2">
+                    <w2:row style="" id="row4">
+                        <w2:column width="70" inputType="text"
+                            style="height:20px" id="column12"
+                            blockSelect="false" displayMode="label"
+                            value="name1">
+                        </w2:column>
+                        <w2:column width="70" inputType="text"
+                            style="height:20px" id="column10"
+                            blockSelect="false" displayMode="label"
+                            value="name2">
+                        </w2:column>
+                        <w2:column width="70" inputType="text"
+                            style="height:20px" id="column8"
+                            blockSelect="false" displayMode="label"
+                            value="name3">
+                        </w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody style="" id="gBody2">
+                    <w2:row style="" id="row5">
+                        <w2:column width="70" inputType="text"
+                            style="height:20px" id="col1"
+                            blockSelect="false" displayMode="label">
+                        </w2:column>
+                        <w2:column width="70" inputType="text"
+                            style="height:20px" id="col2"
+                            blockSelect="false" displayMode="label">
+                        </w2:column>
+                        <w2:column width="70" inputType="text"
+                            style="height:20px" id="col3"
+                            blockSelect="false" displayMode="label">
+                        </w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>
+    </body>
+</html>

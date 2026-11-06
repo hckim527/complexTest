@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[ 
+
+	scwin.onpageload = function() {
+        for(i=0;i<10;i++){
+			var gen1Idx = generator1.insertChild();
+		
+			var gen2Obj = generator1.getChild( gen1Idx , "generator2" );
+			
+			for(j=0;j<5;j++){
+				//debugger;
+				var gen2Idx = gen2Obj.insertChild();  
+				//textbox1 에 값 설정   
+				var txtbox1Obj = gen2Obj.getChild( gen2Idx , "textbox1" );
+				txtbox1Obj.setValue(i+"_textbox1_"+j);
+				//textbox2 에 값 설정   
+				var txtbox2Obj = gen2Obj.getChild( gen2Idx , "textbox2" );
+				txtbox2Obj.setValue(i+"_textbox2_"+j);
+				
+			
+			}    	
+        }		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+
+        
+		
+		
+		
+		scwin.textbox1_onclick = function(e) {
+			var genIdx = this.getGeneratedIndex();
+			var txtbox1Obj = this.getGeneratedComponent("textbox1");
+			
+			alert(genIdx+"번째 txtbox1, click한 text값 : "+txtbox1Obj.getValue());
+			
+		};
+		
+		scwin.trigger1_onclick = function(e) {
+			var generator1Len = generator1.getLength();
+			var gen2Obj;
+			
+			for(i=0;i<generator1Len;i++){
+				gen2Obj = generator1.getChild( i , "generator2" );
+				gen2Len = gen2Obj.getLength();
+				
+				console.log(i+"번째 generator2 length: "+gen2Len);
+				
+				for(j=0;j<gen2Len;j++){
+					var textbox1Obj = gen2Obj.getChild( j , "textbox1" );
+					var textbox1Val = textbox1Obj.getValue();
+					
+					console.log(i+"번째 generator2 "+j+"번째 textbox1 값 : "+textbox1Val);	
+					
+					var inputCalendar1Obj = gen2Obj.getChild( j , "inputCalendar1" );
+					inputCalendar1Obj.hide();
+				}
+				
+			}
+			
+
+			
+		
+		};
+
+
+		scwin.checkThTextContent = function() {
+		  const thElements = document.querySelectorAll('th');
+		  let return_check = false;
+		  thElements.forEach((th, index) => {
+			if (th.textContent.trim()) {
+			  return_check = true;
+			} else {
+			  return_check = false;
+			}
+		  });
+		  return return_check;
+		}
+	
+		scwin.checkVal1 = function() {
+			return scwin.checkThTextContent();
+		}				
+		scwin.unitTest = function() {
+			//Unit
+			WebSquare.wUnit.start();
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+			WebSquare.wUnit.addCommand("pause", "1000");
+			//Run test and stop
+			WebSquare.wUnit.run();
+			WebSquare.wUnit.stop();
+		}
+		scwin.unitTest();
+		
+		]]></script>
+    </head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[]]></xf:label>
+    	</xf:trigger>
+    	<w2:generator id="generator1" style="position: relative;width:100%;height: 100px;">
+
+    		<xf:group tagname="table" id="table1" style="position: relative ;width:100%;margin-top:10px;" class="w2tb">
+    			<w2:attributes>
+    				<w2:summary></w2:summary>
+    			</w2:attributes>
+    			<xf:group tagname="colgroup">
+    				<xf:group style="width:25.00%" tagname="col"></xf:group>
+    				<xf:group style="width:25.00%" tagname="col"></xf:group>
+    				<xf:group style="width:25.00%" tagname="col"></xf:group>
+    				<xf:group style="width:25.00%" tagname="col"></xf:group>
+    			</xf:group>
+    			<w2:generator id="generator2" style="position: relative;width: 100%;height: 100px;" tagname="tbody">
+    				<xf:group tagname="tr">
+    					<xf:group style="" class="w2tb_th" tagname="th">텍스트&amp;nbsp;테스트</xf:group>
+    					<xf:group style="" class="w2tb_td" tagname="td">
+    						<w2:textbox label="" id="textbox1" style="position: relative;width:100%;height: 23px;"
+    							ev:onclick="scwin.textbox1_onclick">
+    						</w2:textbox>
+    						<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar1" renderDiv="true"
+    							style="position: relative;width: 150px;height: 23px;" rightAlign="false" focusOnDateSelect="false" footerDiv="false"
+    							calendarValueType="yearMonthDate">
+    						</w2:inputCalendar>
+    					</xf:group>
+    					<xf:group style="" class="w2tb_th" tagname="th">aaaaa</xf:group>
+    					<xf:group style="" class="w2tb_td" tagname="td">
+    						<w2:textbox label="" id="textbox2" style="position: relative;width:100%;height: 23px;"></w2:textbox>
+    					</xf:group>
+    				</xf:group>
+    			</w2:generator>
+    		</xf:group>
+    	</w2:generator>
+
+    </body>
+</html>

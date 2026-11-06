@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.dateSum1 = function(colArr, dataType) {
+    var hours = [];
+    var mins = [];
+    var secs = [];
+    for (var i = 0; i < colArr.length; i++) {
+        var times = colArr[i].split(":");
+        hours.push(Number(times[0]) || 0);
+        mins.push(Number(times[1]) || 0);
+        secs.push(Number(times[2]) || 0);
+    }
+    var totalSecs = eval(secs.join("+")) + (60 * eval(mins.join("+"))) + (3600 * eval(hours.join("+")));
+    var tempSecs = totalSecs;
+    var ret_day = Math.floor(totalSecs / 86400);
+    tempSecs = tempSecs % 86400;
+    var ret_hour = Math.floor(tempSecs / 3600);
+    tempSecs = tempSecs % 3600;
+    var ret_min = Math.floor(tempSecs / 60);
+    var ret_sec = tempSecs % 60;
+    return ret_day + "d" + ret_hour + "h" + ret_min + "m" + ret_sec + "s";
+};
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 id=footer11 에 column14 expression 을 확인한다.
+    //1. In the Source tab, check id = footer11 for column14 expression.
+    //Verify step 1. expression = "custom (scwin.dateSum1, 'col2')
+    //Test step 2. 브라우저에서 name2 컬럼의 footer 를 확인한다.
+    //2. Check the footer of the name2 column in your browser.
+    //Verify step 2. The sum of the time of the name2 columns is output to the footer.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_3_column14').textContent != ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.f = [];
+    for (var i = 1; i <= 21; i++) {
+        if (i % 3 === 1) {
+            f.push(i);
+        } else {
+            window.x = Math.floor(Math.random() * 24);
+            window.y = Math.floor(Math.random() * 60);
+            window.z = Math.floor(Math.random() * 60);
+            if (x < 10) {
+                x = "0" + x;
+            }
+            if (y < 10) {
+                y = "0" + y;
+            }
+            if (z < 10) {
+                z = "0" + z;
+            }
+            f.push(x + ":" + y + ":" + z);
+        }
+    }
+    dataList1.setData(f);
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 02-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="" style="position: relative;width:600px;height:600px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:footer id="footer11" style="">
+    			<w2:row id="row12" style="">
+    				<w2:column blockSelect="false" id="column15" style="height:20px" width="70" inputType="expression"
+    					displayMode="label" expression="sum('col1')">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column14" style="height:20px" width="70" inputType="expression"
+    					displayMode="label" expression="custom(scwin.dateSum1, 'col2')">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column13" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:footer>
+    	</w2:gridView>
+    </body>
+</html>
+ 

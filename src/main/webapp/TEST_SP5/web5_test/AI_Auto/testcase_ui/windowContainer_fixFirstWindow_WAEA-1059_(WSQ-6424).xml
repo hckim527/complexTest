@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+		// =========================================================================
+		// [windowContainer 툴바 drag&drop 시 맨 앞 창 고정 샘플]
+		//   요구 : 툴바에서 창(네임레이어)을 드래그해 순서를 바꿀 때,
+		//          맨 앞(1번) 창은 항상 맨 앞에 남아 있어야 한다.
+		//          (뒤 창을 앞으로 끌어오면 1번 창이 뒤로 밀리는 문제)
+		// -------------------------------------------------------------------------
+		// [조사 결과 : API 가이드 + 엔진 소스 확인 완료]
+		//
+		// 1) useFixButton / fixWindow() 의 '고정(핀)' 은 순서 고정 기능이 아니다.
+		//    - winInfoObj.isFix 는 (a)전체닫기 보호(closeType=noneFixedWindow)
+		//      (b)창 정렬(doVerticalFixArrange/doHorizontalFixArrange 등)
+		//      (c)핀 아이콘 표시  용도로만 사용된다.
+		//    - 툴바 드래그 재정렬 로직(handleNameLayerMove → moveNameLayer)에는
+		//      isFix 를 검사하는 코드가 아예 없다. → 핀을 꽂아도 뒤로 밀린다.
+		//      (엔진 windowContainer.js 의 moveNameLayer / handleNameLayerMove 확인)
+		//
+		// 2) 따라서 '맨 앞 창 고정' 은 onbeforenamelayermove 이벤트로 구현한다.
+		//    - API 가이드(WebSquare.uiplugin.windowContainer.xml / events) 원문:
+		//      "마우스 드래그-앤-드롭 후 윈도우의 위치가 변경되기 직전에 발생.
+		//       이벤트 핸들러 함수에서 false 를 반환하면 위치 변경이 취소됨.
+		//       관련 속성: nameLayerMove='true' 일 때 유효."
+		//    - 핸들러 인자 info (Object)
+		//        info.startIndex    : 드래그를 시작한 네임레이어의 index (화면 기준)
+		//        info.startWindowID : 드래그를 시작한 창의 windowId
+		//        info.endIndex      : 드롭되어 자리잡을 위치의 index
+		//        info.endWindowID   : 그 위치에 현재 있는 창의 windowId
+		//      ※ startWindowID / endWindowID 는 createWindow 5번째 인자로 넘긴
+		//        windowId 값이다. (내부 winInfo.id 가 아님)
+		//    - 엔진은 moveNameLayer() 안에서 DOM 순서를 바꾸기 "전에" 이 이벤트를
+		//      발생시키고 false 면 즉시 return 한다. 드래그 중 임시로 밀렸던 탭들의
+		//      left 값은 그 직전(onDrop)에 이미 원복되므로, 취소하면 탭이 제자리로
+		//      돌아간다. (DOM/windows 배열 불일치 없음)
+		//
+		// 3) 차단 규칙 (아래 B 컨테이너)
+		//      - info.startWindowID 가 고정 대상  → false (고정 창을 뒤로 못 보냄)
+		//      - info.endWindowID   가 고정 대상  → false (고정 창 자리로 못 밀고 들어옴)
+		//    index 기준으로 쓰려면 : if (info.startIndex < N || info.endIndex < N) return false;
+		//    (앞에서 N개 고정)
+		//
+		// 4) "드래그 중에 밀렸다가 되돌아오는 것"까지 없애려면 (2단계)
+		//    onbeforenamelayermove 는 '드롭 시점'에 취소하는 것이라, 드래그하는 동안
+		//    엔진의 onDragover 가 고정 탭을 밀어 놓았다가 드롭할 때 원복하는 잔상이 남는다.
+		//    (엔진 onDragover 는 커서 아래 요소를 drop 대상으로 잡아 left 를 밀어 놓는다)
+		//    → 드래그가 시작될 때만 고정 탭에 pointer-events:none 을 주어
+		//      히트테스트 대상에서 빼면, 고정 탭은 아예 밀리지 않는다.
+		//      · 드롭 대상으로 잡히지 않으므로 left 가 변경되지 않음
+		//      · nameBar(.w2windowContainer_name) 는 그대로 히트되므로 moveMode 유지 →
+		//        끌고 있는 탭은 정상적으로 커서를 따라감
+		//      · 고정 탭 위에서 놓으면 마지막 유효 위치(고정 탭 바로 뒤)에 놓인다
+		//      · 드래그가 끝나면 즉시 원복하므로 고정 탭 클릭(창 선택)은 정상 동작
+		//    ※ 실측 검증(Playwright) : 가드 적용 후 고정 탭 left 는 드래그 내내 0px 유지,
+		//      드롭 결과 [고정창, 끌어온창, ...] 순서로 정상 이동됨.
+		//    ※ 이벤트(3)는 그대로 둔다. 가드는 시각 효과 제거용, 이벤트가 최종 안전장치.
+		//
+		// 5) 참고 / 주의
+		//    - setWindowTabOrder(arr) 로 순서를 강제 복구하는 방법도 있으나 권장하지 않음.
+		//      내부적으로 removeNameLayer() 를 전체 창에 대해 호출한 뒤 다시 push 하는데
+		//      currentWindowNum 감소분과 selectedWindowHistory 가 복구되지 않는다.
+		//      (windowMaxNum 체크/이전 창 이력이 틀어짐) 또한 구 버전에는 없는 API 다.
+		//    - createWindow 의 options(고정여부 fixed) 는 API 가이드에는 9번째 인자로
+		//      적혀 있으나 실제 시그니처는
+		//      createWindow(title, iconUrl, src, windowTitle, windowId, openAction,
+		//                   closeAction, windowTooltip, windowHeaderHTML, options)
+		//      로 windowHeaderHTML 이 9번째, options 가 10번째다. (아래 호출 참고)
+		//    - fixWindow(id) 의 인자는 windowId 가 아니라 내부 winInfo.id 이므로
+		//      스크립트로 핀을 꽂을 때는 생성 시 options{fixed:true} 사용이 안전하다.
+		// =========================================================================
+
+		var CHILD = "windowContainer_child.xml";
+
+		// 컨테이너별 : 열린 창 목록 / 고정(순서 잠금) 대상 windowId 목록
+		scwin.opened   = { windowContainer1: [], windowContainer2: [] };
+		scwin.fixedIds = { windowContainer1: [], windowContainer2: [] };
+
+		scwin.log = function(msg) {
+			console.log(msg);
+			var box = document.getElementById("logBox");
+			if (box) { box.value = msg + "\n" + box.value; }
+		};
+
+		// ── 창 생성 (앞에서 fixCount 개는 고정 대상으로 지정) ──
+		scwin.makeWindows = function(wcId, count, fixCount) {
+			var wc     = (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+			var prefix = (wcId === "windowContainer1") ? "A" : "B";
+
+			scwin.closeAll(wcId);
+
+			for (var i = 1; i <= count; i++) {
+				var winId  = prefix + "win" + i;
+				var isFix  = (i <= fixCount);
+				var title  = prefix + "-창" + i + (isFix ? " [고정]" : "");
+				// 9번째 = windowHeaderHTML, 10번째 = options(fixed:true → 핀 아이콘 표시)
+				wc.createWindow(title, null, CHILD, title, winId, "newWindow", "", "", "", { fixed: isFix });
+				scwin.opened[wcId].push(winId);
+				if (isFix) { scwin.fixedIds[wcId].push(winId); }
+			}
+			scwin.log("[" + wcId + "] 창 " + count + "개 생성 / 고정 대상 = [" + scwin.fixedIds[wcId].join(", ") + "]");
+		};
+
+		// ── 전체 닫기 ──
+		scwin.closeAll = function(wcId) {
+			var wc  = (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+			var ids = scwin.opened[wcId].slice();
+			for (var i = 0; i < ids.length; i++) {
+				wc.closeWindow(ids[i]);
+			}
+			scwin.opened[wcId]   = [];
+			scwin.fixedIds[wcId] = [];
+		};
+
+		/* =====================================================================
+		 * [A] 고정 미적용 — 문제 재현용
+		 *     핀(고정)만 꽂아 두고 이벤트를 걸지 않은 상태.
+		 *     뒤 창을 맨 앞으로 끌면 A-창1 이 그대로 뒤로 밀린다.
+		 * ===================================================================== */
+		scwin.windowContainer1_onafternamelayermove = function(info) {
+			scwin.log("[A/이동됨] " + info.startWindowID + "(" + info.startIndex + ") → "
+				+ info.endIndex + "번 자리 (그 자리에 있던 창 : " + info.endWindowID + ")"
+				+ "   ※ 핀을 꽂아도 순서는 그대로 밀립니다.");
+		};
+
+		/* =====================================================================
+		 * [B] 고정 적용 — onbeforenamelayermove 에서 false 반환
+		 *     ★ 이 함수가 핵심입니다.
+		 * ===================================================================== */
+		scwin.windowContainer2_onbeforenamelayermove = function(info) {
+			var fixedIds = scwin.fixedIds.windowContainer2;
+
+			// (1) 고정 창 자체를 다른 자리로 끌고 가는 경우
+			if (fixedIds.indexOf(info.startWindowID) > -1) {
+				scwin.log("[B/차단] 고정 창(" + info.startWindowID + ") 은 이동할 수 없습니다.");
+				return false;
+			}
+			// (2) 뒤 창을 고정 창 자리로 끌고 온 경우 (= 고정 창이 밀리는 상황)
+			if (fixedIds.indexOf(info.endWindowID) > -1) {
+				scwin.log("[B/차단] " + info.startWindowID + " → 고정 창(" + info.endWindowID
+					+ ") 자리로는 이동할 수 없습니다.");
+				return false;
+			}
+
+			// index 기준으로 쓰고 싶다면 위 두 블럭 대신 아래 한 줄
+			// if (info.startIndex < fixedIds.length || info.endIndex < fixedIds.length) return false;
+
+			scwin.log("[B/허용] " + info.startWindowID + "(" + info.startIndex + ") → "
+				+ info.endIndex + "번 자리 (교체 대상 : " + info.endWindowID + ")");
+		};
+
+		/* =====================================================================
+		 * [B-2] 드래그 중 '밀림' 자체를 없애는 가드
+		 *   드래그가 시작될 때만 고정 탭을 pointer-events:none 으로 만들어
+		 *   엔진의 drop 대상 판정에서 제외시킨다. (드래그가 끝나면 즉시 원복)
+		 *   ※ 툴바 DOM 을 직접 다루므로 엔진 내부 구조에 의존한다.
+		 *      - 네임레이어 영역 : {컨테이너id}_name  (class w2windowContainer_name)
+		 *      - 각 탭          : class w2windowContainer_nameLayer
+		 * ===================================================================== */
+		scwin.installFixGuard = function(wcId) {
+			var wc    = (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+			var barId = wc.getID() + "_name";
+
+			var getBar = function() { return document.getElementById(barId); };
+
+			// 고정 대상 탭 = 네임레이어 중 앞에서 N개
+			var fixedLayers = function() {
+				var bar = getBar();
+				if (!bar) { return []; }
+				return Array.prototype.slice.call(bar.children, 0, scwin.fixedIds[wcId].length);
+			};
+
+			var setPointerEvents = function(value) {
+				var arr = fixedLayers();
+				for (var i = 0; i < arr.length; i++) { arr[i].style.pointerEvents = value; }
+			};
+
+			// 드래그 시작(고정 탭이 아닌 탭에서 누른 경우)에만 가드 ON
+			document.addEventListener("pointerdown", function(e) {
+				var bar = getBar();
+				if (!bar) { return; }
+				var node = e.target, layer = null;
+				while (node && node !== bar) {
+					if (node.className && String(node.className).indexOf("w2windowContainer_nameLayer") > -1) {
+						layer = node;
+					}
+					node = node.parentNode;
+				}
+				if (node !== bar || layer == null) { return; }      // 이 컨테이너의 탭이 아님
+				if (fixedLayers().indexOf(layer) > -1) { return; }   // 고정 탭에서 시작 → 이벤트에서 차단됨
+				setPointerEvents("none");
+			}, true);
+
+			// 드래그 종료 시 가드 OFF (고정 탭 클릭/선택은 정상 동작해야 하므로)
+			var restore = function() { setPointerEvents(""); };
+			document.addEventListener("pointerup", restore, true);
+			document.addEventListener("mouseup",  restore, true);
+			document.addEventListener("touchend", restore, true);
+		};
+
+		/* ================= 버튼 핸들러 ================= */
+
+		scwin.btnMakeA_onclick   = function() { scwin.makeWindows("windowContainer1", 6, 1); };
+		scwin.btnCloseA_onclick  = function() { scwin.closeAll("windowContainer1"); scwin.log("[A] 전체 닫기"); };
+
+		scwin.btnMakeB1_onclick  = function() { scwin.makeWindows("windowContainer2", 6, 1); };
+		scwin.btnMakeB2_onclick  = function() { scwin.makeWindows("windowContainer2", 6, 2); };
+		scwin.btnCloseB_onclick  = function() { scwin.closeAll("windowContainer2"); scwin.log("[B] 전체 닫기"); };
+
+		scwin.btnClearLog_onclick = function() {
+			var box = document.getElementById("logBox");
+			if (box) { box.value = ""; }
+		};
+
+		scwin.onpageload = function() {
+			scwin.log("=== windowContainer 툴바 drag&drop : 맨 앞 창 고정 샘플 ===");
+			scwin.makeWindows("windowContainer1", 6, 1);
+			scwin.makeWindows("windowContainer2", 6, 1);
+			scwin.installFixGuard("windowContainer2");   // B 에만 '밀림 제거' 가드 적용
+			scwin.log("툴바의 창 탭을 좌우로 드래그해 A(고정 안됨) / B(고정) 동작을 비교하세요.");
+		};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<h2 style="margin:10px 0 6px 10px;">windowContainer 툴바 drag&amp;drop — 맨 앞 창 고정</h2>
+		<div style="margin:0 0 8px 10px;color:#555;line-height:1.7;">
+			<b>useFixButton / fixWindow() 의 핀 고정은 탭 순서와 무관</b>합니다. (전체닫기 보호 · 창 정렬 · 아이콘 표시 용도)<br/>
+			탭 순서 고정은 <b>nameLayerMove="true"</b> 상태에서 <b>onbeforenamelayermove</b> 이벤트 핸들러가
+			<b>false 를 반환</b>하면 해당 이동이 취소되는 것을 이용해 구현합니다.<br/>
+			다만 이 이벤트는 <b>드롭 시점</b>에 취소하는 것이라 드래그하는 동안에는 고정 탭이 밀렸다가 돌아옵니다.
+			잔상까지 없애려면 <b>드래그 중에만 고정 탭에 pointer-events:none</b> 을 주어 drop 대상에서 제외합니다. (아래 B)
+		</div>
+
+		<div style="margin:0 0 6px 10px;">
+			<xf:trigger type="button" id="btnMakeA" ev:onclick="scwin.btnMakeA_onclick" style="height:23px;margin:2px;">
+				<xf:label>A 창 6개(고정 1)</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnCloseA" ev:onclick="scwin.btnCloseA_onclick" style="height:23px;margin:2px 12px 2px 2px;">
+				<xf:label>A 전체 닫기</xf:label>
+			</xf:trigger>
+
+			<xf:trigger type="button" id="btnMakeB1" ev:onclick="scwin.btnMakeB1_onclick" style="height:23px;margin:2px;">
+				<xf:label>B 창 6개(고정 1개)</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnMakeB2" ev:onclick="scwin.btnMakeB2_onclick" style="height:23px;margin:2px;">
+				<xf:label>B 창 6개(고정 2개)</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnCloseB" ev:onclick="scwin.btnCloseB_onclick" style="height:23px;margin:2px 12px 2px 2px;">
+				<xf:label>B 전체 닫기</xf:label>
+			</xf:trigger>
+
+			<xf:trigger type="button" id="btnClearLog" ev:onclick="scwin.btnClearLog_onclick" style="height:23px;margin:2px;">
+				<xf:label>로그 지우기</xf:label>
+			</xf:trigger>
+		</div>
+
+		<textarea id="logBox" readonly="readonly"
+			style="width:990px;height:120px;margin:6px 0 0 10px;font-family:monospace;font-size:12px;color:#222;background:#f7f7f7;border:1px solid #ccc;"></textarea>
+
+		<!-- ============ [A] 고정 미적용 (문제 재현) ============ -->
+		<div style="margin:14px 0 4px 10px;font-weight:bold;color:#c0392b;">
+			[A] 이벤트 미적용 — 핀(고정)만 꽂은 상태. 뒤 창을 맨 앞으로 끌면 A-창1 이 뒤로 밀립니다.
+		</div>
+		<w2:windowContainer id="windowContainer1"
+			windowMaxNum="30"
+			nameLayerMove="true"
+			useFixButton="true"
+			useCloseButton="true"
+			defaultWidth="260px"
+			defaultHeight="150px"
+			ev:onafternamelayermove="scwin.windowContainer1_onafternamelayermove"
+			style="position:relative;width:990px;height:300px;margin:0px 0px 0px 10px;border:solid 1px gray;" frameMode="wframe">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+
+		<!-- ============ [B] onbeforenamelayermove 로 고정 ============ -->
+		<div style="margin:18px 0 4px 10px;font-weight:bold;color:#1a5fb4;">
+			[B] onbeforenamelayermove(취소) + 드래그 중 pointer-events 가드 — 고정 창은 드래그 도중에도 전혀 밀리지 않습니다.
+		</div>
+		<w2:windowContainer id="windowContainer2"
+			windowMaxNum="30"
+			nameLayerMove="true"
+			useFixButton="true"
+			useCloseButton="true"
+			defaultWidth="260px"
+			defaultHeight="150px"
+			ev:onbeforenamelayermove="scwin.windowContainer2_onbeforenamelayermove"
+			style="position:relative;width:990px;height:300px;margin:0px 0px 20px 10px;border:solid 1px gray;" frameMode="wframe">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+	</body>
+</html>

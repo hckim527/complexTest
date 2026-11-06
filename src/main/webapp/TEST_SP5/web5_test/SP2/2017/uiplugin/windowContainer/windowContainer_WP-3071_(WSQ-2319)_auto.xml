@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="./css/layout_01.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin._checkError = function() {
+    var log = WebSquare.logger.getLog();
+    return log.indexOf("Cannot read property 'documentElement' of null") == -1;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 create버튼을 클릭하고 마우스+우클릭으로 로그보기를 실행한다.
+    //1. After running the sample file, click the create button and execute mouse-click view of the log.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 로그가 정상적으로 보여진다.(이전에는 특수문자가 title에 있을 경우 에러로그발생함) 또한, windowsContainer title의 값이 정상적으로 보여진다.(하나 > 둘둘)
+    //1. The log is displayed normally. (In the past, if the special character is in title, an error log occurs.) Also, the value of the windowsContainer title is shown normally (one> two)                
+    WebSquare.wUnit.addCommand("assert", "scwin._checkError()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('windowContainer2_subWindow0_header_title').innerText == '하나 > 둘둘'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //debugger;
+    //WebSquareLang.WindowContainer_maxNum_warning = "min";
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 07-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:windowContainer class="" id="windowContainer2" style="position: absolute ;left:19px;top:24px;width:496px;height:312px"
+    		confirmMessageLocaleRef="confirmMessage" useStatusMsg="true" tooltipDisplay="true" useCloseButton="false" windowTooltipDisplay="true"
+    		useControlIconTitle="false" windowMaxNum="2" confirmMessage="mingu">
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+
+    	</w2:windowContainer>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 579px;top: 94px;width: 80px;height: 23px;" >
+    		<xf:label><![CDATA[create]]></xf:label>
+    		<script ev:event="onclick(e)" type="javascript"><![CDATA[
+    		///w2test/aa.xml 
+    		windowContainer2.createWindow( "edu001" , null , "", "하나 > 둘둘" );
+    		
+    		 ]]></script>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:linkedDataList id="linkedDataList1" bind="data:dl_dynamic">
+                    <w2:condition type="filter"><![CDATA[upper == ref('data:dl_grid.col1')]]></w2:condition>
+                    <w2:condition type="sort"><![CDATA[]]></w2:condition>
+                </w2:linkedDataList>
+                <w2:dataList id="dl_grid" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="대분류" dataType="text"></w2:column>
+                        <w2:column id="col2" name="중분류" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList id="dl_sel" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="label" name="name1" dataType="text"></w2:column>
+                        <w2:column id="value" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    //데이터리스트 동적생성.
+    scwin.makeDataList();
+    //동적생성 데이터리스트 데이터 셋팅.
+    var jsonData_dl = [{
+        "codeNm": "dl_라벨A-1",
+        "codeNo": "A-1",
+        "upper": "A"
+    }, {
+        "codeNm": "dl_라벨A-2",
+        "codeNo": "A-2",
+        "upper": "A"
+    }, {
+        "codeNm": "dl_라벨B-1",
+        "codeNo": "B-1",
+        "upper": "B"
+    }, {
+        "codeNm": "dl_라벨B-2",
+        "codeNo": "B-2",
+        "upper": "B"
+    }, {
+        "codeNm": "dl_라벨C-1",
+        "codeNo": "C-1",
+        "upper": "C"
+    }, {
+        "codeNm": "dl_라벨C-2",
+        "codeNo": "C-2",
+        "upper": "C"
+    }, {
+        "codeNm": "dl_라벨D-1",
+        "codeNo": "D-1",
+        "upper": "D"
+    }, {
+        "codeNm": "dl_라벨D-2",
+        "codeNo": "D-2",
+        "upper": "D"
+    }];
+    dl_dynamic.setJSON(jsonData_dl);
+    //첫번째 selectbox 컬럼 아이템 셋팅 
+    var jsonData1 = [{
+        "label": "라벨A",
+        "value": "A"
+    }, {
+        "label": "라벨B",
+        "value": "B"
+    }, {
+        "label": "라벨C",
+        "value": "C"
+    }, {
+        "label": "라벨D",
+        "value": "D"
+    }];
+    dl_sel.setJSON(jsonData1);
+    //그리드뷰 데이터 셋팅.
+    var jsonData3 = [{
+        "col1": "A",
+        "col2": "A-1"
+    }, {
+        "col1": "B",
+        "col2": "B-1"
+    }, {
+        "col1": "C",
+        "col2": "C-1"
+    }, {
+        "col1": "C",
+        "col2": "C-2"
+    }, {
+        "col1": "B",
+        "col2": "B-2"
+    }, {
+        "col1": "B",
+        "col2": "B-1"
+    }, {
+        "col1": "B",
+        "col2": "B-2"
+    }, {
+        "col1": "A",
+        "col2": "A-2"
+    }];
+    dl_grid.setJSON(jsonData3);
+};
+scwin.onpageunload = function() {};
+scwin.makeDataList = function() {
+    var dlOptions = {
+        "id": "dl_dynamic",
+        "type": "dataList",
+        "option": {
+            "baseNode": "list",
+            "saveRemovedData": "true",
+            "repeatNode": "map"
+        },
+        "columnInfo": [{
+            "id": "codeNm",
+            "name": "name1",
+            "dataType": "text"
+        }, {
+            "id": "codeNo",
+            "name": "name2",
+            "dataType": "text"
+        }, {
+            "id": "upper",
+            "name": "name3",
+            "dataType": "text"
+        }]
+    };
+    create(dlOptions);
+};
+scwin.__checkErrLog = function() {
+    return WebSquare.logger.getErrorLog();
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand('assert', 'scwin.__checkErrLog() == ""', 'true');
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:gridView dataList="data:dl_grid" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+            style="position: relative;width:327px;height:353px;">
+            <w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header2" style="">
+                <w2:row id="row3" style="">
+                    <w2:column blockSelect="false" id="column7" removeBorderStyle="false" style="" inputType="text" width="144" value="대분류"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column5" removeBorderStyle="false" style="" width="140" inputType="text" value="중분류"
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody2" style="">
+                <w2:row id="row4" style="">
+                    <w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="select" width="144" value=""
+                        displayMode="label" allOption="" chooseOption="" ref="">
+                        <w2:choices>
+                            <w2:itemset nodeset="data:dl_sel">
+                                <w2:label ref="label"></w2:label>
+                                <w2:value ref="value"></w2:value>
+                            </w2:itemset>
+                        </w2:choices>
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" width="140" inputType="select" value=""
+                        displayMode="label" allOption="" chooseOption="" ref="">
+                        <w2:choices>
+                            <w2:itemset nodeset="data:linkedDataList1">
+                                <w2:label ref="codeNm"></w2:label>
+                                <w2:value ref="codeNo"></w2:value>
+                            </w2:itemset>
+                        </w2:choices>
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>
+ 

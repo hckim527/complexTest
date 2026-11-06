@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "col1": "a1",
+        "col2": "a1"
+    }, {
+        "col1": "a2",
+        "col2": "a2"
+    }, {
+        "col1": "a3",
+        "col2": "a3"
+    }, {
+        "col1": "a4",
+        "col2": "a4"
+    }, {
+        "col1": "a5",
+        "col2": "a5"
+    }, {
+        "col1": "a6",
+        "col2": "a6"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.checkLayout = function() {
+    var topAtComplete = parseInt(WebSquare.wUnit.getJq("#autoComplete1_gridViewItemTable").css("top"));
+    var heightAtComplete = parseInt(WebSquare.wUnit.getJq("#autoComplete1_gridViewItemTable").css("height"));
+    var topBox = parseInt(WebSquare.wUnit.getJq("#autoComplete1").css("top"));
+    var widthAt = parseInt(WebSquare.wUnit.getJq("#autoComplete1_gridViewItemTable").css("width"));
+    var widthBox = parseInt(WebSquare.wUnit.getJq("#autoComplete1").css("width"));
+    return Math.abs(heightAtComplete + topAtComplete - topBox) < 5 && Math.abs(widthBox - widthAt) < 10;
+}
+scwin.checkLayout2 = function() {
+    var topAtComplete = parseInt(WebSquare.wUnit.getJq("#sel1_gridViewItemTable").css("top"));
+    var heightAtComplete = parseInt(WebSquare.wUnit.getJq("#sel1_gridViewItemTable").css("height"));
+    var topBox = parseInt(WebSquare.wUnit.getJq("#sel1").css("top"));
+    var widthAt = parseInt(WebSquare.wUnit.getJq("#sel1_gridViewItemTable").css("width"));
+    var widthBox = parseInt(WebSquare.wUnit.getJq("#sel1").css("width"));
+    return topBox >= (heightAtComplete + topAtComplete) && Math.abs(widthBox - widthAt) < 10;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 'autoComplete'의 아이템목록(역삼각형)을 클릭하여 autoComplete위로 동일한 가로size의 넓이로 보여지는지 확인한다.
+    //1. After running the sample, click on the list of items (inverted triangle) in 'autoComplete' and make sure that it shows up to the same width size on autoComplete.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. 아이템목록이 autoComplete위로 동일한 가로size의 넓이로 보여진다.(이전에는 좁은 size로 보여짐)
+    //1. The list of items is displayed on the autoComplete with the same width size (previously shown as a narrower size).
+    WebSquare.wUnit.addCommand("assert", "scwin.checkLayout()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Test step 2. 'selectbox'의 아이템목록(역삼각형)을 클릭하여 selectbox 위로 동일한 가로size의 넓이로 보여지는지 확인한다.
+    //2. Click on the list of items in the 'selectbox' (inverted triangle) to make sure that it is visible on the selectbox at the same width.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('sel1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. 아이템목록이 selectbox위로 동일한 가로size의 넓이로 보여진다.(이전에는 좁은 size로 보여짐)
+    //2. The list of items is displayed on the selectbox with the same width size (previously shown as a narrower size).
+    WebSquare.wUnit.addCommand("assert", "scwin.checkLayout2()", "true");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 03-Apr-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete chooseOption="false" displayMode="label" editType="select" id="autoComplete1" interactionMode="" search="start"
+    		style="position: absolute ;left:76px;top:205px;width:162px;height:39px;" submenuSize="auto" useKeywordHighlight="false"
+    		visibleRowNum="5" direction="up">
+    		<w2:choices>
+    			<w2:gridViewItemset autoFit="true" height="" hideHeader="" label="col1" nodeset="data:dataList1" rowMouseOver=""
+    				wheelStop="true"
+    				rowMouseOverColor="" selectedRowColor="" value="col2" visibleRowNum="" width="">
+    				<w2:item header="2" headerStyle="" hidden="" ref="col1" style=""></w2:item>
+    			</w2:gridViewItemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" chooseOption="false" displayMode="label" optionOrder="false"
+    		allOption="false" submenuSize="auto" direction="up" id="sel1"
+    		style="position: absolute ;left:320px;top:206px;width:162px;height:39px;" disabled="false" renderType="component">
+    		<xf:choices>
+    			<w2:gridViewItemset autoFit="" selectedRowColor="" height="" visibleRowNum="" rowMouseOver="" width=""
+    				wheelStop="true"
+    				nodeset="data:dataList1" value="col2" rowMouseOverColor="" label="col1" hideHeader="">
+    				<w2:item ref="col1" style="" hidden="" headerStyle="" header="2"></w2:item>
+    			</w2:gridViewItemset>
+    		</xf:choices>
+    	</xf:select1>
+    	<w2:textbox label="autoComplete" id="" style="position: absolute ;left:79px;top:145px;width:167px;height:47px;"></w2:textbox>
+    	<w2:textbox label="selectbox" id="" style="position: absolute ;left:324px;top:147px;width:155px;height:43px;"></w2:textbox>
+    	<xf:trigger type="button" id="" style="position: absolute ;left: 82px;top: 2300px;width: 147px;height: 42px;">
+    		<xf:label></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

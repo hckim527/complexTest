@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="key2" name="name2" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="false">
+						<key1></key1>
+					</w2:data></w2:dataMap>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[12345.67]]></col1>
+							<col2><![CDATA[12345.67]]></col2>
+							<col3><![CDATA[12345.67]]></col3>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+		scwin.onpageload = function() {
+			input1.setValue("12345.1234567");
+			input2.setValue("12345");
+		};
+		
+		scwin.onpageunload = function() {
+			
+		};
+
+		scwin.trigger1_onclick = function() {
+			var maxLen = input1.setMaxLength("");
+		};
+
+		scwin.trigger2_onclick = function() {
+			var maxLen = input1.setMaxLength(-1);
+		};
+
+		scwin.trigger3_onclick = function() {
+			var maxLen = input1.getMaxLength();
+			textbox1.setValue("maxLength = " + maxLen);
+			console.log(maxLen);
+		};
+
+		scwin.trigger11_onclick = function() {
+			var maxLen = input2.setMaxByteLength("");
+		};
+
+		scwin.trigger22_onclick = function() {
+			var maxLen = input2.setMaxByteLength(-1);
+		};
+
+		scwin.trigger33_onclick = function() {
+			var maxLen = input2.getMaxByteLength();
+			textbox2.setValue("maxByteLength = " + maxLen);
+			console.log(maxLen);
+		};
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate = function() {
+		scwin.simulateWrapper('#input2', 'key-sequence', {
+			sequence: '6'
+		});			
+	}
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#input2').val() == '123456';
+	}		
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger22').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group>
+			<xf:group id="" style="margin-top:100px;">
+				<w2:textbox id="textbox1" class="" label="maxLength = 5.7" style=""></w2:textbox>
+				<xf:input id="input1" style="width: 144px;height: 21px;" validateOnInput="true" ref="data:dataMap1.key1" maxLength="5.7" maxByteLength="" dataType="float" applyFormat="all">
+				</xf:input>
+			</xf:group>
+			<xf:group id="" style="">
+				<xf:trigger type="button" id="trigger1" style="width:200px;height: 23px;margin-right:5px;" ev:onclick="scwin.trigger1_onclick">
+					<xf:label><![CDATA[input.setMaxLength("")]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="trigger2" style="width:200px;height: 23px;margin-right:5px;" ev:onclick="scwin.trigger2_onclick">
+					<xf:label><![CDATA[input.setMaxLength(-1)]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="trigger3" style="width:200px;height: 23px;margin-right:5px;" ev:onclick="scwin.trigger3_onclick">
+					<xf:label><![CDATA[input.getMaxLength]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+		<xf:group>
+			<xf:group id="" style="margin-top:100px;">
+				<w2:textbox id="textbox2" class="" label="maxByteLength = 5" style=""></w2:textbox>
+				<xf:input id="input2" style="width: 144px;height: 21px;" validateOnInput="true" ref="data:dataMap1.key2" maxLength="" maxByteLength="5" dataType="float" applyFormat="all">
+				</xf:input>
+			</xf:group>
+			<xf:group id="" style="">
+				<xf:trigger type="button" id="trigger11" style="width:200px;height: 23px;margin-right:5px;" ev:onclick="scwin.trigger11_onclick">
+					<xf:label><![CDATA[input.setMaxByteLength("")]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="trigger22" style="width:200px;height: 23px;margin-right:5px;" ev:onclick="scwin.trigger22_onclick">
+					<xf:label><![CDATA[input.setMaxByteLength(-1)]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="trigger33" style="width:200px;height: 23px;margin-right:5px;" ev:onclick="scwin.trigger33_onclick">
+					<xf:label><![CDATA[input.getMaxByteLength]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

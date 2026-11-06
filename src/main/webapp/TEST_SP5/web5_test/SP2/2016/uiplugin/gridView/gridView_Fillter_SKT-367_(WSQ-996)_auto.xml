@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dst_scrnItmTypCd" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="comm_cd_val_nm" name="name1" dataType="text"></w2:column>
+						<w2:column id="comm_cd_val" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>							
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 displayValueOnUseFilterList 를 확인한다.
+    //1. In the Source tab, check the displayValueOnUseFilterList.
+    //Verify step 1. displayValueOnUseFilterList = "true"
+    //Test step 2. 브라우저에서 임의로 필터를 설정한다. 
+    //2. Set the filter arbitrarily in the browser.
+    //Verify step 2. An arbitrarily selected filter is applied.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column9_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_list').getElementsByTagName('div')[1].getElementsByTagName('input')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_list').getElementsByTagName('div')[2].getElementsByTagName('input')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').textContent == '1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 브라우저에서 임의로 필터를 설정한다. 
+    //2. Set the filter arbitrarily in the browser.
+    //Verify step 2. An arbitrarily selected filter is applied.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column9_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column9_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_list').getElementsByTagName('div')[1].getElementsByTagName('input')[0].checked", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dst_scrnItmTypCd.setData(['a', '1', 'b', '2']);
+    dataList1.setData(["1", "2", "3", "4", "2", "6", "7", "1", "9"]);
+    gridView1.setCellReadOnly(0, 0, true);
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 28-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="gridView1"
+			style="width: 100%;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true" filterFocusMode="" useFilterList="true" readOnly="false" autoFit="allColumn" displayValueOnUseFilterList="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="121" value="name1"
+						useFilter="true">
+					</w2:column>
+					<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="121" value="name2"
+						useFilter="true">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px" width="121" inputType="text" value="name3"
+						useFilter="true">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4" style="">
+				<w2:row id="row5" style="">
+					<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="121" useFilter="true"></w2:column>
+					<w2:column blockSelect="false" id="col2" style="height:20px" inputType="select" width="121" useFilter="true"
+						allOption="" chooseOption="">
+						<w2:choices>
+							<w2:itemset nodeset="data:dst_scrnItmTypCd">
+								<w2:label ref="comm_cd_val_nm"></w2:label>
+								<w2:value ref="comm_cd_val"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column blockSelect="false" id="col3" style="height:20px" width="121" inputType="text" useFilter="true"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;">
+			<xf:label><![CDATA[setData]]></xf:label>
+			<script ev:event="onclick(e)" type="javascript"><![CDATA[
+					dataList1.setData([1,2,3,4,2,6,7,1,9]);
+			 ]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

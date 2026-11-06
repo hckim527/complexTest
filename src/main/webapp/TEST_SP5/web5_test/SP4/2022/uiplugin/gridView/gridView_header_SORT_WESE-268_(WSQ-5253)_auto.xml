@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+/**************************************************************************************
+    그리드뷰 해더에 필터용 input 생성 및 필터 처리
+
+	※ 전제조건
+		- 그리드뷰 해더에 필터용 row 를 추가해야 한다. (기본 해더 컬럼 에 추가로 필터용 inputbox 생성을 위한 row )
+
+**************************************************************************************/
+
+
+scwin.onpageload = function() {
+	var data = [
+		{"col1":"1234", "col2":"4567", "col3":"ccc", "col4":"ABCDEFG", "col5":"가가가가가"},
+		{"col1":"A1234", "col2":"aA1245", "col3":"Aa5434", "col4":"가가가가", "col5":"나나나나"},
+		{"col1":"a4567", "col2":"Aa4534", "col3":"aA4512", "col4":"나나나나", "col5":"다다다다"},
+		{"col1":"B1234", "col2":"bB1247", "col3":"Bb7834", "col4":"다다다다", "col5":"라라라라"},
+		{"col1":"b4567", "col2":"Bb4523", "col3":"bB1267", "col4":"라라라라", "col5":"가가가나나나"},
+		{"col1":"c1342", "col2":"Cc1282", "col3":"cCc1234", "col4":"마마마마", "col5":"다다다라라라"}
+	];
+	dataList1.setJSON(data);
+};
+
+
+//해더 필터 셋팅 버튼 클릭 시
+scwin.btn_filterSet_onclick = function(e) {
+
+	//그리드뷰 필터용 해더 inputbox 생성 및 필터용 처리 ( 그리드뷰Obj, 필터해더컬럼ID array, 매칭되는 바디컬럼ID array )
+	var headerColumnIdArr	= ["column4", "column11", "column22", "column33"];
+	var bodyColumnIdArr		= ["col4", "col1", "col2", "col3"];
+	scwin.fn_setHeaderFileter( gridView1, headerColumnIdArr, bodyColumnIdArr ); 
+};
+
+
+//필터 초기화 버튼 클릭 시
+scwin.btn_filterInit_onclick = function(e) {
+	//그리드뷰에 필터 inputbox 을 모두 초기화  & 해당 그리뷰의 dataList 필터 해제
+	scwin.fn_clearHeaderFileter( gridView1 );
+};
+
+
+//그리드뷰 필터용 해더 inputbox 생성 및 필터용 처리
+scwin.fn_setHeaderFileter = function( grdiViewObj, headerColumnIdArr, bodyColumnIdArr ) { 
+
+	//해더 필터용 inputbox 초기화를 위해서 headerColumnIdArr 를 setUserData로 담아두기
+	grdiViewObj.setUserData("_filterHeaderId", headerColumnIdArr);
+
+ 	//연결된 dataList object
+	//var dataListObj = com.util.getComponent( grdiViewObj.getDataList() );
+	debugger;
+	var dataListObj = $p.getComponentById(grdiViewObj.getDataList());
+
+	//headerColumnId 배열로 받아서 처리
+	for ( var i=0; i<headerColumnIdArr.length; i++ ){
+
+		var headerColumnId = headerColumnIdArr[i];
+			
+		//필터용 해더ID 에 매칭되는 body 컬럼ID (2줄이상일 경우 별도로 받아야함)  =============================
+		var bodyColumnId = "";
+		if ( typeof bodyColumnIdArr != "undefined" ){
+			bodyColumnId = bodyColumnIdArr[i];
+		} else {
+			bodyColumnId = grdiViewObj.getColIdByHeaderId(headerColumnId);		//해더ID 에 해당하는 바디의 ID
+		}
+		//===========================================================================
+		
+		//var inputBoxId = grdiViewObj.getOriginalID() + "_FHI_"+headerColumnId;
+		var inputBoxId = grdiViewObj.getID() + "_FHI_"+headerColumnId;	//임의의 ID 지정 ( 그리드뷰ID_FHI_column11 형태 )
+
+		//if ( com.util.getComponent(inputBoxId) != null )	continue;
+		if ( $p.getComponentById(inputBoxId) != null )	continue;
+		
+
+		var inputBoxObj = {
+			input : $p.dynamicCreate( inputBoxId, "input", {
+				style : "width:95%; height:95%;text-align:center;"
+				,dataType: "text"
+				,type: "search"
+			}, grdiViewObj ),
+			getContent : function() {
+				return this.input.render;
+			},
+			setValue : function( value ) {
+				this.input.setValue(value);
+			},
+			getValue : function() {
+				return this.input.getValue();
+			}
+		};
+
+		//해당 필터용 inputbox에 포커스 되면, 그리드뷰의 포커스 제거
+		inputBoxObj.input.bind("onfocus", function() { grdiViewObj.removeFocusedCell(); });
+
+		//해당 필터용 inputbox 에 이벤트 추가
+		inputBoxObj.input.bind("onviewchange", scwin._chgHeaderInput);
+
+		//해당 필터용 inputbox 에 데이터 컬럼 접근을 위한 정보성 해더컬럼 ID 셋팅
+		inputBoxObj.input.setUserData("headerId", headerColumnId);
+		
+		//해당 필터용 inputbox 에 데이터 컬럼 접근을 위한 정보성 바디컬럼 ID 셋팅
+		inputBoxObj.input.setUserData("bodyId", bodyColumnId);
+		
+
+		//해당 필터용 inputbox 추가
+		grdiViewObj.setHeaderUserObject(headerColumnId, inputBoxObj);
+	}
+
+	scwin._chgHeaderInput = function(){
+
+		var searchWord = this.getValue();
+		//var colId = grdiViewObj.getColIdByHeaderId(this.getUserData("headerId"));		//해더ID 에 해당하는 바디의 ID
+		var colId = this.getUserData("bodyId");		//바디의 ID
+		
+		if ( searchWord.trim().length > 0 ){
+			dataListObj.removeColumnFilter( colId );	// colId 컬럼에 적용된 필터링을 해제한다
+
+			//대소문자 구분없이 like 검색을 위해서 별도 함수로 filter
+			var fn_tmpFilter = function(cellData, tmpParam, rowIdx){
+				cellData = typeof cellData == "string" ? cellData.toLowerCase() : cellData;
+				searchWord = searchWord.toLowerCase();
+				if ( cellData.indexOf(searchWord) > -1 ){
+					return true;
+				}
+				return false;   //return이 true인 경우 적용하고 false인 경우 skip한다.
+			};
+			dataListObj.setColumnFilter(
+				{type:'func', colIndex:colId, key:fn_tmpFilter, condition:'and'}
+			);
+
+			/*
+			//일반적인 columnFilter
+			dataListObj.setColumnFilter(
+				{type:'row', colIndex:colId, key:searchWord, condition:'and'}
+			);
+			*/
+
+		} else {
+			dataListObj.removeColumnFilter( colId );	// colId 컬럼에 적용된 필터링을 해제한다
+		}
+	}
+};
+
+//그리드뷰 필터용 해더 컬럼 input 데이터 전체 초기화
+scwin.fn_clearHeaderFileter = function( grdiViewObj ){
+	//step 1. 필터용 해더의 inputbox 값 초기화
+	var headerColumnIdArr = grdiViewObj.getUserData("_filterHeaderId");
+	if ( typeof headerColumnIdArr == "undefined" )	return;
+
+	for ( var i=0; i<headerColumnIdArr.length; i++ ){
+		//그리드뷰 필터 해더 컬럼 input 형태 ( 그리드뷰ID + "_FHI_" + headerColumnId )
+		//var filterheaderId = com.util.getComponent( grdiViewObj.getID() + "_FHI_" + headerColumnIdArr[i] );
+		var filterheaderId = $p.getComponentById( grdiViewObj.getID() + "_FHI_" + headerColumnIdArr[i] );
+		filterheaderId.setValue("");
+	}
+
+	//step 2. 해당 그리드뷰 적용된 필터 해제
+	//var dataListObj = com.util.getComponent( grdiViewObj.getDataList() );
+	var dataListObj = $p.getComponentById( grdiViewObj.getDataList() );
+	dataListObj.removeColumnFilterAll();
+};
+
+
+	scwin.dbClick = function(id) {
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick(el);
+	}
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('gridView1_cell_2_0').innerText == 'B1234';
+	}		
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_filterSet').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column1')");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" class="">
+			<xf:group style="" id="" class="sub_title_area">
+				<w2:textbox tagname="h4" dataType="" style="" id=""
+					label="■ GridView 해더 inputbox 추가 &amp; 필터 기능 샘플 &lt;br/&gt;&lt;br/&gt; &amp;nbsp;- 기본적으로 GridView 해더에 inputbox 추가 기능을 제공하지 않음.&lt;br/&gt; &amp;nbsp;- setHeaderUserObject, $p.dynamicCreate 함수를 이용하여 해더에 input 박스 생성&lt;br/&gt; &amp;nbsp;- 기본적인 GridView 컴포넌트 기능이 아니기에, 정해진 룰에 의해서만 동작함. &lt;br/&gt; &amp;nbsp;- 각 필터용 inputbox 의 필터링 기준은 같은 column의 데이터 기준으로 필터 처리&lt;br/&gt; &amp;nbsp;- 초기화 등의 기능로 별도 함수로 지원. &amp;nbsp;&lt;br/&gt;&lt;br/&gt; &amp;nbsp;사전조건 &lt;br/&gt; &amp;nbsp; &amp;nbsp;- 화면상에서 필터 처리 용도의 해더 row를 추가로 생성해야함.&lt;br/&gt;&lt;br/&gt;"
+					class="sub_title_h2" escape="false">
+				</w2:textbox>
+				<w2:textbox id="" label='sortedImagePosition = "true"' style="width:231px;height:23px;"></w2:textbox>
+				<xf:group style="margin-top: 10px;" id="" class="btn_moduleGrp"></xf:group>
+			</xf:group>
+			<w2:gridView scrollByColumnAdaptive="false" summaryAuto="false" useShiftKey="true" scrollByColumn="false"
+				summaryOnlyAuto="false" fixedColumnWithHidden="true" dataList="dataList1" style="width: 800px;height: 350px;" ignoreCellClick="false"
+				useFilterList="false" id="gridView1" autoFit="allColumn" ignoreToggleOnDisabled="false" class="" sortHeaderDiv="true"
+				showSortableImage="true" sortedImagePosition="top">
+				<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+				<w2:header style="" id="header1">
+
+					<w2:row style="" id="row1">
+						<w2:column width="120" style="height:30px;" inputType="text" id="column1" value="name1" blockSelect="false"
+							displayMode="label" sortable="true">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column2" value="name2" blockSelect="false"
+							displayMode="label" sortable="true">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column3" value="name3" blockSelect="false"
+							displayMode="label" sortable="true">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column4" value="name4" blockSelect="false"
+							displayMode="label">
+						</w2:column>
+					</w2:row>
+
+					<w2:row style="" id="row3">
+						<w2:column width="120" inputType="text" style="height:30px;" id="column11" value="" displayMode="label"></w2:column>
+						<w2:column width="120" inputType="text" style="height:30px;" id="column22" value="" displayMode="label"></w2:column>
+						<w2:column width="120" inputType="text" style="height:30px;" id="column33" value="" displayMode="label"></w2:column>
+						<w2:column width="120" inputType="text" style="height:30px;" id="column44" value="" displayMode="label"></w2:column>
+					</w2:row>
+
+
+				</w2:header>
+				<w2:gBody style="" id="gBody1">
+					<w2:row style="" id="row5">
+						<w2:column width="120" style="height:30px;" inputType="text" id="col1" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="col2" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="col3" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="col4" blockSelect="false" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<xf:trigger ev:onclick="scwin.btn_filterSet_onclick" style="width: 120px;height: 23px;margin-left: 10px;" id="btn_filterSet"
+				type="button">
+				<xf:label><![CDATA[필터용 해더 셋팅]]></xf:label>
+			</xf:trigger>
+			<xf:trigger ev:onclick="scwin.btn_filterInit_onclick" style="width: 120px;height: 23px;margin-left: 10px;" id="btn_filterInit"
+				type="button">
+				<xf:label><![CDATA[필터용 해더 초기화]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+    $w.log("main" + "_initScript");
+}
+scwin.test2 = function() {
+    $w.log("main" + "_initScript2");
+}
+scwin.post1 = function() {
+    $w.log("main" + "_postScript1");
+}
+scwin.post2 = function() {
+    $w.log("main" + "_postScript2");
+}
+scwin.onpageload = function() {
+    $w.log("main" + "_onpageload");
+    if (console.log) {
+        console.log("main" + "_onpageload");
+    }
+}
+scwin.trigger1_onclick = function() {
+    var tabNm = "iframe",
+        tabKey = "test_" + scwin.guid++;
+    var tabOptions = {
+        label: tabNm,
+        closable: true,
+        openAction: "select"
+    };
+    var contentsOptions = {
+        frameMode: "iframe",
+        src: "tabcontrol_spaAuto_WPFF-139_(WSQ-3303)_sub.xml"
+    };
+    var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+    //선택한 tab 활성화.
+    if (ret) {
+        tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+    }
+};
+scwin.trigger2_onclick = function() {
+    scwin.guid++;
+    var tabNm = "wframe",
+        tabKey = "test_" + scwin.guid;
+    var tabOptions = {
+        label: tabNm,
+        closable: true,
+        openAction: "select"
+    };
+    var contentsOptions = {
+        wframe: true,
+        frameMode: "wframe",
+        src: "tabcontrol_spaAuto_WPFF-139_(WSQ-3303)_sub.xml",
+        scope: true
+    };
+    var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+    //선택한 tab 활성화.
+    if (ret) {
+        tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+    }
+};
+scwin.trigger3_onclick = function() {
+    var tabNm = "wframePreload",
+        tabKey = "test_" + scwin.guid++;
+    var tabOptions = {
+        label: tabNm,
+        closable: true,
+        openAction: "select"
+    };
+    var contentsOptions = {
+        //wframe : true,
+        frameMode: "wframePreload",
+        src: "tabcontrol_spaAuto_WPFF-139_(WSQ-3303)_sub.xml",
+        scope: true
+    };
+    var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+    //선택한 tab 활성화.
+    if (ret) {
+        tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+    }
+};
+scwin.trigger4_onclick = function(e) {
+    windowLength = window.length;
+    //alert(window.length);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. main 샘플실행 후 3초대기 후 'window.length'버튼을 클릭한다.
+    //1. After executing main sample, click 'window.length' button after 3 invitations.
+    WebSquare.wUnit.addCommand("pause", "8000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    //Verify step 1. '1'값이 보여진다.(빈 iframe이 1개성성됨)(이전에는 빈 iframe이 0개 생성됨)
+    //1. A value of '1' is shown (one empty iframe is generated) (previously zero empty iframes were created)
+    WebSquare.wUnit.addCommand("assert", "windowLength == '1'", "true");
+    //Test step 2. 'addTab(iframe)'버튼을 2번 클릭하고 3초대기 후 'window.length'버튼을 클릭한다.
+    //2. Click the 'addTab (iframe)' button twice. 3 Click the 'window.length' button after the invitation.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "5000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 2. 상단에 iframe tab이 2개 생성되어지고 '3'값이 보여진다.(이전에는 빈 iframe이 2개 생성됨)
+    //2. Two iframe tabs are created at the top and a '3' value is displayed (previously two empty iframes are created).
+    WebSquare.wUnit.addCommand("assert", "windowLength == '3'", "true");
+    //Test step 3. 'addTab(iframe)'버튼을 2번 더 클릭하고 3초대기 후 'window.length'버튼을 클릭한다.
+    //3. Click the 'addTab (iframe)' button twice more. 3 Click the 'window.length' button after the invitation.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "5000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 3. 상단에 iframe tab이 총 4개 생성되어지고 '4'값이 보여진다.
+    //3. A total of four iframe tabs are created at the top and a '4' value is displayed.
+    WebSquare.wUnit.addCommand("assert", "windowLength == '4'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.guid = 0;
+    window.windowLength = undefined;
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 09-Mar-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="group2" style="height:400px;">
+    		<w2:tabControl id="tabControl1" style="width:622px;height:386px;" windowMaxNum="6" confirmTrueAction="exist"
+    			useConfirmMessage="false" confirmFalseAction="new" useTabKeyOnly="true" useMoveNextTabFocus="false" alwaysDraw="false"
+    			spaAuto="true">
+    			<w2:tabs id="tabs1" style="width:70px;height:30px;" label="" disabled="false"></w2:tabs>
+    			<w2:tabs id="tabs2" style="width:70px;height:30px" label="" disabled="false"></w2:tabs>
+    			<w2:content postScript="scwin.post1();" id="content1" frameMode="wframePreload" scope="true" style="height:356px;"
+    				initScript="console.log('ww1_initscript');if(scwin.test){scwin.test();}" src="tabcontrol_spaAuto_WPFF-139_(WSQ-3303)_sub_tab.xml"
+    				alwaysDraw="true">
+    			</w2:content>
+    			<w2:content postScript="scwin.post1();" id="content2" frameMode="wframePreload" scope="true" style="height:356px"
+    				initScript="console.log('ww2_initscript');if(scwin.test){scwin.test();}" src="tabcontrol_spaAuto_WPFF-139_(WSQ-3303)_sub.xml"
+    				alwaysDraw="false">
+    			</w2:content>
+    		</w2:tabControl>
+    	</xf:group>
+    	<xf:group id="group1" style="height:45px;">
+    		<xf:trigger id="trigger1" style="height:40px;width:200px;" ev:onclick="scwin.trigger1_onclick" type="button">
+    			<xf:label>addTab(iframe)</xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger2" style="height:40px;width:200px;" ev:onclick="scwin.trigger2_onclick" type="button">
+    			<xf:label>addTab(wframe)</xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger3" style="height:40px;width:200px;" ev:onclick="scwin.trigger3_onclick" type="button">
+    			<xf:label>addTab(wframePreload)</xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<xf:trigger type="button" id="trigger4" style="position: absolute;width:113px;height:39px;" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[window.length]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

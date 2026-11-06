@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="-535">
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>COMPONENT</w2:type>
+    	<w2:buildDate />
+    	<w2:MSA />
+    	<xf:model>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true" style="">
+    				<w2:columnInfo>
+    					<w2:column dataType="text" id="col1" name="name1"></w2:column>
+    					<w2:column dataType="text" id="col2" name="name2"></w2:column>
+    					<w2:column dataType="text" id="col3" name="name3"></w2:column>
+    					<w2:column dataType="text" id="col4" name="name4"></w2:column>
+    					<w2:column dataType="text" id="col5" name="name5"></w2:column>
+    					<w2:column dataType="text" id="col6" name="name6"></w2:column>
+    					<w2:column dataType="text" id="col7" name="name7"></w2:column>
+    					<w2:column dataType="text" id="col8" name="name8"></w2:column>
+    					<w2:column dataType="text" id="col9" name="name9"></w2:column>
+    					<w2:column dataType="text" id="col10" name="name10"></w2:column>
+    				</w2:columnInfo>
+    				<w2:data use="true">
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    					<w2:row></w2:row>
+    				</w2:data>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection />
+    	</xf:model>
+    	<w2:layoutInfo />
+    	<w2:publicInfo method="" />
+    	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    windowContainer1.createWindow({
+        windowId : 'a1',
+        title : 'title01',
+        src : '/content/window/sub1.xml',
+        openAction : 'existWindow',
+        frameMode : "wframe",
+        accessibility: "true"
+    });
+
+    windowContainer1.createWindow({
+        windowId : 'a2',
+        title : 'title02',
+        src : '/content/window/sub2.xml',
+        openAction : 'existWindow',
+        frameMode : "wframe"
+    });
+
+    windowContainer1.createWindow({
+        windowId : 'a3',
+        title : 'title03',
+        src : '/content/window/sub3.xml',
+        openAction : 'existWindow',
+        frameMode : "wframe"
+    });
+
+    windowContainer1.createWindow({
+        windowId : 'a4',
+        title : 'title04',
+        src : '/content/window/sub4.xml',
+        openAction : 'existWindow',
+        frameMode : "wframe"
+    });
+  
+
+    windowContainer1.setFocus(2);
+    
+};
+scwin.windowContainer1_ondragstart = function(id) {
+	localStorage.setItem('log1', 'ondragstart')
+	console.log("ondragstart : " + id)
+}
+scwin.windowContainer1_ondragend = function(id) {
+	localStorage.setItem('log2', 'ondragend')
+	console.log("ondragend : " + id)
+}
+
+		scwin.simulateWrapper = function(target, type, options) {
+			WebSquare.wUnit.getJq(target).simulate(type, options);
+		}
+		scwin.setSimulate = function() {
+			scwin.simulateWrapper('#windowContainer1_subWindow0_header', 'drag-n-drop', {
+				dx: 100,
+				dy: 0
+			});
+		}
+
+		scwin.checkVal1 = function() {
+			return localStorage.getItem('log1') == 'ondragstart';
+		}
+		scwin.checkVal2 = function() {
+			return localStorage.getItem('log2') == 'ondragend';
+		}	
+		scwin.unitTest = function() {
+			//Unit
+			WebSquare.wUnit.start();
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_sequential').click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_subWindow0_header').click()");
+			WebSquare.wUnit.addCommand("pause", "400");			
+			WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+			WebSquare.wUnit.addCommand("pause", "500");
+			
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+			WebSquare.wUnit.addCommand("pause", "500");		
+			
+			//Run test and stop
+			WebSquare.wUnit.run();
+			WebSquare.wUnit.stop();
+		}	
+		scwin.unitTest()
+		localStorage.removeItem("log1");	
+		localStorage.removeItem("log2");	
+		
+]]></script>
+    	<style type="text/css"><![CDATA[ 
+    		.w2widget{box-sizing:border-box;}
+    	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="" class="sub_contents">
+
+    		<xf:group class="page_header" id="" tagname="header" style="">
+    			<xf:group class="page_header_inner" id="grp_main">
+    				<w2:textbox class="pgt_tit" id="" label="WindowContainer" style="" tagname="h2"></w2:textbox>
+    			</xf:group>
+    		</xf:group>
+    		<w2:windowContainer spaInitCount="0" accessibility="true" buttonFormatter="scwin.buttonFormatter" nameLayerMenu="false"
+    			tabIndex="0" windowAutoResize="true" useFixButton="true" useNameContainer="" windowMaxNum="10" tooltipDisplay="true"
+    			controlIconPosition="" windowTooltipDisplay="true" stopMinimizeOnNameLayer="true" style="position: relative;height:400px;width:100%;"
+    			toolbarPosition="top" id="windowContainer1" class="cm_windowContainer" ev:onclickcustombtn="scwin.windowContainer1_onclickcustombtn"
+    			useWindowScrollButton="true" useCloseButton="true" ev:ondragstart="scwin.windowContainer1_ondragstart" ev:ondragend="scwin.windowContainer1_ondragend">
+    			<w2:windowToolbar>
+    				<w2:controlIconLayer>
+    					<w2:controlIcon></w2:controlIcon>
+    					<w2:controlIcon></w2:controlIcon>
+    					<w2:controlIcon></w2:controlIcon>
+    					<w2:controlIcon></w2:controlIcon>
+    					<w2:controlIcon></w2:controlIcon>
+    				</w2:controlIconLayer>
+    				<w2:nameLayer></w2:nameLayer>
+    				<w2:selectedNameLayer></w2:selectedNameLayer>
+    			</w2:windowToolbar>
+    		</w2:windowContainer>
+    	</xf:group>
+
+    </body>
+</html>

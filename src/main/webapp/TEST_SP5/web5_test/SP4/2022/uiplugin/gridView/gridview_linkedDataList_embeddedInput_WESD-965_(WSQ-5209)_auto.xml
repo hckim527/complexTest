@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Stylesheet 선언 시작 -->
+<?xml-stylesheet href="/css/bootstrap.min.css" type="text/css"?>
+<?xml-stylesheet href="/css/common.css" type="text/css"?>
+<?xml-stylesheet href="/themes/autumn/css/style.css" type="text/css"?>
+<!--// Stylesheet 선언 종료  -->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+              <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+                <w2:columnInfo>
+                  <w2:column id="cdId" name="name1" dataType="text"></w2:column>
+                  <w2:column id="cdNm" name="name2" dataType="text"></w2:column>
+                </w2:columnInfo>
+                <w2:data use="true">
+                  <w2:row>
+                    <cdId><![CDATA[001]]></cdId>
+                    <cdNm><![CDATA[대분류1]]></cdNm>
+                  </w2:row>
+                  <w2:row>
+                    <cdId><![CDATA[002]]></cdId>
+                    <cdNm><![CDATA[대분류2]]></cdNm>
+                  </w2:row>
+                </w2:data>
+              </w2:dataList>
+              <w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+                <w2:columnInfo>
+                  <w2:column id="upperCdId" name="상위분류" dataType="text"></w2:column>
+                  <w2:column id="cdId" name="코드id" dataType="text"></w2:column>
+                  <w2:column id="cdNm" name="코드명" dataType="text"></w2:column>
+
+                </w2:columnInfo>
+                <w2:data use="true">
+                  <w2:row>
+                    <cdId><![CDATA[001001]]></cdId>
+                    <cdNm><![CDATA[대분류1코드1]]></cdNm>
+                    <upperCdId><![CDATA[001]]></upperCdId>
+                  </w2:row>
+                  <w2:row>
+                    <cdId><![CDATA[001002]]></cdId>
+                    <cdNm><![CDATA[대분류1코드2]]></cdNm>
+                    <upperCdId><![CDATA[001]]></upperCdId>
+                  </w2:row>
+                  <w2:row>
+                    <upperCdId><![CDATA[002]]></upperCdId>
+                    <cdId><![CDATA[002001]]></cdId>
+                    <cdNm><![CDATA[대분류2코드1]]></cdNm>
+                  </w2:row>
+                  <w2:row>
+                    <upperCdId><![CDATA[002]]></upperCdId>
+                    <cdId><![CDATA[002002]]></cdId>
+                    <cdNm><![CDATA[대분류2코드2]]></cdNm>
+                  </w2:row>
+                </w2:data>
+              </w2:dataList>
+              <w2:dataList baseNode="list" repeatNode="map" id="dataList3" saveRemovedData="true">
+                <w2:columnInfo>
+                  <w2:column id="col1" name="대분류" dataType="text"></w2:column>
+                  <w2:column id="col2" name="코드" dataType="text"></w2:column>
+                </w2:columnInfo>
+              </w2:dataList>
+              
+            
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+  scwin.onpageload = function() {
+    scwin.createLinckedDataList('dltlnk_code', 'dataList2', 'dataList3', 'col1', 'upperCdId');
+    grid01.setColumnNodeSet('col1', 'data:dataList1', 'cdNm', 'cdId');
+    grid01.setColumnNodeSet('col2', 'data:dltlnk_code', 'cdNm', 'cdId');
+    dataList3.insertRow();
+    
+    //btnUpload.bind('onclick', scwin.upload);
+  };
+  
+  scwin.onpageunload = function() {
+    
+  };
+  
+  scwin.createLinckedDataList = function (
+    linkedDataListId,
+    oriDataListId,
+    mstDataListId,
+    mstColId,
+    linkedRelatedColId
+  ) {
+    var lnkDataList = $p.getComponentById(linkedDataListId);
+    if (!lnkDataList) {
+      var conditionStr = "";
+      if (mstDataListId && mstColId && linkedRelatedColId)
+        conditionStr += linkedRelatedColId + ' == ref("data:' + mstDataListId + "." + mstColId + '")';
+  
+      lnkDataList = scwin.createLinckedDataListCond(linkedDataListId, oriDataListId, conditionStr);
+    }
+    return lnkDataList;
+  };
+  
+  scwin.createLinckedDataListCond = function (linkedDataListId, oriDataListId, conditionStr) {
+    var lnkDataList = $p.getComponentById(linkedDataListId);
+    if (!lnkDataList) {
+      if (!conditionStr) conditionStr = "";
+  
+      var info = {
+        id: linkedDataListId,
+        type: "linkedDataList",
+        option: {
+          valueAttribute: "",
+          bind: oriDataListId,
+          filterCondition: conditionStr,
+          sortCondition: "",
+        },
+      };
+  
+      $p.data.create(info);
+      lnkDataList = $p.getComponentById(linkedDataListId);
+    }
+    return lnkDataList;
+  };
+  
+  scwin.upload = function(){
+    var options = {
+      "headerExist": 1,
+      "skipSpace": 1,
+      "type": 1,
+      "processMsg": "파일 업로드 중 입니다."
+    };
+    
+    gridUpload.advancedExcelUpload(options);
+  };
+  
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('grid01_cell_0_1_select_input_0').value == '선택';
+	}		
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+  ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+      <w2:gridView id="grid01" style="width: 500px;height: 150px;" checkAllType="false" scrollByColumn="false" defaultCellHeight="20"
+        scrollByColumnAdaptive="false" dataList="data:dataList3">
+        <w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+        <w2:header style="" id="header2">
+          <w2:row style="" id="row3">
+            <w2:column width="150" inputType="text" style="height:20px" id="column4" value="대분류" displayMode="label"></w2:column>
+            <w2:column width="150" inputType="text" style="height:20px" id="column3" value="코드" displayMode="label"></w2:column>
+          </w2:row>
+        </w2:header>
+        <w2:gBody style="" id="gBody2">
+          <w2:row style="" id="row4">
+            <w2:column width="150" inputType="select" style="height:20px" id="col1" value="" displayMode="label" embeddedInput="true"></w2:column>
+            <w2:column width="150" inputType="select" style="height:20px" id="col2" value="" displayMode="label" chooseOption="true"
+              chooseOptionLabel="선택" embeddedInput="true">
+            </w2:column>
+          </w2:row>
+        </w2:gBody>
+      </w2:gridView>
+    </body>
+</html>

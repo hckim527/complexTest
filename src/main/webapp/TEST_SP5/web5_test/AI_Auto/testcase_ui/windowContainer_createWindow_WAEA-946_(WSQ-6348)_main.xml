@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <w2:dataCollection></w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin._seq = 0;
+scwin.onpageload = function() {
+    scwin.log("WAEA-946 createWindowAsync 데모. 버튼으로 동기 createWindow 와 비동기 createWindowAsync 를 비교하세요.");
+};
+scwin.log = function(msg) {
+    var t = new Date();
+    var ts = ("0" + t.getMinutes()).slice(-2) + ":" + ("0" + t.getSeconds()).slice(-2);
+    txa_log.setValue(txa_log.getValue() + "[" + ts + "] " + msg + "\n");
+};
+scwin.btn_sync_onclick = function() {
+    scwin._seq++;
+    var id = "sync" + scwin._seq;
+    windowContainer1.createWindow({ title: id, src: "windowContainer_createWindow_WAEA-946_(WSQ-6348)_sub.xml", windowId: id, frameMode: "wframe", openAction: "newWindow" });
+    scwin.log("createWindow(동기) 반환됨 → 이 시점엔 내부 화면 로딩 완료가 보장되지 않음: " + id);
+};
+scwin.btn_async_wframe_onclick = async function() {
+    scwin._seq++;
+    var id = "aw" + scwin._seq;
+    scwin.log("createWindowAsync(wframe) 호출: " + id + " ... (내부 로딩 대기)");
+    try {
+        var windowObj = await windowContainer1.createWindowAsync({ title: id, src: "windowContainer_createWindow_WAEA-946_(WSQ-6348)_sub.xml", windowId: id, frameMode: "wframe", openAction: "newWindow", timeout: 10000 });
+        // wframe scope 객체이므로 내부 컴포넌트(sub_msg)에 직접 접근 가능
+        var loadedMsg = (windowObj && windowObj.sub_msg) ? windowObj.sub_msg.getValue() : "(n/a)";
+        scwin.log("→ resolve: " + id + " / 로딩완료 시점 sub_msg = " + loadedMsg);
+        // 로딩 완료가 보장되므로 내부 컴포넌트에 값 주입도 즉시 가능
+        if (windowObj && windowObj.sub_msg) {
+            windowObj.sub_msg.setValue("부모가 await 후 주입: " + id);
+            scwin.log("   내부 sub_msg 주입 후 재확인 = " + windowObj.sub_msg.getValue());
+        }
+    } catch (e) {
+        scwin.log("→ reject: " + (e.code || e.message));
+    }
+};
+scwin.btn_async_iframe_onclick = async function() {
+    scwin._seq++;
+    var id = "ai" + scwin._seq;
+    scwin.log("createWindowAsync(iframe) 호출: " + id + " ...");
+    try {
+        var windowObj = await windowContainer1.createWindowAsync({ title: id, src: "windowContainer_createWindow_WAEA-946_(WSQ-6348)_sub.xml", windowId: id, frameMode: "iframe", openAction: "newWindow", timeout: 10000 });
+        // iframe contentWindow 반환 — 내부 컴포넌트는 windowObj.$p 로 접근
+        var ok = !!(windowObj && windowObj.$p);
+        scwin.log("→ resolve: " + id + " / contentWindow.$p 접근 = " + (ok ? "OK" : "n/a"));
+    } catch (e) {
+        scwin.log("→ reject: " + (e.code || e.message));
+    }
+};
+scwin.btn_async_cors_onclick = async function() {
+    scwin._seq++;
+    var id = "ac" + scwin._seq;
+    // 부모와 다른 호스트(127.0.0.1 ↔ localhost)로 교차출처 src 구성
+    var otherHost = (location.hostname === "localhost") ? "127.0.0.1" : "localhost";
+    var corsSrc = location.protocol + "//" + otherHost + ":" + location.port + location.pathname + "?w2xPath=/TEST/WS5_AT_TR/windowContainer_createWindow_WAEA-946_(WSQ-6348)_sub.xml";
+    scwin.log("createWindowAsync(CORS iframe) 호출: " + id + " → " + corsSrc);
+    try {
+        await windowContainer1.createWindowAsync({ title: id, src: corsSrc, windowId: id, frameMode: "iframe", openAction: "newWindow", timeout: 15000 });
+        scwin.log("→ resolve(CORS): " + id + " — postMessage 핸드셰이크 성공 (cross-origin 은 내부 접근 불가)");
+    } catch (e) {
+        scwin.log("→ reject: " + (e.code || e.message));
+    }
+};
+scwin.btn_clear_onclick = function() {
+    txa_log.setValue("");
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:8px;">
+            <xf:trigger type="button" id="btn_sync" ev:onclick="scwin.btn_sync_onclick" style="width:150px;height:28px;margin:2px;"><xf:label><![CDATA[createWindow 동기]]></xf:label></xf:trigger>
+            <xf:trigger type="button" id="btn_async_wframe" ev:onclick="scwin.btn_async_wframe_onclick" style="width:200px;height:28px;margin:2px;"><xf:label><![CDATA[createWindowAsync wframe]]></xf:label></xf:trigger>
+            <xf:trigger type="button" id="btn_async_iframe" ev:onclick="scwin.btn_async_iframe_onclick" style="width:200px;height:28px;margin:2px;"><xf:label><![CDATA[createWindowAsync iframe]]></xf:label></xf:trigger>
+            <xf:trigger type="button" id="btn_async_cors" ev:onclick="scwin.btn_async_cors_onclick" style="width:210px;height:28px;margin:2px;"><xf:label><![CDATA[createWindowAsync CORS]]></xf:label></xf:trigger>
+            <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick" style="width:70px;height:28px;margin:2px;"><xf:label><![CDATA[clear]]></xf:label></xf:trigger>
+        </xf:group>
+        <w2:windowContainer id="windowContainer1" windowMaxNum="10" useStatusMsg="false" useNameContainer="false" useCloseButton="true" toolbarPosition="bottom" style="position:relative;width:760px;height:300px;border:1px solid #cccccc;">
+            <w2:windowToolbar>
+                <w2:selectedNameLayer></w2:selectedNameLayer>
+                <w2:controlIconLayer></w2:controlIconLayer>
+                <w2:nameLayer></w2:nameLayer>
+            </w2:windowToolbar>
+        </w2:windowContainer>
+        <w2:textarea id="txa_log" style="width:760px;height:150px;margin-top:8px;font-family:monospace;font-size:12px;"></w2:textarea>
+    </body>
+</html>

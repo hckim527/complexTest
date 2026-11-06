@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.showFloatingLayer = function(title, width, height, url, modal, usePost, postData) {
+    var top = document.documentElement.scrollTop + document.documentElement.clientHeight / 2 - parseInt(height) / 2;
+    var left = document.documentElement.scrollLeft + document.documentElement.clientWidth / 2 - parseInt(width) / 2;
+    var tmp = url.split("/");
+    tmp = tmp.reverse();
+    var filename = tmp[0];
+    var popupId = "Pop_" + filename.split(".")[0];
+    var popupIframeId = "PopIf_" + filename.split(".")[0]
+    scwin.makeCommonPopup(popupId, popupIframeId, title, width, height, top, left, modal == false ? false : true);
+    /*
+    eval("popup1_"+popupIdNum).show();
+    eval("popup1_iframe"+popupIdNum).setSrc(url);
+    */
+    eval(popupId).show();
+    eval(popupIframeId).setSrc(url);
+}
+scwin.makeCommonPopup = function(popupId, popupIframeId, title, width, height, top, left, modal, idx) {
+    var scrolling = "auto";
+    WebSquare.util.dynamicCreate(popupId, "floatingLayer", {
+        fullContentArea: true,
+        style: "position: relative ;left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;display:none;z-index:4001",
+        useModal: modal,
+        className: "pop_lay",
+        title: title,
+        xmlEvents: [{
+            name: "onclose",
+            action: "script",
+            param: {
+                handler: function(e) {
+                    console.log("onclose");
+                    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
+                    WebSquare.wUnit.getObjById(popupIframeId).remove();
+                    WebSquare.wUnit.getObjById(popupId).remove();
+                    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
+                    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+                        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+                    }
+                }
+            }
+        }]
+    }, WebSquare.getBody());
+    WebSquare.wUnit.getJq(".pop_lay").css("z-index", "3999");
+    WebSquare.wUnit.getJq("#" + popupId).css("z-index", "4001");
+    WebSquare.util.dynamicCreate(popupIframeId, "iframe", {
+        style: "position: relative ;left: 0px;width: 100%;height: 100%;",
+        name: popupIframeId,
+        scrolling: scrolling
+    }, eval(popupId + "_contents"));
+}
+scwin.hideFloatingLayer = function(popupId) {
+    var tmp = popupId.split("_");
+    var popupIframeId = "PopIf_" + tmp[1];
+    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
+    WebSquare.wUnit.getObjById(popupIframeId).remove();
+    WebSquare.wUnit.getObjById(popupId).remove();
+    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
+    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+    }
+}
+scwin.setGridData = function(data, popupIdx) {
+    dataList1.setJSON(data);
+    //hideFloatingLayer(popupIdx);
+}
+scwin.trigger1_onclick = function(e) {};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Test step 1. 샘플파일을 실행 후 '팝업1오픈'을 클릭한다.
+    //1. Run the sample file and click 'Open pop-up 1'.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "2000");
+    // verify step 1. 작은 팝업창이보여지고 (우측스크롤바의 우측끝의 여백이 보이지 않고) 아래끝의 스크롤바의 아래끝영역사이의 여백이 보이지 않는다.(이전에는 여백이 보여짐)
+    //1. A small pop-up window is displayed (no margins at the right end of the right scroll bar), no margins between the bottom end areas of the scroll bar at the bottom end (previously the margins are shown)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#Pop_floatingLayerWPF1019WSQ2207popup').length == 1", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#Pop_floatingLayerWPF1019WSQ2207popup_contents').width() >= 500", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /**
+     * 공통팝업을 호출합니다. 
+     * @param title : 공통팝업 타이틀
+     * @param width :  width
+     * @param height :height
+     * @param url : 오픈할 url
+     * @param useModal : 팝업을 modal로 띄울지 여부(defaule true, modal로 안띌 수 false 속성) 
+     * @example scwin.showFloatingLayer("Common Address","820", "300",  "/content.xml", "false");
+     */
+    /*
+    scwin.setDataMap = function(){
+    	eval("popup1_iframe"+popupIdNum).getWindow().dataMap1.set("key1", "popup1_"+popupIdNum);
+    }
+    */
+    /**
+     * 공통팝업(플로팅레이어) 클로즈 하는 함수
+     */
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 06-Feb-2018		
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[
+		.pop_lay .w2floatingLayer_contents{} 
+		
+		]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+
+		<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 55px;top: 18px;width: 82px;height: 28px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[팝업1 오픈]]></xf:label>
+			<script ev:event="onclick(e)" type="javascript"><![CDATA[
+				scwin.showFloatingLayer("Common Address","500", "300",  "floatingLayerWPF1019WSQ2207popup.xml", true);	
+			 ]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

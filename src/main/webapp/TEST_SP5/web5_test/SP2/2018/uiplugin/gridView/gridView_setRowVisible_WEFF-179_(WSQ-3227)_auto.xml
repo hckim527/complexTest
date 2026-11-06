@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var totRow = 100;
+    var totCol = grid1.getTotalCol();
+    var arr = [];
+    for (var i = 0; i < totRow; i++) {
+        for (var j = 0; j < totCol; j++) {
+            arr.push("index_" + i + "_" + j);
+        }
+    }
+    grid1.setData(arr);
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    /*
+    for(var i=0;i<grid1.getTotalRow();i++) {
+    	if(i != 50 && i != 100 && i != 199) {
+    		grid1.setRowVisible(i, false);
+    	}
+    }
+    */
+    grid1.setRowBackgroundColor(50, "yellow");
+    for (var i = 10; i < 50; i++) {
+        grid1.setRowBackgroundColor(i, "yellow");
+        grid1.setRowVisible(i, false);
+    }
+};
+scwin.checkColor = function(id, value, rgb) {
+    var color = WebSquare.wUnit.getJq(id).css("background-color");
+    if (color.indexOf("rgb") != -1) {
+        return color == rgb;
+    }
+    return color == value;
+}
+
+scwin.setVal1 = function() {
+    WebSquare.wUnit.getJq('#grid1_scrollY_div').animate ({scrollTop:360}, 50);
+}
+scwin.setVal2 = function() {
+    WebSquare.wUnit.getJq('#grid1_scrollY_div').animate ({scrollTop:50}, 50);
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq(WebSquare.wUnit.getJq('#grid1_body_tbody tr')[38]).css('display') == 'none' && WebSquare.wUnit.getJq(WebSquare.wUnit.getJq('#grid1_body_tbody tr')[38]).is(':visible') == false;
+}
+
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('#grid1_cell_50_0', 'yellow', 'rgb(255, 255, 0)')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 세로스크롤을 아래로 조금씩 내리고 다시 위로 올려본다.
+    //2. Lower the vertical scroll down and back up.
+    //Verify step 2. Hidden rows are not shown.
+    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" id="trigger1" style="width:146px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setRowVisible false]]></xf:label>
+    	</xf:trigger>
+    	<w2:grid baseNode="vector" repeatNode="data/INFO" id="grid1" style="width: 700px;height: 800px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column19" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column17" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column15" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column13" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column20" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column18" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column16" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column14" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column12" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column10" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column8" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column6" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column4" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column2" style="" width="120" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    </body>
+</html>
+ 

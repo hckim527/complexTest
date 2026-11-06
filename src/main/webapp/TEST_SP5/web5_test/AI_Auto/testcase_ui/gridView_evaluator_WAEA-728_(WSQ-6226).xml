@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="status" name="Status" dataType="text"></w2:column>
+                    <w2:column id="grade" name="Grade" dataType="text"></w2:column>
+                    <w2:column id="quantity" name="Quantity" dataType="number"></w2:column>
+                    <w2:column id="unitPrice" name="UnitPrice" dataType="number"></w2:column>
+                    <w2:column id="name1" name="Name1" dataType="text"></w2:column>
+                    <w2:column id="name2" name="Name2" dataType="text"></w2:column>
+                    <w2:column id="amount" name="Amount" dataType="number"></w2:column>
+                    <w2:column id="editFlag" name="EditFlag" dataType="text"></w2:column>
+                    <w2:column id="balance" name="Balance" dataType="number"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.log = function(msg) {
+        var cur = txa_log.getValue();
+        var ts = new Date().toLocaleTimeString();
+        var line = "[" + ts + "] " + msg;
+        txa_log.setValue(cur ? cur + "\n" + line : line);
+    };
+
+    scwin.onpageload = function() {
+        scwin.log("gridView expr 테스트 페이지 로드 완료");
+
+        // 테스트 데이터 30건 삽입
+        var statuses = ["A", "R", "P"];
+        var grades = ["A", "B", "C"];
+        var names1 = ["Kim", "Park", "Hong", "Lee", "Choi", "Yoon", "Jang", "Han", "Seo", "Kang"];
+        var names2 = ["Lee", "Choi", "Yoon", "Kim", "Park", "Hong", "Jang", "Han", "Seo", "Kang"];
+        for (var i = 0; i < 30; i++) {
+            var row = {
+                status: statuses[i % 3],
+                grade: grades[i % 3],
+                quantity: (i + 1) * 2,
+                unitPrice: (i + 1) * 100,
+                name1: names1[i % 10],
+                name2: names2[i % 10],
+                amount: (i + 1) * 1000,
+                editFlag: i % 2 === 0 ? "Y" : "N",
+                balance: i % 3 === 0 ? -(i + 1) * 50 : (i + 1) * 50
+            };
+            dataList1.setRowJSON(dataList1.insertRow(), row);
+        }
+    };
+
+    scwin.btn_test_compile_onclick = function() {
+        scwin.log("=== Step 1: cellInfo expr 컴파일 검증 ===");
+        var grid = $p.getComponentById("grd1");
+        if (!grid) {
+            scwin.log("[ERROR] grd1 gridView를 찾을 수 없습니다.");
+            return;
+        }
+
+        var pass = 0;
+        var fail = 0;
+        var cellInfoHash = grid.cellInfoHash;
+
+        // expr 속성이 있는 컬럼 확인
+        var exprColumns = ["statusText", "gradeText", "calcAmt", "rowNum"];
+        var styleColumns = ["amount"];
+
+        for (var i = 0; i < exprColumns.length; i++) {
+            var colId = exprColumns[i];
+            var ci = cellInfoHash[colId];
+            if (!ci) {
+                scwin.log("[FAIL] cellInfo '" + colId + "' 없음");
+                fail++;
+                continue;
+            }
+            if (ci._compiled_expr && typeof ci._compiled_expr === "function") {
+                scwin.log("[PASS] " + colId + ".expr 컴파일 완료 (hasExpr=" + ci.hasExpr + ")");
+                pass++;
+            } else {
+                scwin.log("[FAIL] " + colId + "._compiled_expr가 없습니다. options.expr=" + ci.options.expr);
+                fail++;
+            }
+        }
+
+        // 스타일 expr 확인
+        for (var j = 0; j < styleColumns.length; j++) {
+            var colId2 = styleColumns[j];
+            var ci2 = cellInfoHash[colId2];
+            if (!ci2) {
+                scwin.log("[FAIL] cellInfo '" + colId2 + "' 없음");
+                fail++;
+                continue;
+            }
+            var checks = [
+                ["_compiled_exprColor", ci2._compiled_exprColor],
+                ["_compiled_exprBackground", ci2._compiled_exprBackground]
+            ];
+            for (var k = 0; k < checks.length; k++) {
+                if (checks[k][1] && typeof checks[k][1] === "function") {
+                    scwin.log("[PASS] " + colId2 + "." + checks[k][0] + " 컴파일 완료");
+                    pass++;
+                } else {
+                    scwin.log("[FAIL] " + colId2 + "." + checks[k][0] + " 없음");
+                    fail++;
+                }
+            }
+        }
+
+        // expr 없는 일반 컬럼은 hasExpr=false 확인
+        var normalCol = cellInfoHash["status"];
+        if (normalCol && !normalCol.hasExpr) {
+            scwin.log("[PASS] status (일반 컬럼) hasExpr=false");
+            pass++;
+        } else if (normalCol) {
+            scwin.log("[FAIL] status (일반 컬럼) hasExpr=" + normalCol.hasExpr + " (false여야 함)");
+            fail++;
+        }
+
+        scwin.log("=============================");
+        scwin.log("Step 1 결과 — Total: " + (pass + fail) + ", PASS: " + pass + ", FAIL: " + fail);
+    };
+
+    scwin.btn_test_render_onclick = function() {
+        scwin.log("=== Step 2: 렌더링 결과 검증 ===");
+        var grid = $p.getComponentById("grd1");
+        if (!grid) {
+            scwin.log("[ERROR] grd1 gridView를 찾을 수 없습니다.");
+            return;
+        }
+
+        var pass = 0;
+        var fail = 0;
+
+        function getTD(trIndex, colId) {
+            var colIdx = grid.tdIdList.indexOf(colId);
+            if (colIdx < 0) return null;
+            return grid._getTDByIndex(trIndex * grid.oneRowDataLength + colIdx);
+        }
+
+        function check(ok, label, detail) {
+            if (ok) { pass++; }
+            else { scwin.log("[FAIL] " + label + " — " + detail); fail++; }
+        }
+
+        var rowCount = dataList1.getRowCount();
+        var statusMap = { "A": "승인", "R": "반려" };
+        var gradeMap = { "A": "우수", "B": "양호" };
+
+        for (var r = 0; r < rowCount; r++) {
+            // 해당 행이 화면에 보이도록 스크롤
+            grid.setTopRowIndex(r);
+            var topRow = grid.getTopRowIndex();
+            var trIndex = r - topRow;
+            var visibleRows = grid.lastIndex - grid.rowIndex + 1;
+
+            // 화면 밖이면 skip
+            if (trIndex < 0 || trIndex >= visibleRows) continue;
+
+            // 데이터 없는 빈 행 skip
+            var st = String(dataList1.getCellData(r, "status"));
+            if (!st) continue;
+            var gr = String(dataList1.getCellData(r, "grade"));
+            var qty = Number(dataList1.getCellData(r, "quantity"));
+            var price = Number(dataList1.getCellData(r, "unitPrice"));
+            var amt = Number(dataList1.getCellData(r, "amount"));
+            var bal = Number(dataList1.getCellData(r, "balance"));
+
+            // 일반 컬럼 — 렌더링 값 == dataList 값
+            var dataCols = ["status", "grade", "quantity", "unitPrice", "name1", "name2", "amount", "balance"];
+            for (var c = 0; c < dataCols.length; c++) {
+                var colId = dataCols[c];
+                var dlVal = String(dataList1.getCellData(r, colId));
+                var td = getTD(trIndex, colId);
+                var tdVal = td ? td.textContent.trim() : "null";
+                check(tdVal === dlVal,
+                    "row" + r + " " + colId + " render='" + tdVal + "'",
+                    "dataList='" + dlVal + "'");
+            }
+
+            // expr: iif 중첩
+            var expectedStatus = statusMap[st] || "대기";
+            var tdST = getTD(trIndex, "statusText");
+            check(tdST && tdST.textContent.trim() === expectedStatus,
+                "row" + r + " statusText",
+                st + "→ expected '" + expectedStatus + "', got '" + (tdST ? tdST.textContent.trim() : "null") + "'");
+
+            // expr: decode
+            var expectedGrade = gradeMap[gr] || "보통";
+            var tdGT = getTD(trIndex, "gradeText");
+            check(tdGT && tdGT.textContent.trim() === expectedGrade,
+                "row" + r + " gradeText",
+                gr + "→ expected '" + expectedGrade + "', got '" + (tdGT ? tdGT.textContent.trim() : "null") + "'");
+
+            // expr: 산술
+            var expectedCalc = String(qty * price);
+            var tdCalc = getTD(trIndex, "calcAmt");
+            check(tdCalc && tdCalc.textContent.trim() === expectedCalc,
+                "row" + r + " calcAmt",
+                qty + "*" + price + "= expected '" + expectedCalc + "', got '" + (tdCalc ? tdCalc.textContent.trim() : "null") + "'");
+
+            // expr: currow
+            var tdRN = getTD(trIndex, "rowNum");
+            check(tdRN && tdRN.textContent.trim() === String(r + 1),
+                "row" + r + " rowNum",
+                "expected '" + (r+1) + "', got '" + (tdRN ? tdRN.textContent.trim() : "null") + "'");
+
+            // exprColor / exprBackground
+            var tdAmt = getTD(trIndex, "amount");
+            if (tdAmt) {
+                var expectColor = bal < 0 ? "rgb(255, 0, 0)" : "rgb(0, 0, 0)";
+                check(tdAmt.style.color === expectColor,
+                    "row" + r + " color",
+                    "bal=" + bal + " expected '" + expectColor + "', got '" + tdAmt.style.color + "'");
+
+                var expectBg = amt > 10000 ? "rgb(255, 204, 204)" : "rgb(255, 255, 255)";
+                check(tdAmt.style.backgroundColor === expectBg,
+                    "row" + r + " bg",
+                    "amt=" + amt + " expected '" + expectBg + "', got '" + tdAmt.style.backgroundColor + "'");
+            }
+        }
+
+        // 스크롤을 처음으로 복원
+        grid.setTopRowIndex(0);
+
+        scwin.log("=============================");
+        scwin.log("Step 2 결과 — Total: " + (pass + fail) + ", PASS: " + pass + ", FAIL: " + fail);
+    };
+
+    scwin.btn_test_update_onclick = function() {
+        scwin.log("=== Step 3: 데이터 변경 후 expr 재평가 검증 ===");
+        var grid = $p.getComponentById("grd1");
+        if (!grid) {
+            scwin.log("[ERROR] grd1 gridView를 찾을 수 없습니다.");
+            return;
+        }
+
+        var pass = 0;
+        var fail = 0;
+
+        function getTD(trIndex, colId) {
+            var colIdx = grid.tdIdList.indexOf(colId);
+            if (colIdx < 0) return null;
+            return grid._getTDByIndex(trIndex * grid.oneRowDataLength + colIdx);
+        }
+
+        function check(ok, label, detail) {
+            if (ok) { scwin.log("[PASS] " + label); pass++; }
+            else { scwin.log("[FAIL] " + label + " — " + detail); fail++; }
+        }
+
+        // row0을 화면에 보이도록
+        grid.setTopRowIndex(0);
+        var topRow = grid.getTopRowIndex();
+
+        // 변경 전 row0 값 확인
+        var beforeQty = dataList1.getCellData(0, "quantity");
+        var beforePrice = dataList1.getCellData(0, "unitPrice");
+        var beforeStatus = dataList1.getCellData(0, "status");
+        var trIndex = 0 - topRow;
+        var tdCalcBefore = getTD(trIndex, "calcAmt");
+        scwin.log("변경 전 — qty=" + beforeQty + ", price=" + beforePrice + ", calcAmt='" + (tdCalcBefore ? tdCalcBefore.textContent.trim() : "") + "'");
+
+        // 1) quantity 변경 → calcAmt(=quantity*unitPrice) 재평가 확인
+        scwin.log("-- 1. quantity 변경 (2→99) --");
+        dataList1.setCellData(0, "quantity", 99);
+        var tdCalc = getTD(trIndex, "calcAmt");
+        var expectedCalc = String(99 * Number(beforePrice));
+        check(tdCalc && tdCalc.textContent.trim() === expectedCalc,
+            "calcAmt 재평가 (" + 99 + "*" + beforePrice + "=" + expectedCalc + ")",
+            "got: '" + (tdCalc ? tdCalc.textContent.trim() : "null") + "'");
+
+        // 2) unitPrice 변경 → calcAmt 재평가 확인
+        scwin.log("-- 2. unitPrice 변경 (100→333) --");
+        dataList1.setCellData(0, "unitPrice", 333);
+        tdCalc = getTD(trIndex, "calcAmt");
+        expectedCalc = String(99 * 333);
+        check(tdCalc && tdCalc.textContent.trim() === expectedCalc,
+            "calcAmt 재평가 (99*333=" + expectedCalc + ")",
+            "got: '" + (tdCalc ? tdCalc.textContent.trim() : "null") + "'");
+
+        // 3) status 변경 → statusText(iif) 재평가 확인
+        scwin.log("-- 3. status 변경 (A→R) --");
+        dataList1.setCellData(0, "status", "R");
+        var tdST = getTD(trIndex, "statusText");
+        check(tdST && tdST.textContent.trim() === "반려",
+            "statusText 재평가 (R→반려)",
+            "got: '" + (tdST ? tdST.textContent.trim() : "null") + "'");
+
+        // 4) status 변경 → P (default 케이스)
+        scwin.log("-- 4. status 변경 (R→P) --");
+        dataList1.setCellData(0, "status", "P");
+        tdST = getTD(trIndex, "statusText");
+        check(tdST && tdST.textContent.trim() === "대기",
+            "statusText 재평가 (P→대기)",
+            "got: '" + (tdST ? tdST.textContent.trim() : "null") + "'");
+
+        // 5) grade 변경 → gradeText(decode) 재평가 확인
+        scwin.log("-- 5. grade 변경 (A→B) --");
+        dataList1.setCellData(0, "grade", "B");
+        var tdGT = getTD(trIndex, "gradeText");
+        check(tdGT && tdGT.textContent.trim() === "양호",
+            "gradeText 재평가 (B→양호)",
+            "got: '" + (tdGT ? tdGT.textContent.trim() : "null") + "'");
+
+        // 6) balance 변경 → amount exprColor 재평가 확인 (음수→양수)
+        scwin.log("-- 6. balance 변경 (-50→500, 색상 변경) --");
+        dataList1.setCellData(0, "balance", 500);
+        var tdAmt = getTD(trIndex, "amount");
+        check(tdAmt && tdAmt.style.color === "rgb(0, 0, 0)",
+            "exprColor 재평가 (bal=500→black)",
+            "got: '" + (tdAmt ? tdAmt.style.color : "null") + "'");
+
+        // 7) amount 변경 → exprBackground 재평가 확인 (1000→20000)
+        scwin.log("-- 7. amount 변경 (1000→20000, 배경색 변경) --");
+        dataList1.setCellData(0, "amount", 20000);
+        tdAmt = getTD(trIndex, "amount");
+        check(tdAmt && tdAmt.style.backgroundColor === "rgb(255, 204, 204)",
+            "exprBackground 재평가 (amt=20000→#FFCCCC)",
+            "got: '" + (tdAmt ? tdAmt.style.backgroundColor : "null") + "'");
+
+        // 8) amount 변경 → 원래 범위로 (20000→3000)
+        scwin.log("-- 8. amount 변경 (20000→3000, 배경색 복원) --");
+        dataList1.setCellData(0, "amount", 3000);
+        tdAmt = getTD(trIndex, "amount");
+        check(tdAmt && tdAmt.style.backgroundColor === "rgb(255, 255, 255)",
+            "exprBackground 재평가 (amt=3000→#FFFFFF)",
+            "got: '" + (tdAmt ? tdAmt.style.backgroundColor : "null") + "'");
+
+        // 9) 전체 30행 일괄 변경 후 스크롤하며 검증
+        scwin.log("-- 9. 전체 30행 quantity 일괄 변경 + 스크롤 검증 --");
+        var rowCount = dataList1.getRowCount();
+        var visibleRows = grid.lastIndex - grid.rowIndex + 1;
+        for (var r = 0; r < rowCount; r++) {
+            if (!String(dataList1.getCellData(r, "status"))) continue;
+            dataList1.setCellData(r, "quantity", 777);
+            dataList1.setCellData(r, "status", "R");
+            dataList1.setCellData(r, "balance", -999);
+        }
+
+        for (var r = 0; r < rowCount; r++) {
+            if (!String(dataList1.getCellData(r, "status"))) continue;
+            grid.setTopRowIndex(r);
+            var top = grid.getTopRowIndex();
+            var tr = r - top;
+            if (tr < 0 || tr >= visibleRows) continue;
+
+            var price2 = Number(dataList1.getCellData(r, "unitPrice"));
+            var expectedCalc2 = String(777 * price2);
+
+            // calcAmt = 777 * unitPrice
+            var tdC = getTD(tr, "calcAmt");
+            check(tdC && tdC.textContent.trim() === expectedCalc2,
+                "row" + r + " calcAmt (777*" + price2 + "=" + expectedCalc2 + ")",
+                "got: '" + (tdC ? tdC.textContent.trim() : "null") + "'");
+
+            // statusText = 반려 (모두 R)
+            var tdS = getTD(tr, "statusText");
+            check(tdS && tdS.textContent.trim() === "반려",
+                "row" + r + " statusText (R→반려)",
+                "got: '" + (tdS ? tdS.textContent.trim() : "null") + "'");
+
+            // exprColor = red (모두 balance=-999)
+            var tdA = getTD(tr, "amount");
+            if (tdA) {
+                check(tdA.style.color === "rgb(255, 0, 0)",
+                    "row" + r + " color (bal=-999→red)",
+                    "got: '" + tdA.style.color + "'");
+            }
+        }
+
+        grid.setTopRowIndex(0);
+
+        scwin.log("=============================");
+        scwin.log("Step 3 결과 — Total: " + (pass + fail) + ", PASS: " + pass + ", FAIL: " + fail);
+    };
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_main" style="padding:10px;">
+        <xf:trigger id="btn_test_compile" type="button" style="width:250px;height:35px;" ev:onclick="scwin.btn_test_compile_onclick"><xf:label>Step 1: cellInfo 컴파일 검증</xf:label></xf:trigger>
+        <xf:trigger id="btn_test_render" type="button" style="width:250px;height:35px;margin-left:10px;" ev:onclick="scwin.btn_test_render_onclick"><xf:label>Step 2: 렌더링 결과 검증</xf:label></xf:trigger>
+        <xf:trigger id="btn_test_update" type="button" style="width:250px;height:35px;margin-left:10px;" ev:onclick="scwin.btn_test_update_onclick"><xf:label>Step 3: 데이터 변경 재평가</xf:label></xf:trigger>
+        <w2:gridView id="grd1" dataList="data:dataList1" style="width:100%;height:300px;margin-top:10px;">
+            <w2:header>
+                <w2:row>
+                    <w2:column id="hd_status" value="Status" width="80"></w2:column>
+                    <w2:column id="hd_statusText" value="StatusText" width="120"></w2:column>
+                    <w2:column id="hd_grade" value="Grade" width="80"></w2:column>
+                    <w2:column id="hd_gradeText" value="GradeText" width="120"></w2:column>
+                    <w2:column id="hd_quantity" value="Qty" width="80"></w2:column>
+                    <w2:column id="hd_unitPrice" value="Price" width="80"></w2:column>
+                    <w2:column id="hd_calcAmt" value="CalcAmt" width="100"></w2:column>
+                    <w2:column id="hd_name1" value="Name1" width="80"></w2:column>
+                    <w2:column id="hd_name2" value="Name2" width="80"></w2:column>
+                    <w2:column id="hd_amount" value="Amount" width="100"></w2:column>
+                    <w2:column id="hd_balance" value="Balance" width="80"></w2:column>
+                    <w2:column id="hd_rowNum" value="No." width="60"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody>
+                <w2:row>
+                    <w2:column id="status" width="80"></w2:column>
+                    <w2:column id="statusText" width="120" expr="iif(status=='A', '승인', iif(status=='R', '반려', '대기'))"></w2:column>
+                    <w2:column id="grade" width="80"></w2:column>
+                    <w2:column id="gradeText" width="120" expr="decode(grade, 'A', '우수', 'B', '양호', '보통')"></w2:column>
+                    <w2:column id="quantity" width="80"></w2:column>
+                    <w2:column id="unitPrice" width="80"></w2:column>
+                    <w2:column id="calcAmt" width="100" expr="quantity * unitPrice"></w2:column>
+                    <w2:column id="name1" width="80"></w2:column>
+                    <w2:column id="name2" width="80"></w2:column>
+                    <w2:column id="amount" width="100" exprColor="iif(balance &lt; 0, '#FF0000', '#000000')" exprBackground="iif(amount > 10000, '#FFCCCC', '#FFFFFF')"></w2:column>
+                    <w2:column id="balance" width="80"></w2:column>
+                    <w2:column id="rowNum" width="60" expr="currow + 1"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <w2:textarea id="txa_log" style="width:100%;height:350px;margin-top:10px;font-family:monospace;font-size:13px;" readOnly="true"></w2:textarea>
+    </xf:group>
+</body>
+</html>

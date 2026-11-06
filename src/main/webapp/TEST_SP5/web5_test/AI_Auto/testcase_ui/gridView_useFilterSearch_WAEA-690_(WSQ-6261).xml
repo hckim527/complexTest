@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="gridView_useFilterSearch_WAEA-690_(WSQ-6261).css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenId="BM005M01" meta_screenName="시스템 릴리즈 관리" meta_desc="시스템 릴리즈 내용을 관리하는 화면" meta_author="Inswave Systems"
+		meta_date="2021.02.25">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dma_fileDesc">
+					<w2:keyInfo>
+						<w2:key id="desc" name="" dataType="text"></w2:key>
+						<w2:key id="test" name="" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<desc><![CDATA[
+<pre class="textNor" style="">
+<div class="etcbox">본 화면은 메인 화면의 Release 게시물을 관리하는 화면이다.
+관리자에게만 권한이 있는 화면이다.
+</div>
+<div class="etc_tit">1. Release 게시물 조회</div>
+  - 메인화면의 Release 게시물을 조회할 수 있다.
+<div class="etc_tit">2. Release 게시물 변경</div>
+  - 메인화면의 Release 게시물을 입력, 수정, 삭제 할 수 있다.
+</pre>
+						]]></desc>
+						<test><![CDATA[
+<pre class="textNor">
+<div class="etc_tit">1. 과정</div>
+- 화면 로딩시 자동 조회 된다.
+- 입력, 수정, 삭제시에는 하단의 상세 부분에서 내용을 수정한다.  
+</div>
+<div class="etc_tit">2. 결과</div>
+- gridView의 게시물을 조회하면 하단에 상세 내용이 표신된다.
+  (Master&Detail 구조)
+- 입력, 수정, 삭제 후 Release내용이 재 조회된다.
+</pre>
+						]]></test>
+					</w2:data>
+				</w2:dataMap>
+				<w2:dataMap baseNode="map" id="dma_search">
+					<w2:keyInfo>
+						<w2:key id="TOTAL_YN" name="총건수 조회여부" dataType="text" defaultValue="Y"></w2:key>
+						<w2:key id="START_NUM" name="시작 순번" dataType="number" defaultValue="0"></w2:key>
+						<w2:key id="END_NUM" name="끝 순번" dataType="number" defaultValue="5"></w2:key>
+						<w2:key id="SORT_COLUMN" name=" 정렬 컬럼 아이디" dataType="text"></w2:key>
+						<w2:key id="SORT_METHOD" name="정렬 방법(ASC, DESC)" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:dataList id="dlt_release" baseNode="list" saveRemovedData="true" repeatNode="map" ev:oncelldatachange=""
+					ev:onbeforerowpositionchange="scwin.dlt_release_onbeforerowpositionchange">
+					<w2:columnInfo>
+						<w2:column id="chk" name="선택" dataType="text" ignoreStatus="true" valueType=""></w2:column>
+						<w2:column id="SEQ" name="순번" dataType="text"></w2:column>
+						<w2:column id="TITLE" name="제목" dataType="text"></w2:column>
+						<w2:column id="CONTENT" name="내용" dataType="text"></w2:column>
+						<w2:column id="DATA_SEQ" name="데이터순번" dataType="text"></w2:column>
+						<w2:column id="CREATED_DATE" name="작성일" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<TITLE><![CDATA[A]]></TITLE>
+						</w2:row>
+						<w2:row>
+							<TITLE><![CDATA[AA]]></TITLE>
+						</w2:row>
+						<w2:row>
+							<TITLE><![CDATA[AAA]]></TITLE>
+						</w2:row>
+						<w2:row>
+							<TITLE><![CDATA[AAAA]]></TITLE>
+						</w2:row>
+						<w2:row>
+							<TITLE><![CDATA[B]]></TITLE>
+						</w2:row>
+						<w2:row>
+							<TITLE><![CDATA[BB]]></TITLE>
+						</w2:row>
+						<w2:row>
+							<TITLE><![CDATA[BBB]]></TITLE>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="sbm_selectRelease" ref='data:json,dma_search' target='data:json,{"id":"dlt_release","key":"dlt_release"}'
+				action="/main/selectReleaseForMain" method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler=""
+				customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.sbm_selectRelease_submitdone" ev:submiterror="">
+			</xf:submission>
+			<xf:submission id="sbm_saveRelease" ref='data:json,[{"action":"modified","id":"dlt_release"},"dma_search"]'
+				target='data:json,["dma_Result","dlt_release"]' action="/main/saveReleaseForMain" method="post" mediatype="application/json"
+				encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="저장중입니다." ev:submit=""
+				ev:submitdone="scwin.sbm_saveRelease_submitdone" ev:submiterror="" abortTrigger="">
+			</xf:submission>
+		</xf:model>
+		<w2:layoutInfo></w2:layoutInfo>
+		<w2:publicInfo method="scwin.searchInit,scwin.searchMain,scwin.sbm_selectRelease_submitdone,scwin.saveReleaseData,scwin.sbm_saveRelease_submitdone"></w2:publicInfo>
+
+		<script type="text/javascript" lazy="false"><![CDATA[
+/**
+ * 화면 내 전역 변수 선언
+ */
+scwin.selectedReleaseRowIdx = 0;
+scwin.pageItemCnt = 5;
+
+/**
+ * @event
+ * @name onpageload
+ * @description 초기 스크립트 수행 함수 정의
+ */
+scwin.onpageload = function () {
+    $c.util.setGridViewDelCheckBox(grd_release);
+    $c.data.setChangeCheckedDc(dlt_release);
+};
+
+/**
+ * @event
+ * @name ondataload
+ * @description 화면 초기화 데이터가 모두 로딩되면 발생하는 이벤트
+ */
+scwin.ondataload = function () {
+    scwin.searchMain(1, "Y");
+};
+
+/**
+ * @method
+ * @name searchInit
+ * @description 첫 번째 페이지를 조회하는 함수
+ * @hidden N
+ * @exception 
+ */
+scwin.searchInit = function () {
+    scwin.selectedReleaseRowIdx = 0;
+    scwin.searchMain(1, "Y");
+};
+
+/**
+ * 
+ */
+/**
+ * @method
+ * @name searchMain
+ * @description 목록을 조회한다.
+ * @param {string} idx 페이지 idx 번호
+ * @param {string} strYn 총 건수 조회 여부
+ * @hidden N
+ * @exception 
+ * @example ${example}
+ */
+scwin.searchMain = function (idx, strYn) {
+    dma_search.set("TOTAL_YN", strYn);
+    dma_search.set("START_NUM", ($c.num.parseInt(idx) - 1) * scwin.pageItemCnt);
+    dma_search.set("END_NUM", scwin.pageItemCnt);
+    dma_search.set("SORT_COLUMN", "SEQ");
+    dma_search.set("SORT_METHOD", "DESC");
+    $c.sbm.execute(sbm_selectRelease);
+};
+
+/**
+ * @method
+ * @name sbm_selectRelease_submitdone
+ * @description 통신 정상 콜백 - release board list 결과 값 중 dlt_release로 게시판을 생성한다.
+ * @param {Object} e Submission 결과를 담은 객체
+ * @hidden N
+ * @exception 
+ */
+scwin.sbm_selectRelease_submitdone = function (e) {
+    if ($c.sbm.getResultCode(e) == $c.sbm.getMessageCode('STATUS_SUCCESS')) {
+        const firstYn = dma_search.get("TOTAL_YN");
+        grd_release.setFocusedCell(0, "TITLE", false);
+        if (firstYn == "Y") {
+            const totalCnt = $c.num.ceil(e.responseJSON.TOTAL_CNT.CNT / scwin.pageItemCnt);
+            pgl_release.setCount(totalCnt);
+        }
+        grd_release.setFocusedCell(scwin.selectedReleaseRowIdx, "TITLE");
+    }
+};
+
+/**
+ * @event
+ * @name btn_cancel_onclick
+ * @description 리스트에서 취소 버튼 클릭 시 데이터를 이전 상태로 바꾸고 추가된 것들은 삭제한다.
+ */
+scwin.btn_cancel_onclick = async function () {
+    if ($c.data.isModified(dlt_release)) {
+        if (await $c.win.confirm($c.data.getMessage("MSG_CM_00052"))) {
+            $c.data.undoAll(dlt_release);
+            grd_release.setFocusedCell(0, "TITLE", false);
+            udc_fileMultiUpload.undoFileUpload();
+            udc_fileMultiUpload.setFileSelectingButtonDisabled(false);
+        };
+    };
+};
+
+/**
+ * @event
+ * @name btn_add_onclick
+ * @description 등록버튼 클릭 시 하나의 row를 추가한다.
+ */
+scwin.btn_add_onclick = async function () {
+    if (udc_fileMultiUpload.isModified()) {
+        if (await $c.win.confirm($c.data.getMessage("MSG_CM_00050") + " " + $c.data.getMessage("MSG_CM_00001"))) {
+            udc_fileMultiUpload.startFileUpload();
+        }
+    } else {
+        dlt_release.insertRow(0);
+        grd_release.setFocusedCell(0, 0);
+        udc_fileMultiUpload.setFileSelectingButtonDisabled(true);
+        udc_fileMultiUpload.setDataSeq();
+        ibx_title.setDisabled(false);
+        ibx_title.focus();
+    }
+};
+
+/**
+ * @event
+ * @name btn_save_onclick
+ * @description 릴리즈 정보를 저장한다.
+ */
+scwin.btn_save_onclick = async function () {
+    const fileModifiedCount = udc_fileMultiUpload.getUpdatedFile().length;
+
+    if (($c.data.isModified(dlt_release) === false) && (fileModifiedCount == 0)) {
+        $c.win.alert($c.data.getMessage("MSG_CM_00032"));
+    } else {
+        const valMenuInfo = [{ id: "TITLE", mandatory: true }, { id: "CREATED_DATE", mandatory: true }];
+        if ($c.data.validateGridView(grd_release, valMenuInfo)) {
+            if (await $c.win.confirm($c.data.getMessage("MSG_CM_00031"))) {
+                // 선택한 파일의 업로드를 시작한다.
+                udc_fileMultiUpload.startFileUpload();
+            }
+        }
+    }
+};
+
+/**
+ * @method
+ * @name saveReleaseData
+ * @description Release 정보를 저장한다.
+ * @hidden N
+ * @exception 
+ */
+scwin.saveReleaseData = function () {
+    if ($c.data.isModified(dlt_release) && $c.data.validateGroup(grp_content)) {
+        $c.sbm.execute(sbm_saveRelease);
+    }
+};
+
+/**
+ * @method
+ * @name sbm_saveRelease_submitdone
+ * @description 저장 후 콜백 함수
+ * @param {Object} e Submission 결과를 담은 객체
+ * @exception 
+ */
+scwin.sbm_saveRelease_submitdone = function (e) {
+    if ($c.sbm.getResultCode(e) == $c.sbm.getMessageCode('STATUS_SUCCESS')) {
+        scwin.searchInit();
+    }
+};
+
+
+/**
+ * @method
+ * @name udc_fileMultiUpload_onFileUploadDone
+ * @description 파일 업로드 완료 후 호출되는 콜백 함수
+ * @param {String} isSuccess 파일 전송 성공 여부 (1개라도 업로드에 실패한 파일이 있으면 false를 반환함)
+ * @exception 
+ */
+scwin.udc_fileMultiUpload_onFileUploadDone = function (isSuccess) {
+console.log("udc_fileMultiUpload_onFileUploadDone");
+    if (isSuccess) {
+        scwin.saveReleaseData();
+    }
+};
+
+/**
+ * @event
+ * @name dlt_release_onbeforerowpositionchange
+ * @description dlt_release의 rowPosition이 변경되기 전 발생하는 이벤트
+ */
+scwin.dlt_release_onbeforerowpositionchange = async function (info) {
+    scwin.selectedReleaseRowIdx = info.newRowIndex;
+
+    if (udc_fileMultiUpload.isModified()) {
+        if (await $c.win.confirm($c.data.getMessage("MSG_CM_00048") + " " + $c.data.getMessage("MSG_CM_00001"))) {
+            udc_fileMultiUpload.startFileUpload();
+        }
+        return false;
+    } else {
+        const dataSeq = dlt_release.getCellData(info.newRowIndex, "DATA_SEQ");
+        if (($c.util.isEmpty(dataSeq) === false) && (dataSeq > 0)) {
+            udc_fileMultiUpload.setDataSeq(dataSeq);
+            udc_fileMultiUpload.setFileSelectingButtonDisabled(false);
+        } else {
+            udc_fileMultiUpload.setFileSelectingButtonDisabled(true);
+        }
+    }
+};
+
+/**
+ * @event
+ * @name pgl_release_onviewchange
+ * @description 키보드 또는 마우스 조작으로 인해 pgl_release의 값이 변한 경우 발생하는 이벤트
+ */
+scwin.pgl_release_onviewchange = async function (info) {
+    if (udc_fileMultiUpload.isModified() || $c.data.isModified(dlt_release)) {
+        if (await $c.win.confirm($c.data.getMessage("MSG_CM_00049"))) {
+            udc_fileMultiUpload.undoFileUpload();
+            scwin.searchMain(info.newSelectedIndex, "N");
+            pgl_release.setSelectedIndex(info.newSelectedIndex);
+            return;
+        }
+        pgl_release.setSelectedIndex(info.oldSelectedIndex);
+    } else {
+        scwin.searchMain(info.newSelectedIndex, "N");
+    }
+};
+]]></script>
+		<w2:require as="udc_fileMultiUpload" type="page" variableClone="true" src="/cm/udc/fileMultiUpload.xml"></w2:require>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="sub_contents flex_cont" id="" style="">
+			<w2:pageFrame style="" id="pfm_contentHeader" src="../../cm/xml/contentHeader.xml"></w2:pageFrame>
+			<xf:group class="titbox" id="" style="">
+				<w2:textbox class="" id="" label="릴리즈 내역" style="" tagname="h3"></w2:textbox>
+				<xf:group class="rt" id="" style="">
+					<xf:trigger class="btn_cm row_add" id="btn_add" style="" type="button" ev:onclick="scwin.btn_add_onclick"
+						toolTip="data를 한 건 추가한다.">
+						<xf:label><![CDATA[추가]]></xf:label>
+					</xf:trigger>
+					<xf:trigger class="btn_cm" id="btn_cancel" style="" type="button" ev:onclick="scwin.btn_cancel_onclick"
+						toolTip="data를 직전 상태로 되돌린다. ">
+						<xf:label><![CDATA[취소]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+			<xf:group adaptiveThreshold="" class="gvwbox" id="" style="">
+				<w2:gridView autoFit="allColumn" autoFitMinWidth="800" class="gvw" dataList="data:dlt_release" id="grd_release"
+					rowStatusWidth="" scrollByColumn="false" scrollByColumnAdaptive="false" style="height:150px;" rowStatusVisible="true"
+					rowStatusHeaderValue="상태" rowNumHeaderValue="순서" rowNumVisible="true" rowNumWidth="50" keepDefaultColumnWidth="true"
+					tooltipDisplay="false" visibleRowNum="5" useFilterList="true" useFilterSearch="true">
+					<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+					<w2:header id="header1" style="">
+						<w2:row id="row1" style="">
+							<w2:column removeBorderStyle="false" width="45" inputType="checkbox" style="" id="chk" value=""
+								blockSelect="false" displayMode="label" fixColumnWidth="true">
+							</w2:column>
+							<w2:column blockSelect="false" displayMode="label" id="column18" inputType="text" removeBorderStyle="false"
+								style="" value="제목" width="238" class="req" autoFitFilterList="true" useFilter="true">
+							</w2:column>
+							<w2:column blockSelect="false" displayMode="label" id="column17" inputType="text" removeBorderStyle="false"
+								style="" value="내용" width="365" class="">
+							</w2:column>
+							<w2:column blockSelect="false" displayMode="label" id="column16" inputType="text" removeBorderStyle="false"
+								style="" value="작성일" width="90">
+							</w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1" style="">
+						<w2:row id="row2" style="">
+							<w2:column removeBorderStyle="false" width="65" inputType="checkbox" style="" id="chk" value=""
+								blockSelect="false" displayMode="label">
+							</w2:column>
+							<w2:column blockSelect="false" displayMode="label" id="TITLE" inputType="text" removeBorderStyle="false"
+								style="" value="" width="178" textAlign="left">
+							</w2:column>
+							<w2:column blockSelect="false" displayMode="label" id="CONTENT" inputType="text" removeBorderStyle="false"
+								style="" value="" width="315" textAlign="left">
+							</w2:column>
+							<w2:column blockSelect="false" displayMode="label" id="CREATED_DATE" inputType="calendar"
+								removeBorderStyle="false" style="" value="" width="90" viewType="" readOnly="">
+							</w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+
+
+			<xf:group id="" class="pglbox">
+				<w2:pageList ev:onclick="scwin.pgl_release_onclick" ev:onviewchange="scwin.pgl_release_onviewchange"
+					displayButtonType="display" displayFormat="#" pageSize="5" pagingType="0" style="" id="pgl_release" class="pgl">
+				</w2:pageList>
+			</xf:group>
+			<xf:group class="tblbox" id="" style="">
+				<xf:group adaptive="layout" adaptiveThreshold="767" class="w2tb tbl" id="grp_content" style="" tagname="table">
+					<w2:attributes>
+						<w2:summary></w2:summary>
+					</w2:attributes>
+					<xf:group tagname="colgroup">
+						<xf:group style="width:120px;" tagname="col"></xf:group>
+						<xf:group tagname="col"></xf:group>
+						<xf:group tagname="col" style="width:120px;"></xf:group>
+						<xf:group style="" tagname="col"></xf:group>
+					</xf:group>
+					<xf:group style="" tagname="tr">
+						<xf:group class="w2tb_th" style="" tagname="th">
+							<w2:textbox class=" req" id="" label="제목" ref="" style="" userData2=""></w2:textbox>
+						</xf:group>
+						<xf:group class="w2tb_td" style="" tagname="td">
+							<xf:input class="req" id="ibx_title" placeholder="" style="width:100%;" ref="data:dlt_release.TITLE"></xf:input>
+						</xf:group>
+						<xf:group tagname="th" class="w2tb_th " text="">
+							<w2:attributes></w2:attributes>
+							<w2:textbox class=" req" id="" label="작성일" ref="" style="" userData2=""></w2:textbox>
+						</xf:group>
+						<xf:group tagname="td" class="w2tb_td">
+							<w2:attributes></w2:attributes>
+							<w2:inputCalendar calendarValueType="yearMonthDate" focusOnDateSelect="false" footerDiv="true"
+								id="cal_createDate" renderDiv="true" rightAlign="false" style="width: 120px;" alt="" class="req"
+								ref="data:dlt_release.CREATED_DATE">
+							</w2:inputCalendar>
+						</xf:group>
+					</xf:group>
+					<xf:group tagname="tr">
+						<xf:group tagname="th" class="w2tb_th">
+							<w2:attributes>
+								<w2:scope>row</w2:scope>
+							</w2:attributes>
+							<w2:textbox class=" req" id="" label="내용" ref="" style="" userData2=""></w2:textbox>
+						</xf:group>
+						<xf:group tagname="td" class="w2tb_td">
+							<w2:attributes>
+								<w2:colspan>3</w2:colspan>
+								<w2:rowspan>1</w2:rowspan>
+							</w2:attributes>
+							<xf:textarea id="txt_content" style="width:100%;height: 94px;" class="req" ref="data:dlt_release.CONTENT"></xf:textarea>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+			<xf:group id="" style="" class="etcbox">
+				<w2:udc_fileMultiUpload filter="gif, jpg, bmp, png, zip, txt, ppt, pptx, xls, xlsx, doc, docx, xml, csv, pdf"
+					maxFileCount="10" style="width:100%;" totalFileSize="2009715200" maxFileSize="536870912" fileGrpSeq="5" id="udc_fileMultiUpload"
+					ev:onFileUploadDone="scwin.udc_fileMultiUpload_onFileUploadDone" subDir="BM005">
+				</w2:udc_fileMultiUpload>
+
+			</xf:group>
+			<xf:group class="btnbox" id="" style="">
+				<xf:group class="rt" id="" style="">
+					<xf:trigger class="btn_cm pt" ev:onclick="scwin.btn_save_onclick" id="btn_save" style="" type="button" nextTabID="">
+						<xf:label><![CDATA[저장]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

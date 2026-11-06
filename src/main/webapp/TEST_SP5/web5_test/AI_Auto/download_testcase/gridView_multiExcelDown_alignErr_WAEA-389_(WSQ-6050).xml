@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="그리드인앤아웃">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () { 
+    dataList1.insertColumn("col1", { 
+				"name": "col1", 
+				"dataType": "text", 
+				"length": "256" 
+			});
+
+    dataList1.insertRow(0);
+    dataList1.setCellData(0, "col1", "12345");
+
+    //scwin.cf_ExportExcel("gridView01", "sheet1", "정렬미적용");
+
+};
+
+/**
+ * @method
+ * @name cf_ExportExcel
+ * @description  Grid의 Data 를 Excel 파일로 Export 한다
+ * @param sGridList - 출력대상 Grid ID 문자열 List (grdA,grdB,grdC)
+ * @param sSheetNameList - Excel 파일에 생성될 Sheet명 문자열 List (sheetA,sheetB,sheetC)
+ * @param sFileName - 저장할 파일명
+ * @param userOpt - 사용자 excelInfo 추가 옵션 array에 그리드별 옵션 예) userOpt = [{addOpt : 1, addOpt2 : 2}] // 첫번째 그리드의 추가 옵션
+ * @return
+ */
+scwin.cf_ExportExcel = function(sGridList, sSheetNameList, sFileName, userOpt = [])  {
+
+	if (!sFileName) {
+        //menuId로 대체
+		sFileName = $p.getFrame().menuid;
+	}
+
+    // id가 a,b,c,d,e인 5개 컬럼이 존재하는 그리드
+    var options = {
+        common: {
+            fileName : sFileName + ".xls",
+            showProcess : true,
+            multipleSheet : true
+        },
+        excelInfo: []
+    };
+
+	var aGrid = sGridList.split(",");
+	var aSheetName = sSheetNameList.split(",");	
+
+    for (var i=0; i<aGrid.length; i++) {
+
+        options.excelInfo.push({
+            //gridId : gridView01.id,
+            gridId : aGrid[i],
+            sheetName : aSheetName[i],
+            type : "1",
+            startRowIndex : 0,
+            startColumnIndex : 0,
+            headerColor : "#D3D3D3",
+			colMerge : true,
+			mergeCell : true,
+            useStyle:true
+        });
+		options.excelInfo[i] = {...options.excelInfo[i], ...(userOpt[i] ||{})}
+
+        //20250820 스타일 초기화 - 주석 풀경우 정상동작하지만 화면깨짐
+        //var objGrid = scwin.object(aGrid[i]);
+        //objGrid.setGridStyle(objGrid.getGridStyle());
+    }
+	
+    WebSquare.util.multipleExcelDownload( options );
+
+};
+
+scwin.textbox1_onclick = function(e) {
+	var options = {
+        fileName : "정렬적용.xls",
+        showProcess : true,
+        multipleSheet : true};
+    gridView01.advancedExcelDownload(options)
+};
+
+scwin.textbox2_onclick = function(e) {
+	scwin.cf_ExportExcel("gridView01", "sheet1", "정렬미적용");
+};
+
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView checkAllType="false" defaultCellHeight="20" id="gridView01" style="width:500px; height:150px; " dataList="data:dataList1">
+			<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header style="" id="header1">
+				<w2:row style="" id="row1">
+					<w2:column width="70" inputType="text" style="" id="column1" value="col1" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody style="" id="gBody1">
+				<w2:row style="" id="row2">
+					<w2:column width="70" inputType="text" style="" id="col1" value="" displayMode="label" textAlign="right"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	<w2:textbox ev:onclick="scwin.textbox1_onclick" id="textbox1" label="advExcelDown" style="position: relative;width: 150px;height: 23px;"></w2:textbox>
+	<w2:textbox ev:onclick="scwin.textbox2_onclick" id="textbox2" label="multipleExcelDown" style="position: relative;width: 150px;height: 23px;"></w2:textbox>
+
+	</body>
+</html>

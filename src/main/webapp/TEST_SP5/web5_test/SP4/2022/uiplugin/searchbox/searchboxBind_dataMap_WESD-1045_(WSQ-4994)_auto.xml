@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="128 217">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<checkbox>
+                		<res></res>
+                	</checkbox>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<key1><![CDATA[first]]></key1>
+            		</w2:data>
+            	</w2:dataMap>
+            	<w2:dataMap baseNode="map" id="dataMap2">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<key1><![CDATA[map2 key1]]></key1>
+            		</w2:data>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript"><![CDATA[
+        
+	scwin.trigger1_onclick = function(e) {
+		se.setRef("data:dataMap1.key1");
+	};
+	
+	scwin.trigger2_onclick = function(e) {
+		debugger;
+		dataMap1.set( "key1", "change value11" );
+		//alert(dataMap1.get("key1"));
+//		se.commit();
+	};
+	
+	
+	scwin.trigger3_onclick = function(e) {
+		se2.setRef( "data:dataMap2.key1" );
+	};
+	
+	
+	scwin.trigger4_onclick = function(e) {
+		debugger;
+		dataMap2.set( "key1", "change value22" );
+		alert(dataMap2.get("key1"));
+//		se2.commit();
+	};
+	
+	scwin.trigger5_onclick = function(e) {
+		se3.setRef("data:dataMap2.key1");
+	};
+	
+	
+	scwin.trigger7_onclick = function(e) {
+		se3.setRef("data:dataMap1.key1");
+	};
+	
+	scwin.trigger6_onclick = function(e) {
+		dataMap2.set("key1" , "change key value" );
+//		se3.commit();
+		alert(dataMap2.get("key1"));
+	};
+	
+	scwin.trigger8_onclick = function(e) {
+		input1.setRef("data:dataMap1.key1");
+	};
+	
+	scwin.trigger9_onclick = function(e) {
+		dataMap1.set("key1" , "change input");
+	};
+	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('se___input').value == 'change value11';
+	}
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	
+			
+	]]></script>
+    </head>
+    <body>
+    	<w2:textbox id="" label="searchbox 의 ref가 지정되어 있지 않고 setRef() 로 바인딩 하여 set 을 통해 selectBox 의 바인딩 값을 바로바로 갱신해주는 테스트"
+    		style="width:720px;height:23px;">
+    	</w2:textbox>
+    	<w2:searchbox id="se" style="position: relative;width: 150px;height: 21px;" refSync="true"></w2:searchbox>
+    	<xf:trigger type="button" style="width:81px;height:23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setRef()]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[set()]]></xf:label>
+    	</xf:trigger>
+
+    	<w2:textbox id="" label="searchbox 의 ref 가 지정되어 있고, set 을 통해 selectBox 의 바인딩 값을바로바로 갱신해주는 테스트" style="width:722px;height:23px;"></w2:textbox>
+    	<w2:searchbox id="se2" style="width: 150px;height: 21px;" ref="data:dataMap1.key1" refSync="true"></w2:searchbox>
+
+    	<xf:trigger type="button" style="width:121px;height:23px;" id="trigger3" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[setRef() se2]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width:131px;height:23px;" id="trigger4" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[set() se2]]></xf:label>
+    	</xf:trigger>
+
+    	<w2:textbox id="" label="searchbox 의 ref 가 지정되어 있지 않고, set 을 통해 selectBox 의 바인딩 값을 setRef() 로 dataMap 을 변경하여 바로바로 갱신해주는 테스트"
+    		style="width:833px;height:23px;">
+    	</w2:textbox>
+    	<w2:searchbox id="se3" style="width: 150px;height: 21px;" refSync="true"></w2:searchbox>
+    	<xf:trigger type="button" style="width:120px;height:23px;" id="trigger5" ev:onclick="scwin.trigger5_onclick">
+    		<xf:label><![CDATA[setRef() se3]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width:160px;height:23px;" id="trigger7" ev:onclick="scwin.trigger7_onclick">
+    		<xf:label><![CDATA[setRef() se3 2]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width:139px;height:23px;" id="trigger6" ev:onclick="scwin.trigger6_onclick">
+    		<xf:label><![CDATA[set() se3]]></xf:label>
+    	</xf:trigger>
+    	<w2:textbox id="" label="inputbox 일 때 바인딩 setRef() 후 set() " style="width:833px;height:23px;"></w2:textbox>
+    	<xf:input adjustMaxLength="false" id="input1" style="width: 144px;height: 21px;"></xf:input>
+    	<xf:trigger type="button" style="width:179px;height:23px;" id="trigger8" ev:onclick="scwin.trigger8_onclick">
+    		<xf:label><![CDATA[setRef() input1]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger9" ev:onclick="scwin.trigger9_onclick">
+    		<xf:label><![CDATA[set input1]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

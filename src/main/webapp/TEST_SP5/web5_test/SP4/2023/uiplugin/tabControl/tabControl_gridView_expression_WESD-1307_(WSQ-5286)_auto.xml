@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+                <w2:dataList id="dataList2" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+
+                        <w2:column id="col3" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name2" dataType="text"></w2:column>
+
+                        <w2:column id="col5" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col6" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[
+        
+    scwin.onpageload = function() {
+        dataList1.insertRow();
+        dataList1.insertRow();
+        dataList1.insertRow();
+
+        dataList2.insertRow();
+    };
+    
+    scwin.onpageunload = function() {
+        
+    };
+
+    scwin.dataList1_oncelldatachange = function(info){
+    debugger;
+        if(info.colIndex == 0){
+            //dataList2.setCellData(info.rowIndex, "col1", info.newValue);
+
+            dataList2.setJSON([{"col1":info.newValue}]);
+        }
+    };
+
+	scwin.Dbclick = function(id) {
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick(el);
+	}
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('gridView2_cell_0_3').innerText == '10';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Tab0_tab_tab2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView2_cell_0_0')");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_gridView2__col1').value = '100'");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView2_cell_0_2')");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_gridView2__col3').value = '10'");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_cell_0_1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Tab0_tab_tab1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_0_0')");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_gridView1__col1').value = '10'");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('Tab0_tab_tab2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+    
+    ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <w2:tabControl alwaysDraw="true" class="tab_ctrl_layout_noclose" confirmFalseAction="new" confirmTrueAction="exist"
+            ev:ontabclick="" id="Tab0" style="width:100%;height:100%;" useConfirmMessage="false" useTabKeyOnly="true">
+            <w2:tabs disabled="false" id="tab1" label="A" style=""></w2:tabs>
+            <w2:tabs disabled="false" id="tab2" label="B" style=""></w2:tabs>
+            <w2:content alwaysDraw="true" class="" id="contents1" style="">
+            	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1"
+                    ev:onviewchange="scwin.dataList1_oncelldatachange"
+                    style="position: relative ;left:34px;top:69px;width:400px;height:233px;float:left;" fixedColumnWithHidden="true">
+                    <w2:header id="header1" style="">
+            			<w2:row id="row1" style="">
+            				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="70" value="col1"></w2:column>
+            				<w2:column blockSelect="false" id="column2" style="height:20px;" inputType="text" width="70" value="col2"></w2:column>
+            			</w2:row>
+            		</w2:header>
+            		<w2:gBody id="gBody1" style="">
+            			<w2:row id="row2" style="">
+            				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+            				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70"></w2:column>
+            			</w2:row>
+            		</w2:gBody>
+            	</w2:gridView>
+            </w2:content>
+            <w2:content alwaysDraw="true" class="" id="contents2" style="">
+                    <w2:gridView dataList="dataList2" scrollByColumn="false" id="gridView2"
+                        style="position: relative ;left:34px;top:69px;width:400px;height:233px;" fixedColumnWithHidden="true">
+                        <w2:header id="header1" style="">
+                            <w2:row id="row1" style="">
+                                <w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="70" value="col1"></w2:column>
+                                <w2:column blockSelect="false" id="column2" style="height:20px;" inputType="text" width="70" value="col2"></w2:column>
+                            </w2:row>
+                            <w2:row id="row4" style="">
+                                <w2:column blockSelect="false" id="column34" style="height:20px;" inputType="text" width="70" value="col3"></w2:column>
+                                <w2:column blockSelect="false" id="column24" style="height:20px;" inputType="text" width="70" value="col4"></w2:column>
+                            </w2:row>
+                        </w2:header>
+                        <w2:gBody id="gBody1" style="">
+                            <w2:row id="row2" style="">
+                                <w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+                                <w2:column blockSelect="false" id="col2" style="height:20px" inputType="expression" expression="sum('col1')" width="70"></w2:column>
+                            </w2:row>
+
+                            <w2:row id="row3" style="">
+                                <w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70"></w2:column>
+                                <w2:column id="column16464"
+                                    expression="sum('col1')+sum('col3')"
+                                    dataType="number" readOnly="true" inputType="expression" valueType="binary" textAlign="right"
+                                    displayFormat="#,###" defaultValue="0" editType="select" disabled="false" maxLength="17">
+                                </w2:column>
+                            </w2:row>
+                        </w2:gBody>
+                    </w2:gridView>
+                </w2:content>
+        </w2:tabControl>
+    </body>
+</html>

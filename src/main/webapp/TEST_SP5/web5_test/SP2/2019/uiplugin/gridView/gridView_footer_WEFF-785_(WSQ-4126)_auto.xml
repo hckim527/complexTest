@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="number" dataType="number"></w2:column>
+                        <w2:column id="col3" name="checkbox" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    dataList1.insertRow();
+    var j1 = dataList1.getRowJSON();
+    var j2 = [];
+    for (var i = 0; i < 10; i++) {
+        var tmp = {};
+        for (var item in j1) {
+            if (item == "rowStatus" || item == "col1") continue;
+            if (item == "col2") tmp[item] = (i + 1) * 1000;
+            if (item == "col3") {
+                tmp[item] = "T"; //(i%2 == 0) ?  "T" : "F";
+            }
+        }
+        j2.push(tmp);
+    }
+    dataList1.setJSON(j2);
+    var colArr = dataList1.getColData("col2");
+    //console.time("scwin.sumData");
+    scwin.sumData = scwin.colDataSum(colArr);
+    //console.timeEnd("scwin.sumData");
+    gridView1.setFooterValue("column16", scwin.sumData);
+};
+scwin.onpageunload = function() {};
+scwin.colDataSum = function(colArr) {
+    var _arr = colArr;
+    return _arr.reduce(function(total, value, currentIndex) {
+        //console.log("total: ",total," value: ",value," curIdx: ",currentIndex);
+        return total + value;
+    }, 0);
+};
+scwin.gridView1_onviewchange = function(info) {
+    //console.log(info);
+    if (info.colIndex == 2) { //checkbox 컬럼인 경우.
+        //console.time("onviewchange");
+        var chkIndex = gridView1.getCheckedIndex(info.colIndex);
+        var ftData = 0;
+        if (dataList1.getRowCount() == chkIndex.length) {
+            ftData = scwin.colDataSum(dataList1.getColData("col2"));
+        } else {
+            for (var i = 0; i < chkIndex.length; i++) {
+                ftData += dataList1.getCellData(chkIndex[i], "col2");
+            }
+        }
+        gridView1.setFooterValue("column16", ftData + "");
+        //console.timeEnd("onviewchange");
+    }
+};
+scwin.gridView1_onheaderclick = function(headerId) {
+    //console.log("headerId: ",headerId);
+    if (headerId == "column3") {
+        var ftData = 0;
+        //console.time("scwin.gridView1_onheaderclick");
+        if (gridView1.getHeaderValue(headerId)) {
+            ftData = scwin.colDataSum(dataList1.getColData("col2"));
+        }
+        gridView1.setFooterValue("column16", ftData + "");
+        //console.timeEnd("scwin.gridView1_onheaderclick");
+    }
+};
+scwin.custFormatter = function(data, formattedData, rowIndex, colIndex) {
+    return "<strong>" + data + "</strong>";
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#G_gridView1__col1', 'key-sequence', {
+        sequence: '123123'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#G_gridView1__col1', 'key-combo', {
+        combo: 'ENTER'
+    });
+}
+scwin.setSimulate3 = function() {
+    scwin.simulateWrapper('#G_gvSparePartKitByOfficeSetup__kitSum0Value', 'key-combo', {
+        combo: 'DEL'
+    });
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkColor = function(id, rgb) {
+    var element = WebSquare.wUnit.getDomById($p.id + id)
+    var color = WebSquare.wUnit.getJq($(element).children()[0]).css("color");
+    return color == rgb;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_1_0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#gridView1_cell_1_2 input').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_1_0').innerText == '123123'", "true");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /*
+     * footer 총 합계 계산.
+     * 체크박스 전체선택 시 단순 반복문보다 10배 이상 빠릅니다. (10000건, IE11 기준)
+     */
+    //for
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    <xf:group id="" style="height:5250px;"><w2:gridView id="gridView1" dataList="data:dataList1" rowNumHeaderValue="순번" 
+        ev:onheaderclick="scwin.gridView1_onheaderclick" style="position: relative;width: 500px;height: 250px;" scrollByColumn="false" 
+        defaultCellHeight="20" rowNumVisible="true" ev:onviewchange="scwin.gridView1_onviewchange" scrollByColumnAdaptive="false" moveKeyEditModeAll="true">
+            <w2:caption id="caption3" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header3" style="">
+                <w2:row id="row6" style="">
+                    <w2:column blockSelect="false" id="column14" removeBorderStyle="false" style="" inputType="text" width="70" value="name1" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column12" removeBorderStyle="false" style="" width="104" inputType="text" value="number" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="" width="90" inputType="checkbox" value="checkbox" displayMode="label" checkboxLabel="checkbox">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody3" style="">
+                <w2:row id="row7" style="">
+                    <w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="text" width="70" customFormatter="" value="" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" width="104" inputType="text" value="" displayMode="label" displayFormat="#,##0">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col3" removeBorderStyle="false" trueValue="T" falseValue="F" style="" inputType="checkbox" width="70" value="" displayMode="label" valueType="other">
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+            <w2:footer id="footer2" style="">
+                <w2:row id="row9">
+                    <w2:column blockSelect="false" id="column17" removeBorderStyle="false" style="" width="70" inputType="text" value="선택합계" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column16" removeBorderStyle="false" dataType="number" style="" width="104" inputType="text" value="0" displayMode="label" displayFormat="#,##0" colSpan="2">
+                    </w2:column>
+<!--                    <w2:column blockSelect="false" id="column9" removeBorderStyle="false" style="" width="70" inputType="text" value="" displayMode="label">-->
+<!--                    </w2:column>-->
+                </w2:row>
+                <w2:row id="row8" style="">
+                    <w2:column removeBorderStyle="false" id="column21" blockSelect="false" inputType="text" value="총 합계" displayMode="label">
+                    </w2:column>
+                    <w2:column expression="SUM('col2')" removeBorderStyle="false" id="column20" blockSelect="false" dataType="number" inputType="expression" displayMode="label" displayFormat="#,##0" colSpan="">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" id="column19" blockSelect="false" inputType="text" displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:footer>
+        </w2:gridView></xf:group></body>
+</html>
+ 

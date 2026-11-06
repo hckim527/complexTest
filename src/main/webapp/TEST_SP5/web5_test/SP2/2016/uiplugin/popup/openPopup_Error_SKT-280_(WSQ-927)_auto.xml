@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/websquare5/common/css/content.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var type = "window";
+    var useIFrame = "true";
+    scwin.fn_openPopup(type, useIFrame);
+}
+scwin.fn_openPopup = function(type, useIFrame) {
+    //				var oUrl = "ckEditor.xml";
+    var oUrl = "";
+    var node = WebSquare.ModelUtil.findInstanceNode("vector");
+    var posTop = 100;
+    if (type == "window" && useIFrame == "true") {
+        posTop = scwin.getScrollTop();
+    }
+    var width = 550;
+    var height = 300;
+    var option = {
+        id: 'popup_' + scwin.postRandom(),
+        type: type || 'window', //popup 객체의 type으로  window, browser 중 하나, browser type의 경우 useIFrame 속성과 상관없이 window.open으로 열림.
+        width: width + 'px',
+        height: height + 'px',
+        top: posTop, //useIframe이 true인 경우 브라우져를 기준 false인 경우 모니터를 기준으로 한다.
+        left: 300,
+        popupName: 'popupName', //useIframe : true시 popup 객체의 이름으로 popup 프레임의 표시줄에 나타납니다.
+        style: '', //popup의 스타일을 지정합니다. 값이 있으면 left top width height는 적용되지 않습니다.
+        modal: true, //modal을 이용해서 뒤 쪽 배경을 동작하지 않도록 만들기 위한 인자 입니다. false이면 뒤쪽의 컴퍼넌트가 사용 가능합니다.
+        useIFrame: useIFrame || false, //true : IFrame 을 사용하는 WebSquare popup / false: window.open 을 사용하는 popup
+        style: "", //popup의 스타일을 지정합니다. 값이 있으면 left top width height는 적용되지 않습니다.
+        resizable: true,
+        status: false,
+        menubar: false,
+        scrollbars: true,
+        title: false,
+        xml: textarea2.getValue(), //popup에 넘길 xmlDocument의 string popup창에서 WebSquare.uiplugin.popup.getPopupParam() api를 사용하여 가져올수 있습니다.
+        srcData: "", //popup 객체의 type 이 window 일 때 Parent 에서 넘길 xpath
+        destData: "", //popup 객체의 type 이 window 일 때 popup 에 설정할 xpath(popup xml에는 필수로 해당 xPath가 있어야한다.)
+        srcData: "sendData",
+        destData: "receiveData",
+        closeAction: "doClose"
+    };
+    WebSquare.util.openPopup(oUrl, option);
+}
+scwin.postRandom = function() {
+    return Math.floor(Math.random() * 10);
+}
+scwin.trigger2_onclick = function(e) {
+    var type = "window";
+    var useIFrame = "true";
+    scwin.fn_openPopup(type, useIFrame);
+};
+scwin.getScrollTop = function() {
+    if (typeof pageYOffset != 'undefined') {
+        //most browsers except IE before #9
+        return pageYOffset;
+    } else {
+        var B = document.body; //IE 'quirks'
+        var D = document.documentElement; //IE with doctype
+        D = (D.clientHeight) ? D : B;
+        return D.scrollTop;
+    }
+}
+scwin.fn_afterModal = function(value, popupID) {
+    textarea1.setValue(value);
+    WebSquare.util.closePopup(popupID);
+}
+scwin.trigger3_onclick = function(e) {
+    alert(WebSquare.session.getAttribute("sessionid"));
+};
+scwin.doClose = function() {
+    alert("doClose");
+    return true; // 화면이 닫힙니다.
+    // return false; // 화면이 닫히지 않습니다.
+}
+scwin.__checkErrLog = function() {
+    return WebSquare.logger.getErrorLog();
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 새창으로 팝업 버튼을 클릭한다.
+    //1. In the browser, click the pop-up button in a new window.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById($p.id+'trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify  1. 팝업이 생성된다.
+    //1. A pop-up is created.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('_modal').style.display == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 로그보기 (Ctrl + 마우스 오른쪽) 를 실행한다. 
+    //2. Execute the log view (Ctrl + right mouse).
+    //WebSquare.wUnit.addCommand("set", "WebSquare.logger.showLog()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 로그보기가 실행되며, 에러로그가 존재하지 않는다. (전버전에서는 에러로그가 존재했음.)
+    //2. The log view is executed and no error log exists. (In previous versions, there was an error log.)
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkErrLog() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /* 팝업 설정 */
+    requires("uiplugin.popup");
+    window.preUrl = "/websquare5/components/popup/";
+    textarea2.setValue("자식팝업창에 전달할 파라메터 데이터11");
+    /* 세션생성 */
+    WebSquare.session.setAttribute("sessionid", "WebSquare Session");
+    //사용자 정의함수로 팝업창에서 호출함.
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 01-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[
+			
+    	 ]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="group3"
+			style="display:table;width:100%;height:100%;">
+			<xf:group id="group2"
+				style="vertical-align:middle;text-align:center;display:table-cell;">
+				<xf:group id="group1"
+					style="display:inline-block;padding:30px;">
+					<w2:textbox class="titlebox" dataType=""
+						id="textbox1" label="Popup" style="">
+					</w2:textbox>
+					<xf:group id="group5"
+						style="position: relative;width: 600px;height: 200px;" class="">
+						<xf:group tagname="table" id="table1"
+							style="position: relative ;width:100%;" class="w2tb">
+							<w2:attributes>
+								<w2:summary></w2:summary>
+							</w2:attributes>
+							<xf:group tagname="colgroup">
+								<xf:group style="width:50.00%;"
+									tagname="col">
+								</xf:group>
+								<xf:group style="width:50.00%;"
+									tagname="col">
+								</xf:group>
+							</xf:group>
+							<xf:group tagname="tr" style="">
+								<xf:group style="" class="w2tb_th"
+									tagname="th">Popup창에서&amp;nbsp;가져온&amp;nbsp;값</xf:group>
+								<xf:group style="" class="w2tb_th"
+									tagname="th">Popup창에&amp;nbsp;넘길&amp;nbsp;값</xf:group>
+							</xf:group>
+							<xf:group tagname="tr">
+								<xf:group style="" class="w2tb_td"
+									tagname="td">
+									<xf:textarea id="textarea1"
+										style="position: relative;width:100%;height: 100px;">
+									</xf:textarea>
+								</xf:group>
+								<xf:group style="" class="w2tb_td"
+									tagname="td">
+									<xf:textarea id="textarea2"
+										style="position: relative;width:100%;height: 100px;">
+									</xf:textarea>
+								</xf:group>
+							</xf:group>
+							<xf:group tagname="tr" style="">
+								<xf:group style="" class="w2tb_th"
+									tagname="th">속성에&amp;nbsp;따라&amp;nbsp;팝업&amp;nbsp;호출<w2:attributes>
+										<w2:colspan>2</w2:colspan>
+										<w2:rowspan>1</w2:rowspan>
+									</w2:attributes></xf:group>
+							</xf:group>
+							<xf:group tagname="tr" class="">
+								<xf:group style="" class="w2tb_td"
+									tagname="td">
+									<xf:trigger type="button"
+										id="trigger1"
+										style="position: relative;height:30px;width:70%;" ev:onclick="scwin.trigger1_onclick">
+										<xf:label><![CDATA[새창으로 팝업]]></xf:label>
+									</xf:trigger>
+								</xf:group>
+								<xf:group style="" class="w2tb_td"
+									tagname="td">
+									<xf:trigger type="button"
+										id="trigger2"
+										style="position: relative;height:30px;width:70%;margin:3px;" ev:onclick="scwin.trigger2_onclick">
+										<xf:label><![CDATA[IFrame팝업]]></xf:label>
+									</xf:trigger>
+								</xf:group>
+							</xf:group>
+							<xf:group tagname="tr" style="">
+								<xf:group style="" class="w2tb_th"
+									tagname="th">
+									<w2:attributes>
+										<w2:colspan>2</w2:colspan>
+										<w2:rowspan>1</w2:rowspan>
+									</w2:attributes>
+									<w2:textbox id="textbox6"
+										style="position: relative;"
+										label="WebSquare.session.setAttribute(key, value)는 최상위 windows 객체에 생성이 된다. &lt;br/&gt;팝업 호출후 최상위 windows가 닫히면 Websquare.session 객체는 사라진다." dataType="" class="th_style">
+									</w2:textbox>
+								</xf:group>
+							</xf:group>
+							<xf:group tagname="tr">
+								<xf:group style="" class="w2tb_td"
+									tagname="td">
+									<w2:attributes>
+										<w2:colspan>2</w2:colspan>
+										<w2:rowspan>1</w2:rowspan>
+									</w2:attributes>
+
+									<xf:trigger type="button"
+										id="trigger3"
+										style="position: relative;height:30px;width:70%;" ev:onclick="trigger3_onclick">
+										<xf:label><![CDATA[WebSquare.session 값 확인]]></xf:label>
+									</xf:trigger>
+								</xf:group>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+ 

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+    $w.log("main" + "_initScript");
+}
+scwin.test2 = function() {
+    $w.log("main" + "_initScript2");
+}
+scwin.post1 = function() {
+    $w.log("main" + "_postScript1");
+}
+scwin.post2 = function() {
+    $w.log("main" + "_postScript2");
+}
+scwin.onpageload = function() {
+    $w.log("main" + "_onpageload");
+    if (console.log) {
+        console.log("main" + "_onpageload");
+    }
+}
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById(id).innerText == value) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. main샘플 실행 후 마우스를 위와 아래에 있는 inputbox 각각에 over한다.
+    //1. After running the main sample, overlay the mouse on each of the inputbox above and below it.
+    //Verify step 1. w1_input1dummy, w2_input1dummy The tooltip value is displayed.
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('w1_input1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'wq_uuid_2_balloonTip_label', $p.id+'w1_input1dummy')", "true");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('w2_input1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'wq_uuid_2_balloonTip_label', $p.id+'w2_input1dummy')", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 22-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="main" id="textbox1" style="position: relative;width: 250px;height: 40px;font-size:24px;"></w2:textbox>
+    	<w2:wframe id="w1" style="position: relative;width:750px;height:250px;" src="input_tooltipFormatter_WPFF-71_(WSQ-3229)_sub.xml" scope="true"></w2:wframe>
+        <w2:wframe id="w2" style="position: relative;width:750px;height:250px;" src="input_tooltipFormatter_WPFF-71_(WSQ-3229)_sub.xml" scope="true"></w2:wframe>
+    </body>
+</html>
+ 

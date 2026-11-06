@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <col1><![CDATA[1]]></col1>
+                            <col2><![CDATA[1]]></col2>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[2]]></col1>
+                            <col2><![CDATA[2]]></col2>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[3]]></col1>
+                            <col2><![CDATA[3]]></col2>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[4]]></col1>
+                            <col2><![CDATA[4]]></col2>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+                <w2:dataList baseNode="list" id="dataList2" repeatNode="map" saveRemovedData="true" style="">
+                    <w2:columnInfo>
+                        <w2:column dataType="text" id="col1" name="name1"></w2:column>
+                        <w2:column dataType="text" id="col2" name="name2"></w2:column>
+                        <w2:column dataType="text" id="col3" name="name3"></w2:column>
+                        <w2:column dataType="text" id="col4" name="name4"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <col1><![CDATA[a1]]></col1>
+                            <col2><![CDATA[1]]></col2>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[b1]]></col1>
+                            <col2><![CDATA[2]]></col2>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[c1]]></col1>
+                            <col2><![CDATA[3]]></col2>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    scwin.trigger3_onclick();
+};
+
+scwin.trigger3_onclick = function (e) {
+    console.log("========================= trigger3_onclick setColumnClass ");
+    
+    gridView1.setColumnClass("col2", "test1");
+    gridView1.setColumnClass("col3", "test2");
+    gridView1.setColumnClass("col4", "test3");
+
+    gridView2.setColumnClass("col2", "test1");
+    gridView2.setColumnClass("col3", "test2");
+    gridView2.setColumnClass("col4", "test3");
+
+
+
+
+    
+    gridView1.setColumnNodeSet("col2", "data:dataList1" , "col1", "col2");
+    gridView1.setColumnNodeSet("col3", "data:dataList1" , "col1", "col2");
+    gridView1.setColumnNodeSet("col4", "data:dataList1" , "col1", "col2");
+
+    gridView2.setColumnNodeSet("col2", "data:dataList1" , "col1", "col2");
+    gridView2.setColumnNodeSet("col3", "data:dataList1" , "col1", "col2");
+    gridView2.setColumnNodeSet("col4", "data:dataList1" , "col1", "col2");
+
+
+    gridView1.setColumnClass("col1", "red");
+    gridView1.setColumnClass("col4", "red");
+
+    gridView2.setColumnClass("col1", "red");
+    gridView2.setColumnClass("col4", "red");
+};
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('gridView2_cell_0_0').classList.contains('red');
+	}	
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('gridView2_cell_0_1').classList.contains('test1');
+	}	
+	scwin.checkVal3 = function() {
+		return WebSquare.wUnit.getDomById('gridView2_cell_0_2').classList.contains('test2');
+	}	
+	scwin.checkVal4 = function() {
+		const cell = WebSquare.wUnit.getDomById('gridView2_cell_0_3');
+		const hasBothClasses = cell.classList.contains('test3') && cell.classList.contains('red');
+		return hasBothClasses;
+	}		
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tac_tab_tabs2_tabHTML').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()","true");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+]]></script>
+    <style type="text/css"><![CDATA[
+        .test1 {
+            background-color:red;
+        }
+
+        .test2 {
+            background-color:blue;
+        }
+
+        .test3 {
+            background-color:skyblue;
+        }
+
+        .red nobr {color:red;}
+    ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onbeforepageunload="scwin.onbeforepageunload">
+        <xf:group tagname="table" style="width:100%;" id="" class="w2tb">
+            <w2:attributes>
+                <w2:summary></w2:summary>
+            </w2:attributes>
+            <xf:group tagname="caption"></xf:group>
+            <xf:group tagname="colgroup">
+                <xf:group tagname="col" style="width:200px;"></xf:group>
+                <xf:group tagname="col"></xf:group><xf:group tagname="col" style=""></xf:group>
+            </xf:group>
+            <xf:group tagname="tr" style="">
+                <xf:group tagname="th" style="" class="w2tb_th">
+                    <w2:attributes>
+                        <w2:scope>row</w2:scope>
+                    </w2:attributes>
+                </xf:group>
+                <xf:group tagname="td" style="" class="w2tb_td">
+                    <xf:trigger type="button" style="width:222px;height:23px;" id="trigger3" ev:onclick="scwin.trigger3_onclick">
+                        <xf:label><![CDATA[setColumnNodeSet]]></xf:label>
+                    </xf:trigger>
+                    
+                </xf:group>
+                <xf:group tagname="td" class="w2tb_td">
+                    <w2:attributes></w2:attributes>
+                </xf:group></xf:group>
+        </xf:group>
+        <w2:tabControl id="tac" style="width: 100%;height: 300px;" alwaysDraw="true">
+            <w2:tabs disabled="false" style="width:100px;height:30px;" id="tabs1" label="111"></w2:tabs>
+            <w2:tabs disabled="false" style="width:100px;height:30px;" id="tabs2" label="222"></w2:tabs>
+            <w2:content style="height:270px;" id="content1" alwaysDraw="true">
+                <w2:gridView autoFit="allColumn" checkAllType="false" dataList="data:dataList2" defaultCellHeight="20" id="gridView1"
+                    style="width: 100%;height: 150px;">
+                    <w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+                    <w2:header id="header2" style="">
+                        <w2:row id="row3" style="">
+                            <w2:column displayMode="label" id="column6" inputType="text" style="" value="name1" width="70"></w2:column>
+                            <w2:column displayMode="label" id="column5" inputType="text" style="" value="name2" width="70"></w2:column>
+                            <w2:column displayMode="label" id="column4" inputType="text" style="" value="name3" width="70"></w2:column>
+                            <w2:column displayMode="label" id="column3" inputType="text" style="" value="name4" width="70"></w2:column>
+                        </w2:row>
+                    </w2:header>
+                    <w2:gBody id="gBody2" style="">
+                        <w2:row id="row4" style="">
+                            <w2:column displayMode="label" id="col1" inputType="text" style="" value="" width="70"></w2:column>
+                            <w2:column displayMode="label" id="col2" inputType="select" style="" value="" width="70"></w2:column>
+                            <w2:column displayMode="label" id="col3" inputType="select" style="" value="" width="70"></w2:column>
+                            <w2:column displayMode="label" id="col4" inputType="select" style="" value="" width="70"></w2:column>
+                        </w2:row>
+                    </w2:gBody>
+                </w2:gridView>
+            </w2:content>
+            <w2:content style="height:270px;" id="content2" alwaysDraw="true">
+                <w2:gridView autoFit="allColumn" checkAllType="false" dataList="data:dataList2" defaultCellHeight="20" id="gridView2"
+                    style="width: 100%;height: 150px;">
+                    <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+                    <w2:header id="header2" style="">
+                        <w2:row id="row3" style="">
+                            <w2:column displayMode="label" id="column6" inputType="text" style="" value="name1" width="70"></w2:column>
+                            <w2:column displayMode="label" id="column5" inputType="text" style="" value="name2" width="70"></w2:column>
+                            <w2:column displayMode="label" id="column4" inputType="text" style="" value="name3" width="70"></w2:column>
+                            <w2:column displayMode="label" id="column3" inputType="text" style="" value="name4" width="70"></w2:column>
+                        </w2:row>
+                    </w2:header>
+                    <w2:gBody id="gBody2" style="">
+                        <w2:row id="row4" style="">
+                            <w2:column displayMode="label" id="col1" inputType="text" style="" value="" width="70"></w2:column>
+                            <w2:column displayMode="label" id="col2" inputType="select" style="" value="" width="70"></w2:column>
+                            <w2:column displayMode="label" id="col3" inputType="select" style="" value="" width="70"></w2:column>
+                            <w2:column displayMode="label" id="col4" inputType="select" style="" value="" width="70"></w2:column>
+                        </w2:row>
+                    </w2:gBody>
+                </w2:gridView>
+            </w2:content>
+        </w2:tabControl>
+    </body>
+</html>

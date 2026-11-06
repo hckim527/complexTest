@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="202">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" ev:ondataload="scwin.dataList1_ondataload" id="dataList1" repeatNode="map"
+            		saveRemovedData="true" style="">
+            		<w2:columnInfo>
+            			<w2:column dataType="text" id="col2" name="name2"></w2:column>
+            			<w2:column dataType="text" id="col3" name="name3"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+
+            				<col2><![CDATA[1]]></col2>
+            				<col3><![CDATA[1]]></col3>
+            			</w2:row>
+            			<w2:row>
+
+            				<col2><![CDATA[1]]></col2>
+            				<col3><![CDATA[2]]></col3>
+            			</w2:row>
+            			<w2:row>
+
+            				<col3><![CDATA[3]]></col3>
+            				<col2><![CDATA[2]]></col2>
+            			</w2:row>
+            			<w2:row>
+
+            				<col3><![CDATA[4]]></col3>
+            				<col2><![CDATA[2]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+
+            	<w2:dataList baseNode="list" id="sel_sample" repeatNode="map" saveRemovedData="true" style="">
+            		<w2:columnInfo>
+            			<w2:column dataType="text" id="col1" name="name1"></w2:column>
+            			<w2:column dataType="text" id="col2" name="name2"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col2><![CDATA[1]]></col2>
+            				<col1><![CDATA[축구]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[2]]></col2>
+            				<col1><![CDATA[농구]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[3]]></col2>
+            				<col1><![CDATA[야구]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[4]]></col2>
+            				<col1><![CDATA[배구]]></col1>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		scwin.fn_CreateDynamicInputType();
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	//inputType 에 따라 미리 property 를 정의한다
+	scwin.fn_CreateDynamicInputType = function() {
+		
+		var info = {};
+		
+		 var returnInfo = {
+			 displayFormat : ""
+		 };
+		 returnInfo.options = {};
+		 returnInfo.inputType = "select";
+		 returnInfo.options.viewType = "icon";
+		 returnInfo.options.displayMode = "label";
+       
+            returnInfo.itemSet = {
+                   nodeset:"data:sel_sample",
+                   label : "col1",
+                   value : "col2"
+            
+            }
+		var total = dataList1.getTotalRow();
+		
+		var a = total-4;
+		var b = total-3;
+		var c = total-2;
+		
+         grd.setCellInputType(a, "col2", returnInfo);
+		 grd.setCellInputType(b, "col2", returnInfo);
+		grd.setCellInputType(c, "col2", returnInfo);
+		
+		
+	};
+	
+   
+	scwin.trigger4_onclick = function(e) {
+		var row = dataList1.insertRow(1);
+		
+	};
+	
+	
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('grd_dynamic_select_2_0_input_0').value == '축구';
+	}
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('grd_dynamic_select_2_0_input_0').children.length == 4;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest() 
+
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView senseReader ="true" applyAllColumnStyle="false" dataList="data:dataList1" defaultCellHeight="20" id="grd" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" scrollByColumn="false" scrollByColumnAdaptive="false" setCellInputTypeCustom="true"
+    		style="width: 500px;height: 150px;" summaryAuto="false" summaryOnlyAuto="false" syncScroll="false" useShiftKey="true"
+    		editModeEvent="onclick" rowNumVisible="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" value="name2" width="100"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" value="name3" width="100"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="custom" width="100"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" width="100"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger4" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[insertrow]]></xf:label>
+    	</xf:trigger>
+
+    </body>
+</html>

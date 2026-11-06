@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map"></w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+	scwin.trigger1_onclick = function(e) {
+		var value = input1.getValue();
+		var value2 = searchbox1.getValue();
+		//alert(value + value2)
+		localStorage.setItem("log", value + value2);			
+		console.log(value, value2);
+	};
+
+	scwin.checkVal = function() {
+		return localStorage.getItem('log') == '12341234';
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");			
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').focus()");
+		WebSquare.wUnit.addCommand("pause", "400");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').value = '1234'");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('searchbox1___input').click()");
+		WebSquare.wUnit.addCommand("pause", "400");			
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('searchbox1___input').focus()");
+		WebSquare.wUnit.addCommand("pause", "400");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('searchbox1___input').value = '1234'");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");			
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').focus()");
+		WebSquare.wUnit.addCommand("pause", "400");				
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");	
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	localStorage.removeItem("log");
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:input adjustMaxLength="false" id="input1" style="width:200px;height:39px;" displayFormat="#,###" dataType="number" maskFormat="reverse" maskFormatModelExcludeCharValue="true" maskFormatModelExcludeChar=",">
+    	</xf:input>
+        <w2:searchbox adjustMaxLength="false" id="searchbox1" style="width:200px;height:39px;" displayFormat="#,###" dataType="number" maskFormat="reverse" maskFormatModelExcludeCharValue="true" maskFormatModelExcludeChar=",">
+        </w2:searchbox>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[getValue]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

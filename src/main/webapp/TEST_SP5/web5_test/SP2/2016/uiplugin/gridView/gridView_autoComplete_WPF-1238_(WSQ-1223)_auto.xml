@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column dataType="text" id="col1" name="name1"/>
+            			<w2:column dataType="text" id="col2" name="name2"/>
+            			<w2:column dataType="text" id="col3" name="name3"/>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" id="dl_auto" repeatNode="map" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column dataType="text" id="value" name="value"/>
+            			<w2:column dataType="text" id="label" name="label"/>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.checkEL = function(id) {
+    if (WebSquare.wUnit.getJq(id).css("display") == "block") {
+        return true;
+    }
+    return false;
+}
+scwin.isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
+scwin.__isCheck = function() {
+    if (scwin.isIE() && (scwin.isIE() == 11)) {
+        return WebSquare.wUnit.getJq("#G_gridView1___autoComplete_2_col2_col2_itemTable").css("display") == "block";
+    }
+    return true;
+}
+scwin.setSimulate = function() {
+    WebSquare.wUnit.getJq('#G_gridView1___autoComplete_2_col2_col2_input').simulate('key-sequence', {
+        sequence: '1'
+    });
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq('#G_'+$p.id+'gridView1___autoComplete_2_col2_col2_label').text() == '1';
+}
+scwin.unitTest = function() {
+    // Int test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. Source 탭 또는 Property 에서 name2 컬럼의 cell 의 inputType 을 확인한다.- 1. In the Source tab or Property, check the inputType of the cell in the name2 column.
+    //Verify 1. inputType='autoComplete'
+    //Test step 4. 브라우저에서 readOnly 를 해제설정한 마지막 cell 을 더블클릭 후 '1' 을 입력한다.(name2항목의 3번째 컬럼)- Double-click the last cell in the browser that has readOnly disabled and enter '1'.(the third column of the name2 entry)
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_2_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. 입력한 '1' 에 대해서 autoComplete 된다.- AutoComplete for '1' entered.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkEL('#G_'+$p.id+'gridView1___autoComplete_2_col2_col2_input')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
+    WebSquare.wUnit.addCommand("pause", "2500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop unitTest
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "value": "1",
+        "label": "1"
+    }, {
+        "value": "2",
+        "label": "2"
+    }];
+    dl_auto.setJSON(jsonData);
+    window.jsonData2 = [{
+        "col1": "a1",
+        "col2": "1"
+    }, {
+        "col1": "a2",
+        "col2": "1"
+    }, {
+        "col1": "a3",
+        "col2": "1"
+    }];
+    dataList1.setJSON(jsonData2);
+    gridView1.setCellReadOnly(2, 1, false);
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 23-Jan-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" disabledFontColor="" fixedColumnWithHidden="true" id="gridView1" ignoreCellClick="false" ignoreToggleOnDisabled="false" keyMoveEditMode="true" moveKeyEditMode="true" readOnlyBackgroundColor="skyblue" scrollByColumn="false" scrollByColumnAdaptive="false" style="position: absolute ;left:14px;bottom:30px;width:532px;height:110px;" summaryAuto="false" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" style="height:20px" value="name1" width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px" value="name2" width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px" value="name3" width="70">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"/>
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="autoComplete" readOnly="true" style="height:20px" textAlign="left" width="70">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:dl_auto">
+    							<w2:label ref="label"/>
+    							<w2:value ref="value"/>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:20px" width="70"/>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+   </body>
+</html> 

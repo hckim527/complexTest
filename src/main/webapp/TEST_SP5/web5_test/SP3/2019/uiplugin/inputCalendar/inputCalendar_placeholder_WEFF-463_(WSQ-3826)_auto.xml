@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:config>
+            <WebSquare>
+                <inputCalendar>
+                    <placeholder valueType="yearMonth" defaultValue="yyyyMM" />
+                    <placeholder valueType="yearMonthDate" defaultValue="yyyyMMdd" />
+                    <placeholder valueType="yearMonthDateTime" defaultValue="yyyyMMdd HH:mm" />
+                    <placeholder valueType="yearMonthDateTimeSec" defaultValue="yyyyMMdd HH:mm:SS" />   
+                </inputCalendar>
+            </WebSquare>
+        </w2:config>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<node1></node1>
+                	<node2></node2>
+                	<node3></node3>
+                </data>
+			</xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.dateMask = function(value) {
+    if (typeof value == "number") {
+        value = value + "";
+    }
+    var delimiter1 = "-";
+    var delimiter2 = "-";
+    var delPos1 = 4;
+    var delPos2 = 6;
+    var maxCharLength = 8;
+    // remove delimiter
+    value = value.replace(new RegExp(delimiter1), "");
+    value = value.replace(new RegExp(delimiter2), "");
+    // limit max length
+    if (value.length > maxCharLength) {
+        value = value.substr(0, maxCharLength);
+    }
+    // 1st delimiter
+    if (value.length > delPos1) {
+        value = value.substr(0, delPos1) + delimiter1 + value.substr(delPos1)
+    }
+    // 2nd delimiter
+    if (value.length > delPos2 + delimiter1.length) {
+        var cutPos = delPos2 + delimiter1.length;
+        value = value.substr(0, cutPos) + delimiter2 + value.substr(cutPos);
+    }
+    return value;
+}
+scwin.dateMask_yearMonth = function(value) {
+    if (typeof value == "number") {
+        value = value + "";
+    }
+    var delimiter1 = "-";
+    var delimiter2 = "-";
+    var delPos1 = 4;
+    var maxCharLength = 6;
+    // remove delimiter
+    value = value.replace(new RegExp(delimiter1), "");
+    // limit max length
+    if (value.length > maxCharLength) {
+        value = value.substr(0, maxCharLength);
+    }
+    // 1st delimiter
+    if (value.length > delPos1) {
+        value = value.substr(0, delPos1) + delimiter1 + value.substr(delPos1)
+    }
+    return value;
+}
+scwin.fireKeyEvent = function(inputCalendarId, value) {
+    var obj = window[inputCalendarId];
+    var input = WebSquare.wUnit.getDomById($p.id + inputCalendarId + "_input")
+    if (obj && input) {
+        if (obj.focus) {
+            obj.focus();
+        }
+        for (var i = 0; i < value.length; i++) {
+            var keyCode = value.charCodeAt(i);
+            var event = {
+                charCode: keyCode,
+                keyCode: keyCode
+            }
+            if (obj.handleKeydownEvent) {
+                obj.handleKeydownEvent(event);
+            }
+            if (obj.handleKeypressEvent) {
+                obj.handleKeypressEvent(event);
+            }
+            input.value = input.value + String.fromCharCode(keyCode);
+            if (obj.handleKeyupEvent) {
+                obj.handleKeyupEvent(event);
+            }
+        }
+        if (obj.blur) {
+            obj.blur();
+        }
+    }
+}
+scwin.getInputValue = function(inputCalendarId) {
+    var dom = WebSquare.wUnit.getDomById($p.id + inputCalendarId + "_input");
+    if (dom) {
+        return dom.value;
+    }
+    return null;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 "엑셀다운로드"버튼을 클릭한다.
+    WebSquare.wUnit.addCommand('assert', "inputCalendar2.options.placeholder == 'yyyyMMdd'", 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', "inputCalendar3.options.placeholder == 'yyyyMM'", 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    WebSquare.wUnit.addCommand('assert', "inputCalendar8.options.placeholder == 'yyyyMMdd HH:mm:SS'", 'true');
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:inputCalendar applyFormat="all" calendarValueType="" displayFormatter="dateMask_yearMonth" id="inputCalendar1" ref="node3" style="position:absolute;vertical-align:middle;word-wrap:break-word;top:55px;left:155px;width:250px;height:30px;" placeholder='"YYYY: SS"'>
+    	</w2:inputCalendar>
+    	<w2:inputCalendar style="position:absolute;vertical-align:middle;word-wrap:break-word;top:120px;left:155px;width:250px;height:30px;"
+    		applyFormat="all" displayFormatter="dateMask" id="inputCalendar2" ref="node2" calendarValueType="yearMonthDate" placeholder=''>
+    	</w2:inputCalendar>
+    	<w2:inputCalendar style="position:absolute;vertical-align:middle;word-wrap:break-word;top:180px;left:155px;width:250px;height:30px;"
+    		applyFormat="all" id="inputCalendar3" displayFormatter="dateMask_yearMonth" ref="node3" calendarValueType="yearMonth">
+    	</w2:inputCalendar>
+    	<xf:output style="position:absolute;vertical-align:middle;word-wrap:break-word;top:60px;left:20px;width:120px;height:21px;"
+    		id="output1">
+    		<xf:label>default</xf:label>
+    	</xf:output>
+    	<xf:output style="position:absolute;vertical-align:middle;word-wrap:break-word;top:120px;left:20px;width:120px;height:21px;"
+    		id="output2">
+    		<xf:label>yearMonthDate</xf:label>
+    	</xf:output>
+    	<xf:output style="position:absolute;vertical-align:middle;word-wrap:break-word;top:180px;left:20px;width:120px;height:21px;"
+    		id="output3">
+    		<xf:label>yearMonth</xf:label>
+    	</xf:output>
+    	<w2:inputCalendar applyFormat="all" calendarValueType="year" displayFormatter="dateMask_yearMonth" id="inputCalendar6" ref="node3"
+    		style="position:absolute;vertical-align:middle;word-wrap:break-word;top:232px;left:155px;width:250px;height:30px;">
+    	</w2:inputCalendar>
+    	<xf:output id="output7"
+    		style="position:absolute;vertical-align:middle;word-wrap:break-word;top:232px;left:19px;width:120px;height:21px;">
+    		<xf:label>year</xf:label>
+    	</xf:output>
+    	<w2:inputCalendar applyFormat="all" calendarValueType="yearMonthDateHour" displayFormatter="dateMask_yearMonth" id="inputCalendar7"
+    		ref="node3" style="position:absolute;vertical-align:middle;word-wrap:break-word;top:276px;left:155px;width:250px;height:30px;">
+    	</w2:inputCalendar>
+    	<xf:output id="output8"
+    		style="position:absolute;vertical-align:middle;word-wrap:break-word;top:281px;left:19px;width:120px;height:21px;">
+    		<xf:label>yearMonthDateHour</xf:label>
+    	</xf:output>
+    	<xf:output id="output9"
+    		style="position:absolute;vertical-align:middle;word-wrap:break-word;top:325px;left:19px;width:120px;height:21px;">
+    		<xf:label>yearMonthDateHourTimeSec</xf:label>
+    	</xf:output>
+    	<w2:inputCalendar applyFormat="all" calendarValueType="yearMonthDateTimeSec" displayFormatter="dateMask_yearMonth"
+    		id="inputCalendar8" ref="node3"
+    		style="position:absolute;vertical-align:middle;word-wrap:break-word;top:326px;left:155px;width:250px;height:30px;">
+    	</w2:inputCalendar>
+    	
+    </body>
+</html>
+ 

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+
+		// 0. 20180212 적용테스트 확인완료(이성복)
+	    // 1. config.xml 속성설정 적용됨
+		// 2. 수동테스트 및 자동화변환은 샘플파일만으로 테스트 가능합니다.
+		<w2:config>
+		  <WebSquare>
+			  <clearMemory value="true"/>
+		  </WebSquare>
+		</w2:config>
+
+
+
+
+
+
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    //alert("123");
+    showAlert = true;
+};
+scwin.__buttonNotDisappeared = function() {
+    var button = WebSquare.wUnit.getJq("#trigger1");
+    if (!button.length) {
+        return false;
+    }
+    return button.get(0).nodeName == "A";
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    // Test step 1. IE10이하 브라우저에서 샘플실행 후 '테스트'버튼을 클릭한다.
+    //1. In IE10 or earlier browser, click the 'Test' button after running the sample.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    // verify step 1. 팝업창에 '123'값이 보여진다.
+    //1. '123' value is displayed in the popup window.
+    WebSquare.wUnit.addCommand("assert", "showAlert", "true");
+    //Test step 2. 팝업창의 확인 클릭 후 '테스트'버튼이 사라지지 않고 유지되는지 확인한다.
+    //2. Confirm that the 'Test' button is not disappeared after clicking the OK button in the pop-up window.
+    //Verify step 2. '테스트'버튼이 유지되어 보여지고 url끝에 '#'값이 추가되어 보여진다.(이전에는 '테스트'버튼이 사라짐)
+    //2. The 'Test' button will be shown and shown with a '#' appended to the end of the url.(Previously the 'Test' button disappeared)
+    WebSquare.wUnit.addCommand("assert", "scwin.__buttonNotDisappeared()", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#trigger1').attr('href') == '#'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.showAlert = false;
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 09-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="anchor" id="trigger1" style="position: relative;width: 80px;height: 23px;left:120px;top:83px;" href="#" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[테스트]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

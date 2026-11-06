@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.getType = function(info) {
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var returnInfo;
+    if (dataList1.getCellData(rowIndex, "col2") == 1) {
+        returnInfo = {
+            id: "dynamic_radio_" + rowIndex + "_" + colIndex,
+            inputType: "radio",
+            options: {}
+        };
+    } else {
+        returnInfo = {
+            id: "dynamic_text_" + rowIndex + "_" + colIndex,
+            inputType: "text"
+        };
+    }
+    if (returnInfo) {
+        //console.log( "[typeGetter] (" + rowIndex + ", " + colIndex + ") : " +returnInfo.inputType);
+    }
+    return returnInfo;
+};
+scwin.grd_onviewchange = function(info) {
+    grd.refreshRow(info.rowIndex);
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    console.log(dataList1.getAllArray().data);
+    log = dataList1.getAllArray().data;
+    //alert(dataList1.getAllArray().data);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 name1항목의 첫번째 radio버튼을 클릭하고 두번째 radio버튼을 클릭한 후 'dataList1.getAllArray().data'버튼을 클릭한다.
+    //1. After running the sample, click the first radio button in the name1 item, click the second radio button, and click the 'dataList1.getAllArray (). Data' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_1_0').childNodes[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 알림창에 '0,1,,1,1,,,1,,,2,,,a3,,,1,'값이 보여진다.(이전에는 첫번째에 선택된 radio의 값이 남아있어서 '1,1,,1,1,,,1,,,2,,,a3,,,1,'값으로 보여짐)
+    //1. '0, 1,, 1,1 ,,, 1 ,,, 2 ,,, a3 ,,,,,,,,,, value are shown in the information window.(Previously, the value of the radio selected at the first time remains and is shown as '1,1, 1,1 ,,, 1 ,,, 2 ,,, a3 ,,,,,'
+    WebSquare.wUnit.addCommand("assert", "log.toString() == '0,1,,1,1,,,1,,,2,,,a3,,,1,'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "col2": "1"
+    }, {
+        "col2": "1"
+    }, {
+        "col2": "1"
+    }, {
+        "col2": "2"
+    }, {
+        "col2": "a3"
+    }, {
+        "col2": "1"
+    }];
+    dataList1.setJSON(jsonData);
+    window.jsonData2 = [{
+        "col1": "a1",
+        "col2": "a1"
+    }, {
+        "col1": "a2",
+        "col2": "a2"
+    }, {
+        "col1": "a3",
+        "col2": "a3"
+    }];
+    dataList2.setJSON(jsonData2);
+    window.log = undefined;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 22-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="grd"
+    		style="position: absolute;width: 500px;height: 600px;" fixedColumnWithHidden="true" useShiftKey="true"
+    		ev:onviewchange="scwin.grd_onviewchange">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="custom" width="70" typeGetter="scwin.getType"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width:184px;height:25px;left:500px;top:9px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[dataList1.getAllArray().data]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

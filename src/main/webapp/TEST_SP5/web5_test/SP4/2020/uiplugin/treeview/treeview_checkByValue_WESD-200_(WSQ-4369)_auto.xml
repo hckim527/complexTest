@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="value" name="value" dataType="text"></w2:column>
+                        <w2:column id="label" name="label" dataType="text"></w2:column>
+                        <w2:column id="depth" name="depth" dataType="text"></w2:column>
+                        <w2:column id="chk" name="chk" dataType="text"></w2:column>
+                        <w2:column id="iconImageTest" name="iconImageTest" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.setDataList1 = function() {
+    var data = [{
+        "value": "a1",
+        "label": "a1",
+        "depth": "1"
+    }, {
+        "value": "a1-1",
+        "label": "a1-1",
+        "depth": "2"
+    }, {
+        "value": "a1-1-1",
+        "label": "a1-1-1",
+        "depth": "3"
+    }, {
+        "value": "a1-1-2",
+        "label": "a1-1-2",
+        "depth": "3"
+    }, {
+        "value": "a1-1-2-1",
+        "label": "a1-1-2-1",
+        "depth": "4"
+    }, {
+        "value": "a1-1-3",
+        "label": "a1-1-3",
+        "depth": "3"
+    }, {
+        "value": "a1-2",
+        "label": "a1-2",
+        "depth": "2"
+    }, {
+        "value": "a1-2-1",
+        "label": "a1-2-1",
+        "depth": "3"
+    }, {
+        "value": "a1-2-1-1",
+        "label": "a1-2-1-1",
+        "depth": "4"
+    }, {
+        "value": "a2",
+        "label": "a2",
+        "depth": "1"
+    }, {
+        "value": "a2-1",
+        "label": "a2-1",
+        "depth": "2"
+    }, {
+        "value": "a2-1-1",
+        "label": "a2-1-1",
+        "depth": "3"
+    }, {
+        "value": "a3",
+        "label": "a3",
+        "depth": "1"
+    }, {
+        "value": "a3-1",
+        "label": "a3-1",
+        "depth": "2"
+    }];
+    dataList1.setJSON(data);
+};
+scwin.trigger1_onclick = function(e) {
+    treeview1.checkByValue("a1-1-2", true, true);
+};
+scwin.getErrorLog = function() {
+    var temp = WebSquare.logger.getErrorLog();
+    return temp;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.getErrorLog() == ''", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.setDataList1();
+    setTimeout(function() {
+        window.ntime = performance.timing;
+        window.total = ntime.loadEventEnd - ntime.navigationStart; //전체 소요시간
+        window.redirect = ntime.redirectEnd - ntime.redirectStart; // 동일 origin에서의 redirect 시간
+        window.cache = ntime.domainLookupStart - ntime.fetchStart; // cache 시간
+        window.dnslookup = ntime.domainLookupEnd - ntime.domainLookupStart; //DNS Lookup 시간
+        window.connect = ntime.connectEnd - ntime.connectStart; // 웹서버 연결 시간
+        window.request = ntime.responseStart - ntime.requestStart; // 요청 소요 시간
+        window.response = ntime.responseEnd - ntime.responseStart; // 응답 데이터를 모두 받은 시간
+        window.dom = ntime.domComplete - ntime.domLoading; // DOM객체 생성 시간 *******************
+        window.load = ntime.loadEventEnd - ntime.loadEventStart; // 브라우저의 Load 이벤트 실행시간
+        window.pageEnd = ntime.loadEventEnd - ntime.responseEnd; //  서버에서 페이지를 받고 페이지를 로드하는데 걸린 시간
+        window.networkDelay = ntime.responseEnd - ntime.fetchStart; //  네트워크 지연 시간
+        console.log("total : " + total + "ms  >>>>>>>  전체 소요시간");
+        console.log("redirect : " + redirect + "ms  >>>>>>>   동일 origin에서의 redirect 시간");
+        console.log("cache : " + cache + "ms   >>>>>>>  cache 시간");
+        console.log("dnslookup : " + dnslookup + "ms  >>>>>>>  DNS Lookup 시간");
+        console.log("connect : " + connect + "ms  >>>>>>>  웹서버 연결 시간");
+        console.log("request : " + request + "ms  >>>>>>>  요청 소요 시간");
+        console.log("response : " + response + "ms  >>>>>>>  첫 응답으로 부터 응답 데이터를 모두 받은 시간");
+        console.log("dom : " + dom + "ms  >>>>>>>  DOM객체 로드 완료 시간");
+        console.log("load : " + load + "ms  >>>>>>>  브라우저의 Load 이벤트 실행시간");
+        console.log("pageEnd : " + pageEnd + "ms  >>>>>>>  서버에서 페이지를 받고 페이지를 로드하는데 걸린 시간");
+    }, 30000); //30초 뒤 수행
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:treeview useDrag="" id="treeview1" style="position: absolute ;left:15px;top:5px;width:170px;height:283px;" lineShow=""
+            showCheckbox="true" refreshCheckboxModel="true" renderType="table"
+            trueValue="Y" falseValue="N"
+            tooltipGroupClass="false" dataType="listed" hierarchy="true" checkAllChildNodes="true" toggleEvent="onclick" tooltipDisplay="true"
+            tooltipTime="1" forceRefresh="true" dynamicAppend="true" class="test" showTreeDepth="0">
+            <w2:itemset nodeset="data:dataList1">
+                <w2:label ref="label"></w2:label>
+                <w2:value ref="value"></w2:value>
+                <w2:depth ref="depth"></w2:depth>
+                <w2:folder ref=""></w2:folder>
+                <w2:checkbox ref='chk'></w2:checkbox>
+                <w2:checkboxDisabled ref=''></w2:checkboxDisabled>
+                <w2:image ref=""></w2:image>
+                <w2:iconImage ref=''></w2:iconImage>
+                <w2:selectedImage ref=""></w2:selectedImage>
+                <w2:expandedImage ref=""></w2:expandedImage>
+                <w2:leafImage ref=""></w2:leafImage>
+            </w2:itemset>
+        </w2:treeview>
+        <xf:trigger type="button" id="trigger1" style="position: absolute ;left:364px;top:39px;width:87px;height:33px;" ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[checkByValue]]></xf:label>
+        </xf:trigger>
+    </body>
+</html>
+ 

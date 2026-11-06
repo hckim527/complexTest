@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+    $w.log("main" + "_initScript");
+}
+scwin.test2 = function() {
+    $w.log("main" + "_initScript2");
+}
+scwin.post1 = function() {
+    $w.log("main" + "_postScript1");
+}
+scwin.post2 = function() {
+    $w.log("main" + "_postScript2");
+}
+scwin.onpageload = function() {
+    $w.log("main" + "_onpageload");
+    if (console.log) {
+        console.log("main" + "_onpageload");
+    }
+}
+scwin.trigger1_onclick = function() {
+    w1.setSrc("wframe_setSrc_WPFF-129_(WSQ-3298)_sub.xml");
+    var err = WebSquare.logger.getErrorLog();
+    if (err) {
+        //alert(err);
+        alertLog = "error";
+    } else {
+        //alert("setSrc PASS");
+        alertLog = "setSrc PASS";
+    }
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. main샘플 실행 후 'setSrc_test'버튼을 클릭한다.
+    //1. After running the main sample, click the 'setSrc_test' button.
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. 정상알림 'setSrc PASS'값이 보여진다.(이전에는 오류발생알림이 보여짐)
+    //1. Normal notification 'setSrc PASS' value is displayed (previously error notification is shown)
+    WebSquare.wUnit.addCommand("assert", "alertLog == 'setSrc PASS'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.alertLog = undefined;
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 19-Mar-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="main" id="textbox1" style="position: relative;width: 250px;height: 40px;font-size:24px;"></w2:textbox>
+        <xf:trigger id="trigger1" style="width:216px;height:23px;" type="button" ev:onclick="scwin.trigger1_onclick">
+                <xf:label><![CDATA[setSrc_test]]></xf:label>
+            </xf:trigger>
+    	<w2:wframe id="w1" style="position: relative;width:750px;height:800px;" src="wframe_setSrc_WPFF-129_(WSQ-3298)_sub.xml" scope="true" initScript="console.log('w1_initscript');if(scwin.test){scwin.test();}" postScript="scwin.post1();"></w2:wframe>
+        <w2:wframe id="w2" style="position: relative;width:750px;height:800px;" src="wframe_setSrc_WPFF-129_(WSQ-3298)_sub.xml" scope="true" initScript="console.log('w2_initscript');if(scwin.test2){scwin.test2();}" postScript="scwin.post2();"></w2:wframe>
+    </body>
+</html>
+ 

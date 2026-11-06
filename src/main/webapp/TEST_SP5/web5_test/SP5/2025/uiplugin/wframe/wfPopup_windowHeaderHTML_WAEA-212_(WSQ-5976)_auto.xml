@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_programName="팝업 frameModal Test">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dma_params">
+            		<w2:keyInfo>
+            			<w2:key id="regCode" name="name1" dataType="text"></w2:key>
+            			<w2:key id="position" name="name2" dataType="text"></w2:key>
+            			<w2:key id="office" name="name3" dataType="text"></w2:key>
+            			<w2:key id="age" name="name4" dataType="text"></w2:key>
+            			<w2:key id="startDate" name="name5" dataType="text"></w2:key>
+            			<w2:key id="salary" name="name6" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<regCode><![CDATA[홍길동]]></regCode>
+            			<position><![CDATA[Chief Executive Officer (CEO)]]></position>
+            			<office><![CDATA[London]]></office>
+            			<age><![CDATA[33]]></age>
+            			<startDate><![CDATA[20180505]]></startDate>
+            			<salary><![CDATA[162700]]></salary>
+            		</w2:data>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+
+
+requires("uiplugin.popup");
+	scwin.onpageload = function() {
+	};
+
+
+	scwin.onpageunload = function() {
+
+	};
+	
+	scwin.btn_browserPopup3_onclick  = function () {
+		  var url = "WESD_462_tabcontrol_itemTable_position.xml"
+
+		  var data = {
+			paramsData1 : dma_params.getJSON(), 
+			paramsData2:"샘플파라미터" ,
+			callbackFn : "scwin.popupCallBack" 
+		  };
+		  var options = {
+			id : "browserPopup3",	
+			popupName : "직원 조회", 
+			windowHeaderHTML : "<span style='color:red;'> windowHeaderHTML </span>",
+			width : 560,
+			height: 500,
+			top : "167px", 
+			left : "100px",
+			modal:false,
+			type:"wframePopup",
+			frameModal : scwin.$w.getFrameId() 
+			
+		};
+		scwin.openPopup(scwin, url, options, data);
+		
+	};
+	
+	
+scwin.openPopup = function(scwin, url, opt, data) {
+	try {
+		var _dataObj = {
+			type : "json",
+			data : data,
+			name : "param"
+		};
+
+		var options = {
+				id : opt.id,
+				type : opt.type || "wframePopup",
+				width : opt.width,
+				height : opt.height,
+				top : opt.top,
+				left : opt.left,			
+				popupName : opt.popupName || "",
+				modal : (opt.modal == false) ? false : true,
+				useModalStack : (opt.useModalStack == false) ? false : true,
+				style : opt.style || "",			 					
+				srcData : opt.srcData || null,
+				destData : opt.destData || null,	
+				dataObject : _dataObj,
+				xml : opt.xml || null,
+				resizable : (opt.resizable == false) ? false : true,
+				status : opt.status || false,
+				menubar : opt.menubar || false,
+				scrollbars : true,
+				title : opt.title || false,
+				useMaximize : opt.useMaximize || false,
+				useModalDisable : opt.useModalDisable || false,
+				closeAction : opt.closeAction || "",
+				className   : opt.className || "",
+				fullscreen : opt.fullscreen || false,
+				useControl : opt.useControl || false,
+				foldOnMinimized : opt.foldOnMinimized || false,
+				controls : opt.controls || { minimize: false, maximize: false, close: false },
+				foldSize : opt.foldSize || { width: 500 },
+				useATagBtn : opt.useATagBtn || false,
+				disableCloseButton : opt.disableCloseButton || false,
+				alwaysOnTop : opt.alwaysOnTop || false,
+				windowDragMove : opt.windowDragMove || false,
+				processMsgFrame : opt.processMsgFrame || false,
+				frameModal : opt.frameModal ,
+				windowHeaderHTML : opt.windowHeaderHTML,
+				isPopupCloseAction : opt.isPopupCloseAction || false
+		};
+		if(options.type == "browserPopup"){		
+			if(options.closeAction){
+				_dataObj.data._menuInfo['closeAction'] = options.closeAction;
+			}
+			options.closeAction = ""
+		}else{
+			if(options.isPopupCloseAction){
+				options.popupCloseAction = options.closeAction;
+				options.closeAction = "";
+			}
+		}
+		options.dataObject = _dataObj;		
+		return scwin.$w.openPopup( url, options);
+	} catch (e) {
+		console.error("[com.cf.win._openPopup] Exception :: " + e);
+	}
+
+};
+
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('browserPopup3_header').innerText == 'windowHeaderHTML';
+	}		
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('browserPopup3_header').querySelector('span').style.color == 'red';
+	}			
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_browserPopup3').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()	
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:group>
+    		<xf:trigger class="btn_in" ev:onclick="scwin.btn_browserPopup3_onclick" id="btn_browserPopup3" style="" type="button">
+				<xf:label><![CDATA[wframe popup]]></xf:label>
+			</xf:trigger>
+    	</xf:group>
+    </body>
+</html>

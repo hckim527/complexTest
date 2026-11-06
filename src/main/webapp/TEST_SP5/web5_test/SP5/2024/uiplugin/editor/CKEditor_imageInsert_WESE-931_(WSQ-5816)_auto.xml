@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	// editor1.setReadOnly(true);
+    var html = '<div>네이버</div>'
+    html += '<a href="https://kstaplus.ksnet.co.kr" target="_blank">바로가기기</a>'
+
+    editor1.setHTML(html);
+};
+
+
+// 가설1 : a태그 onclick 시 return false가 들어가있다.
+// 가설2 : 다른 태그와 곂침
+// 가설3 : 링크가 잘못되었다. x
+
+scwin.trigger1_onclick = function(e) {
+    editor1.setDisabled(true);
+};
+
+scwin.trigger2_onclick = function(e) {
+    editor1.setDisabled(false);
+};
+
+    scwin.checkVal = function() {
+        let elements = WebSquare.wUnit.getDomById('editor1_disabled_div');
+        
+        return elements !== null;
+    };
+
+    scwin.unitTest = function () {
+        //Unit 
+        WebSquare.wUnit.start();
+        WebSquare.wUnit.addCommand("pause", "500");
+        WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('ck-button')[0].click()");
+        WebSquare.wUnit.addCommand("pause", "500");
+        WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+        WebSquare.wUnit.addCommand("pause", "500");
+        WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+        WebSquare.wUnit.addCommand("pause", "500");
+
+        //Run test and stop
+        WebSquare.wUnit.run();
+        WebSquare.wUnit.stop();
+    };
+
+    scwin.unitTest();]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:editor style="width:600px;height:474px;" id="editor1" useCKFinder="true" menubar="default" version="5.44"></w2:editor>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[btn]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[btn2]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

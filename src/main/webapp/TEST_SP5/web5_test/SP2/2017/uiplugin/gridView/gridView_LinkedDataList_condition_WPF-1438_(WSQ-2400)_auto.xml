@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="a" name="a" dataType="text"></w2:column>
+            			<w2:column id="b" name="b" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<a><![CDATA[aaa]]></a>
+            				<b><![CDATA[1]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[12345]]></a>
+            				<b><![CDATA[5]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[aaa]]></a>
+            				<b><![CDATA[3]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[12345]]></a>
+            				<b><![CDATA[4]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[bbb]]></a>
+            				<b><![CDATA[3]]></b>
+            			</w2:row>
+            			<w2:row>
+            				<a><![CDATA[bbb]]></a>
+            				<b><![CDATA[1]]></b>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+            		<w2:condition type="filter"><![CDATA[a == 'aaa' && (b == '1' || b == '3')]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.confirm_check = function(id, value, count) {
+    var arr = jQuery("*[col_id='" + id + "']");
+    var a = 0;
+    for (var i = 0; i < arr.length; i++) {
+        (arr[i].innerText == value) ? a++ : '';
+    }
+    return count == a;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 0. linkedDataList의 filterCondition값을 a == 'aaa' && (b == '1' || b == '3')로 설정한다.
+    //0. Set the filterCondition value of linkedDataList to a == 'aaa' && (b == '1' || b == '3').
+    //Test step 1. 샘플파일을 실행 후 2번째 그리드뷰의 a,b항목값을 확인한다.
+    //1. After executing the sample file, check the values of items a and b in the second grid view.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify step 1. a와 b의 항목 값(aaa=1, aaa=3)이 정상으로 확인되어진다.(이전에는 잘못된 값(bbb=3)이 3번째 항목에 보여짐)
+    //1. The values of a and b (aaa = 1, aaa = 3) are confirmed as normal (Previously, the wrong value (bbb = 3) is shown in the third item)
+    WebSquare.wUnit.addCommand("assert", "scwin.confirm_check('a', 'bbb', '3')", "false");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 06-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="" style="position: relative;width:272px;height:150px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="a">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="b">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="a" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="b" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView dataList="linkedDataList1" scrollByColumn="false" id="" style="position: relative;width:272px;height:150px;margin-top:10px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="a">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="b">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="a" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="b" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenId="processMsg" meta_screenName="Progress Bar 프레임">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map"></w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <style>
+            .w2_proc {
+                position : absolute;
+                z-index : 9800;
+            }
+            .w2_proc_group_wrapper {
+                position : relative;
+                padding : 20px 0 0 13px; 
+                width : 280px; 
+                height : 81px; 
+                border : 1px solid #b3b3b3; 
+                background : url("/websquare/_websquare_/message/images/bg_ly.gif") left top repeat-x;
+            }
+            .w2_proc_text_msg {
+                width : 200px;
+                height : 20px;
+                font-size : 13px;
+                color : #3f3f67;
+                font-weight : bold;
+                overflow : hidden;
+                white-space:nowrap;
+                text-overflow:ellipsis;
+            }
+            .w2_proc_image_bar {
+                width : 267px;
+                height : 23px;
+            }
+            .w2_proc_btn_hide {
+                position:absolute;
+                top:20px;
+                right:14px;
+                height:20px;
+                text-align:center;
+                word-wrap:break-word;
+                padding:3px;
+                display:none;
+            }
+            .w2_proc_btn_cancel {
+                position:absolute;
+                top:20px;
+                right:14px;
+                height:20px;
+                text-align:center;
+                word-wrap:break-word;
+                padding:3px;
+                display:none;
+            }
+            .w2_proc_modal {
+                position : absolute;
+                left : 0;
+                top : 0;
+                width : 100%;
+                height : 100%;
+                background-color : #cccccc;
+                filter : alpha(opacity=30);
+                opacity : 0.3;
+                z-index: 5800;
+            }
+            
+            .spinner {
+			    position:absolute; left:50%; top:50%; transform:translate(-50%, -50%);
+			    width: 80px; height: 70px; text-align: center; font-size: 10px; z-index: 11000;
+			}
+			.spinner > div {
+			    background-color: #8decff; height: 100%; width: 6px; display: inline-block; margin: 0 5px 0 0;
+			    -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out; animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			}
+			.spinner .rect2 { -webkit-animation-delay: -1.1s; animation-delay: -1.1s; }
+			.spinner .rect3 { -webkit-animation-delay: -1.0s; animation-delay: -1.0s; }
+			.spinner .rect4 { -webkit-animation-delay: -0.9s; animation-delay: -0.9s; }
+			.spinner .rect5 { -webkit-animation-delay: -0.8s; animation-delay: -0.8s; }
+			@-webkit-keyframes sk-stretchdelay { 0%, 40%, 100% { -webkit-transform: scaleY(0.4) } 20% { -webkit-transform: scaleY(1.0) } }
+			@keyframes sk-stretchdelay { 0%, 40%, 100% { transform: scaleY(0.4); -webkit-transform: scaleY(0.4); } 20% { transform: scaleY(1.0); -webkit-transform: scaleY(1.0); } }
+        </style>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+    //image_bar.setSrc(WebSquare.baseURI + "/_websquare_/message/images/progressingbar.gif");
+    //btn_hide.dom.input.value = WebSquare.language.getMessage("Window_close");
+    //btn_cancel.dom.input.value = WebSquare.language.getMessage("Window_cancel");
+};
+
+scwin.onpageunload = function () {
+
+};
+
+/**
+ * @event
+ * @name btn_hide_onclick
+ * @description 숨김 버튼을 누를 때 발생하는 이벤트 정의
+ */
+scwin.btn_hide_onclick = function () {
+    $p._getProcessMsgTargetFrame().hideProcessMessage();
+};
+
+/**
+ * @event
+ * @name btn_cancel_onclick
+ * @description 취소 버튼을 누를 때 발생하는 이벤트 정의
+ */
+scwin.btn_cancel_onclick = function () {
+    const submissionList = $p._getProcessMsgTargetFrame()._processMsgQueue;
+    for (let i = 0; i < submissionList.length; i++) {
+        WebSquare.ModelUtil.abort(submissionList[i].org_id, submissionList[i].scope_id);
+    }
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group class="w2_proc_group_wrapper" id="group_wrapper" style="">
+        	<xf:group class="spinner" id="" style="">
+        		<xf:group id="" style=""></xf:group>
+        		<xf:group class="rect2" id="" style=""></xf:group>
+        		<xf:group class="rect3" id="" style=""></xf:group>
+        		<xf:group class="rect4" id="" style=""></xf:group>
+        		<xf:group class="rect5" id="" style=""></xf:group>
+        	</xf:group>
+        </xf:group>
+    </body>
+</html>

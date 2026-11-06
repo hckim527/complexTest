@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="ID" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col1" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+    scwin.onpageload = function() {
+        trigger1.setLabel("조회");
+        trigger2.setLabel("setColumnFilter: \"ID===F_6\"");
+        trigger3.setLabel("setColumnFilter: \"col1===0\"");
+        trigger4.setLabel("\"ID===F_6\" , clearFilter:\"keepSort\"");
+        trigger5.setLabel("\"col1===0\" , clearFilter:\"keepSort\"");
+        trigger6.setLabel("\"ID===F_6\" , clearFilter:\"all\"");
+        trigger7.setLabel("\"col1===0\" , clearFilter:\"all\"");
+    }
+
+    scwin.trigger1_onclick = function(e) {
+        var row = 100;
+        var data = [];
+        for (var i = 0; i < row; i++) {
+            data.push("F_" + (i + 1) + "_");
+            data.push(String(i % 5));
+        }
+        dataList1.setData(data);
+    }
+    
+    scwin.trigger2_onclick = function(e) {
+        var filterOption = {
+            "type" : "row", 
+            "colIndex" : "ID", 
+            "key" : "F_6", 
+            "condition" : "and", 
+            "exactMatch" : false
+        }
+        dataList1.setColumnFilter(filterOption);
+    };
+
+    scwin.trigger3_onclick = function(e) {
+        var filterOption = {
+            "type" : "row", 
+            "colIndex" : "col1", 
+            "key" : "0", 
+            "condition" : "and", 
+            "exactMatch" : false
+        }
+        dataList1.setColumnFilter(filterOption);
+    };
+
+    scwin.trigger4_onclick = function(e) {
+        var filterOption = {
+            "type" : "row", 
+            "colIndex" : "ID", 
+            "key" : "F_6", 
+            "condition" : "and", 
+            "exactMatch" : false,
+            "clearFilter" : "keepSort"
+        }
+        dataList1.setColumnFilter(filterOption);
+    };
+
+    scwin.trigger5_onclick = function(e) {
+        var filterOption = {
+            "type" : "row", 
+            "colIndex" : "col1", 
+            "key" : "0", 
+            "condition" : "and", 
+            "exactMatch" : false,
+            "clearFilter" : "keepSort"
+        }
+        dataList1.setColumnFilter(filterOption);
+    };
+
+    scwin.trigger6_onclick = function(e) {
+        var filterOption = {
+            "type" : "row", 
+            "colIndex" : "ID", 
+            "key" : "F_6", 
+            "condition" : "and", 
+            "exactMatch" : false,
+            "clearFilter" : "all"
+        }
+        dataList1.setColumnFilter(filterOption);
+    };
+
+    scwin.trigger7_onclick = function(e) {
+        var filterOption = {
+            "type" : "row", 
+            "colIndex" : "col1", 
+            "key" : "0", 
+            "condition" : "and", 
+            "exactMatch" : false,
+            "clearFilter" : "all"
+        }
+        dataList1.setColumnFilter(filterOption);
+    };
+	
+
+
+
+	scwin.findLastRowIndex = function() {	
+		const tbody = WebSquare.wUnit.getDomById('gridView1_body_tbody');
+		const rows = tbody.querySelectorAll("tr");
+
+	
+		let lastRowIndex = -1; 
+		for (let index = 0; index < rows.length; index++) {
+			const row = rows[index];
+			if (row.classList.contains("w2grid_lastRow")) {
+				lastRowIndex = index; 
+				return lastRowIndex;
+			}else{
+				lastRowIndex = index; 
+			}
+		}
+debugger;
+		return lastRowIndex;
+	
+	}
+
+	scwin.Dbclick = function(id) {
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick(el);
+	}
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}	
+	scwin.checkVal1 = function() {
+		return scwin.findLastRowIndex() > 12;
+	}
+	scwin.checkVal3 = function() {
+		const check1 = window.rowIndex_oncontextopen == 1;
+		const check2 = window.row_rightbtn == 1;
+		return check1 && check2;
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column7')");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+
+			
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <w2:gridView dataList="data:dataList1" summaryAuto="false" useFilterList="true" scrollByColumn="false"
+            showSortableUseFilter="true" scrollByColumnAdaptive="false" id="gridView1"
+            style="position: relative;width:301px;height:301px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+            summaryOnlyAuto="false" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn" rowNumVisible="true" sortable="true" drawTypeX="virtual">
+            <w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header2" style="">
+                <w2:row id="row3" style="">
+                    <w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+                        value="name1" useFilter="true">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column5" style="height:20px" width="70" inputType="text" displayMode="label"
+                        value="name2">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody2" style="">
+                <w2:row id="row4" style="">
+                    <w2:column blockSelect="false" id="ID" style="height:20px" inputType="text" width="70" displayMode="label" useFilter=""></w2:column>
+                    <w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <xf:group style="width:700px;height:120px;" id="">
+            <w2:textarea id="textarea1" style="width:700px;height:100px;"/>
+        </xf:group>
+        <xf:group style="position:relative;width:700;height:40px;">
+            <xf:trigger id="trigger1" style="position:relative;width:250px;height:32px;" ev:onclick="scwin.trigger1_onclick"/>
+        </xf:group>
+        <xf:group style="position:relative;width:700;height:40px;">
+            <xf:trigger id="trigger2" style="position:relative;width:250px;height:32px;" ev:onclick="scwin.trigger2_onclick"/>
+            <xf:trigger id="trigger3" style="position:relative;width:250px;height:32px;" ev:onclick="scwin.trigger3_onclick"/>
+        </xf:group>
+        <xf:group style="position:relative;width:700;height:40px;">
+            <xf:trigger id="trigger4" style="position:relative;width:250px;height:32px;" ev:onclick="scwin.trigger4_onclick"/>
+            <xf:trigger id="trigger5" style="position:relative;width:250px;height:32px;" ev:onclick="scwin.trigger5_onclick"/>
+        </xf:group>
+        <xf:group style="position:relative;width:700;height:40px;">
+            <xf:trigger id="trigger6" style="position:relative;width:250px;height:32px;" ev:onclick="scwin.trigger6_onclick"/>
+            <xf:trigger id="trigger7" style="position:relative;width:250px;height:32px;" ev:onclick="scwin.trigger7_onclick"/>
+        </xf:group>
+    </body>
+</html>

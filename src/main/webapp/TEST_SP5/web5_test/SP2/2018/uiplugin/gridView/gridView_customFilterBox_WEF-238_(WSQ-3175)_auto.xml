@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+            	<w2:dataList id="dataList1" baseNode="list" style="" repeatNode="map" keepFilter="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.makeDataList = function(id, obj) {
+    if (WebSquare.wUnit.getObjById(id) != undefined) {
+        $p.data.remove(id);
+    }
+    $p.data.create({
+        "id": id,
+        "type": "dataList",
+        "option": {
+            "useData": false
+        },
+        "columnInfo": obj
+    });
+}
+scwin.setColumnID = function(obj) {
+    //debugger;
+    var column = {};
+    var columnArr = [];
+    var gridHeader = "",
+        gridBody = "";
+    //json의 첫번째 데이터에서 컬럼의 id와 개수 정보 확
+    for (var k in obj[0]) {
+        //dataList를 동적으로 만들기 위한 컬럼 정
+        column = {};
+        column["id"] = k;
+        column["dataType"] = "text";
+        columnArr.push(column);
+        //gridView의 컬럼 정보 정의
+        gridHeader += '<w2:column blockSelect="false" id="' + 'h' + k + '" style="height:20px" inputType="text" width="70" value="' + k + '" useFilter="true"></w2:column>';
+        gridBody += '<w2:column blockSelect="false" id="' + k + '" style="height:20px" inputType="text" width="70"></w2:column>'
+    }
+    scwin.makeDataList("dataList1", columnArr);
+    //gridView 정보 정의
+    //xml 형식을 정의 하면 <w2:gridView 에 xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" 포함 합니다.
+    var gridStr = '<w2:gridView xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" dataList="dataList1" scrollByColumn="false" id="gridView1" style="width: 500px;height: 350px;" fixedColumnWithHidden="true" useShiftKey="false" autoFit="allColumn" groupbyZone="true" groupbyFilterBox="true" customFilterBox="true" rowNumWidth="" >' +
+        '<w2:header id="header1" style="">' +
+        '<w2:row id="row1" style="">' +
+        gridHeader +
+        '</w2:row>' +
+        '</w2:header>' +
+        '<w2:gBody id="gBody1" style="">' +
+        '<w2:row id="row2" style="">' +
+        gridBody +
+        '</w2:row>' +
+        '</w2:gBody>' +
+        '</w2:gridView>';
+    gridView1.setGridStyle(WebSquare.xml.parse(gridStr, true));
+    dataList1.setJSON(obj);
+}
+scwin.__checkErr = function() {
+    return temp = WebSquare.logger.getErrorLog();
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 '1'버튼 클릭 후 '2'버튼을 클릭하고 ctrl + 마우스 우클릭 > 로그보기를 실행하여 정상로그를 확인한다.
+    //1. After running the sample, click the '1' button and then click the '2' button and right-click the ctrl + mouse.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 정상적인 로그가 보여진다. (이전에는 로그오류 및 gridView에 데이터가 조회되지 않음)
+    //1. A normal log is shown. (Previously no log errors and no data in the gridView)
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkErr() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').textContent == '000'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+ 
+scwin.onpageload = function() {
+    //동적으로 datList 생성
+    window.jsonData1 = [{
+        "col0": "0",
+        "col1": "test",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "1",
+        "col1": "test",
+        "col2": "test",
+        "col3": "test"
+    }];
+    window.jsonData2 = [{
+        "data0": "000",
+        "data1": "AAA",
+        "data2": "aaa",
+        "data3": "aaa",
+        "data4": "aaa",
+        "data5": "aaa",
+        "data6": "aaa",
+        "data7": "aaa",
+        "data8": "aaa",
+        "data9": "aaa"
+    }];
+    //dataList 에 넣을 json
+    //  scwin.setColumnID(jsonData1);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Feb-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="width:489px;height:100px;"
+    		fixedColumnWithHidden="true" useShiftKey="false">
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px" width="70" inputType="text" value="name1"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;float : left;">
+    		<xf:label><![CDATA[1]]></xf:label>
+    		<script ev:event="onclick" type="javascript"><![CDATA[
+    			scwin.setColumnID(jsonData1);
+    		]]></script>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="width: 80px;height: 23px;">
+    		<xf:label><![CDATA[2]]></xf:label>
+    		<script ev:event="onclick" type="javascript"><![CDATA[
+    			scwin.setColumnID(jsonData2);
+    		 ]]></script>
+    	</xf:trigger>
+    </body>
+</html>
+ 

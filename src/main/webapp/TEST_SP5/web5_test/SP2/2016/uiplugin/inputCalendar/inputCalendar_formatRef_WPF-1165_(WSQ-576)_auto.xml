@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn1_onclick = function(e) {
+    alert(dataMap1.get("key1"));
+};
+scwin.btn2_onclick = function(e) {
+    /// inputCalendar의 값이 변하는 시점(setValue)에서 적용 되도록 ///////////
+    //////////// 이 부분을 공통으로 처리 할 수 있는 옵션이나
+    //////////// formatter 함수가 필요합니다. //////// 
+    var formattedVal = ipt1.getFormattedValue();
+    dataMap1.set("key1", formattedVal);
+    ///////////////////////////////////////////////
+    al = dataMap1.get("key1");
+    //alert(dataMap1.get("key1"));
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 브라우저에서 formatted 값 버튼을 클릭한다
+    //1.2. Click the formatted value button in your browser
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn2').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 2. 팝업창에 '2016-05-30' 라고 표시된다.  
+    //2. '2016-05-30' is displayed in the popup window.
+    WebSquare.wUnit.addCommand("assert", "al", "2016-05-30");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    ipt1.setValue("20160530");
+    window.al = "";
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 08-Feb-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="ipt1" renderDiv="true" style="position: absolute ;left: 84px;top: 59px;width: 201px;height: 36px;" rightAlign="false"
+    		focusOnDateSelect="false" footerDiv="false" calendarValueType="yearMonthDate" ref="data:dataMap1.key1">
+    	</w2:inputCalendar>
+    	<xf:trigger type="button" id="btn1" style="position: absolute ;left:304px;top:58px;width: 147px;height: 31px;" ev:onclick="scwin.btn1_onclick">
+    		<xf:label><![CDATA[기본값]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="btn2" style="position: absolute ;left:304px;top:108px;width: 147px;height: 31px;" type="button" ev:onclick="scwin.btn2_onclick">
+    		<xf:label><![CDATA[formatted 값 ]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

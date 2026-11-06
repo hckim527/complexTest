@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+    
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" src="wframe_WPFF-39_(WSQ-3148)_main.js"/>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+    $w.log("main" + "_initScript");
+}
+scwin.test2 = function() {
+    $w.log("main" + "_initScript2");
+}
+scwin.post1 = function() {
+    $w.log("main" + "_postScript1");
+}
+scwin.post2 = function() {
+    $w.log("main" + "_postScript2");
+}
+scwin.onpageload = function() {
+    $w.log("main" + "_onpageload");
+    if (console.log) {
+        console.log("main" + "_onpageload");
+    }
+}
+scwin.__showLogInStep = function() {
+    var log = WebSquare.logger.getLog();
+    return log.indexOf("STEP7") < log.indexOf("w2_initScript2");
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 
+    //1. Check the sample executable in main.xml and the developer mode (F12) console and check ctrl + right-click> log view.
+    // verify step 1. 로그보기의 initScript, postScript의 실행순서가 STEP7에서 실행되어진다.(이전에는 STEP3에서 실행되어짐. 실행순서 변경됨)
+    //1. The execution order of initScript and postScript in log view is executed in STEP7.(Previously executed in STEP3, execution order changed)
+    WebSquare.wUnit.addCommand("assert", "scwin.__showLogInStep()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 20-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="main" id="textbox1" style="position: relative;width: 250px;height: 40px;font-size:24px;"></w2:textbox>
+    	<w2:wframe id="w1" style="position: relative;width:750px;height:800px;" src="wframe_WPFF-39_(WSQ-3148)_sub.xml" scope="true" initScript="console.log('w1_initscript');if(scwin.test){scwin.test();}" postScript="scwin.post1();"></w2:wframe>
+        <w2:wframe id="w2" style="position: relative;width:750px;height:800px;" src="wframe_WPFF-39_(WSQ-3148)_sub.xml" scope="true" initScript="console.log('w2_initscript');if(scwin.test2){scwin.test2();}" postScript="scwin.post2();"></w2:wframe>
+    </body>
+</html>
+ 

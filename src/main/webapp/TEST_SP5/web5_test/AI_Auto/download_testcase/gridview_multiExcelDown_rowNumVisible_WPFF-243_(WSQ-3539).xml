@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""></data>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" style="" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column dataType="text" name="이름" id="name"></w2:column>
+						<w2:column dataType="text" name="나이" id="age"></w2:column>
+						<w2:column dataType="text" name="핸폰" id="hp"></w2:column>
+						<w2:column dataType="text" name="주소" id="address"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<name>장그래</name>
+							<age>30</age>
+							<hp>1234</hp>
+							<address>인천</address>
+						</w2:row>
+						<w2:row>
+							<name>안영이</name>
+							<age>31</age>
+							<hp>2345</hp>
+							<address>부산</address>
+						</w2:row>
+						<w2:row>
+							<name>김동식</name>
+							<age>32</age>
+							<hp>3456</hp>
+							<address>서울</address>
+						</w2:row>
+						<w2:row>
+							<name>오상식</name>
+							<age>33</age>
+							<hp>4567</hp>
+							<address>광주</address>
+						</w2:row>
+						<w2:row>
+							<name>김동식</name>
+							<age>32</age>
+							<hp>3456</hp>
+							<address>서울</address>
+						</w2:row>
+					</w2:data>
+
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.downloadMultiGridviewExcel = function() {
+    var options = {
+        common: {
+            fileName: "multi_gridview_excel_download.xlsx",
+            showProcess: true,
+            printSet: {
+                landScape: "true",
+                fitToPage: "true",
+                fitWidth: "4",
+                fitHeight: "333",
+                scale: "222"
+            }
+        },
+        excelInfo: [{
+                gridId: "gridView1",
+                sheetName: "gridView1_sheet",
+                type: "1",
+                // removeColumns : "0,2",
+                foldColumns: "4",
+                startRowIndex: 2,
+                startColumnIndex: 0,
+                //dataProvider : "com.inswave.excel.SampleProvider",
+                headerColor: "#FFC81E",
+                bodyColor: "#FDF5E6",
+                rowNumVisible: "true",
+                // 해당 Grid의 데이터를 조회하기 위해서 필요한 검색조건을 XML로 providerRequestXml 속성에 저장해서 서버에 전달한다.
+                //providerRequestXml : "<data><actionId>A001</actionId></data>",
+                infoArr: [{
+                    rowIndex: 0,
+                    colIndex: 0,
+                    rowSpan: 2,
+                    colSpan: 2,
+                    text: "Grid1 Data",
+                    textAlign: "center"
+                }]
+            },
+            {
+                gridId: "gridView2",
+                sheetName: "gridView2_sheet",
+                type: "1",
+                rowsByN: "10000",
+                removeColumns: "",
+                foldColumns: "4",
+                startRowIndex: 2,
+                startColumnIndex: 0,
+                //dataProvider : "com.inswave.excel.SampleProvider",
+                headerColor: "#FFC81E",
+                bodyColor: "#FDF5E6",
+                rowNumVisible: "true",
+                // 해당 Grid의 데이터를 조회하기 위해서 필요한 검색조건을 XML로 providerRequestXml 속성에 저장해서 서버에 전달한다.        
+                //providerRequestXml : "<data><actionId>A002</actionId></data>",
+                infoArr: [{
+                    rowIndex: 0,
+                    colIndex: 0,
+                    rowSpan: 2,
+                    colSpan: 2,
+                    text: "Grid2 Data",
+                    textAlign: "center"
+                }]
+            }
+        ]
+    };
+    // GET 방식으로 파라미터를 전달하고 싶은 경우 맨 마지막에 보내는 Grid Options의 advancedExcelDownloadURL에 추가해서 전달한다.
+    // Multi Grid에 대한 엑셀 다운로드 Request는 한 번만 호출이 가능하기 때문에 
+    // 맨 마지막에 정의된 Grid의 advancedExcelDownloadURL의 URL 정보를 이용해서 서버에 요청합니다.  
+    gridView2.options.advancedExcelDownloadURL = "xmlToExcel2.wq?cellCount=100";
+    // multipleExcelDownload 함수를 이용해서 options에 정의된 Grid를 엑셀 파일로 다운로드 한다.
+    WebSquare.util.multipleExcelDownload(options);
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setData([1, 2, 3, 4]);
+    /* ======================================================================================================
+     * Grid에서 dataProvider를 정의하지 않는 경우에는 Grid에 저장된 데이터를 서버에 보내서 엑셀 파일로 생성한 후 다운로드 받지만
+     * dataProvider를 이용하는 경우에는 검색 조건을 서버에 보내서 데이터를 조회한 후 엑셀 파일로 생성한 후 다운로드 받는다.
+     * Grid에 가져오지 못하는 대용량 데이터를 엑셀 파일로 다운로드 받을 때 적합하다.
+     * ======================================================================================================  
+     */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="position: absolute ;left:26px;top:66px;width:220px;height:161px;"
+			ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label" value="name1">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label" value="name2">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4" style="">
+				<w2:row id="row5" style="">
+					<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:gridView dataList="dataList2" scrollByColumn="false" id="gridView2"
+			style="position: absolute;left:279px;top:62px;height:179px;width:400px;" evenRowBackgroundColor="#FF813A" ev:oncellclick="scwin.gridView2_oncellclick">
+			<w2:header id="header2" style="">
+				<w2:row id="row3" style="">
+					<w2:column id="column15" style="height:20px" inputType="text" width="70" value="이름"></w2:column>
+					<w2:column id="column13" style="height:20px" inputType="text" width="70" value="나이"></w2:column>
+					<w2:column id="column11" style="height:20px" inputType="text" width="70" value="핸폰"></w2:column>
+					<w2:column id="column9" style="height:20px" width="70" inputType="text" value="주소"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2" style="">
+				<w2:row id="row4" style="">
+					<w2:column id="name" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="age" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="hp" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="address" style="height:20px" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger id="trigger5" style="position: absolute ;left:27px;top:20px;width:294px;height:25px;" type="button">
+			<xf:label>Multi Grid Excel Download</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[ 
+    			scwin.downloadMultiGridviewExcel();
+    		]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

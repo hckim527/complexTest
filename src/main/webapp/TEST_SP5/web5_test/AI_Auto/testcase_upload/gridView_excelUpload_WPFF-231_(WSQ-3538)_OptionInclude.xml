@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dcVatDetailOutList">
+					<w2:columnInfo>
+						<w2:column id="chk" name="choice" dataType="text"></w2:column>
+						<w2:column id="rtnSeqno" name="rtnSeqno" dataType="text"></w2:column>
+						<w2:column id="modiRtnCnt" name="modiRtnCnt" dataType="text"></w2:column>
+						<w2:column id="inoutTp" name="inoutTp" dataType="text" defaultValue=""></w2:column>
+						<w2:column id="rtnDtlSrno" name="rtnDtlSrno" dataType="text"></w2:column>
+						<w2:column id="tinTrx" name="tinTrx" dataType="text"></w2:column>
+						<w2:column id="trxNm" name="trxNm" dataType="text"></w2:column>
+						<w2:column id="invNo" name="invNo" dataType="text"></w2:column>
+						<w2:column id="invDt" name="invDt" dataType="text"></w2:column>
+						<w2:column id="invCont" name="invCont" dataType="text"></w2:column>
+						<w2:column id="doExmpAmt" name="doExmpAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="frnExmpAmt" name="frnExmpAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="novatAmt" name="novatAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="doZtaxRateAmt" name="doZtaxRateAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="frnZtaxRateAmt" name="frnZtaxRateAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="doVatTagtAmt" name="doVatTagtAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="frnVatTagtAmt" name="frnVatTagtAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="totVatTagtAmt" name="totVatTagtAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="totVatTaxAmt" name="totVatTaxAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="undduVatTaxAmt" name="undduVatTaxAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+						<w2:column id="ddunVatTaxAmt" name="ddunVatTaxAmt" dataType="bigDecimal" defaultValue="0"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    //				gv.advancedExcelUpload( {"useMaxByteLength":true} );
+    //				gvVatDetailOutList.advancedExcelUpload( {"useMaxByteLength":true} );
+    var options = {
+        "type": "1",
+        "sheetNo": 0,
+        "startRowIndex": "0",
+        "startColumnIndex": "1",
+        "endColumnIndex": 0,
+        "headerExist": "0",
+        "footerExist": "0",
+        "append": "0",
+        "hidden": "0",
+        "fillHidden": "0",
+        "skipSpace": "1",
+        "insertColumns": [{
+            "columnIndex": 0,
+            "columnValue": 0
+        }],
+        "status": "C",
+        "useMaxByteLength": "true",
+        "advancedHidden": "1",
+        "pwd": ""
+    };
+    gvVatDetailOutList.advancedExcelUpload(options);
+};
+scwin.trigger2_onclick = function(e) {
+    tb1.setValue(WebSquare.xml.serialize(dataList1.getAllXML()).replaceAll("><", ">\n<"));
+    tb2.setValue(WebSquare.xml.serialize(gv.getAllDisplayXML()).replaceAll("><", ">\n<"));
+};
+scwin.maskTin = function(tin) {
+        try {
+            if (tin.length <= 0) return tin;
+            var str = tin.replace(/\-/ig, "");
+            if (str.length === 12 || str.length === 9) {
+                if (str.replace(/^[P]|[\d]|[\-]/ig, "").length > 0) {
+                    alert("test");
+                    return tin;
+                }
+                return str.replace(/(\w{9})(\d)/g, "$1-$2");
+            }
+            return tin
+        } catch (e) {
+            $w.log("Error ::: scwin.maskTin = " + e.message);
+            return tin;
+        }
+    };
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="gvwbox" id="" style="">
+			<w2:gridView autoFit="lastColumn" class="wq_gvw" dataList="data:dcVatDetailOutList" fixedColumnWithHidden="false"
+				id="gvVatDetailOutList" ignoreCellClick="" scrollByColumn="" style="height:260px;" useShiftKey="true" visibleRowNum="5"
+				rowNumHeaderValue="!~NUM~!" rowStatusHeaderValue="!~TF_STAT~!" rowNumVisible="true" rowStatusVisible="true" rowNumWidth="50"
+				rowStatusWidth="50" ev:onviewchange="scwin.gvVatDetailOutList_onviewchange" ev:onfilereadend="scwin.gvVatDetailOutList_onfilereadend"
+				keyMoveEditMode="true" fixedColumn="3" tooltipDisplay="true"
+				tooltipDisplayColumn="tinTrx,trxNm,invNo,invDt,invCont,doExmpAmt,frnExmpAmt,novatAmt,doZtaxRateAmt,frnZtaxRateAmt,doVatTagtAmt,frnVatTagtAmt,totVatTagtAmt,totVatTaxAmt">
+				<w2:header id="header1" style="">
+					<w2:row id="row7" style="">
+						<w2:column blockSelect="false" id="choice" style="" width="38" inputType="checkbox" displayMode="label" rowSpan="4"
+							checkAlways="" value="chk">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column124" blockSelect="false" displayMode="label" style="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column130" blockSelect="false" displayMode="label" style="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column136" blockSelect="false" displayMode="label" style="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column154" blockSelect="false" displayMode="label" style="">
+						</w2:column>
+						<w2:column blockSelect="false" id="column74" style="" width="130" inputType="text" displayMode="label" value="업로드 자리수"
+							rowSpan="3" class="ast">
+						</w2:column>
+						<w2:column width="130" inputType="text" style="height:60px;" id="column178" value="!~TF_NM~!" blockSelect="false"
+							displayMode="label" colSpan="" rowSpan="3">
+						</w2:column>
+						<w2:column blockSelect="false" id="column73" style="" width="100" inputType="text" displayMode="label" value="!~TF_INV~!"
+							colSpan="2">
+						</w2:column>
+						<w2:column blockSelect="false" id="column71" style="" width="100" inputType="text" displayMode="label" value="!~TF_INV_CONT~!"
+							rowSpan="3">
+						</w2:column>
+						<w2:column blockSelect="false" id="column70" style="" width="100" inputType="text" displayMode="label" value="!~TF_INC~!"
+							colSpan="8">
+						</w2:column>
+						<w2:column blockSelect="false" id="column62" style="" width="100" inputType="text" displayMode="label" value="!~TF_OUTP_TOT_VAT~!"
+							rowSpan="3">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column148" blockSelect="false" displayMode="label" style="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column142" blockSelect="false" displayMode="label" style="">
+						</w2:column>
+					</w2:row>
+					<w2:row id="row8" style="">
+						<w2:column width="70" inputType="text" id="column125" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column131" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column137" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column155" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column blockSelect="false" id="column89" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_NO~!"
+							rowSpan="2" class="ast">
+						</w2:column>
+						<w2:column blockSelect="false" id="column88" style="height:20px;" width="130" inputType="text" displayMode="label" value="!~TF_DATE~!"
+							rowSpan="2" class="ast">
+						</w2:column>
+						<w2:column blockSelect="false" id="column86" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_EXMP~!"
+							colSpan="2">
+						</w2:column>
+						<w2:column blockSelect="false" id="column108" style="height:20px;" hidden="false" width="100" inputType="text" displayMode="label"
+							value="!~TF_NOVAT~!" rowSpan="2">
+						</w2:column>
+						<w2:column blockSelect="false" id="column83" style="height:20px;" width="100" inputType="text" displayMode="label"
+							value="!~TF_ZTAX_RATE~!" colSpan="2">
+						</w2:column>
+						<w2:column blockSelect="false" id="headerOutVat" style="height:20px;" width="100" inputType="text" displayMode="label"
+							value="10% !~TF_VAT~!" colSpan="3">
+						</w2:column>
+						<w2:column width="100" inputType="text" id="column149" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column143" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+					</w2:row>
+					<w2:row id="row9" style="">
+						<w2:column width="70" inputType="text" id="column126" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column132" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column138" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column156" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column blockSelect="false" id="column102" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_DO~!">
+						</w2:column>
+						<w2:column blockSelect="false" id="column101" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_FRN_SEZ~!">
+						</w2:column>
+						<w2:column blockSelect="false" id="column99" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_DO~!">
+						</w2:column>
+						<w2:column blockSelect="false" id="column98" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_FRN_SEZ~!">
+						</w2:column>
+						<w2:column blockSelect="false" id="column97" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_DO~!">
+						</w2:column>
+						<w2:column blockSelect="false" id="column96" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_FRN_SEZ~!">
+						</w2:column>
+						<w2:column blockSelect="false" id="column95" style="height:20px;" width="100" inputType="text" displayMode="label" value="!~TF_TOT~!">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column150" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column144" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+					</w2:row>
+					<w2:row id="row6" style="">
+						<w2:column width="70" inputType="text" id="column127" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column133" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column139" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column157" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column blockSelect="false" id="column31" style="height:20px;" width="130" inputType="text" displayMode="label" value="1"
+							colSpan="2" rowSpan="">
+						</w2:column>
+						<w2:column blockSelect="false" id="column30" style="height:20px;" width="100" inputType="text" displayMode="label" value="2">
+						</w2:column>
+						<w2:column blockSelect="false" id="column29" style="height:20px;" width="130" inputType="text" displayMode="label" value="3">
+						</w2:column>
+						<w2:column blockSelect="false" id="column28" style="height:20px;" width="100" inputType="text" displayMode="label" value="4">
+						</w2:column>
+						<w2:column blockSelect="false" id="column27" style="height:20px;" width="100" inputType="text" displayMode="label" value="5">
+						</w2:column>
+						<w2:column blockSelect="false" id="column26" style="height:20px;" width="100" inputType="text" displayMode="label" value="6">
+						</w2:column>
+						<w2:column blockSelect="false" id="column58" style="height:20px;" inputType="text" width="100" displayMode="label" value="7">
+						</w2:column>
+						<w2:column blockSelect="false" id="column55" style="height:20px;" inputType="text" width="100" displayMode="label" value="8">
+						</w2:column>
+						<w2:column blockSelect="false" id="column52" style="height:20px;" inputType="text" width="100" displayMode="label" value="9">
+						</w2:column>
+						<w2:column blockSelect="false" id="column49" style="height:20px;" inputType="text" width="100" displayMode="label" value="10">
+						</w2:column>
+						<w2:column blockSelect="false" id="column46" style="height:20px;" inputType="text" width="100" displayMode="label" value="11">
+						</w2:column>
+						<w2:column blockSelect="false" id="column43" style="height:20px;" inputType="text" width="100" displayMode="label" value="12=10+11">
+						</w2:column>
+						<w2:column blockSelect="false" id="headerTotalVatCollectedCal" style="height:20px;" inputType="text" width="100"
+							displayMode="label" value="13=12*10%">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column151" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="column145" blockSelect="false" displayMode="label" style="height:20px;">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody4" style="">
+					<w2:row id="row5" style="">
+						<w2:column blockSelect="false" displayMode="label" id="chk" inputType="checkbox" style="height:25px;" width="38"
+							defaultValue="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="rtnSeqno" blockSelect="false" displayMode="label" hidden="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="modiRtnCnt" blockSelect="false" displayMode="label" hidden="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="inoutTp" blockSelect="false" displayMode="label" hidden="">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="rtnDtlSrno" blockSelect="false" displayMode="label" hidden="">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="tinTrx" inputType="text" style="height:25px;" width="130"
+							displayFormatter="scwin.maskTin" maxByteLength="12" ignoreChar="-" applyFormat="all">
+						</w2:column>
+						<w2:column width="130" inputType="text" style="" id="trxNm" value="" blockSelect="false" displayMode="label" maxByteLength="500"
+							textAlign="left">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="invNo" inputType="text" style="height:25px;" width="100"
+							maxByteLength="20" textAlign="left">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="invDt" inputType="calendar" style="height:25px;" width="130"
+							calendarValueType="yearMonthDate" dataType="date" viewType="icon" ioFormat="" displayFormat="dd/MM/yyyy">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="invCont" inputType="text" style="height:25px;" width="100"
+							maxByteLength="400" textAlign="left">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="doExmpAmt" inputType="" style="height:25px;" width="100"
+							displayFormat="" textAlign="right" defaultValue="0" dataType="bigDecimal" displayFormatter="common.maskMoney" customFormatter=""
+							allowChar="0-9" maxByteLength="18" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="frnExmpAmt" inputType="text" style="height:25px;" width="100"
+							displayFormat="" textAlign="right" defaultValue="0" customFormatter="" allowChar="0-9" maxByteLength="18" dataType="bigDecimal"
+							displayFormatter="common.maskMoney" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" id="novatAmt" style="height:25px" inputType="text" width="100" displayMode="label"
+							displayFormat="" textAlign="right" defaultValue="0" customFormatter="" allowChar="0-9" maxByteLength="18" dataType="bigDecimal"
+							displayFormatter="common.maskMoney" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" id="doZtaxRateAmt" style="height:25px" inputType="text" width="100" displayMode="label"
+							displayFormat="" textAlign="right" defaultValue="0" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							allowChar="0-9" maxByteLength="18" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" id="frnZtaxRateAmt" style="height:25px" inputType="text" width="100" displayMode="label"
+							displayFormat="" textAlign="right" defaultValue="0" customFormatter="" allowChar="0-9" maxByteLength="18" dataType="bigDecimal"
+							displayFormatter="common.maskMoney" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" id="doVatTagtAmt" style="height:25px" inputType="text" width="100" displayMode="label"
+							displayFormat="" textAlign="right" defaultValue="0" customFormatter="" allowChar="0-9" maxByteLength="18" dataType="bigDecimal"
+							displayFormatter="common.maskMoney" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" id="frnVatTagtAmt" style="height:25px" inputType="text" width="100" displayMode="label"
+							displayFormat="" textAlign="right" defaultValue="0" customFormatter="" allowChar="0-9" maxByteLength="18" dataType="bigDecimal"
+							displayFormatter="common.maskMoney" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" id="totVatTagtAmt" style="height:25px" inputType="text" width="100" displayMode="label"
+							displayFormat="" textAlign="right" defaultValue="0" customFormatter="" allowChar="0-9" readOnly="true" maxByteLength="18" dataType="bigDecimal"
+							displayFormatter="common.maskMoney" userData1="18">
+						</w2:column>
+						<w2:column blockSelect="false" id="totVatTaxAmt" style="height:25px" inputType="text" width="100" displayMode="label"
+							displayFormat="" textAlign="right" defaultValue="0" readOnly="true" customFormatter="" allowChar="0-9" maxByteLength="18" dataType="bigDecimal"
+							displayFormatter="common.maskMoney" userData1="18">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="undduVatTaxAmt" blockSelect="false" displayMode="label" hidden="true"
+							customFormatter="" maxByteLength="18" dataType="bigDecimal" displayFormatter="common.maskMoney" displayFormat="" userData1="18">
+						</w2:column>
+						<w2:column width="70" inputType="text" id="ddunVatTaxAmt" blockSelect="false" displayMode="label" hidden="true"
+							customFormatter="" maxByteLength="18" dataType="bigDecimal" displayFormatter="common.maskMoney" displayFormat="" userData1="18">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+				<w2:footer style="" id="footer1">
+					<w2:row style="" id="row10">
+						<w2:column width="130" inputType="text" style="height:20px;" id="column177" value="!~TC_TOT~!" blockSelect="false"
+							displayMode="label" colSpan="9" rowSpan="">
+						</w2:column>
+						<w2:column width="70" inputType="text" style="" id="column183" value="" blockSelect="false" displayMode="label">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftDoExmpAmt" style="" width="100" inputType="expression" displayMode="label" textAlign="right"
+							expression="SUM('doExmpAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney" ioFormat="" displayFormat="">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftFrnExmpAmt" style="" width="100" inputType="expression" displayMode="label"
+							textAlign="right" expression="SUM('frnExmpAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							displayFormat="">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftNovatAmt" style="" width="100" inputType="expression" displayMode="label" textAlign="right"
+							expression="SUM('novatAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney" displayFormat="">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftDoZtaxRateAmt" style="" width="100" inputType="expression" displayMode="label"
+							textAlign="right" expression="SUM('doZtaxRateAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							displayFormat="#,##0">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftFrnZtaxRateAmt" style="" width="100" inputType="expression" displayMode="label"
+							textAlign="right" expression="SUM('frnZtaxRateAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							displayFormat="">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftDoVatTagtAmt" style="" width="100" inputType="expression" displayMode="label"
+							textAlign="right" expression="SUM('doVatTagtAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							displayFormat="">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftFrnVatTagtAmt" style="" width="100" inputType="expression" displayMode="label"
+							textAlign="right" expression="SUM('frnVatTagtAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							displayFormat="">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftTotVatTagtAmt" style="" width="100" inputType="expression" displayMode="label"
+							textAlign="right" expression="SUM('totVatTagtAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							displayFormat="">
+						</w2:column>
+						<w2:column blockSelect="false" id="gvftTotVatTaxAmt" style="" width="100" inputType="expression" displayMode="label"
+							textAlign="right" expression="SUM('totVatTaxAmt')" customFormatter="" dataType="bigDecimal" displayFormatter="common.maskMoney"
+							displayFormat="">
+						</w2:column>
+						<w2:column width="70" inputType="text" style="" id="column159" value="" blockSelect="false" displayMode="label">
+						</w2:column>
+						<w2:column width="70" inputType="text" style="" id="column158" value="" blockSelect="false" displayMode="label">
+						</w2:column>
+					</w2:row>
+				</w2:footer>
+			</w2:gridView>
+		</xf:group>
+
+		<w2:gridView id="gv" syncScroll="false" style="position: absolute;width:500px;height:318px;left:200px;top:285px;margin-top:-15px;"
+			scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" dataList="data:dataList1" rowNumVisible="true" rowNumWidth="30"
+			rowStatusVisible="true" rowStatusWidth="30">
+			<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header style="" id="header1">
+				<w2:row style="" id="row1">
+					<w2:column width="70" inputType="text" id="hrtnSeqno" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="hmodiRtnCnt" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="hinoutTp" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="hrtnDtlSrno" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="column12" value="name1" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody style="" id="gBody1">
+				<w2:row style="" id="row2">
+					<w2:column width="70" inputType="text" id="rtnSeqno" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="modiRtnCnt" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="inoutTp" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="rtnDtlSrno" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:25px;" width="130"
+						displayFormatter="scwin.maskTin" maxByteLength="12" ignoreChar="-" applyFormat="all">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:textarea id="tb1" style="position: absolute;width:525px;height:148px;left:730px;top:270px;"></xf:textarea>
+		<xf:textarea id="tb2" style="position: absolute;width:525px;height:148px;left:730px;top:435px;"></xf:textarea>
+		<xf:trigger type="button" style="position: absolute;width: 80px;height: 23px;left:1262px;top:271px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[확인]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="trigger1" style="position: absolute;width: 80px;height: 23px;left:53px;top:295px;" type="button"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[업로드]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

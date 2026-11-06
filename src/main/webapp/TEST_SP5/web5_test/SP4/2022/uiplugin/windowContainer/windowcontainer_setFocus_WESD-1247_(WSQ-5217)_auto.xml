@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+		var rowJSON = {
+			"Personal Info" : {
+				"Name" : "Lee",
+				"Age" : 50,
+				"Married" : false
+			},
+			"Region" : "Seoul",
+			"Carrier" : true
+		};
+
+		var obj = {
+			"title" : "Test",
+			"windowId" : "001",
+			"frameMode" : "wframe",
+			"src" : "WESD_1026_tab_sub.xml",
+			"confirmTrueAction" : "newWindow",
+			"options" : {
+				"fixed" : true
+			},
+			"dataObject" : {
+				"type" : "json",
+				"name" : "windowParam",
+				"data" : rowJSON
+			}
+		};
+
+		for (var i = 0; i < 5; i++) {
+			obj.title = "test_" + i;
+			obj.windowId = i;
+			window1.createWindow(obj);
+		}
+	};
+
+	scwin.onpageunload = function() {
+
+	};
+
+	scwin.trigger1_onclick = function(e) {
+		window1.setFocus("test_0");
+    };
+
+    scwin.trigger2_onclick = function(e) {
+		window1.setFocus(1);
+    };
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getJq('#window1_nameLayer_'+$p.id+'window1_subWindow0').hasClass('w2windowContainer_nameLayer w2windowContainer_selectedNameLayer');
+	}
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand('pause', '500');
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: relative ;width: 180px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[setFocus("test_0")]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="trigger2" style="position: relative ;width: 180px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+            <xf:label><![CDATA[setFocus(1)]]></xf:label>
+        </xf:trigger>
+    	<xf:group>
+	    	<w2:windowContainer sequentialArrangeColNum="2" verticalArrangeNum="2" controlIconPosition="left" windowMaximizeAll="false" id="window1" changeActiveWindow="true"
+	    		useStatusMsg="true" hideTitleOnMaximize="false" spaInitCount="0" nameLayerRearrange="false" useNameContainer="true" nameScrollMode=""
+	    		useControlIconTitle="false" tooltipDisplay="true" style="position: relative;width: 500px;height: 300px;" sequentialArrangeRowNum="2"
+	    		fixArrangeFullScreen="false" useFixButton="false" windowAutoResize="false" windowMaxNum="20" useCloseButton="false"
+	    		stopMinimizeOnNameLayer="false" toolbarPosition="bottom" stopToggleOnLast="false" horizontalArrangeNum="2" useCustomMsg="false"
+	    		tooltipGroupClass="false" windowTooltipDisplay="true" useWindowScrollButton="true" nameLayerMoveGap="50">
+	    		<w2:windowToolbar>
+	    			<w2:controlIconLayer>
+	    				<w2:controlIcon></w2:controlIcon>
+	    				<w2:controlIcon></w2:controlIcon>
+	    				<w2:controlIcon></w2:controlIcon>
+	    				<w2:controlIcon></w2:controlIcon>
+	    				<w2:controlIcon></w2:controlIcon>
+	    			</w2:controlIconLayer>
+	    			<w2:nameLayer></w2:nameLayer>
+	    			<w2:selectedNameLayer></w2:selectedNameLayer>
+	    		</w2:windowToolbar>
+	    	</w2:windowContainer>
+	    </xf:group>
+    </body>
+</html>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"/>
+                        <w2:column id="col2" name="name2" dataType="text"/>
+                        <w2:column id="col3" name="name3" dataType="text"/>
+                        <w2:column id="col4" name="name4" dataType="text"/>
+                        <w2:column id="col5" name="name5" dataType="text"/>
+                        <w2:column id="col6" name="name6" dataType="text"/>
+                    </w2:columnInfo>
+                    <w2:data use="false"/>
+                </w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    dataList1.setJSON([{
+        col1: "col1",
+        col2: "col2",
+        col3: "col3",
+        col4: "col4",
+        col5: "col5",
+        col6: "col6"
+    }], false);
+    scwin.setUseRealColIndex(false);
+};
+
+scwin.setUseRealColIndex = function(useRealColIndex) {
+    var grid = gridView1;
+    if (!grid.__waea932_getConfiguration) {
+        grid.__waea932_getConfiguration = grid.getConfiguration;
+    }
+    grid.getConfiguration = function(key) {
+        if (key === "/WebSquare/" + this.options.pluginName + "/getColumnVisible/@useRealColIndex") {
+            return useRealColIndex ? "true" : "false";
+        }
+        return this.__waea932_getConfiguration.apply(this, arguments);
+    };
+};
+
+scwin.runColumnMoveVisibleScenario = function() {
+    scwin.setUseRealColIndex(false);
+    gridView1.setColumnVisible("col5", false);
+    var setOrderResult = gridView1.setColumnOrder([0, 1, 2, 4, 5, 3]);
+    var invalidVisible = gridView1.getColumnVisible("col5555");
+    return {
+        setOrderResult: setOrderResult,
+        columnOrder: gridView1.getColumnOrder(),
+        col4Visible: gridView1.getColumnVisible("col4"),
+        col5Visible: gridView1.getColumnVisible("col5"),
+        invalidVisible: invalidVisible,
+        invalidIsUndefined: invalidVisible === undefined
+    };
+};
+
+scwin.getCol5VisibleWithRealColIndex = function() {
+    scwin.setUseRealColIndex(true);
+    var visible = gridView1.getColumnVisible("col5");
+    scwin.setUseRealColIndex(false);
+    return visible;
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <w2:gridView id="gridView1" dataList="data:dataList1" columnMove="true"
+            style="width:520px;height:150px;" rowNumVisible="false" rowStatusVisible="false">
+            <w2:caption id="caption1" value="WAEA-932 getColumnVisible columnMove"/>
+            <w2:header id="header1">
+                <w2:row id="headerRow1">
+                    <w2:column id="h_col1" inputType="text" value="col1" width="80"/>
+                    <w2:column id="h_col2" inputType="text" value="col2" width="80"/>
+                    <w2:column id="h_col3" inputType="text" value="col3" width="80"/>
+                    <w2:column id="h_col4" inputType="text" value="col4" width="80"/>
+                    <w2:column id="h_col5" inputType="text" value="col5" width="80"/>
+                    <w2:column id="h_col6" inputType="text" value="col6" width="80"/>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="bodyRow1">
+                    <w2:column id="col1" inputType="text" width="80"/>
+                    <w2:column id="col2" inputType="text" width="80"/>
+                    <w2:column id="col3" inputType="text" width="80"/>
+                    <w2:column id="col4" inputType="text" width="80"/>
+                    <w2:column id="col5" inputType="text" width="80"/>
+                    <w2:column id="col6" inputType="text" width="80"/>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+		
+	scwin.autoComplete1_oneditenter = function() {
+		console.log("Enter key pressed.");
+	};
+	
+	scwin.spinner_oneditenter = function() {
+		localStorage.setItem("log", "Spinner Onedienter");	
+		console.log("Spinner Onedienter");
+	};
+	
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate2 = function() {
+		scwin.simulateWrapper('#spinner___input', 'key-combo', {
+			combo: 'ENTER'
+		});
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#spinner___input', 'key-sequence', {
+			sequence: '1'
+		});
+	}	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq("#wq_uuid_4_cell_0_2").hasClass('focusedTd');
+	}	
+	scwin.checkVal = function() {
+		return localStorage.getItem('log') == 'Spinner Onedienter';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('spinner___input').focus()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		//WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('spinner___input').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	localStorage.removeItem("log");			
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete editType="select" id="autoComplete1" useKeywordHighlight="true" style="height: 30px;margin: 50px;width: 200px;"
+    		submenuSize="auto" search="contain" allOption="" chooseOption="" chooseOptionLabel="Select a city." ref="" searchTarget="label"
+    		ev:oneditenter="scwin.autoComplete1_oneditenter" nextTabID="" nextTabByEnter="true" caseSensitive="false">
+    		<w2:choices>
+    			<w2:item>
+    				<w2:label><![CDATA[Hanoi]]></w2:label>
+    				<w2:value><![CDATA[001]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Danang]]></w2:label>
+    				<w2:value><![CDATA[002]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Taipei]]></w2:label>
+    				<w2:value><![CDATA[003]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Bangkok]]></w2:label>
+    				<w2:value><![CDATA[004]]></w2:value>
+    			</w2:item>
+    			<w2:item>
+    				<w2:label><![CDATA[Hawaii]]></w2:label>
+    				<w2:value><![CDATA[005]]></w2:value>
+    			</w2:item>
+    		</w2:choices>
+    	</w2:autoComplete>
+
+    	<w2:spinner skin="type1" buttonSize="30" inputReadOnly="false" id="spinner" style="position: relative;width: 150px;height: 21px;" ev:oneditenter="scwin.spinner_oneditenter"></w2:spinner>
+    </body>
+</html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+		<script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    imports("uiplugin.popup");
+    var dataObj = {
+        type: "json",
+        name: "paramObj",
+        data: {
+            "id": "00001",
+            "name": "홍길동"
+        }
+    };
+    var options = {
+        id: "popup2",
+        type: "wframePopup", //browserPopup, wframePopup
+        width: "600px",
+        height: "600px",
+        top: "130px",
+        left: "250px",
+        popupName: "테스트",
+        modal: true,
+        "windowDragMove": true
+    };
+    $p.openPopup("popup_windowDragMove_WESD-804_(WSQ-4789)_sub.xml", options);
+    //WebSquare.wUnit.getJq(".testPopup:wq").css('width', '50%');
+    //$p.getComponentById("mf_popup1").setStyle('width', '80%');
+};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#popup2_header', 'drag-n-drop', {
+        dx: 300,
+        dy: 0
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup2_wframe_wq_uuid_15_button').click()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('popup2_wframe_wq_uuid_15_itemTable').style.display == 'none'", "true");
+    WebSquare.wUnit.addCommand("pause", "400");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    <xf:group id="group1">
+    	<xf:trigger ev:onclick="scwin.trigger1_onclick" style="width: 80px;height: 23px;" id="trigger1" type="button">
+    		<xf:label><![CDATA[팝업오픈]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" style="width: 80px;height: 23px;" id="trigger2" type="button">
+    		<xf:label><![CDATA[팝업화면 함수 호출]]></xf:label>
+    	</xf:trigger>
+    </xf:group></body>
+</html>
+ 

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="WAEA_950_gridView_advancedExcelDownload_printSet_headerFooter_guide">
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="region" name="지역" dataType="text"></w2:column>
+                        <w2:column id="industry" name="업종" dataType="text"></w2:column>
+                        <w2:column id="amount" name="금액" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:mfeSubmission/>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css"><![CDATA[
+.guide-row { margin: 8px 0 16px 0; }
+]]></style>
+        <script lazy="false" type="text/javascript"><![CDATA[
+/*
+ * WAEA-950 가이드 샘플 - GridView advancedExcelDownload Excel 인쇄용 머리글/바닥글 설정
+ *
+ * [옵션 규격] (Pivot pivotExcelDownload의 WAEA-966 규격과 동일)
+ *   options.printSet.header : 엑셀 인쇄용 머리글. { left, center, right } 객체 또는 문자열(=center) 지정
+ *   options.printSet.footer : 엑셀 인쇄용 바닥글. { left, center, right } 객체 또는 문자열(=center) 지정
+ *
+ * [주의]
+ *   - 값은 리터럴 텍스트로 처리되며, &P(페이지 번호) 등 Excel 머리글/바닥글 필드 코드는 지원하지 않는다.
+ *   - & 문자는 그대로 출력된다 (엔진이 내부적으로 escape 처리).
+ *   - header/footer 미지정 시 기존 다운로드 결과와 동일하다 (하위호환).
+ *   - 확인 방법: 다운로드한 Excel에서 [삽입 > 머리글/바닥글] 또는 인쇄 미리보기.
+ */
+scwin.onpageload = function() {
+    dataList1.setJSON([
+        { region:"서울", industry:"제조",   amount:100 },
+        { region:"서울", industry:"서비스", amount:30  },
+        { region:"부산", industry:"제조",   amount:200 },
+        { region:"부산", industry:"서비스", amount:70  }
+    ]);
+};
+
+// 1) left/center/right 객체로 머리글/바닥글 지정
+scwin.downloadObjectForm = function() {
+    gridView1.advancedExcelDownload({
+        fileName: "WAEA_950_headerFooter.xlsx",
+        extension: "xlsx",
+        printSet: {
+            header: { left: "농협은행", center: "월별 실적 집계", right: "대외비" },
+            footer: { center: "출력용 - 재배포 금지" }
+        }
+    });
+};
+
+// 2) 문자열로 지정하면 중앙(center) 머리글로 처리
+scwin.downloadStringForm = function() {
+    gridView1.advancedExcelDownload({
+        fileName: "WAEA_950_headerCenter.xlsx",
+        extension: "xlsx",
+        printSet: {
+            header: "월별 실적 집계"
+        }
+    });
+};
+
+// 3) 기존 printSet 옵션과 조합 사용
+scwin.downloadCombined = function() {
+    gridView1.advancedExcelDownload({
+        fileName: "WAEA_950_combined.xlsx",
+        extension: "xlsx",
+        printSet: {
+            fitToPage: "true",
+            landScape: "true",
+            header: { center: "월별 실적 집계" },
+            footer: { right: "대외비" }
+        }
+    });
+};
+
+// 4) 미지정 - 기존 다운로드와 동일 (하위호환 확인용)
+scwin.downloadDefault = function() {
+    gridView1.advancedExcelDownload({
+        fileName: "WAEA_950_default.xlsx",
+        extension: "xlsx"
+    });
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <h3>WAEA-950 GridView advancedExcelDownload 인쇄용 머리글/바닥글 가이드 샘플</h3>
+        <p>버튼으로 Excel을 다운로드한 뒤, Excel의 [삽입 &gt; 머리글/바닥글] 또는 인쇄 미리보기에서 머리글/바닥글을 확인합니다.</p>
+
+        <w2:gridView id="gridView1" dataList="data:dataList1" style="position:relative;width:500px;height:200px;" defaultCellHeight="20" autoFit="allColumn">
+            <w2:caption id="caption1" style="display:none;" value="WAEA-950 grid caption"></w2:caption>
+            <w2:header id="header1">
+                <w2:row id="hrow1">
+                    <w2:column id="hcol1" width="120" inputType="text" value="지역" displayMode="label"></w2:column>
+                    <w2:column id="hcol2" width="120" inputType="text" value="업종" displayMode="label"></w2:column>
+                    <w2:column id="hcol3" width="120" inputType="text" value="금액" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="brow1">
+                    <w2:column id="region" width="120" inputType="text" displayMode="label"></w2:column>
+                    <w2:column id="industry" width="120" inputType="text" displayMode="label"></w2:column>
+                    <w2:column id="amount" width="120" inputType="text" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+
+        <div class="guide-row">
+            <xf:trigger id="btnObj" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadObjectForm">
+                <xf:label>1) 머리글/바닥글 객체(left/center/right) 지정</xf:label>
+            </xf:trigger>
+        </div>
+        <div class="guide-row">
+            <xf:trigger id="btnStr" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadStringForm">
+                <xf:label>2) 머리글 문자열 지정 (중앙 처리)</xf:label>
+            </xf:trigger>
+        </div>
+        <div class="guide-row">
+            <xf:trigger id="btnCombined" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadCombined">
+                <xf:label>3) fitToPage/landScape 등 기존 옵션과 조합</xf:label>
+            </xf:trigger>
+        </div>
+        <div class="guide-row">
+            <xf:trigger id="btnDefault" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadDefault">
+                <xf:label>4) 미지정 (기존 동작 확인)</xf:label>
+            </xf:trigger>
+        </div>
+    </body>
+</html>

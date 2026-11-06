@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireDbClick = function(id) {
+    var node = WebSquare.wUnit.getDomById($p.id + id);
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 float항목의 필드에 '0'값을 입력하고 enter 또는 다른영역을 마우스로 클릭한다.
+    //1. After executing the sample, enter '0' in the field of the float item and click on the enter or other area with the mouse.
+    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'grid1_cell_0_2')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grid1__column6').setValue('0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_0_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 정상적으로 '0'값이 입력되어 보여진다. (이전에는 '0'값이 입력되지 않음)
+    //1. Normally '0' value is displayed. (Previously no '0' value is entered)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_0_2').innerText == '0'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    grid1.setRef({
+        ref: "vector",
+        baseNode: "vector",
+        repeatNode: "data"
+    });
+    grid1.insertRow();
+    grid1.setCellInputType(0, 0, {
+        inputType: "text",
+        options: {
+            dataType: "float",
+            displayFormat: "#,###.##"
+        }
+    });
+    grid1.setCellData(0, 1, "float");
+    grid1.insertRow();
+    grid1.setCellInputType(1, 0, {
+        inputType: "text",
+        options: {
+            dataType: "number",
+            displayFormat: "#,###.##"
+        }
+    });
+    grid1.setCellData(1, 1, "number");
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 22-Feb-2018
+    //End unitTest	
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid ref="vector" baseNode="vector" repeatNode="data" id="grid1" style="width:553px;height:150px;" fixedColumnWithHidden="true" useShiftKey="true" setCellInputTypeCustom="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="120" inputType="text" displayMode="label" value="custom"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="height:20px;" inputType="text" width="120" value="float" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="120" value="number" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column2" style="" width="120" inputType="custom" value="" displayMode="label" defaultValue=""></w2:column>
+    				<w2:column blockSelect="false" id="column4" style="" inputType="text" width="120" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column6" style="" inputType="text" width="70" value="" displayMode="label" dataType="float" displayFormat="#,###.##"></w2:column>
+    				<w2:column blockSelect="false" id="column8" style="" inputType="text" width="70" value="" displayMode="label" dataType="number" displayFormat="#,###.##"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    </body>
+</html>
+ 

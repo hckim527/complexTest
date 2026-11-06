@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[1]]></col2>
+            				<col3><![CDATA[1]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[2]]></col2>
+            				<col3><![CDATA[2]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            				<col2><![CDATA[3]]></col2>
+            				<col3><![CDATA[3]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function(row, col) {
+    var obj = {};
+    if (row == 0) {
+        obj.increment = 2;
+        obj.minValue = 0;
+        obj.maxValue = 10;
+        return obj;
+    } else if (row == 1) {
+        obj.increment = 4;
+        obj.minValue = 0;
+        obj.maxValue = 20;
+        return obj;
+    } else if (row == 2) {
+        obj.increment = 8;
+        obj.minValue = 0;
+        obj.maxValue = 40;
+        return obj;
+    }
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkDisplay = function(id) {
+    if (WebSquare.wUnit.getJq(id).css("display") == "block") {
+        return true;
+    } else if (WebSquare.wUnit.getJq(id).css("display") == "inline-block") {
+        return true;
+    } else {
+        return false;
+    }
+}
+scwin.checkVal1 = function() {
+    return WebSquare.wUnit.getJq('#wq_uuid_3_cell_0_1').hasClass('gridBodyDefault_spinner') == false;
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getJq('#wq_uuid_3_cell_1_1').hasClass('gridBodyDefault_spinner') == false;
+}
+scwin.checkVal3 = function() {
+    return WebSquare.wUnit.getJq('#wq_uuid_3_cell_2_1').hasClass('gridBodyDefault_spinner') == false;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭 또는 Property 탭에서 col2 의 inputType 부분을 확인한다.
+    //1. Check the inputType part of col2 in the Source tab or Property tab.
+    //Verify step 1. inputType="spinner"
+    //1. inputType = "spinner"
+    //Test step 2. viewType 부분을 확인한다.
+    //2. Check the viewType part.
+    //Verify step 2. viewType ="default"
+    //2. viewType = "default"
+    //Test step 3. 브라우저에서 name2 컬럼을 확인한다.
+    //3. Check the name2 column in your browser.
+    //Verify step 3. name2 컬럼에 spinner 표시가 없다.
+    //3. There is no spinner mark in the name2 column.           
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. name2 임의의 컬럼을 더블클릭한다.
+    //4. Double-click any column in name2.
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'wq_uuid_3_cell_1_1')");
+    //Verify step 4. Edit 모드로 진입하면서 spinner 표시가 생긴다.
+    //4. Enter the Edit mode and the spinner display appears.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkDisplay('#G_'+$p.id+'wq_uuid_3___spinner_col2')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkDisplay('#G_'+$p.id+'wq_uuid_3___spinner_col2___input')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 30-Jan-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="" style="position: absolute;width:735px;height:697px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" sortable="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column4" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody6" style="">
+    			<w2:row id="row7" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="calendar" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="spinner" displayMode="label"
+    					customFormatter="test" viewType="default">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="checkcombobox" displayMode="label"
+    					viewType="icon">
+    					<w2:choices></w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

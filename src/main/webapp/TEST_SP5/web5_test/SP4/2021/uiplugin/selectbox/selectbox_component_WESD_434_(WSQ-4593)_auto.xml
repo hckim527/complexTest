@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" initRowPosition="0">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <col1><![CDATA[002]]></col1>
+                            <col2><![CDATA[002]]></col2>
+                        </w2:row>
+                        <w2:row>
+                            <col1><![CDATA[001]]></col1>
+                            <col2><![CDATA[001]]></col2>
+                        </w2:row>
+                    </w2:data>
+            	</w2:dataList>
+                <w2:dataMap baseNode="map" id="dataMap1">
+                    <w2:keyInfo>
+                        <w2:key id="select" name="select" dataType="text"></w2:key>
+                    </w2:keyInfo>
+                    <w2:data use="true">
+                        <select>002</select>
+                    </w2:data>
+                </w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.input1_onkeyup = function(e) {
+    //        debugger;
+    alert('onkeyup 이벤트!')
+};
+scwin.selectbox1_onviewchange = function(e) {
+    console.log("onviewchange");
+};
+scwin.selectbox1_onselected = function(info) {
+    //        debugger;
+    console.log("onselected", info);
+    localStorage.setItem("log", "onselected");
+    //WebSquare.wUnit.getDomById('input1').focus();
+};
+scwin.trigger1_onclick = function(e) {};
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#selectbox1_itemTable_2', 'key-combo', {
+        combo: 'up-arrow'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#selectbox1_itemTable_2', 'key-combo', {
+        combo: 'ENTER'
+    });
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectbox1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'onselected'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectbox1" nextTabID="input1" keyMoveListSync="" keyMoveSync="false" preventWheelEvent="" ref="data:dataMap1.select"
+    		style="position: relative;height:56px;width:255px;display:block;" displayMode="label" selectedData="false" optionOrder="false" allOption="" findItem="true" nextTabByEnter=""
+    		disabled="false" submenuSize="auto" ev:onviewchange="scwin.selectbox1_onviewchange" ev:onselected="scwin.selectbox1_onselected">
+    		<xf:choices>
+                <xf:item>
+                    <xf:label>000</xf:label>
+                    <xf:value>000</xf:value>
+                </xf:item>
+                <xf:item>
+                    <xf:label>001</xf:label>
+                    <xf:value>001</xf:value>
+                </xf:item>
+                <xf:item>
+                    <xf:label>002</xf:label>
+                    <xf:value>002</xf:value>
+                </xf:item>                
+    		</xf:choices>
+    	</xf:select1>
+        <xf:input adjustMaxLength="false" nextTabByEnter="true" id="input1" style="width: 144px;height: 21px;" ev:onkeyup="scwin.input1_onkeyup" nextTabID="input2"></xf:input>
+        <xf:input adjustMaxLength="false" nextTabByEnter="true" id="input2" style="width: 144px;height: 21px;"></xf:input>
+    </body>
+</html>
+ 

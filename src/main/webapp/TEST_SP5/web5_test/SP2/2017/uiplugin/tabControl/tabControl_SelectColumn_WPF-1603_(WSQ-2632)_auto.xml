@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[11]]></col1>
+            				<col3><![CDATA[11]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[22]]></col1>
+            				<col3><![CDATA[22]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[22]]></col1>
+            				<col3><![CDATA[11]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList3" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<label><![CDATA[a3]]></label>
+            				<value><![CDATA[11]]></value>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[b3]]></label>
+            				<value><![CDATA[22]]></value>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkVal = function() {
+    var ret = true;
+    var itemArr1 = WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1___selectbox_col1').itemArr;
+    var itemArr2 = selectbox1.itemArr;
+    if (itemArr1.length !== itemArr2.length) {
+        return "length diff";
+    }
+    for (var i = 0; i < itemArr1.length; i++) {
+        if (itemArr1[i].label !== itemArr2[i].label || itemArr1[i].value !== itemArr2[i].value) {
+            ret = itemArr1[i].label + "," + itemArr2[i].label + "@@" + itemArr1[i].value + "," + itemArr2[i].value;
+            break;
+        }
+    }
+    return ret;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. Design 탭에 gridview 탭 선택해서 col1 의 inputType 부분을 확인한다.
+    //On the Design tab, select the gridview tab and check the inputType part of col1.
+    //Verify 1. inputType = 'select'
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tabs2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').getAttribute(dataInputType) == 'select'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Veryfi 4. 3번째 select 탭의 Select 처럼 정상적으로 바인딩되서 리스트가 보여진다. (그전버전에서는 비활성화 된 탭에 있는 경우 바인딩 되지 않아서 리스트가 보이지 않았음)
+    //The list is displayed as it is normally bound as in the Select on the third select tab. (In previous versions, if you were on a disabled tab, the list was not visible because it was not bound.)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    dataList1.setData(["aa", "11", "bb", "22"]);
+    window.arr = [];
+    for (var ix = 0; ix < 20; ix++) {
+        arr.push("hello" + ix);
+    }
+    dataList2.setData(arr);
+    selectbox1.setNodeSet("data:dataList1", "label", "value");
+    if (!tabControl1.isLoaded(1)) {
+        var promiseObj = tabControl1.activateTab(1);
+        if (promiseObj && typeof promiseObj.then === "function") {
+            promiseObj.then(function(s,f){
+                gridView1.setColumnNodeSet("col1", "data:dataList1", "label", "value");
+            });
+        } else {
+            gridView1.setColumnNodeSet("col1", "data:dataList1", "label", "value");
+        }
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 30-Jan-2018
+    //End unitTest
+    window.dataInputType = WebSquare.util.getDataPrefix("inputtype");
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:tabControl useMoveNextTabFocus="false" id="tabControl1" style="position: absolute ;left:30px;top:23px;width:560px;height:257px;"
+    		confirmTrueAction="exist" useTabKeyOnly="true" useConfirmMessage="false" confirmFalseAction="new" alwaysDraw="false">
+    		<w2:tabs label="" id="tabs1" style="width:70px;height:30px;" disabled="false"></w2:tabs>
+    		<w2:tabs id="tabs2" style="width:70px;height:30px" label="gridview" disabled="false"></w2:tabs>
+    		<w2:tabs id="tabs3" style="width:70px;height:30px" label="select" disabled="false"></w2:tabs>
+    		<w2:content id="content1" style="height:227px;" alwaysDraw="false"></w2:content>
+    		<w2:content id="content2" style="height:227px;" alwaysDraw="false">
+    			<w2:gridView dataList="dataList2" summaryAuto="false" useFilterList="false" scrollByColumn="false"
+    				scrollByColumnAdaptive="false" id="gridView1" style="position: absolute ;left:8px;top:11px;width: 500px;height: 150px;"
+    				ignoreCellClick="false" ignoreToggleOnDisabled="false" summaryOnlyAuto="false" fixedColumnWithHidden="true" useShiftKey="true"
+    				editModeEvent="onclick">
+    				<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    				<w2:header id="header2" style="">
+    					<w2:row id="row3" style="">
+    						<w2:column blockSelect="false" id="column11" style="height:20px" inputType="text" width="70" displayMode="label"
+    							value="name1">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    							value="name2">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    							value="name3">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="column5" style="height:20px" width="70" inputType="text" displayMode="label"
+    							value="name4">
+    						</w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody2" style="">
+    					<w2:row id="row4" style="">
+    						<w2:column blockSelect="false" id="col1" style="height:20px" inputType="select" width="70"
+    							displayMode="label">
+    							<w2:choices></w2:choices>
+    						</w2:column>
+    						<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70" displayMode="label">
+    						</w2:column>
+    						<w2:column blockSelect="false" id="col4" style="height:20px" width="70" inputType="text" displayMode="label">
+    						</w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    		<w2:content id="content3" style="height:227px;" alwaysDraw="false">
+    			<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectbox1"
+    				style="position: absolute ;left:133px;top:75px;width: 148px;height: 21px;" displayMode="label" selectedData="true"
+    				optionOrder="false" allOption="" disabled="false" submenuSize="auto">
+    			</xf:select1>
+    		</w2:content>
+    	</w2:tabControl>
+    </body>
+</html>
+ 

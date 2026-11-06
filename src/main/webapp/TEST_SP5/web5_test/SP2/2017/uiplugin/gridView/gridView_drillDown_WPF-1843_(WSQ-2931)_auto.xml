@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/websquare5/common/css/content.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList_menu" style="" valueAttribute="">
+					<w2:columnInfo>
+						<w2:column id="CHK" name="선택" dataType="text" defaultValue="0" ignoreStatus="true"></w2:column>
+						<w2:column id="MENU_ID" name="메뉴ID" dataType="text"></w2:column>
+						<w2:column id="MENU_NM" name="메뉴명" dataType="text"></w2:column>
+						<w2:column id="HIGHER_MENU_ID" name="상위메뉴ID" dataType="text"></w2:column>
+						<w2:column id="LEVEL_CNT" name="레벨수" dataType="text"></w2:column>
+						<w2:column id="SRC_PATH" name="파일경로" dataType="text"></w2:column>
+						<w2:column id="temp" name="임시" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<xf:submission id="submission1" ref="" target='data:json,"dataList_menu"' action="getMainTreeMenuData.json"
+				method="post" mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+				processMsg="" singleMode="true">
+				<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    dataList_menu.modifyRowStatus(1, "C");
+};
+scwin.gridView1_oncellclick = function(row, col) {};
+scwin.gridView1_onviewchange = function(info) {
+    if (info.colIndex == 0) {
+        var realIdx = gridView1.getRealRowIndex(info.rowIndex);
+        console.log(info);
+        if (info.newValue == '1') {
+            console.log('ccc');
+            console.log(info.rowIndex);
+            console.log(realIdx);
+            dataList_menu.modifyRowStatus(realIdx, "C");
+        } else {
+            console.log('rrr');
+            dataList_menu.modifyRowStatus(realIdx, "R");
+        }
+    }
+};
+scwin.__clickPlusIcon = function() {
+    for (var i = 0; i < 7; i++) {
+        if (i > 3 & i < 6) {
+            gridView1.setTopRowIndex(40);
+        }
+        WebSquare.wUnit.getJq(".w2grid_plus:first").click();
+    }
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 Menu의 +를 클릭하여 Submission항목까지 펼친 후 스크롤을 아래까지 이동 후 Submission(-)을 클릭한다.
+    //1. After running the sample file, click the + in the menu to expand the Submission item, scroll down to the bottom, and click Submission (-).
+    WebSquare.wUnit.addCommand("set", "scwin.__clickPlusIcon()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1').setTopRowIndex(45)");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 1. The size of gridView does not decrease and rowNum is shown up to 27 times.(Previously gridView was reduced in size and rowNum was shown up to 31 times.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_body_tbody tr:first td:first').text()", "27");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonArr = [{
+            "MENU_ID": "Education",
+            "MENU_NM": "Education",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "Education,Basic"
+        },
+        {
+            "MENU_ID": "Education001",
+            "MENU_NM": "Basic",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/edu/basic.xml",
+            "temp": "Education,WebSquare5 Basic"
+        },
+        {
+            "MENU_ID": "DataCollection",
+            "MENU_NM": "DataCollection",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "DataCollection,DataMap Binding,DataList Binding,LinkedDataList Binding"
+        },
+        {
+            "MENU_ID": "DataCollection001",
+            "MENU_NM": "DataMap Binding",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/DataCollection/DataMapBinding.xml",
+            "temp": "DataMap Binding,DataList Binding,LinkedDataList Binding"
+        },
+        {
+            "MENU_ID": "DataCollection002",
+            "MENU_NM": "DataList Binding",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/DataCollection/DataListBinding.xml",
+            "temp": "DataMap Binding,DataList Binding,LinkedDataList Binding"
+        },
+        {
+            "MENU_ID": "DataCollection003",
+            "MENU_NM": "LinkedDataList Binding",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/DataCollection/LinkedDataListBinding.xml",
+            "temp": "DataMap Binding,DataList Binding,LinkedDataList Binding"
+        },
+        {
+            "MENU_ID": "DataCollection004",
+            "MENU_NM": "Master Detail Binding",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/DataCollection/masterDetail.xml",
+            "temp": "DataMap Binding,DataList Binding,LinkedDataList Binding"
+        },
+        {
+            "MENU_ID": "TBL",
+            "MENU_NM": "TableLayout",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "TableLayout,Login Layout,Search Layout,Result Layout"
+        },
+        {
+            "MENU_ID": "TBL001",
+            "MENU_NM": "Table Layout",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/tableLayout/tableLayout.xml",
+            "temp": "TableLayout,Table  Layout"
+        },
+        {
+            "MENU_ID": "TBL002",
+            "MENU_NM": "Adaptive Layout",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/tableLayout/adativeTable.xml",
+            "temp": "TableLayout,Adaptive Layout"
+        },
+        {
+            "MENU_ID": "GRDV",
+            "MENU_NM": "GridView",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "GridView,Basic GridView,Master-detail GridView"
+        },
+        {
+            "MENU_ID": "GRDV001",
+            "MENU_NM": "Basic GridView",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/basic.xml",
+            "temp": "GridView,Basic GridView"
+        },
+        {
+            "MENU_ID": "GRDV003",
+            "MENU_NM": "DrillDown",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/drillDown.xml",
+            "temp": "GridView,DrillDown"
+        },
+        {
+            "MENU_ID": "GRDV004",
+            "MENU_NM": "Column Merge",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/colMerge.xml",
+            "temp": "GridView,Column Merge"
+        },
+        {
+            "MENU_ID": "GRDV005",
+            "MENU_NM": "AutoFit",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/autoFit.xml",
+            "temp": "GridView,AutoFit"
+        },
+        {
+            "MENU_ID": "GRDV006",
+            "MENU_NM": "Header Filter & Sort",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/headFilter.xml",
+            "temp": "GridView,Column Merge"
+        },
+        {
+            "MENU_ID": "GRDV007",
+            "MENU_NM": "Adaptive Grid",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/adaptiveGrid.xml",
+            "temp": "GridView,Adaptive Grid"
+        },
+        {
+            "MENU_ID": "GRDV008",
+            "MENU_NM": "ExcelDownload",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/excelDownload.xml",
+            "temp": "GridView,ExcelDownload GridView"
+        },
+        {
+            "MENU_ID": "GRDV009",
+            "MENU_NM": "ExcelUpload",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/excelUpload.xml",
+            "temp": "GridView,ExcelUpload GridView"
+        },
+        {
+            "MENU_ID": "GRDV0010",
+            "MENU_NM": "Quantum Grid",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/quantumGrid.xml",
+            "temp": "GridView,Quantum Grid"
+        },
+        {
+            "MENU_ID": "GRDV011",
+            "MENU_NM": "Context Menu",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/contextMenu.xml",
+            "temp": "GridView, Context Menu"
+        },
+        {
+            "MENU_ID": "GRDV012",
+            "MENU_NM": "SubTotal",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/subtotal.xml",
+            "temp": "GridView, SubTotal"
+        },
+        {
+            "MENU_ID": "GRDV013",
+            "MENU_NM": "Expression",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/expression.xml",
+            "temp": "GridView, Expression"
+        },
+        {
+            "MENU_ID": "GRDV014",
+            "MENU_NM": "Format",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/formatter.xml",
+            "temp": "GridView, Format"
+        },
+        {
+            "MENU_ID": "GRDV015",
+            "MENU_NM": "대량데이터(setData형식)",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/dsme.xml",
+            "temp": "GridView, 대량데이터(setData형식)"
+        },
+        {
+            "MENU_ID": "GRDV016",
+            "MENU_NM": "PageList",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/gridView/pageList.xml",
+            "temp": "GridView, PageList"
+        },
+        {
+            "MENU_ID": "FORM",
+            "MENU_NM": "FormControl",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "FormControl,gridItemSet"
+        },
+        {
+            "MENU_ID": "FORM001",
+            "MENU_NM": "GridItemSet",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/formControl/gridItemSet.xml",
+            "temp": "FormControl,gridItemSet"
+        },
+        {
+            "MENU_ID": "FORM002",
+            "MENU_NM": "InputBox Property",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/formControl/inputBoxProperty.xml",
+            "temp": "FormControl,inputBoxProperty"
+        },
+        {
+            "MENU_ID": "FORM003",
+            "MENU_NM": "InputBox DisplayFormat",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/formControl/displayFormat.xml",
+            "temp": "FormControl,displayFormat"
+        },
+        {
+            "MENU_ID": "CONT",
+            "MENU_NM": "Container",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "Container,SPA TabControl"
+        },
+        {
+            "MENU_ID": "CONT001",
+            "MENU_NM": "SPA TabControl",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/container/spaTab.xml",
+            "temp": "Container,SPA TabControl"
+        },
+        {
+            "MENU_ID": "CONT002",
+            "MENU_NM": "SPA MDI",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/container/spaWindow.xml",
+            "temp": "Container,SPA MDI"
+        },
+        {
+            "MENU_ID": "CONT003",
+            "MENU_NM": "Adaptive Tabcontrol",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/container/adaptiveTabcontrol.xml",
+            "temp": "Container,Adaptive Tabcontrol"
+        },
+        {
+            "MENU_ID": "CHART",
+            "MENU_NM": "Chart",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "Chart,FusionChart"
+        },
+        {
+            "MENU_ID": "CHART001",
+            "MENU_NM": "FusionChart",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/chart/fusionChartBinding.xml",
+            "temp": "Chart,FusionChart"
+        },
+        {
+            "MENU_ID": "CHART002",
+            "MENU_NM": "Column & Bar",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/chart/basicFusionChart.xml",
+            "temp": "Chart,Column & Bar"
+        },
+        {
+            "MENU_ID": "CHART003",
+            "MENU_NM": "Doughnut & Pie",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/chart/pie_DoughtnutChart.xml",
+            "temp": "Chart,Doughnut & Pie"
+        },
+        {
+            "MENU_ID": "CHART004",
+            "MENU_NM": "Line & Area",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/chart/line_AreaChart.xml",
+            "temp": "Chart,Line & Area"
+        },
+        {
+            "MENU_ID": "CHART005",
+            "MENU_NM": "Stack & Bubble",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/chart/stack_BubbleChart.xml",
+            "temp": "Chart,Stack & Bubble"
+        },
+        {
+            "MENU_ID": "CHART006",
+            "MENU_NM": "Pareto & MsCombi",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/chart/pareto_MsCombi.xml",
+            "temp": "Chart,Pareto & MsCombi"
+        },
+        {
+            "MENU_ID": "SUBMISSION",
+            "MENU_NM": "Submission",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "SUBMISSION, XML"
+        },
+        {
+            "MENU_ID": "SUBMISSION001",
+            "MENU_NM": "Same Id/Key (JSON)",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/submission/jsonSameId.xml",
+            "temp": "SUBMISSION, Same Id/Key (JSON)"
+        },
+        {
+            "MENU_ID": "SUBMISSION002",
+            "MENU_NM": "Different Id/Key (JSON)",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/submission/jsonDiffId.xml",
+            "temp": "SUBMISSION, Different Id/Key (JSON)"
+        },
+        {
+            "MENU_ID": "SUBMISSION003",
+            "MENU_NM": "Same Id/Key (XML)",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/submission/xmlSameId.xml",
+            "temp": "SUBMISSION, Same Id/Key (XML)"
+        },
+        {
+            "MENU_ID": "SUBMISSION004",
+            "MENU_NM": "Different Id/Key (XML)",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/submission/xmlDiffId.xml",
+            "temp": "SUBMISSION, Different Id/Key (XML)"
+        },
+        {
+            "MENU_ID": "GENERATOR",
+            "MENU_NM": "Generator",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "GENERATOR,Basic Generator"
+        },
+        {
+            "MENU_ID": "GENERATOR001",
+            "MENU_NM": "Basic Generator",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/generator/basic.xml",
+            "temp": "GENERATOR,Basic Generator"
+        },
+        {
+            "MENU_ID": "TREEVIEW",
+            "MENU_NM": "TreeView",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "TREEVIEW,Basic TreeView"
+        },
+        {
+            "MENU_ID": "TREEVIEW001",
+            "MENU_NM": "Basic TreeView",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/treeview/basic.xml",
+            "temp": "TREEVIEW,Basic TreeView"
+        },
+        {
+            "MENU_ID": "TREEVIEW002",
+            "MENU_NM": "API",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/treeview/api.xml",
+            "temp": "TREEVIEW,API"
+        },
+        {
+            "MENU_ID": "TREEVIEW003",
+            "MENU_NM": "Drag & Drop",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/treeview/dragdrop.xml",
+            "temp": "TREEVIEW,Drag & Drop"
+        },
+        {
+            "MENU_ID": "EDITOR",
+            "MENU_NM": "Editor",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "EDITOR,Basic EditorView"
+        },
+        {
+            "MENU_ID": "EDITOR001",
+            "MENU_NM": "내장에디터(CKEditor)",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/editor/ckEditor.xml",
+            "temp": "EDITOR,내장에디터(CKEditor)"
+        },
+        {
+            "MENU_ID": "EDITOR002",
+            "MENU_NM": "외장에디터(NaverEditor)",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/editor/naverEditor.xml",
+            "temp": "EDITOR,외장에디터(NaverEditor)"
+        },
+        {
+            "MENU_ID": "POPUP",
+            "MENU_NM": "Popup",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 2,
+            "SRC_PATH": "",
+            "temp": "POPUP,openPopup"
+        },
+        {
+            "MENU_ID": "POPUP001",
+            "MENU_NM": "popup 호출",
+            "HIGHER_MENU_ID": "W5C",
+            "LEVEL_CNT": 3,
+            "SRC_PATH": "/websquare5/components/popup/popup.xml",
+            "temp": "POPUP,popup 호출"
+        }
+    ];
+    dataList_menu.setJSON(jsonArr);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 07-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[
+    	 ]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView id="gridView1" dataList="dataList_menu" drilldownRealRowIndex="true"
+			rowNumHeaderValue=""
+			style="width:600px;height:300px;margin-left:25px;margin-top:35px;" useShiftKey="false"
+			scrollByColumn="false" rowStatusVisible="true"
+			rowStatusHeaderValue="" rowNumVisible="true" fixedColumnWithHidden=""
+			rowStatusWidth="" visibleRowNum="20" fixedColumn=""
+			autoFit="allColumn" dragDisplayColumn="" ev:onafteredit=""
+			ev:onviewchange="scwin.gridView1_onviewchange" ev:oncellclick="scwin.gridView1_oncellclick">
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column blockSelect="false" id="column12"
+						style="height:20px" inputType="text" width="70"
+						displayMode="label">
+					</w2:column>
+					<w2:column blockSelect="false" id="column9"
+						style="height:20px;" inputType="text" width="187" value="Menu.">
+					</w2:column>
+					<w2:column blockSelect="false" id="column11"
+						style="height:20px;" inputType="text" width="110" value="메뉴ID">
+					</w2:column>
+					<w2:column blockSelect="false" id="column7"
+						style="height:20px;" inputType="text" width="111"
+						value="상위메뉴ID">
+					</w2:column>
+					<w2:column blockSelect="false" id="column5"
+						style="height:20px;" inputType="text" width="45" value="Depth"
+						viewType="">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3"
+						style="height:20px;" inputType="text" width="350"
+						value="FilePath.">
+					</w2:column>
+					<w2:column blockSelect="false" id="column1"
+						style="height:20px;" width="70" inputType="text" value="temp">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="CHK"
+						style="height:20px" inputType="checkbox" width="70"
+						displayMode="label">
+					</w2:column>
+					<w2:column blockSelect="false" id="MENU_NM"
+						style="height:20px" inputType="drilldown" width="187"
+						depthColumn="LEVEL_CNT" depthType="div" showDepth="2"
+						textAlign="left">
+					</w2:column>
+					<w2:column blockSelect="false" id="MENU_ID"
+						style="height:20px" inputType="text" width="110" textAlign="left"
+						hidden="true">
+					</w2:column>
+					<w2:column blockSelect="false" id="HIGHER_MENU_ID"
+						style="height:20px" inputType="text" width="111" textAlign="left"
+						hidden="true">
+					</w2:column>
+					<w2:column blockSelect="false" id="LEVEL_CNT"
+						style="height:20px" inputType="text" width="59"
+						textAlign="right">
+					</w2:column>
+					<w2:column blockSelect="false" id="SRC_PATH"
+						style="height:20px" inputType="text" width="351" textAlign="left"
+						customFormatter="scwin.test">
+					</w2:column>
+					<w2:column blockSelect="false" id="temp"
+						style="height:20px" width="70" inputType="text" hidden="true">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1"
+			style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[modi row1]]></xf:label>
+		</xf:trigger>
+
+	</body>
+</html>
+ 

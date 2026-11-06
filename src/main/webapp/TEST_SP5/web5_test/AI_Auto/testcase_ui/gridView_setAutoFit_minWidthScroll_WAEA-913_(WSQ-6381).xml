@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// =============================================================================
+// [FAIL] gridView Method setAutoFit({type:"allColumn", minWidth:N})
+//   GridView 너비(500px) < minWidth(800) 인데도 가로 스크롤바가 표시되지 않는 결함
+//
+//   가이드 @param minWidth :
+//     "내부 너비가 파라미터값만큼 확장된 후 가로 스크롤바가 표시되고"
+//
+//   엔진 근거 (websquare/uiplugin/gridView/drawInitializer.js):
+//     :953  내부너비 계산 = options.minWidth 사용 → 내부 너비 확장됨 (정상)
+//     :1029 가로 스크롤 가드 = this.options.autoFitMinWidth / autoFitCellMinWidth
+//           "속성"만 검사 → :1032 setOverflowX("hidden") → 스크롤 억제
+//     :1094 setAutoFit 은 this.options.autoFit 만 설정(:1097),
+//           autoFitMinWidth "속성" 미갱신 → 가드 항상 참(스크롤 억제)
+//     대비 : autoFitMinWidth "속성"을 직접 지정하면 가드 통과 → 가로 스크롤 정상 표시
+//
+//   비교 구성 (동일 조건 : 너비 500px / 컬럼 4개 x 100px / 동일 데이터)
+//     target_prop   (정상 기대) : autoFit="allColumn" + autoFitMinWidth="800" 속성으로 생성
+//                                 → 내부 800 확장 + 가로 스크롤 표시
+//     target_method (결함)      : 속성 없이 생성 후 onpageload 에서
+//                                 setAutoFit({type:"allColumn", minWidth:800}) 호출
+//                                 → 내부 800 확장되나 가로 스크롤 미표시
+// =============================================================================
+
+// 결함 설명/기대 vs 실제 (createValidation 미호출, 주석/출력으로 표현)
+scwin.tData = {
+    "description": "[FAIL] gridView setAutoFit({type:allColumn, minWidth:800}) 호출 시 GridView(500px) < minWidth(800) 인데도 가로 스크롤바가 표시되지 않는 결함 (autoFitMinWidth 속성 경로는 정상 표시)",
+    "validation": [
+        "정상: autoFitMinWidth 속성=800 + autoFit=allColumn 이면 GridView 500px < 800 → 내부 너비 800 확장 + 가로 스크롤바가 표시됩니다.",
+        "결함: setAutoFit({type:allColumn, minWidth:800}) 호출 시 동일하게 내부 너비는 800 확장되나 가로 스크롤바가 표시되지 않습니다."
+    ]
+};
+
+
+// -----------------------------------------------------------------------------
+// 리턴 값 출력 영역 (body_bottom.xml inline 복사)
+// -----------------------------------------------------------------------------
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+
+
+// -----------------------------------------------------------------------------
+// 공통 : 네임스페이스 문자열 / dataList JSON / gridView strTarget 빌더
+// -----------------------------------------------------------------------------
+scwin.getNameSpace = function () {
+    return 'xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms"';
+};
+
+// 4컬럼 x 4행 inline JSON
+scwin.getGridJSON = function () {
+    return [
+        { col1: "A1", col2: "B1", col3: "C1", col4: "D1" },
+        { col1: "A2", col2: "B2", col3: "C2", col4: "D2" },
+        { col1: "A3", col2: "B3", col3: "C3", col4: "D3" },
+        { col1: "A4", col2: "B4", col3: "C4", col4: "D4" }
+    ];
+};
+
+// dataList inline 생성 ($c.gcm 미사용, $p.data.create + setJSON)
+//   $p.data.create(option) 단일 인자 형식 (cm/gcc/data.xml _getCodeDataListOptions 패턴)
+scwin.createGridDataList = function (dlId) {
+    $p.data.create({
+        type: "dataList",
+        id: dlId,
+        option: { baseNode: "list", repeatNode: "map" },
+        columnInfo: [
+            { id: "col1", dataType: "text" },
+            { id: "col2", dataType: "text" },
+            { id: "col3", dataType: "text" },
+            { id: "col4", dataType: "text" }
+        ]
+    }); // 동일 id 존재 시 삭제 후 재생성
+    var dl = $p.getComponentById(dlId);
+    dl.setJSON(scwin.getGridJSON());
+    return dl;
+};
+
+// gridView strTarget 빌더 (각 컬럼 100px = 4컬럼 합 400 < 500, allColumn 시 minWidth 800 강제확장 효과)
+//  - extraAttr : autoFit/autoFitMinWidth 등 gridView 루트 추가 속성 문자열
+scwin.buildGridTarget = function (dlId, extraAttr) {
+    var ns = scwin.getNameSpace();
+    var s = '';
+    s += '<w2:gridView ' + ns + ' ' + (extraAttr || '') + ' checkAllType="false" id="" dataList="data:' + dlId + '" style="width:500px;height:160px;">';
+    s += '<w2:caption style="" id="cap" value="grid"></w2:caption>';
+    s += '<w2:header style="" id="hdr">';
+    s += '<w2:row style="" id="hrow">';
+    s += '<w2:column width="100" inputType="text" id="column1" value="col1"></w2:column>';
+    s += '<w2:column width="100" inputType="text" id="column2" value="col2"></w2:column>';
+    s += '<w2:column width="100" inputType="text" id="column3" value="col3"></w2:column>';
+    s += '<w2:column width="100" inputType="text" id="column4" value="col4"></w2:column>';
+    s += '</w2:row>';
+    s += '</w2:header>';
+    s += '<w2:gBody style="" id="gbd">';
+    s += '<w2:row style="" id="brow">';
+    s += '<w2:column width="100" inputType="text" id="col1" value=""></w2:column>';
+    s += '<w2:column width="100" inputType="text" id="col2" value=""></w2:column>';
+    s += '<w2:column width="100" inputType="text" id="col3" value=""></w2:column>';
+    s += '<w2:column width="100" inputType="text" id="col4" value=""></w2:column>';
+    s += '</w2:row>';
+    s += '</w2:gBody>';
+    s += '</w2:gridView>';
+    return s;
+};
+
+
+// -----------------------------------------------------------------------------
+// onpageload : 두 그리드 생성 + 결함 그리드 setAutoFit 호출 + 재현 방법 안내
+// -----------------------------------------------------------------------------
+scwin.onpageload = async function () {
+    // [정상 기대] target_prop : autoFitMinWidth="800" 속성 + autoFit="allColumn" 으로 생성
+    scwin.createGridDataList("dlt_prop");
+    var strProp = scwin.buildGridTarget("dlt_prop", 'autoFit="allColumn" autoFitMinWidth="800"');
+    scwin.target_prop = await $p.dynamicCreate("target_prop", "gridView", strProp, grp_grid_prop);
+
+    // [결함] target_method : autoFit/autoFitMinWidth 속성 없이 생성
+    scwin.createGridDataList("dlt_method");
+    var strMethod = scwin.buildGridTarget("dlt_method", '');
+    scwin.target_method = await $p.dynamicCreate("target_method", "gridView", strMethod, grp_grid_method);
+
+    // 결함 트리거 : setAutoFit({type:"allColumn", minWidth:800})
+    //   → 내부 너비는 800 으로 확장되나 (drawInitializer.js:953)
+    //     가로 스크롤 가드(:1029)는 autoFitMinWidth "속성"만 검사 → 미설정이므로 스크롤 억제(:1032)
+    scwin.target_method.setAutoFit({ type: "allColumn", minWidth: 800 });
+
+    // 재현 방법 안내
+    scwin.setReturnValue("[재현] '결함 확인' 버튼 클릭 → 두 그리드의 내부 너비 / 가로 스크롤바 발생 비교.");
+    scwin.setReturnValue("       정상(속성)=스크롤 표시, 결함(setAutoFit)=스크롤 미표시 (두 그리드 내부 너비는 모두 ~800).");
+    scwin.setReturnValue("       조건: GridView 너비 500px / 컬럼 4개 x 100px(합 400) / minWidth 800.");
+    scwin.setReturnValue("--------------------------------------------------------------");
+};
+
+
+// -----------------------------------------------------------------------------
+// 재현 버튼 "결함 확인"
+//   각 그리드의 내부 body_table offsetWidth + 가로 스크롤바 발생 여부
+//   (_scrollX_div offsetHeight>0) + options.autoFit / options.autoFitMinWidth 출력
+// -----------------------------------------------------------------------------
+scwin.btn_check_onclick = function () {
+    scwin.btn_clear_onclick();
+
+    var report = function (label, gridId, grid) {
+        // 내부 body table 너비 (minWidth 확장 결과)
+        var bodyTable = document.querySelector("[id*='" + gridId + "_body_table']");
+        var innerWidth = bodyTable ? bodyTable.offsetWidth : 0;
+
+        // 가로 스크롤바 발생 여부 (엔진은 _scrollX_div 영역 높이로 판단)
+        var scrollXDiv = document.querySelector("[id*='" + gridId + "_scrollX_div']");
+        var hasXScroll = scrollXDiv ? (scrollXDiv.offsetHeight > 0) : false;
+
+        scwin.setReturnValue("[" + label + "] id=" + gridId);
+        scwin.setReturnValue("  options.autoFit         : " + grid.options.autoFit);
+        scwin.setReturnValue("  options.autoFitMinWidth : " + grid.options.autoFitMinWidth);
+        scwin.setReturnValue("  내부 body_table 너비    : " + innerWidth + "px (GridView 컨테이너 500px)");
+        scwin.setReturnValue("  가로 스크롤바 발생      : " + hasXScroll);
+        scwin.setReturnValue("--------------------------------------------------------------");
+    };
+
+    scwin.setReturnValue("기대: 두 그리드 모두 내부 너비 ~800px / 가로 스크롤바 발생(true)");
+    scwin.setReturnValue("--------------------------------------------------------------");
+    report("정상(속성)", "target_prop", scwin.target_prop);
+    report("결함(setAutoFit)", "target_method", scwin.target_method);
+    scwin.setReturnValue("판정: 정상=hasXScroll true / 결함=hasXScroll false 이면 결함 재현됨");
+    scwin.setReturnValue("      (내부 너비는 둘 다 ~800 으로 동일하게 확장 → 콘텐츠 클리핑 발생)");
+};
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding: 10px;" id="grp_root">
+            <w2:textbox style="" id="" label="[FAIL] gridView setAutoFit({type:allColumn, minWidth:800}) 호출 시 GridView(500px) &lt; minWidth(800) 인데도 가로 스크롤바가 표시되지 않는 결함 (autoFitMinWidth 속성 경로는 정상 표시)" class="" escape="false"></w2:textbox>
+
+            <xf:group style="display:flex; gap:20px; margin-top:10px;" id="grp_compare">
+                <xf:group id="grp_col_prop" style="">
+                    <w2:textbox style="" id="" label="① 정상(속성) : autoFit=allColumn + autoFitMinWidth=800 속성 → 내부 800 확장 + 가로 스크롤 표시" class="" escape="false"></w2:textbox>
+                    <xf:group id="grp_grid_prop" style="margin-top:5px;"></xf:group>
+                </xf:group>
+                <xf:group id="grp_col_method" style="">
+                    <w2:textbox style="" id="" label="② 결함(setAutoFit) : setAutoFit({type:allColumn, minWidth:800}) 호출 → 내부 800 확장되나 가로 스크롤 미표시" class="" escape="false"></w2:textbox>
+                    <xf:group id="grp_grid_method" style="margin-top:5px;"></xf:group>
+                </xf:group>
+            </xf:group>
+
+            <xf:group style="margin-top:10px;" id="grp_buttons">
+                <w2:button class="" ev:onclick="scwin.btn_check_onclick" id="btn_check" label="결함 확인" style=""></w2:button>
+            </xf:group>
+
+            <xf:group class="" id="grp_bottom" style="margin-top:10px;">
+                <w2:textbox class="tc_tbx_label_1" escape="false" id="" label="■ 리턴 값 확인" style=""></w2:textbox>
+                <xf:group id="" style="display: flex;justify-content: flex-end">
+                    <w2:button class="tc_btn_basic" ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style=""></w2:button>
+                </xf:group>
+                <xf:textarea style="border: 1px solid var(--ws-gray-400);border-radius: 8px;width: 100%;height: 260px;" id="tbx_return" class="tc_tbx_result_1"></xf:textarea>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

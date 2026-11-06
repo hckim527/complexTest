@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.tooltipFormatter = function(compId) {
+    return "[[[[ " + compId + " ]]]]";
+};
+scwin.fireMouseHover = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.__triggerMouseover = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireMouseHover(el);
+}
+scwin.__isShowTooltip = function() {
+    var tooltip = WebSquare.wUnit.getJq("#wq_uuid_0_balloonTip");
+    return tooltip.length > 0 && scwin.__isRegMess(tooltip);
+}
+scwin.__isRegMess = function(tooltip) {
+    var reg = /[\[\]{4}]/;
+    return reg.test(WebSquare.wUnit.getJq(tooltip).find("#wq_uuid_0_balloonTip_label").text());
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플 실행 후 anchor, textbox, group에 tooltip기능을 확인한다.
+    //1. After running the sample, check the tooltip function for anchor, textbox, and group.
+    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover('anchor')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_0_balloonTip_label').text() == '[[[[ '+$p.id+'anchor ]]]]'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover('textbox')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_0_balloonTip_label').text() == '[[[[ '+$p.id+'textbox ]]]]'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover('grp')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_0_balloonTip_label').text() == '[[[[ '+$p.id+'grp ]]]]'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 1. anchor, textbox, group에 tooltip기능이 확인된다.(true값이 보여짐)
+    //1. The tooltip function is confirmed in anchor, textbox, group (true value is shown)
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 12-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:anchor id="anchor" style="position: absolute;width:251px;height:45px;left:214px;top:109px;border: 1px solid #000;" outerDiv="false"
+    		toolTip="true" tooltipFormatter="scwin.tooltipFormatter">
+    		<xf:label><![CDATA[Insert Text]]></xf:label>
+    	</w2:anchor>
+    	<w2:textbox label="textbox" id="textbox" style="position: absolute;width:255px;height:51px;left:214px;top:172px;border: 1px solid #000;"
+    		toolTip="true" tooltipFormatter="scwin.tooltipFormatter">
+    	</w2:textbox>
+    	<xf:group id="grp" style="position: absolute;width:257px;height:200px;left:214px;top:248px;border: 1px solid #000;" class=""
+    		toolTip="true" tooltipFormatter="scwin.tooltipFormatter">
+    		<w2:textbox id="innerTextbox" label="textbox"
+    			style="position: absolute;width:156px;height:51px;left:56px;top:74px;border: 1px solid #000;" toolTip="true"
+    			tooltipFormatter="scwin.tooltipFormatter">
+    		</w2:textbox>
+    	</xf:group>
+    </body>
+</html>
+ 

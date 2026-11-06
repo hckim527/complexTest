@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    tabCon1.disableTab(0);
+};
+scwin.trigger2_onclick = function(e) {
+    tabCon1.enableTab(0);
+};
+scwin.isDisabled = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    return el.classList.contains('w2tabcontrol_disabled');
+}
+scwin.hasAttrDiasbled = function(id) {
+    return WebSquare.wUnit.getDomById($p.id + id).getAttribute("disabled") == "disabled";
+}
+scwin.checkValue = function() {
+    if (WebSquare.wUnit.getJq('#ip1').length == 0) {
+        return scwin.hasAttrDiasbled('tabCon1_contents_content1_body_ip1')
+    } else {
+        return scwin.hasAttrDiasbled('ip1')
+    }
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 1번의 샘플파일을 실행 후 'disableTab'버튼을 클릭한다. 
+    //1. Execute the sample file 1 and click the 'disableTab' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    // verify step 1. tab1이 disabled 처리되어진다. 
+    //1. tab1 is disabled.
+    WebSquare.wUnit.addCommand("assert", "scwin.isDisabled('tabCon1_tab_tabs1')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. tab2로 이동 후 'enableTab'버튼을 클릭한다. 
+    //2. Go to tab2 and click the 'enableTab' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabCon1_tab_tabs2').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 2. tab1이 활성화 되어진다.
+    //2. Tab1 is activated. 
+    WebSquare.wUnit.addCommand("assert", "scwin.isDisabled('tabCon1_tab_tabs1')", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. tab1으로 이동하여 enabled되어졌는지 확인한다.
+    //3. Go to tab1 and make sure it is enabled.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabCon1_tab_tabs1').click()");
+    // verify step 3. tab1 및 컴포넌트가 enabled되어진다.(이전에는 컴포넌트가 enabled되어지지 않음)
+    //3. tab1 and the component are enabled.(Previously the component is not enabled)
+    WebSquare.wUnit.addCommand("assert", "scwin.isDisabled('tabCon1_tab_tabs1')", "false");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 19-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:tabControl useMoveNextTabFocus="false" id="tabCon1"
+    		style="position: relative ;width: 500px;height: 200px;left:77px;top:60px;"
+    		confirmTrueAction="exist" useTabKeyOnly="true"
+    		useConfirmMessage="false" confirmFalseAction="new"
+    		alwaysDraw="false">
+    		<w2:tabs label="tab1" id="tabs1" style="width:70px;height:30px;"
+    			disabled="false">
+    		</w2:tabs>
+    		<w2:tabs id="tabs2" style="width:70px;height:30px" label="tab2"
+    			disabled="false">
+    		</w2:tabs>
+    		<w2:content id="content1" style="height:170px"
+    			alwaysDraw="false" src="tabControl_disableTab_WPF-1866_(WSQ-2944)_inputReadOnly.xml">
+    		</w2:content>
+    		<w2:content id="content2" style="height:170px"
+    			alwaysDraw="false" src="tabControl_disableTab_WPF-1866_(WSQ-2944)_inputtype.xml">
+    		</w2:content>
+    	</w2:tabControl>
+    	<xf:trigger type="button" id="trigger1"
+    		style="position: relative;width: 80px;height: 23px;left:108px;top:-142px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[disableTab]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2"
+    		style="position: relative;width: 80px;height: 23px;left:28px;top:-105px;margin-left:0px;margin-top:-5px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[enableTab]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

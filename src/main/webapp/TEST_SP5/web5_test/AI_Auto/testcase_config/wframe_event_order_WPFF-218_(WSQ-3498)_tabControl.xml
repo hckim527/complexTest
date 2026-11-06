@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+s			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() { //debugger;
+    console.log("[tabControl_main_wframeMode.xml] scwin.onpageload");
+};
+scwin.onpageunload = function() {};
+scwin.addTab = function(tabId) {
+    var tabOpt = {
+        label: tabId,
+        closable: false,
+        addTabIndex: 0
+    };
+    var contOpt = {
+        frameMode: "wframePreload",
+        scope: true,
+        src: tabId + ".xml",
+        alwaysDraw: false,
+        title: tabId
+    };
+    tac_main.addTab(tabId, tabOpt, contOpt);
+};
+scwin.btn_trigger1_onclick = function(e) {
+    var tabId = "tab" + scwin.tabIndex;
+    scwin.addTab(tabId);
+    tac_main.setSelectedTabIndex(tabId);
+    scwin.tabIndex++;
+};
+scwin.tac_main_ondrawcomplete = function(tabID, idx, userID) {
+    console.log("scwin.tac_main_ondrawcomplete");
+};
+scwin.tac_main_ontabload = function(tabID, idx, userID) {
+    console.log("scwin.tac_main_ontabload");
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.tabIndex = 1;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group style="" id="" class="">
+			<w2:textbox label="TabControl - WFrame Mode" style="height: 30px;font-size: 23px;margin:5px;font-weight:bold" id=""></w2:textbox>
+		</xf:group>
+		<!-- spaInitCount=""으로 수정하면 WFrame Mode로 AddTAb을 수행하면 정상적으로 WFrame Tab이 생성된다.  -->
+		<!-- spaInitCount="3"으로 설정하면 WFrame Mode로 AddTAb을 수행해도 IFrame Tab이 생성된다. -->
+		<w2:tabControl useTabKeyOnly="true" id="tac_main" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist"
+			confirmFalseAction="new" alwaysDraw="false" style="height: 300px;" spaInitCount="3" ev:ondrawcomplete="scwin.tac_main_ondrawcomplete"
+			ev:ontabload="scwin.tac_main_ontabload" hiddenTab="false">
+			<w2:tabs disabled="false" style="width:70px;height:0px" label="" id="tabs1"></w2:tabs>
+			<w2:content alwaysDraw="false" style="height:300px" id="content1" src="wframe_event_order_WPFF-218_(WSQ-3498)_tab1.xml" scope="true" frameMode="wframePreload"></w2:content>
+		</w2:tabControl>
+		<xf:trigger type="button" style="width: 80px;height: 23px;margin-top:5px;margin-left:5px;" id="btn_trigger1" ev:onclick="scwin.btn_trigger1_onclick">
+			<xf:label><![CDATA[Add Tab]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

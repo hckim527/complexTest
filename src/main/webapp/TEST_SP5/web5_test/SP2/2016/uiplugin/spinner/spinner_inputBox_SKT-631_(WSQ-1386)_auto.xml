@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.spinner1_onviewchange = function(info) {
+    //alert("oldValue = " + info.oldValue + ", newValue = " + info.newValue);
+    oldValue = info.oldValue;
+    newValue = info.newValue;
+};
+scwin.checkVal = function() {
+    return oldValue == 11 && newValue == 10;
+}
+scwin.checkVal1 = function() {
+    return oldValue == 11 && newValue == 10;
+}
+scwin.checkVal2 = function() {
+    return oldValue == 10 && newValue == 100;
+}
+scwin.checkVal3 = function() {
+    return oldValue == 10 && newValue == 100;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 scwin.spinner1_onviewchange 부분을 확인한다.
+    //1. In the Source tab, check scwin.spinner1_onviewchange.
+    //Verify step 1. alert("oldValue = " + info.oldValue + ", newValue = " + info.newValue);
+    //1. alert ("oldValue =" + info.oldValue + ", newValue =" + info.newValue);
+    //Test step 2. spinner1 의 min 과 max 부분을 확인한다.
+    //2. Check the min and max parts of spinner1.
+    //Verify step 2. min="10" max="100"
+    //2. min = "10" max = "100"
+    //Test step 3. 브라우저에서 spinner 의 ▼ 버튼을 클릭한다.
+    //3. In the browser, click the spinner's ▼ button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('spinner1_downButton_image').click()");
+    //Verify step 3. 기본값인 '11' 에서 '10' 으로 변경되면서 onviewchange 이벤트가 발생해 팝업이 생성된다.
+    //3. The default value of '11' is changed to '10', and the onviewchange event is generated and a popup is generated.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Test step 4. 한번 더 spinner 의 ▼ 버튼을 클릭한다.
+    //4. Click the spinner"s ▼ button again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('spinner1_downButton_image').click()");
+    //Verify step 4. min 값인 '10' 에 해당되서 onviewchange 이벤트가 발생하지 않는다.
+    //4. It corresponds to '10' min value, so onviewchange event does not occur.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    //Test step 5. spinner 의 데이터를 '100' 입력한다.
+    //5. Enter '100' for the spinner"s data.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('spinner1___input').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('spinner1___input').setValue('100')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('spinner1___input').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 5. min 값인 '10' 에서 '100' 으로 변경되면서 onviewchange 이벤트가 발생해 팝업이 생성된다.
+    //5. The min value '10' is changed from '100' to the onviewchange event, and a pop-up is generated.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    //Test step 6. spinner 의 ▲ 버튼을 클릭한다.
+    //6. Click the spinner"s ▲ button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('spinner1_upButton_image').click()");
+    //Verify step 6. max 값인 '100' 에 해당되서 onviewchange 이벤트가 발생하지 않는다.
+    //6. The 'max' value of '100' corresponds to the onviewchange event does not occur.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    var oldValue;
+    var newValue;
+    spinner1.setValue(11);
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 26-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:spinner buttonSize="30" skin="type1" id="spinner1" style="position: relative;width:252px;height:66px;" inputReadOnly="false" min="10" max="100" ev:onviewchange="scwin.spinner1_onviewchange"></w2:spinner>
+    </body>
+</html>
+ 

@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:ev='http://www.w3.org/2001/xml-events'
+    xmlns:w2='http://www.inswave.com/websquare' xmlns:xf='http://www.w3.org/2002/xforms'>
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=''/>
+            </xf:instance>
+            <w2:dataCollection baseNode='map'>
+            	<w2:dataList id='dataList1' baseNode='list' saveRemovedData='true' repeatNode='map'>
+            		<w2:columnInfo>
+            			<w2:column id='col1' name='name1' dataType='text'></w2:column>
+            			<w2:column id='col2' name='name2' dataType='text'></w2:column>
+            			<w2:column id='col3' name='name3' dataType='text'></w2:column>
+            			<w2:column id='col4' name='name4' dataType='text'></w2:column>
+            			<w2:column id='col5' name='name5' dataType='text'></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use='true'>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row>
+            				<col3><![CDATA[]]></col3>
+            			</w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row>
+            				<col3><![CDATA[]]></col3>
+            			</w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            			<w2:row>
+            				<col3><![CDATA[]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col3><![CDATA[]]></col3>
+            			</w2:row>
+            			<w2:row></w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.testFormatter = function(param) {
+    return '[ ' + param + ' ]';
+};
+scwin.test2Formatter = function(param) {
+    return '** ' + param + ' **';
+};
+scwin.customFormatter = function(data, formattedData, rowIndex, colIndex) {
+    return '*** ' + data + ' ***';
+};
+scwin.customFormatter2 = function(data, formattedData, rowIndex, colIndex) {
+    return '[[ ' + data + ' ]]';
+};
+scwin.init = function() {
+    grd.setData(dataList1.getAllData());
+    grd.setCellBackgroundColor(2, 2, "yellow");
+    grd.setCellInputType(2, 2, {
+        inputType: 'text',
+        options: {
+            customFormatter: "scwin.customFormatter"
+        },
+        value: "0123테스트456"
+    });
+};
+scwin.trigger1_onclick = function(e) {
+    //debugger;
+    grd.setCellDisplayFormatter(2, 2, "scwin.test2Formatter");
+};
+scwin.trigger2_onclick = function(e) {
+    grd.setCellCustomFormatter(2, 2, "scwin.customFormatter2");
+};
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq('#grd_cell_2_2').text() == '[[ 0123테스트456 ]]';
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd_cell_2_2').text()", "*** 0123테스트456 ***");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 'setCellCustomFormatter( 2, 2, "scwin.customFormatter2" );' 버튼을 클릭한다.
+    //1.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 2. '[[0123테스트456]]' 값이 보여진다.(기능추가건임)
+    //2. value is '[[0123테스트456]]'
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 19-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid baseNode='vector' repeatNode='data/INFO' id='grd'
+    		style='position: absolute;width:514px;height:224px;left:142px;top:149px;border: 1px solid #000;' fixedColumnWithHidden='true'
+    		useShiftKey='true' setCellInputTypeCustom='true'>
+    		<w2:caption id='caption1' style='' value='this is a grid caption.'></w2:caption>
+    		<w2:header id='header1' style=''>
+    			<w2:row id='row1' style=''>
+    				<w2:column blockSelect='false' id='column3' style='height:20px' inputType='text' width='70' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column5' style='height:20px' inputType='text' width='70' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column7' style='height:20px' inputType='custom' width='104' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column9' style='height:20px' inputType='text' width='70' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column1' style='height:20px' width='70' inputType='text' displayMode='label'></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id='gBody1' style=''>
+    			<w2:row id='row2' style=''>
+    				<w2:column blockSelect='false' id='column4' style='height:20px' inputType='text' width='70' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column6' style='height:20px' inputType='text' width='70' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column8' style='height:20px' inputType='custom' width='104' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column10' style='height:20px' inputType='text' width='70' displayMode='label'></w2:column>
+    				<w2:column blockSelect='false' id='column2' style='height:20px' width='70' inputType='text' displayMode='label'></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	<xf:trigger ev:onclick='scwin.trigger2_onclick' id='trigger2'
+    		style='position: absolute;width:511px;height:43px;left:690px;top:201px;font-size:13pt;' type='button'>
+    		<xf:label><![CDATA[setCellCustomFormatter( 2, 2, "scwin.customFormatter2" );]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

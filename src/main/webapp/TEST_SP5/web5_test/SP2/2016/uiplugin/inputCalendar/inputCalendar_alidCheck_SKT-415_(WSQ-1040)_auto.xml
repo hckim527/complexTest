@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.__isValue = function() {
+    return val = WebSquare.wUnit.getObjById('wq_uuid_1_input').value;
+}
+scwin.setVal = function() {
+    return WebSquare.wUnit.getObjById('wq_uuid_1_input').value == scwin.__isValue();
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 날짜를 입력한다.
+    //1. Run the sample file and enter the date.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_1_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_1_calendar_cell_4_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_time_confirm').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_1_input').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 정상적으로 날짜가 입력된다.(이전에는 시분초에 대한 validation 처리 로직이 없어서 '날짜형식이 잘못되었습니다.'라는 알림메시지 발생)
+    //1. The date is entered normally (Previously there was no validation processing logic for the hour and minute seconds, resulting in a 'Date format is invalid' notification)
+    WebSquare.wUnit.addCommand("assert", "scwin.setVal()", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_1_input').value != ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 28-Feb-2018
+    //End unitTest
+    window.val = undefined;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="" renderDiv="true"
+    		style="position: relative;width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false" calendarValueType="yearMonthDateTimeSec" validCheck="true">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

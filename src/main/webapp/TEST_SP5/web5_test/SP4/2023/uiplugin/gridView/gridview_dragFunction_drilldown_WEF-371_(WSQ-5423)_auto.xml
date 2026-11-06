@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="217">
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1" dataType="text"></w2:column>
+        				<w2:column id="col2" name="name2" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1" dataType="text"></w2:column>
+        				<w2:column id="col2" name="name2" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="" target="data:json,dataList1" action="/data/gridView_example.json" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="조회중" singleMode="true" ev:submit="" ev:submitdone="" ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+
+    var tmpJSON = [
+        { "col1": "1", "col2": "원" },
+        { "col1": "2", "col2": "투" },
+        { "col1": "3", "col2": "쓰리" },
+        { "col1": "1", "col2": "포" },
+        { "col1": "1", "col2": "파이브" },
+        { "col1": "3", "col2": "식스" },
+        { "col1": "1", "col2": "세븐" },
+        { "col1": "2", "col2": "에이트" },
+        { "col1": "3", "col2": "나인" },
+
+    ];
+
+    var tmpJSON2 = [
+        { "col1": "1", "col2": "A" },
+        { "col1": "2", "col2": "B" },
+        { "col1": "3", "col2": "C" },
+        { "col1": "1", "col2": "D" },
+        { "col1": "2", "col2": "E" },
+        { "col1": "3", "col2": "F" },
+        { "col1": "1", "col2": "G" },
+        { "col1": "2", "col2": "H" },
+        { "col1": "3", "col2": "I" },
+
+    ];
+    dataList1.setJSON(tmpJSON);
+    dataList2.setJSON(tmpJSON2);
+    gridView1.setDrillDownDragDrop(true);
+    gridView2.setDrillDownDragDrop(true);
+
+    //$p.executeSubmission("submission1");
+
+}
+
+scwin.onpageunload = function () {
+
+};
+
+scwin.onpageunload = function () {
+};
+
+
+// 왼쪽 그리드뷰에서 오른쪽 그리드뷰로 drag&drop 할 시 
+ scwin.dragStart = function (info) {
+    var parentRowIndex = info.parentRowIndex;
+    var parentRowData = info.parentRowData;
+    var beforeRemoveRowIndex = info.beforeRemoveRowIndex;
+    var beforeRemoveData = info.beforeRemoveData;
+    // dragStart 함수안에서 쓸 인자가 필요하시면 해당 인자를 사용하시면 됩니다.
+    //alert("dragStart 함수 호출");
+    console.log("dragStart 함수 호출")        
+    return true; // true인 경우에만 drilldown dragDrop을 실행한다. -> dragEnd 함수로 인자를 넘긴다
+
+}
+
+scwin.dragEnd = function (toIndex, rowXml, info) {
+    //첫번째 인자값으로는 toIndex가 주어지는데 drilldown을 사용하였기 때문에, 
+    // targetIndex의 realRowIndex를 계산한 값이라고 보면 된다.
+
+    //dragStart함수의 info 인자를 새롭게 선언. 필요한 인자를 사용하시면 됩니다.
+    var removedData = info.removedData;
+    var removedRowIndex = info.removedRowIndex; // dragStart한 row 위치
+    var fromRowIndex = info.fromRowIndex;
+    var toRowIndex = info.toRowIndex;
+    var rowJSON = info.rowJSON; // 데이터 값
+    console.log(info)
+    //alert("dragEnd 함수 호출");
+    console.log("dragEnd 함수 호출")    
+    dataList1.removeRow(fromRowIndex);
+    dataList2.insertJSON(toIndex, rowJSON);
+    //dataList2.setRowJSON(toIndex, rowJSON);
+
+}
+
+ // 오른쪽 그리드뷰에서 왼쪽 그리드뷰로 drag&drop 할 시 
+scwin.dragStart2 = function (info) {
+    var parentRowIndex2 = info.parentRowIndex;
+    var parentRowData2 = info.parentRowData;
+    var beforeRemoveRowIndex2 = info.beforeRemoveRowIndex;
+    var beforeRemoveData2 = info.beforeRemoveData;
+    // dragStart2 함수안에서 쓸 인자가 필요하시면 해당 인자를 사용하시면 됩니다.
+    //alert("dragStart2 함수 호출");
+    console.log("dragStart2 함수 호출")
+    return true; // true인 경우에만 drilldown dragDrop을 실행한다. -> dragEnd 함수로 인자를 넘긴다
+
+}
+
+scwin.dragEnd2 = function (toIndex, rowXml, info) {
+    //첫번째 인자값으로는 toIndex가 주어지는데 drilldown을 사용하였기 때문에, 
+    // targetIndex의 realRowIndex를 계산한 값이라고 보면 된다.
+
+    //dragStart함수의 info 인자를 새롭게 선언. 필요한 인자를 사용하시면 됩니다.
+    var removedData = info.removedData;
+    var removedRowIndex = info.removedRowIndex; // dragStart한 row 위치
+    var fromRowIndex = info.fromRowIndex;
+    var toRowIndex = info.toRowIndex;
+    var rowJSON = info.rowJSON; // 데이터 값
+    //alert("dragEnd2 함수 호출");
+    console.log("dragEnd2 함수 호출")
+    dataList2.removeRow(removedRowIndex);
+    dataList1.setRowJSON(toIndex, rowJSON);
+
+} 
+
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#gridView1_cell_0_1', 'drag-n-drop', {
+			dx: 300,
+			dy: 0
+		});
+	}
+	scwin.checkFirstColumnValues = function() {	
+		var tbody = WebSquare.wUnit.getDomById("gridView2_body_tbody");
+		var rows = Array.from(tbody.getElementsByTagName("tr"));
+		var firstColumnValues = [];
+		let reVal = false;
+		rows.forEach( (row, index) => {
+			if(index < 3){
+				var secondCell = row.getElementsByTagName("td")[1];
+				if (secondCell) {
+					firstColumnValues.push(secondCell.innerText.trim()); 
+				}
+			}
+		});
+
+		var expectedValues = ["원", "투", "쓰리"];
+		var isMatch = JSON.stringify(firstColumnValues) === JSON.stringify(expectedValues);
+
+		if (isMatch) {
+			console.log("첫 번째 컬럼의 값이 올바릅니다.");
+			reVal = true;
+		} else {
+			console.log("첫 번째 컬럼의 값이 일치하지 않습니다.");
+		}
+		return reVal;
+	}	
+
+	scwin.checkVal = function() {
+		return scwin.checkFirstColumnValues();
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "300");		
+		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+	
+ ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView checkAllType="false" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position:absolute;top:31px;left:46px;width:258px;height:471px;" dataList="data:dataList1" dataDragDrop="true"
+    		dataDragDropStatus="false" dataDragSelect="false" dragStartFunction="scwin.dragStart2" dragEndFunction="scwin.dragEnd2">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column5" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="156" inputType="text" style="height:20px" id="column4" value="name2" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="100" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="156" inputType="drilldown" style="height:20px" id="col2" showDepth="3" value="" depthColumn="col1"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:gridView checkAllType="false" dataDragDrop="true" dataDragDropStatus="false" dataDragSelect="false" dataList="data:dataList2"
+    		defaultCellHeight="20" id="gridView2" scrollByColumn="false" scrollByColumnAdaptive="false"
+    		style="position:absolute;top:29px;left:392px;width:258px;height:471px;" dragEndFunction="scwin.dragEnd" dragStartFunction="scwin.dragStart">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column5" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="158" inputType="text" style="height:20px" id="column4" value="name2" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column width="100" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="158" inputType="drilldown" style="height:20px" id="col2" showDepth="3" value="" depthColumn="col1"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

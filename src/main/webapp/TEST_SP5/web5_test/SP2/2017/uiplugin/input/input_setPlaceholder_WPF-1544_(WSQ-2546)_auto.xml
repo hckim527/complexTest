@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    inputBox1.setPlaceholder("readonly placeholder");
+};
+scwin.getPlace = function() {
+    if (WebSquare.wUnit.getJq("#inputBox1").attr("placeholder")) {
+        return WebSquare.wUnit.getJq("#inputBox1").attr("placeholder");
+    } else {
+        return WebSquare.wUnit.getJq("#inputBox1").val(); //for IE8
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 0. input속성 showPlaceHolderOnReadOnly="true"로 설정한다.
+    //0. Set the input property showPlaceHolderOnReadOnly = "true".            
+    //Verify 0. input속성 showPlaceHolderOnReadOnly="true"로 설정된다.
+    //0. input property showPlaceHolderOnReadOnly = "true".
+    //Test step 1. 샘플파일을 실행 후 "setPlaceholder()"버튼을 클릭한다.
+    //1. Run the sample file and click the 'setPlaceholder ()' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. inputbox에 'readonly placeholder'값이 보여진다. (이전에는 적용되지 않아 보여지지 않음)
+    //1. The 'readonly placeholder' value is shown in the inputbox. (Previously not applicable and not shown)
+    WebSquare.wUnit.addCommand("assert", "scwin.getPlace() == 'readonly placeholder'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 31-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:input id="inputBox1" style="position: relative;width: 144px;height: 21px;" maxlength="4" readOnly="true" showPlaceHolderOnReadOnly="true" ></xf:input>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width:117px;height:23px;left:54px;top:1px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setPlaceholder()]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

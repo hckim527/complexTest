@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>COMPONENT</w2:type>
+    	<w2:buildDate />
+    	<w2:MSA />
+    	<xf:model>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" id="dataList2" repeatNode="map" saveRemovedData="true" style="">
+    				<w2:columnInfo>
+    					<w2:column dataType="text" id="label" name="name1"></w2:column>
+    					<w2:column dataType="text" id="value" name="name2"></w2:column>
+    					<w2:column dataType="text" id="depth" name="name3"></w2:column>
+    					<w2:column dataType="text" id="data1" name="name4"></w2:column>
+    				</w2:columnInfo>
+    				<w2:data use="false">
+    					<w2:row>
+    						<label><![CDATA[가]]></label>
+    						<data1><![CDATA[11]]></data1>
+    						<depth><![CDATA[1]]></depth>
+    						<value><![CDATA[aa]]></value>
+    					</w2:row>
+    					<w2:row>
+    						<label><![CDATA[나]]></label>
+    						<data1><![CDATA[22]]></data1>
+    						<depth><![CDATA[1]]></depth>
+    						<value><![CDATA[bb]]></value>
+    					</w2:row>
+    					<w2:row>
+    						<label><![CDATA[다]]></label>
+    						<data1><![CDATA[33]]></data1>
+    						<depth><![CDATA[2]]></depth>
+    						<value><![CDATA[cc]]></value>
+    					</w2:row>
+    					<w2:row>
+    						<label><![CDATA[라]]></label>
+    						<data1><![CDATA[44]]></data1>
+    						<depth><![CDATA[2]]></depth>
+    						<value><![CDATA[dd]]></value>
+    					</w2:row>
+    					<w2:row>
+    						<label><![CDATA[마]]></label>
+    						<data1><![CDATA[55]]></data1>
+    						<depth><![CDATA[1]]></depth>
+    						<value><![CDATA[ee]]></value>
+    					</w2:row>
+    					<w2:row>
+    						<label><![CDATA[바]]></label>
+    						<data1><![CDATA[66]]></data1>
+    						<depth><![CDATA[2]]></depth>
+    						<value><![CDATA[ff]]></value>
+    					</w2:row>
+    					<w2:row>
+    						<depth><![CDATA[3]]></depth>
+    						<label><![CDATA[사]]></label>
+    						<data1><![CDATA[77]]></data1>
+    						<value><![CDATA[gg]]></value>
+    					</w2:row>
+    				</w2:data>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection />
+    		<xf:submission id="submission1" ref="" target="data:json,dataList2" action="./dataTest.json" method="post"
+    			mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+    			processMsg="" ev:submit="" ev:submitdone="scwin.submission1_submitdone" ev:submiterror="" abortTrigger="">
+    		</xf:submission>
+    	</xf:model>
+    	<w2:layoutInfo />
+    	<w2:publicInfo method="" />
+    	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	//$p.executeSubmission( "submission1" );
+    //scwin.treeCustomFormatter();
+
+    var json = [
+    {
+        "label": "가",
+        "value": "aa",
+        "depth": "1",
+        "data1": "11",
+        "rowStatus": "R"
+    },
+    {
+        "label": "나",
+        "value": "bb",
+        "depth": "1",
+        "data1": "22",
+        "rowStatus": "R"
+    },
+    {
+        "label": "다",
+        "value": "cc",
+        "depth": "2",
+        "data1": "33",
+        "rowStatus": "R"
+    },
+    {
+        "label": "라",
+        "value": "dd",
+        "depth": "2",
+        "data1": "44",
+        "rowStatus": "R"
+    },
+    {
+        "label": "마",
+        "value": "ee",
+        "depth": "1",
+        "data1": "55",
+        "rowStatus": "R"
+    },
+    {
+        "label": "바",
+        "value": "ff",
+        "depth": "2",
+        "data1": "66",
+        "rowStatus": "R"
+    },
+    {
+        "label": "사",
+        "value": "gg",
+        "depth": "3",
+        "data1": "77",
+        "rowStatus": "R"
+    }
+];
+	dataList2.setJSON(json);
+};
+
+scwin.treeCustomFormatter = function(orgLabel, formattedLabel, node) {
+	
+    console.log("treeCustomFormatter! " );
+	window.msgCnt++;
+	console.log(window.msgCnt);
+    return orgLabel+"_123";
+    
+};
+
+scwin.trigger1_onclick = function(e) {
+   $p.executeSubmission( "submission1" );
+};
+
+
+scwin.submission1_submitdone = function(e) {
+    //console.log("scwin.submission1_submitdone! value : ");
+    //scwin.treeCustomFormatter();
+};
+
+scwin.trigger2_onclick = function(e) {
+	window.msgCnt = 0;
+    console.log("getSelectedValue : "+  treeview1.getSelectedValue());
+   
+    treeview1.setLabelByValue(44, "수정!!!");
+};
+
+	scwin.checkVal = function() {
+		return window.msgCnt == 1;
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+]]></script>
+    	<style type="text/css"><![CDATA[
+    	.badge {
+                color: red;
+            } 
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:treeview id="treeview1" dataType="listed" tooltipGroupClass="false" style="width: 200px;height: 200px;"
+    		customFormatter="scwin.treeCustomFormatter">
+    		<w2:itemset nodeset="data:dataList2">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="data1"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref=""></w2:folder>
+    			<w2:checkbox ref=""></w2:checkbox>
+    			<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=""></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[조회]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width:112px;height:23px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[setLabelByValue]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- html 시작 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<!-- 사용 DataCollection 정의 Start -->
+			<w2:dataCollection baseNode="map">
+				<!-- 목록 DataList 정의 Start -->
+				<!--
+					Data통신 및 화면에서 사용 할 다건의 데이터를 저장하는 객체이다.
+					DataCollectoin 하위에 생성되며 데이터의 구조를 정의하는 Column Info 영역과 초기값을 정의하는 Data 영역으로 나뉘어 있다.
+					Column Info 영역(source : <w2:columnInfo>)은 column의 정보가 있으며 id 속성에 column의 이름을 정의한다. 그 밖에 데이터 가공등을 위한 속성들을 정의 할 수 있다.
+					Data 영역(source : <w2:data>)은 column의 초기값을 정의하는 곳이며 use data가 체크되어있어야(source : <w2:data use="true">) 초기값이 적용된다.
+					DataList는 row 마다 사용자 제어에 따른 삽입/수정/삭제 등의 상태값을 가지고 있으며 getter API로 상태별 데이터를 꺼내올 수 있다. 상세 내용은 아래와 같다.
+					status : R / statusValue : 0 - 초기 상태. (변화없음)
+					status : U / statusValue : 1 - 갱신. (update API 호출 시)
+					status : C / statusValue : 2 - 삽입. (insert API 호출 시)
+					status : D / statusValue : 3 - 삭제. (delete API 호출 시)
+					status : V / statusValue : 4 - 삽입 후 삭제. (insert API 후 delete API 호출)
+					status : E / statusValue : 5 - 제거. (remove API 호출 시)
+				-->
+				<!-- 역할목록 -->
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_01" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="roleNo" name="!~lb.inf.roleN,역할번호~!" dataType="text"></w2:column>
+						<w2:column id="roleNm" name="!~lb.inf.roleNm,역할~!" dataType="text"></w2:column>
+						<w2:column id="upperRoleNo" name="!~temp,상위역할번호~!" dataType="text"></w2:column>
+						<w2:column id="upperRoleNm" name="!~temp,상위역할~!" dataType="text"></w2:column>
+						<w2:column id="mgmntRoleYn" name="!~temp,관리여부~!" dataType="text"></w2:column>
+						<w2:column id="useYn" name="!~temp,사용여부~!" dataType="text"></w2:column>
+						<w2:column id="rqstPssblRoleYn" name="!~temp,신청가능여부~!" dataType="text"></w2:column>
+						<w2:column id="roleDscri" name="!~lb.inf.roleDscri,역할설명~!" dataType="text"></w2:column>
+						<w2:column id="roleLvl" name="!~temp,역할레벨!" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+
+				<!-- 메뉴목록(조회용) -->
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_02" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="sysIdNm" name="!~temp,시스템~!" dataType="text"></w2:column>
+						<w2:column id="menuNm" name="!~temp,메뉴~!" dataType="text"></w2:column>
+						<w2:column id="athrnR" name="!~temp,조회~!" dataType="text"></w2:column>
+						<w2:column id="athrnC" name="!~temp,신규~!" dataType="text"></w2:column>
+						<w2:column id="athrnU" name="!~temp,수정~!" dataType="text"></w2:column>
+						<w2:column id="athrnD" name="!~temp,삭제~!" dataType="text"></w2:column>
+						<w2:column id="athrnP" name="!~temp,출력~!" dataType="text"></w2:column>
+						<w2:column id="athrnE" name="!~temp,엑셀~!" dataType="text"></w2:column>
+						<w2:column id="athrnI" name="!~temp,개인정보~!" dataType="text"></w2:column>
+						<w2:column id="athrnT" name="!~temp,처리~!" dataType="text"></w2:column>
+						<w2:column id="athrnA" name="!~temp,승인~!" dataType="text"></w2:column>
+						<w2:column id="athrnV" name="!~temp,확인~!" dataType="text"></w2:column>
+						<w2:column id="athrnM" name="!~temp,관리~!" dataType="text"></w2:column>
+						<w2:column id="menuLvl" name="!~temp,메뉴레벨~!" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<!-- 목록 DataList 정의 End -->
+				<!-- 검색 DataMap 정의 Start -->
+				<w2:dataMap baseNode="map" id="dma_01">
+					<w2:keyInfo>
+						<w2:key id="roleNm" name="!~temp,역할~!" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+
+				<w2:dataMap baseNode="map" id="dma2">
+					<w2:keyInfo>
+						<!-- 토스 결제 계약 ID 등록 필요 -->
+						<w2:key id="cntrcId" name="!~temp,계약ID~!" dataType="text" defaultValue="202100001"></w2:key>
+						<w2:key id="clientKey" name="!~temp,클라이언트키~!" dataType="text"></w2:key>
+						<w2:key id="orderId" name="!~temp,주문ID~!" dataType="text"></w2:key>
+						<w2:key id="orderName" name="!~temp,주문명~!" dataType="text" defaultValue="파워포인트 초급 활용 강좌 수강료"></w2:key>
+						<w2:key id="amount" name="!~temp,주문금액~!" dataType="text" defaultValue="15000"></w2:key>
+						<w2:key id="customerName" name="!~temp,고객명~!" dataType="text" defaultValue="홍길동"></w2:key>
+						<w2:key id="paymentKey" name="!~temp,결제키~!" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<!-- 검색 DataMap 정의 End -->
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<!-- script Start -->
+		<!-- <script type="text/javascript" src="/js/com_comp.js"></script> -->
+		<!--
+			업무로직을 구성하는 부분으로
+			실제 화면 처리 로직을 코딩
+		-->
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    //debugger;
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /** 화면 변수 선언 Start **/
+    /**
+     화면 전체에서 사용되는 변수 선언 시 변수는 scwin 객체에 선언
+     spa 사용을 통해 변수 초기화 및 제어를 위해 scwin 객체에 변수를 사용
+     **/
+    /** 화면 변수 선언 End **/
+    /**
+     페이지 실행 시 화면이 모두 load되고 최초에 1회 실행되는 함수
+     공통코드 조회, 이벤트 bind 기타 화면 실행 시 처리되는 로직을 작성한다.
+     함수명은 모든 페이지에서 동일하게 사용한다.
+     **/
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<!-- script End -->
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+		<w2:tabControl useTabKeyOnly="true" id="" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist"
+			confirmFalseAction="new" alwaysDraw="false" style="width:816px;height:429px;">
+			<w2:tabs disabled="false" style="width:70px;height:30px;" id="tabs3" label="tab1"></w2:tabs>
+			<w2:tabs disabled="false" style="width:70px;height:30px" id="tabs4" label="tab2"></w2:tabs>
+
+			<w2:content alwaysDraw="false" style="height:399px;" id="content3">
+
+				<w2:gridView id="" style="width:733px;height:316px;" scrollByColumn="false" defaultCellHeight="20"
+					scrollByColumnAdaptive="false" dataList="data:dlt_01">
+					<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+					<w2:header style="" id="header1">
+						<w2:row style="" id="row1">
+							<w2:column width="70" inputType="text" style="height:20px" id="column9" value="1" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column8" value="2" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column7" value="3" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column6" value="4" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column5" value="5" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column4" value="6" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column3" value="7" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column2" value="8" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column1" value="9" displayMode="label"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody style="" id="gBody1">
+						<w2:row style="" id="row2">
+							<w2:column width="70" inputType="text" style="height:20px" id="roleNo" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="roleNm" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="upperRoleNo" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="upperRoleNm" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="mgmntRoleYn" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="useYn" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="rqstPssblRoleYn" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="roleDscri" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="roleLvl" value="" displayMode="label"></w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</w2:content>
+			<w2:content alwaysDraw="false" style="height:399px;" id="content4">
+				<w2:gridView id="" style="width:774px;height:376px;" scrollByColumn="false" defaultCellHeight="20"
+					scrollByColumnAdaptive="false" dataList="data:dlt_02">
+					<w2:caption style="" id="caption3" value="this is a grid caption."></w2:caption>
+					<w2:header style="" id="header3">
+						<w2:row style="" id="row5">
+							<w2:column width="70" inputType="text" style="height:20px" id="column34" value="1" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column33" value="2" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column32" value="3" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column31" value="4" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column30" value="5" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column29" value="6" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column28" value="7" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column27" value="8" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column26" value="9" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column25" value="10" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column24" value="11" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column23" value="12" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column22" value="13" displayMode="label">
+							</w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="column21" value="14" displayMode="label">
+							</w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody style="" id="gBody3">
+						<w2:row style="" id="row6">
+							<w2:column width="70" inputType="text" style="height:20px" id="sysIdNm" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="menuNm" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnR" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnC" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnU" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnD" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnP" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnE" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnI" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnT" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnA" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnV" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="athrnM" value="" displayMode="label"></w2:column>
+							<w2:column width="70" inputType="text" style="height:20px" id="menuLvl" value="" displayMode="label"></w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</w2:content>
+		</w2:tabControl>
+	</body>
+</html>
+ 

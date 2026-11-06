@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <style>
+            .w2window_close_disabled {
+                opacity : 0.3;
+                cursor : default;
+            }
+        </style>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function() {
+    var opts = {
+        "id": "popup_litewindow",
+        "type": "litewindow",
+        "width": 300 + "px",
+        "height": 300 + "px",
+        "top": 50,
+        "left": 50,
+        "popupName": "close button test",
+        "modal": false,
+        "useIFrame": true,
+        "title": "focusTest",
+        "disableCloseButton": true
+    };
+    WebSquare.util.openPopup("openPopup_CloseButton_SKT-680_(WSQ-2160)_sub.xml", opts);
+};
+scwin.trigger2_onclick = function() {
+    WebSquare.util.getPopup("popup_litewindow").setCloseButtonStatus(true);
+};
+scwin.trigger3_onclick = function() {
+    WebSquare.util.getPopup("popup_litewindow").setCloseButtonStatus(false);
+};
+scwin.checktype = function() {
+    return typeof popup_litewindow;
+}
+scwin.checkVal = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById('popup_litewindow_close')).getPropertyValue('cursor') == 'pointer';
+}
+scwin.checkVal1 = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById('popup_litewindow_close')).getPropertyValue('cursor') == 'default';
+}
+scwin.checkVal2 = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById('popup_litewindow_close')).getPropertyValue('cursor') == 'pointer';
+}
+scwin.checkVal3 = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById('popup_litewindow_close')).getPropertyValue('cursor') == 'default'
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 4. 브라우저에서 CreatePopup_litewindow 버튼을 클릭한다.
+    //4. In the browser, click the CreatePopup_litewindow button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 4. 닫기버튼이 비활성화된 popup 이 생성된다.
+    //4. A popup with the close button disabled is created.
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. enable closeButton 버튼을 클릭한다.
+    //5. Click the enable closeButton button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 5. 닫기버튼이 활성화된다.
+    //5. The close button is activated.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. disable closeButton 버튼을 클릭한다.
+    //6. Click the disable closeButton button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 6. 다시 닫기버튼이 비활성화 된다.
+    //6. The close button is disabled again.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 7. 임의로 4번 ~ 6번 절차를 반복한다.
+    //7. Repeat steps 4 through 6, if desired.
+    //Verify 7. 닫기버튼이 활성화 & 비활성화 된다.
+    //7. The Close button is enabled & disabled.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    requires("uiplugin.popup");
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 27-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 200px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[CreatePopup_litewindow]]></xf:label>
+    	</xf:trigger>
+        <xf:trigger type="button" id="trigger2" style="position: relative;width: 200px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+            <xf:label><![CDATA[enable closeButton]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="trigger3" style="position: relative;width: 200px;height: 23px;" ev:onclick="scwin.trigger3_onclick">
+            <xf:label><![CDATA[disable closeButton]]></xf:label>
+        </xf:trigger>
+    </body>
+</html>
+ 

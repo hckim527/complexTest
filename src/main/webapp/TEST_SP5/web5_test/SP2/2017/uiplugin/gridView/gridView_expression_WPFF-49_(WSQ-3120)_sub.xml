@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+<?xml-stylesheet href="/TEST/WS5/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/TEST/WS5/lib/css/contents.css" type="text/css"?>
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dcList">
+					<w2:columnInfo>
+						<w2:column id="chk" name="name1" ignoreStatus="true"></w2:column>
+						<w2:column id="target" name="name1"></w2:column>
+						<w2:column id="col1" name="name1"></w2:column>
+						<w2:column id="col2" name="name2"></w2:column>
+						<w2:column id="col3" name="name3"></w2:column>
+						<w2:column id="col4" name="name3"></w2:column>
+						<w2:column id="col5" name="name3"></w2:column>
+						<w2:column id="total" name="name4"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<target><![CDATA[11]]></target>
+							<col1><![CDATA[1]]></col1>
+							<col2><![CDATA[1]]></col2>
+							<col3><![CDATA[1]]></col3>
+							<col4><![CDATA[1]]></col4>
+							<col5><![CDATA[1]]></col5>
+						</w2:row>
+						<w2:row>
+							<target><![CDATA[11]]></target>
+							<col1><![CDATA[2]]></col1>
+							<col2><![CDATA[2]]></col2>
+							<col3><![CDATA[2]]></col3>
+							<col4><![CDATA[2]]></col4>
+							<col5><![CDATA[2]]></col5>
+						</w2:row>
+						<w2:row>
+							<target><![CDATA[22]]></target>
+							<col1><![CDATA[3]]></col1>
+							<col2><![CDATA[3]]></col2>
+							<col3><![CDATA[3]]></col3>
+							<col4><![CDATA[3]]></col4>
+							<col5><![CDATA[3]]></col5>
+						</w2:row>
+						<w2:row>
+							<target><![CDATA[22]]></target>
+							<col1><![CDATA[4]]></col1>
+							<col2><![CDATA[4]]></col2>
+							<col3><![CDATA[4]]></col3>
+							<col4><![CDATA[4]]></col4>
+							<col5><![CDATA[4]]></col5>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.expTotal = function(row) {
+    //debugger;
+    var arr = dcList.getRowData(row).slice(dcList.getColumnIndex('target') + 1, dcList.getRowData(row).length - 1);
+    var data = arr.reduce(function(a, b) {
+        return Number(a) + Number(b)
+    }, 0);
+    return data;
+};
+scwin.gvGridList1_onviewchange = function(info) {
+    //gvGridList1.refreshCell( info.rowIndex , "total" );
+};
+scwin.trigger1_onclick = function(e) {
+    console.log("delete");
+    dcList.deleteRow(1);
+};
+scwin.trigger2_onclick = function(e) {
+    console.log("modify");
+    dcList.modifyRowStatus(1, 'D');
+    //dcList.modifyMatchedStatus( "chk" , "1" , "D" );
+};
+scwin.trigger4_onclick = function(e) {
+    //debugger;
+    dcList.modifyMatchedStatus("chk", "1", "D");
+};
+scwin.trigger5_onclick = function(e) {
+    dcList.modifyRangeStatus(1, 2, 'D');
+};
+scwin.onpageload = function() {
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" id="trigger1"
+			style="position: relative;width: 80px;height: 23px;"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[delete]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2"
+			style="position: relative;width: 80px;height: 23px;"
+			ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[modify]]></xf:label>
+		</xf:trigger>
+		<xf:trigger ev:onclick="scwin.trigger4_onclick" id="trigger4"
+			style="position: relative;width:162px;height:23px;" type="button">
+			<xf:label><![CDATA[modifyMatchedStatus]]></xf:label>
+		</xf:trigger>
+		<xf:trigger ev:onclick="scwin.trigger5_onclick" id="trigger5"
+			style="position: relative;width:162px;height:23px;" type="button">
+			<xf:label><![CDATA[modifyRangeStatus]]></xf:label>
+		</xf:trigger>
+		<xf:group class="sub_contents" id="" style="">
+			<xf:group class="pgtbox" id="" style=""></xf:group>
+			<w2:COMGridViewTitle_udc style="" class="mt10"
+				id="udcGridView1" gridView="gvGridList1.chk" addRowDisplay="true"
+				delRowDisplay="true" title="그리드 합" titleDisplay="true">
+			</w2:COMGridViewTitle_udc>
+			<xf:group class="gvwbox" id="" style="">
+				<w2:gridView id="gvGridList1"
+					style="width: 100%;height: 350px;" dataList="data:dcList"
+					ev:onviewchange="scwin.gvGridList1_onviewchange"
+					rowStatusVisible="true" rowNumVisible="true"
+					excludeDeletedRows="true" excludeModifiedRows="true">
+					<w2:caption style="" id="caption2"
+						value="this is a grid caption.">
+					</w2:caption>
+					<w2:header style="" id="header2">
+						<w2:row style="" id="row3">
+							<w2:column width="70" inputType="checkbox"
+								style="" id="column30" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column18" value="Target">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column9" value="컬럼 총합">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column7" value="평균">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column5" value="최소값">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column26" value="최대값">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column22" value="건수">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column3" value="행 총합">
+							</w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody style="" id="gBody2">
+						<w2:row style="" id="row4">
+							<w2:column width="70" inputType="checkbox"
+								style="" id="chk" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="target" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="col1" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="col2" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="col3" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="col4" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="col5" value="">
+							</w2:column>
+							<!-- <w2:column width="70" inputType="expression" style="" id="total" value="" expression="scwin.expTotal(rowIndex())"></w2:column>-->
+							<!-- scwin.expTotal(rowIndex()) -->
+							<w2:column width="70" inputType="expression"
+								style="" id="total" value="" expression="scwin.expTotal(rowIndex())">
+							</w2:column>
+						</w2:row>
+					</w2:gBody>
+					<w2:subTotal targetColumnID="target" style=""
+						id="subTotal1">
+						<w2:row style="" id="row5">
+							<w2:column width="70" inputType="text"
+								style="" id="column32" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column20" value="subTotal">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column13" value="" expression="SUM('col1')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column12" value="" expression="AVG('col2')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column11" value="" expression="MIN('col3')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column28" value="" expression="MAX('col4')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column24" value="" expression="COUNT('col5')">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column10" value="">
+							</w2:column>
+						</w2:row>
+					</w2:subTotal>
+					<w2:footer style="" id="footer1">
+						<w2:row style="" id="row6">
+							<w2:column width="70" inputType="text"
+								style="" id="column33" value="">
+							</w2:column>
+							<w2:column width="70" inputType="text"
+								style="" id="column21" value="footer">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column17" value="" expression="SUM('col1')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column16" value="" expression="AVG('col2')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column15" value="" expression="MIN('col3')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column29" value="" expression="MAX('col4')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column25" value="" expression="COUNT('col5')">
+							</w2:column>
+							<w2:column width="70" inputType="expression"
+								style="" id="column14" value="" expression="SUM('total')">
+							</w2:column>
+						</w2:row>
+					</w2:footer>
+				</w2:gridView>
+
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+
+ 

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dl_holiday" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="holiday" name="name1" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    //부모창 init함수에서 공휴일 데이터를 받아온다.
+    var tmpArr = ["20180323", "20180322"];
+    dl_holiday.setData(tmpArr);
+};
+scwin.trigger1_onclick = function(e) {
+    var tmpArr = ["20180308", "20180307"];
+    dl_holiday.setData(tmpArr);
+};
+scwin.checkColor = function(id, value, rgb) {
+    var color = WebSquare.wUnit.getJq("#" + id).css("color");
+    if (color.indexOf("rgb") != -1) {
+        return color == rgb;
+    }
+    return color == value;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일 실행 후 calendar의 3월22일, 3월23일 부분을 확인한다.
+    //1. After running the sample file, check the March 22nd and March 23rd parts of the calendar.
+    //Verify step 1. March 22nd and 23rd are shown in red.
+    //pc
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_year_button').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_year_itemTable_40').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_month_button').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_month_itemTable_2').click()");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //mobile
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("set", "scwin.init()");
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoYear(2018)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoMonth(3)");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_1_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_3_4', 'red', 'rgb(255, 0, 0)')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_3_5', 'red', 'rgb(255, 0, 0)')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. dl_holiday.setData 버튼을 클릭하고 calendar의 3월7일, 3월8일 부분을 확인한다.
+    //2. Click the dl_holiday.setData button and check the March 7th and March 8th parts of the calendar.
+    //Verify step 2. March 7 and March 8 of the calendar are shown in red (not previously applied).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_1_3', 'red', 'rgb(255, 0, 0)')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_1_4', 'red', 'rgb(255, 0, 0)')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    scwin.init();
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:pageInherit id="" style="position: relative;width: 100px;height: 100px;" src="test.xml"></w2:pageInherit>
+		<w2:inputCalendar rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="" renderDiv="true"
+			holidayRef="data:dl_holiday.holiday" style="position: relative;width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false">
+		</w2:inputCalendar>
+		<w2:calendar id="calendar1" style="position: relative;width: 100px;height: 100px;" holidayRef="data:dl_holiday.holiday"
+			footerDiv="false" holiday="">
+		</w2:calendar>
+		<xf:trigger type="button" id="trigger1" style="position: absolute;width:420px;height:81px;left:9px;top:342px;font-size:14pt;"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[dl_holiday.setData(파라미터 값은 소스에서 확인)]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

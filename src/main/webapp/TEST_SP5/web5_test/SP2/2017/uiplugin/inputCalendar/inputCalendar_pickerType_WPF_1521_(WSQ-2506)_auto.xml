@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.getFormatDate = function() {
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    return yyyy + '/' + mm + '/' + dd;
+}
+scwin.checkVal = function() {
+    return scwin.getFormatDate() === WebSquare.wUnit.getObjById('calendar1_currentDate').innerText;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step  0. calendar와 inputCalendar의 속성으로 pickerType="dynamic"를 설정한다.
+    //Set pickerType = "dynamic" as a property of calendar and inputCalendar.
+    //Verify 0. pickerType="dynamic"를 설정된다.
+    //PickerType = "dynamic" is set.
+    //Test step 1. 샘플파일을 실행 후 달력의 년월을 2~3번 반복하여 클릭한다.
+    //Run the sample file and click the calendar year and month twice or three times.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_picker_header_dynamic_entity').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_picker_header_dynamic_entity').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 년월, 년으로 변경되어진다.
+    //1. 년월, 년으로 변경되어진다.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#calendar1_picker_header_dynamic_entity').text() == '2021 - 2030'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 달력하단의 Today를 클릭한다
+    //Click Today at the bottom of the calendar.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_go_today')[0].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify2. 오늘날짜로 변경되어 보여진다.
+    //Today"s date is changed and displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 25-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar1" renderDiv="true"
+    		style="position: relative;width: 150px;height: 23px;" focusOnDateSelect="false" footerDiv="false" calendarValueType="yearMonthDate" pickerType="dynamic">
+    	</w2:inputCalendar>
+    	<w2:calendar weekStartsOn="0" id="calendar1" style="position: relative;width: 100px;height: 100px;" footerDiv="false" pickerType="dynamic" minYear="1805"></w2:calendar>
+    </body>
+</html>
+ 

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.inputCalendar1_onviewchange = function(info) { //debugger;
+    console.log(info.oldValue + "	" + info.newValue);
+};
+scwin.inputCalendar1_onyearselect = function(info) {};
+scwin.clickOkButton = function() {
+    document.getElementsByClassName('w2calendar_header_btn_ok_yearType')[0].click();
+}
+scwin.checkEl = function(id) {
+    if (WebSquare.wUnit.getDomById($p.id + id)) {
+        return true;
+    }
+    return false;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 왼쪽 첫번째 inputCalendar 입력창에 년도를 입력 후 옆의 달력아이콘을 클릭한다.
+    //1. Run the sample file, enter the year in the first inputCalendar input window on the left, and click the calendar icon next to it.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1').focus()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1').setValue('2018')");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 1. 달력아이콘에도 입력한 년도로 selectbox값이 보여진다.
+    //1. The calendar icon also shows the selectbox value as the year entered.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkEl($p.id+'inputCalendar1_calendar')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //pc
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_calendar_selectbox_year_label').innerText == '2018년'", "true");
+    //mobile
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_calendar').getValue() == '2018'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 왼쪽 첫번째 inputCalendar 달력아이콘을 클릭하여 년도를 선택하고 확인(체크버튼)을 클릭한다.
+    //2. Click the first inputCalendar calendar icon on the left to select the year and click OK (check button).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_calendar_last_year').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_header_btn_ok_yearType')[0].click()");
+    // verify step 2. inputCalendar 입력창에 선택했던 년도가 입력되어진다.
+    //2. Input the year you selected in the inputCalendar input window.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar1_input').val() == '2017'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 23-Jan-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar1" renderDiv="true"
+    		style="position: absolute;width: 150px;height: 23px;left:246px;top:255px;" rightAlign="false" focusOnDateSelect="false"
+    		footerDiv="false" calendarValueType="year" calendarClass="class1" ev:onviewchange="scwin.inputCalendar1_onviewchange"
+    		ev:onyearselect="scwin.inputCalendar1_onyearselect">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarValueType="yearMonth" focusOnDateSelect="false" footerDiv="false" id="inputCalendar2" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:610px;top:266px;"
+    		weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarClass="class2" calendarValueType="year" ev:onviewchange="scwin.inputCalendar1_onviewchange"
+    		ev:onyearselect="scwin.inputCalendar1_onyearselect" focusOnDateSelect="false" footerDiv="false" id="inputCalendar15" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:245px;top:297px;"
+    		weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarClass="class3" calendarValueType="year" ev:onviewchange="scwin.inputCalendar1_onviewchange"
+    		ev:onyearselect="scwin.inputCalendar1_onyearselect" focusOnDateSelect="false" footerDiv="false" id="inputCalendar16" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:245px;top:341px;"
+    		weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarClass="class4" calendarValueType="year" ev:onviewchange="scwin.inputCalendar1_onviewchange"
+    		ev:onyearselect="scwin.inputCalendar1_onyearselect" focusOnDateSelect="false" footerDiv="false" id="inputCalendar17" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:242px;top:384px;"
+    		weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarClass="class5" calendarValueType="year" ev:onviewchange="scwin.inputCalendar1_onviewchange"
+    		ev:onyearselect="scwin.inputCalendar1_onyearselect" focusOnDateSelect="false" footerDiv="false" id="inputCalendar18" renderDiv="true"
+    		renderType="component" rightAlign="false" style="position: absolute;width: 150px;height: 23px;left:244px;top:425px;"
+    		weekStartsOn="0">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

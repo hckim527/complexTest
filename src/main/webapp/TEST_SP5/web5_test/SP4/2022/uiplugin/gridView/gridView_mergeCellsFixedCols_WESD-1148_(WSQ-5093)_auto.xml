@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="number"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="number"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="number"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="number"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <style>
+            .testFF {
+                background-color:red;
+                text-align:left;
+                font-size:16px;
+            }
+            </style>
+         <script type="text/javascript" lazy="false"><![CDATA[
+    
+    scwin.row = 20;
+    scwin.col = 5;
+	scwin.onpageload = function() {
+        var row = scwin.row;
+        var col = scwin.col;
+        var data = [];
+        for(var i = 0; i < row; i++){
+            for(var j = 0; j < col; j++){
+                data.push((i * row + j) + ""); 
+            }
+        }
+        dataList1.setData(data);
+        scwin.trigger1_onclick();
+        scwin.trigger2_onclick();
+        scwin.trigger3_onclick();
+    };
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+    scwin.trigger1_onclick = function() {
+        gridView1.mergeByFree(2,2,4,4);
+    }
+
+    scwin.trigger2_onclick = function() {
+        gridView1.setFixedColumn(2);
+        for (var i = 0; i < scwin.row; i++) {
+            for (var j = 0; j < 2; j++) {
+                dataList1.setCellData(i, j, (Math.floor(i/3) + ""));
+            }
+        }
+    }
+
+    scwin.trigger3_onclick = function() {
+        dataList1.removeRows([1,3,11]);
+    }
+
+    scwin.trigger4_onclick = function() {
+        dataList1.removeRow(1);
+    }
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('gridView1_cell_1_2').getAttribute('colspan') == '3' && WebSquare.wUnit.getDomById('gridView1_cell_1_2').getAttribute('rowspan') == '2';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()	
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView id="gridView1" style="width:700px;height:297px;" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" dataList="data:dataList1" mergeCellsFixedCols="byCol" rowNumVisible="true" fixedColumn="">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column removeBorderStyle="false" width="120" inputType="text" style="height:20px" id="column22" value="name1"
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="120" inputType="text" style="height:20px" id="column21" value="name2"
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="120" inputType="text" style="height:20px;" id="column20" value="name3"
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="120" inputType="text" style="height:20px" id="column18" value="name5"
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="120" inputType="text" style="height:20px" id="column17" value="name6"
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="col1" value=""
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="col2" value=""
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="col3" value=""
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="col4" value=""
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px" id="col5" value=""
+    					blockSelect="false" displayMode="label" dataType="number">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+        <xf:trigger ev:onclick="scwin.trigger1_onclick" style="width:143px;height:36px;" id="trigger1" type="button">
+            <xf:label><![CDATA[mergeTest]]></xf:label>
+        </xf:trigger>
+        <xf:trigger ev:onclick="scwin.trigger2_onclick" style="width:143px;height:36px;" id="trigger2" type="button">
+            <xf:label><![CDATA[fixedColumn]]></xf:label>
+        </xf:trigger>
+        <xf:trigger ev:onclick="scwin.trigger3_onclick" style="width:143px;height:36px;" id="trigger3" type="button">
+            <xf:label><![CDATA[removeRows]]></xf:label>
+        </xf:trigger>
+        <xf:trigger ev:onclick="scwin.trigger4_onclick" style="width:143px;height:36px;" id="trigger4" type="button">
+            <xf:label><![CDATA[removeRow]]></xf:label>
+        </xf:trigger>
+    </body>
+</html>

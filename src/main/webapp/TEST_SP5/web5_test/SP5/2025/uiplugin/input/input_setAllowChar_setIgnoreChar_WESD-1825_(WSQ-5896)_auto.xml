@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    				<w2:data use="true">
+    					<w2:row>
+    						<col1><![CDATA[테스트]]></col1>
+    						<col2><![CDATA[test]]></col2>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[테스트2]]></col1>
+    						<col2><![CDATA[test2]]></col2>
+    					</w2:row>
+    					<w2:row>
+    						<col1><![CDATA[테스트3]]></col1>
+    						<col2><![CDATA[test3]]></col2>
+    					</w2:row>
+    				</w2:data>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+
+	};
+
+	scwin.onpageunload = function() {
+
+	};
+
+    scwin.trigger1_onclick = function() {
+        gridView1.setAllowChar("col1", "a-zA-Z");
+    }
+
+    scwin.trigger2_onclick = function() {
+        gridView1.setAllowChar("col2", "0-9");
+    }
+
+    scwin.trigger3_onclick = function() {
+        gridView1.setIgnoreChar("col1", "a-zA-Z");
+    }
+
+    scwin.trigger4_onclick = function() {
+        gridView1.setIgnoreChar("col2", "0-9");
+    }
+
+    scwin.trigger5_onclick = function() {
+        gridView1.setIgnoreChar("col2", "0-9");
+    }
+
+    scwin.trigger11_onclick = function() {
+        input1.setAllowChar("a-zA-Z");
+    }
+
+    scwin.trigger22_onclick = function() {
+        input1.setAllowChar("0-9");
+    }
+
+    scwin.trigger33_onclick = function() {
+        input1.setIgnoreChar("a-zA-Z");
+    }
+
+    scwin.trigger44_onclick = function() {
+        input1.setIgnoreChar("0-9");
+    }
+
+    scwin.trigger55_onclick = function() {
+        input1.setIgnoreChar("0-9");
+    }
+
+	scwin.fireDbClick = function(node){
+		if( document.createEventObject ) {
+			node.fireEvent('ondblclick') ;
+		} else if( document.createEvent ) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function' ) {
+			node.ondblclick();
+		}
+	}
+
+	scwin.Dbclick = function(id){
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick (el);
+	}	
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#G_'+$p.id+'gridView1__col2', 'key-sequence', {
+			sequence: '123'
+		});
+	}	
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('gridView1_cell_0_1').innerText != '123';
+	}		
+	scwin.unitTest = function(){
+		//init
+		WebSquare.wUnit.start();
+
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4_center').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_0_1')");	
+		WebSquare.wUnit.addCommand("pause", "500");			
+
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");	
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_1_1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();		
+	
+]]></script>
+    	<style type="text/css"><![CDATA[
+		.grid_body_row:hover td {background-color:yellow}
+    	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group>
+        	<w2:gridView dataList="data:dataList1" summaryAuto="false" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20"
+        		scrollByColumnAdaptive="false" id="gridView1" style="width: 500px;height: 150px;" ignoreCellClick="false" syncScroll="false"
+        		ignoreToggleOnDisabled="false" summaryOnlyAuto="false" useShiftKey="true" rowMouseOver="false" focusMode="cell" selectedCellColor="">
+        		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+        		<w2:header id="header1" style="">
+        			<w2:row id="row1" style="">
+        				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="126" value="name1" displayMode="label"></w2:column>
+        				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="129" value="name2" displayMode="label"></w2:column>
+        			</w2:row>
+        		</w2:header>
+        		<w2:gBody id="gBody1" style="">
+        			<w2:row id="row2" style="">
+        				<w2:column blockSelect="false" id="col1" style="" inputType="text" allowChar="" width="126" value="" displayMode="label"></w2:column>
+        				<w2:column blockSelect="false" id="col2" style="" inputType="text" allowChar="" width="126" value="" displayMode="label"></w2:column>
+        			</w2:row>
+        		</w2:gBody>
+        	</w2:gridView>
+            <xf:trigger id="trigger1" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger1_onclick">
+                <xf:label>setAllowChar("col1", "a-zA-Z")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger2" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger2_onclick">
+                <xf:label>setAllowChar("col2", "0-9")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger3" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger3_onclick">
+                <xf:label>setIgnoreChar("col1", "a-zA-Z")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger4" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger4_onclick">
+                <xf:label>setIgnoreChar("col2", "0-9")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger5" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger5_onclick">
+                <xf:label>setIgnoreChar("col2", "")</xf:label>
+            </xf:trigger>
+        </xf:group>
+        <xf:group>
+            <xf:input adjustMaxLength="false" applyFormat="display" id="input1" style="width:150px;height:21px;"></xf:input>
+            <xf:trigger id="trigger11" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger11_onclick">
+                <xf:label>setAllowChar("a-zA-Z")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger22" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger22_onclick">
+                <xf:label>setAllowChar("0-9")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger33" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger33_onclick">
+                <xf:label>setIgnoreChar("a-zA-Z")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger44" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger44_onclick">
+                <xf:label>setIgnoreChar("0-9")</xf:label>
+            </xf:trigger>
+            <xf:trigger id="trigger55" style="height: 23px;width: 248px;" type="image" ev:onclick="scwin.trigger55_onclick">
+                <xf:label>setIgnoreChar("")</xf:label>
+            </xf:trigger>
+        </xf:group>
+    </body>
+</html>

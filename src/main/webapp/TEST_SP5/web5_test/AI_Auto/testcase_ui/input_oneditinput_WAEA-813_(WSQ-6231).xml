@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <script type="text/javascript"><![CDATA[
+        (function() {
+            // 브라우저 개발자 도구 실행 API
+            if (typeof matrixbrowser !== "undefined") {
+                matrixbrowser.util.showDevtools();
+            }
+        })();
+        /*
+         * [WAEA-773] oneditinput 이벤트 신규 도입 검증
+         *
+         * 검증 시나리오
+         *  1) 영문/숫자 단일 입력
+         *      - 매 글자마다 1회 발화. oldValue=직전, newValue=현재, keyCode=실제 키.
+         *  2) 영문/숫자 빠른 연타(키 롤오버)
+         *      - 각 글자별로 1회씩, oldValue/newValue 가 단계별로 정확히 갱신되는지 확인.
+         *      - 비교: 동일 입력을 oneditkeyup 출력 영역과 비교했을 때 oneditkeyup 은 마지막 값으로 동일하게 찍히면 정상(기존 1차 이슈 그대로).
+         *  3) 한글 IME 입력
+         *      - 같은 글자에 대해 중복 발화 없는지(2차 이슈 미발생) 확인. info.isComposing 으로 조합 중 단계를 구분 가능.
+         *  4) Backspace 연타
+         *      - 각 삭제마다 1회. info.inputType="deleteContentBackward".
+         *  5) Paste(Ctrl+V)
+         *      - 1회 발화. info.inputType="insertFromPaste". info.keyCode 는 직전 keydown 값(없으면 0).
+         *  6) 키 리피트 (꾹 누르기)
+         *      - 글자가 입력되는 매 시점마다 발화. (oneditkeyup 과 차이 — 그쪽은 1회)
+         *
+         * 화면 구성
+         *  - 좌: oneditinput 발화 로그
+         *  - 우: oneditkeyup 발화 로그 (비교용)
+         */
+
+        scwin.onpageload = function() {
+            output_input.setValue("");
+            output_keyup.setValue("");
+        };
+
+        scwin.input1_oneditinput = function(info, e) {
+            // info: 엔진이 합성한 값 (oldValue / newValue / keyCode)
+            // e: 브라우저 native InputEvent (inputType / data / isComposing 등)
+            var logStr = "[" + new Date().toLocaleTimeString() + "."
+                       + ("000" + (new Date().getMilliseconds())).slice(-3) + "] "
+                       + "keyCode=" + info.keyCode
+                       + ", data=" + JSON.stringify(e.data)
+                       + ", isComposing=" + e.isComposing
+                       + ", oldValue=\"" + info.oldValue + "\""
+                       + ", newValue=\"" + info.newValue + "\"";
+            console.log("oneditinput", info, e);
+            var prev = output_input.getValue() || "";
+            output_input.setValue(prev + logStr + "\n");
+        };
+
+        scwin.input1_oneditkeyup = function(info, e) {
+            var logStr = "[" + new Date().toLocaleTimeString() + "."
+                       + ("000" + (new Date().getMilliseconds())).slice(-3) + "] "
+                       + "keyCode=" + info.keyCode
+                       + ", oldValue=\"" + info.oldValue + "\""
+                       + ", newValue=\"" + info.newValue + "\"";
+            console.log("oneditkeyup", info);
+            var prev = output_keyup.getValue() || "";
+            output_keyup.setValue(prev + logStr + "\n");
+        };
+
+        scwin.trigger_clear_onclick = function() {
+            input1.setValue("");
+            output_input.setValue("");
+            output_keyup.setValue("");
+            input1.focus();
+        };
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="margin:20px;">
+            <w2:textbox style="font-weight:bold;font-size:14px;"
+                label="WAEA-773 / oneditinput 신규 이벤트 검증 (oneditkeyup 비교)"/>
+            <br/>
+            <w2:textbox style="font-size:12px;color:#666;"
+                label="아래 input 에 빠른 연타 / 한글 / Backspace / Paste / 키 리피트 등을 시도하고 두 로그 영역을 비교하세요."/>
+            <br/><br/>
+            <xf:input id="input1" style="width:300px;height:28px;"
+                ev:oneditinput="scwin.input1_oneditinput"
+                ev:oneditkeyup="scwin.input1_oneditkeyup"
+                editFormat="" />
+            <xf:trigger id="trigger1" ev:onclick="scwin.trigger_clear_onclick">
+                <xf:label>Clear</xf:label>
+            </xf:trigger>
+            <br/><br/>
+            <xf:group style="display:block;width:100%;margin-bottom:12px;">
+                <w2:textbox style="font-weight:bold;font-size:13px;color:#1565c0;"
+                    label="oneditinput (신규, input 시점 발화)"/>
+                <br/>
+                <xf:textarea id="output_input"
+                    style="width:100%;height:240px;font-family:monospace;font-size:11px;"/>
+            </xf:group>
+            <xf:group style="display:block;width:100%;">
+                <w2:textbox style="font-weight:bold;font-size:13px;color:#c62828;"
+                    label="oneditkeyup (기존, keyup 시점 발화 — 비교용)"/>
+                <br/>
+                <xf:textarea id="output_keyup"
+                    style="width:100%;height:240px;font-family:monospace;font-size:11px;"/>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1.setCellOption(2, "col1", "viewType", "default");
+};
+scwin.trigger2_onclick = function(e) {
+    gridView1.setCellOption(2, "col1", "viewType", "icon");
+};
+scwin.checkVal1 = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'gridView1_cell_2_0')).getPropertyValue('background-image') == 'none';
+}
+scwin.checkVal2 = function() {
+    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'gridView1_cell_2_0')).getPropertyValue('background-image') != 'none';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 setCellOption(2,'col1', 'viewType', 'default') 버튼을 클릭한다.- After running the sample file, click the setCellOption (2, 'col1', 'viewType', 'default') button.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 1. 20160620일자 달력아이콘이 보이지 않는다.(이전에는 계속보여짐)-20160620 Calendar icon is not visible (Previously displayed)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Test step 2. 다시 setCellOption(2,'col1', 'viewType', 'icon') 버튼을 클릭한다.-Click the setCellOption (2, 'col1', 'viewType', 'icon') button again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 2. 20160620일자 달력아이콘이 보여진다.- The 20160620 date calendar icon is displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.s1 = 20160618;
+    window.s2 = 0;
+    window.s3 = 1000;
+    window.data = [];
+    for (var i = 0; i < 10; i++) {
+        data.push(s1 + i);
+        data.push(s2 + i);
+        data.push(s3 - i);
+    }
+    dataList1.setData(data);
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 18-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="position: relative;width:336px;height:150px;" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px;" inputType="text" width="150" value="name1"
+    					fixColumnWidth="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="calendar" width="150" viewType="icon"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    <xf:group id="" style="height:110px;"><xf:group id="" style="height:55px;"><xf:trigger id="trigger1" style="position: relative;width:261px;height:43px;" type="button" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setCellOption(2,"col1", "viewType", "default")]]></xf:label>
+    	</xf:trigger></xf:group><xf:group id="" style="height:55px;"><xf:trigger id="trigger2" style="position: relative;width:261px;height:43px;" type="button" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[setCellOption(2,"col1", "viewType", "icon")]]></xf:label>
+    	</xf:trigger></xf:group></xf:group></body>
+</html>
+ 

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    slider1.setMinValue(3);
+};
+scwin.trigger2_onclick = function(e) {
+    slider1.setMaxValue(15);
+};
+scwin.trigger3_onclick = function(e) {
+    //alert(slider1.getValue());
+    valueTest = slider1.getValue();
+};
+scwin.trigger4_onclick = function(e) {
+    slider2.setMinValue(7);
+};
+scwin.trigger5_onclick = function(e) {
+    slider2.setMaxValue(20);
+};
+scwin.trigger6_onclick = function(e) {
+    //alert(slider2.getValue());
+    valueTest = slider2.getValue();
+};
+scwin.trigger7_onclick = function(e) {
+    slider3.setMinValue(9);
+};
+scwin.trigger8_onclick = function(e) {
+    slider3.setMaxValue(25);
+};
+scwin.trigger9_onclick = function(e) {
+    //alert(slider3.getValue());
+    valueTest = slider3.getValue();
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Property 탭 또는 Source 탭에서 slider1 의 minValue 와 MaxValue 부분을 확인한다.
+    //1. Check the minValue and MaxValue portions of slider1 in the Property or Source tabs.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('slider1').getAttribute('showScale')", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('slider2').getAttribute('showScale')", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('slider3').getAttribute('showScale')", "true");
+    //Test step 5. 브라우저에서 첫번째 슬라이드의 MinValue(3) 버튼을 클릭한다.
+    //5. In the browser, click the MinValue (3) button on the first slide.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    //Verify step 5. MinValue 가 '5' -> '3' 으로 변경된다.
+    //5. MinValue changes from '5' to '3'.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('slider1').getAttribute('aria-valuemin') == '3'", "true");
+    //Test step 6. 슬라이드의 위치를 최저로 낮추고 GetValue 버튼을 클릭한다.
+    //6. Lower the slide to its lowest position and click the GetValue button.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('slider1').setValue(3)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 6. MinValue 의 값이 기존의 '5' 가 아닌 '3' 으로 팝업이 생성된다.
+    //6. A pop-up is generated with MinValue value '3' instead of the existing '5'.
+    WebSquare.wUnit.addCommand("assert", "valueTest == '3'", "true");
+    //Test step 7. MaxValue(15) 버튼을 클릭한다.
+    //7. Click the MaxValue (15) button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    //Verify step 7. MaxValue 가 '30' -> '15' 로 변경된다.
+    //7. MaxValue is changed from '30' to> '15'.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('slider1').getAttribute('aria-valuemax') == '15'", "true");
+    //Test step 8. 이번에는 슬라이드의 위치를 최고로 올리고 GetValue 버튼을 클릭한다.
+    //8. Now, position the slide to the highest position and click the GetValue button.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('slider1').setValue(15)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 8. MaxValue 의 값이 기존의 '30' 이 아닌 '15' 로 팝업이 생성된다.
+    //8. The popup is generated with MaxValue value of '15' instead of the existing '30'.
+    WebSquare.wUnit.addCommand("assert", "valueTest == '15'", "true");
+    //Test step 9. 두번째 / 세번째 슬라이드도 5 ~ 8번 절차를 반복한다.
+    //9. Repeat steps 5 and 8 for the second / third slide.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('slider2').getAttribute('aria-valuemin') == '7'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('slider2').setValue(7)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "valueTest == '7'", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('slider2').getAttribute('aria-valuemax') == '20'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('slider2').setValue(20)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "valueTest == '20'", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('slider3').getAttribute('aria-valuemin') == '9'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('slider3').setValue(9)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger9').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "valueTest == '9'", "true");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('slider3').getAttribute('aria-valuemax') == '25'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('slider3').setValue(25)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger9').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("assert", "valueTest == '25'", "true");
+    //Verify step 9. 위와 동일하게 MinValue 와 MaxValue 가 변경된다. 
+    //9. MinValue and MaxValue are changed as above.
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.valueTest;
+    // MinValue 설정하는 API
+    //slider1.setMinValue(15);
+    //MaxValue 설정하는 API
+    //slider1.setMaxValue(60);
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 06-Feb-2018
+    //end
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:slider class="" id="slider1"
+    		style="position: absolute;width: 200px;height: 30px;left:115px;top:205px;"
+    		increment="1" maxValue="30" showScale="true" minValue="5"
+    		value="17">
+    	</w2:slider>
+    	<xf:group id="G1"
+    		style="position:absolute;top:208px;left:335px;width:271px;height:23px;">
+    		<xf:trigger id="trigger1"
+    			style="position: absolute;width: 80px;height: 23px;left:0px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger1_onclick">
+    			<xf:label><![CDATA[MinValue(3)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger2"
+    			style="position: absolute;width:92px;height:23px;left:95px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger2_onclick">
+    			<xf:label><![CDATA[MaxValue(15)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger3"
+    			style="position: absolute;width: 80px;height: 23px;left:201px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger3_onclick">
+    			<xf:label><![CDATA[GetValue]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<w2:slider class="" id="slider2" increment="2" maxValue="40"
+    		showScale="true"
+    		style="position: absolute;width: 200px;height: 30px;left:115px;top:275px;"
+    		minValue="10" value="17">
+    	</w2:slider>
+    	<xf:group id="G2"
+    		style="position:absolute;top:278px;left:335px;width:271px;height:23px;">
+    		<xf:trigger id="trigger4"
+    			style="position: absolute;width: 80px;height: 23px;left:0px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger4_onclick">
+    			<xf:label><![CDATA[MinValue(7)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger5"
+    			style="position: absolute;width:94px;height:23px;left:95px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger5_onclick">
+    			<xf:label><![CDATA[MaxValue(20)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger6"
+    			style="position: absolute;width: 80px;height: 23px;left:201px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger6_onclick">
+    			<xf:label><![CDATA[GetValue]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    	<w2:slider class="" id="slider3" increment="3" maxValue="50"
+    		showScale="true"
+    		style="position: absolute;width: 200px;height: 30px;left:115px;top:350px;"
+    		minValue="15" value="17">
+    	</w2:slider>
+
+    	<xf:group id="G3"
+    		style="position:absolute;top:353px;left:335px;width:271px;height:23px;">
+    		<xf:trigger id="trigger7"
+    			style="position: absolute;width: 80px;height: 23px;left:0px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger7_onclick">
+    			<xf:label><![CDATA[MinValue(9)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger8"
+    			style="position: absolute;width:93px;height:23px;left:95px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger8_onclick">
+    			<xf:label><![CDATA[MaxValue(25)]]></xf:label>
+    		</xf:trigger>
+    		<xf:trigger id="trigger9"
+    			style="position: absolute;width: 80px;height: 23px;left:202px;top:0px;"
+    			type="button" ev:onclick="scwin.trigger9_onclick">
+    			<xf:label><![CDATA[GetValue]]></xf:label>
+    		</xf:trigger>
+    	</xf:group>
+    </body>
+</html>
+ 

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" matchIgnoreCase="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    window.data = [];
+    for (var i = 0; i < 100; i++) {
+        window.v = ["a", "A", "x", "X"];
+        data.push("col1_" + v[i % 4] + "_" + i);
+        data.push("col2_" + v[i % 4] + "_" + i);
+        data.push("col3_" + v[i % 4] + "_" + i);
+    }
+    dataList1.setData(data);
+}		
+scwin.trigger1_onclick = function(e) {
+    var ret = dataList1.getMatchedJSON("col1", "A", false);
+    textarea1.setValue(JSON.stringify(ret));
+};
+scwin.trigger2_onclick = function(e) {
+    dataList1.setMatchIgnoreCase(true);
+};
+scwin.trigger3_onclick = function(e) {
+    dataList1.setMatchIgnoreCase(false);
+};
+scwin.checkValue = function() {
+    var json = JSON.parse(WebSquare.wUnit.getJq("#textarea1").val());
+    for (i = 0; i < json.length; i++) {
+        var character = json[i].col1.charAt(5);
+        if (i % 2 == 0) {
+            if (character == character.toLowerCase()) {
+                return true;
+            } else {
+                return false;
+                break;
+            }
+        } else {
+            if (character == character.toUpperCase()) {
+                return true;
+            } else {
+                return false;
+                break;
+            }
+        }
+    }
+}
+scwin.checkUpper = function() {
+    var json = JSON.parse(WebSquare.wUnit.getJq("#textarea1").val());
+    for (i = 0; i < json.length; i++) {
+        var character = json[i].col1.charAt(5);
+        if (character == character.toUpperCase()) {
+            return true;
+        } else {
+            return false;
+            break;
+        }
+    }
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkUpper()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="" style="height:327px;"><xf:textarea id="textarea1" style="position: relative;width:520px;height:261px;"></xf:textarea><xf:trigger id="trigger1" style="position: relative;width:229px;height:61px;" type="button" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[getMatchedJSON("col1", "A", false);]]></xf:label>
+    	</xf:trigger></xf:group><xf:trigger type="button" id="trigger2" style="position: relative;
+width:229px;
+height:61px;
+" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[setMatchIgnoreCase(true)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger3" style="position: relative; width:229px; height:61px; " type="button" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[setMatchIgnoreCase(false)]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

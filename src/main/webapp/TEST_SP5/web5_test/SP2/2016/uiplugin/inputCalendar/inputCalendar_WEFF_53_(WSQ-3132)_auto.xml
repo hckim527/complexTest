@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#inputCalendar1_input', 'key-sequence', {
+        sequence: "12345678"
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#input1', 'key-sequence', {
+        sequence: "111"
+    })
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 inputCalendar에 8자리를 입력 후 9자리 이상으로 더 입력한다.
+    //1. After executing the sample, input 8 digits in inputCalendar and input it more than 9 digits.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_input').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 1. 8자리까지 입력되어지고 9자리 입력 시 focus가 inputbox로 이동되어진다.
+    //1. Enter up to 8 digits and when 9 digits are entered, focus is moved to input box.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#input1').hasClass('w2input_focus')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step2. inputbox에 3자리를 입력 후 4자리 이상으로 더 입력한다.
+    //2. Enter 3 digits in the input box and enter 4 digits or more.
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify2. 3자리까지 입력되어지고 4자리 입력 시 focus가 inputCalendar로 이동되어진다.
+    //2. Up to 3 digits are entered. When 4 digits are entered, the focus is shifted to inputCalendar.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar1_input').hasClass('w2inputCalendar_focus')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 다시 inputCalendar에 9자리 이상을 입력한다.
+    //3. Input more than 9 digits in inputCalendar again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_input').value = ''");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //Verify 3. 9자리 입력 시 다시 focus가 inputbox로 이동되어진다.(이전에는 9자리 이상 입력되어지고 focus는 이동되지 않음)
+    //3. When 9 digits are entered, the focus is moved to the input box (previously 9 digits or more are entered and the focus is not moved)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#input1').hasClass('w2input_focus')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 13-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar weekStartsOn="0" rightAlign="false" calendarValueType="yearMonthDate" renderType="component" id="inputCalendar1"
+    		nextTabID="input1" renderDiv="true" style="position: absolute;width:324px;height:96px;left:92px;top:61px;" focusOnDateSelect="false"
+    		footerDiv="false"  maxByteLength = "8" autoFocus = "true">
+    	</w2:inputCalendar>
+    	<xf:input id="input1" style="position: absolute;width:329px;height:80px;left:504px;top:227px;" nextTabID="inputCalendar1" autoFocus="true" maxlength="" maxByteLength="3"></xf:input>
+    	<!--  <w2:inputCalendar calendarValueType="yearMonthDateHour" focusOnDateSelect="false" footerDiv="false" id="inputCalendar2"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:92px;top:196px;" weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarValueType="yearMonthDateTime" focusOnDateSelect="false" footerDiv="false" id="inputCalendar3"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:91px;top:342px;" weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarValueType="yearMonthDateTimeSec" focusOnDateSelect="false" footerDiv="false" id="inputCalendar4"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:90px;top:480px;" weekStartsOn="0">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar calendarValueType="yearMonth" focusOnDateSelect="false" footerDiv="false" id="inputCalendar5"
+    		nextTabID="input1" renderDiv="true" renderType="component" rightAlign="false"
+    		style="position: absolute;width:324px;height:96px;left:89px;top:603px;" weekStartsOn="0">
+    	</w2:inputCalendar>-->
+    </body>
+</html>
+ 

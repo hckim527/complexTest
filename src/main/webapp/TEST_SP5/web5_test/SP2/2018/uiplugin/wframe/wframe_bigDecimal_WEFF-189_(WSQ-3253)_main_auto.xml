@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:config>
+            <WebSquare>
+                <gridView>
+                    <column inputType="image">
+                        <zz value="xx"/>
+                    </column>
+                </gridView>
+                <image>
+                    <zz value="xx"/>
+                </image>
+            </WebSquare>
+        </w2:config>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    textbox1.setValue("main_bigDecimal_test");
+    var str = 'scwin.a = scwin.$w.bigDecimal("1");\nscwin.b= scwin.$w.bigDecimal("2");\nscwin.$w.bigDecimal.calc("scwin.a + scwin.b")=?';
+    textarea1.setValue(str);
+}
+scwin.trigger1_onclick = function() {
+    scwin.a = scwin.$w.bigDecimal("1");
+    scwin.b = scwin.$w.bigDecimal("2");
+    input1.setValue(scwin.$w.bigDecimal.calc("scwin.a + scwin.b").toString());
+}
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).value == value) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. main 샘플실행 후 1번 버튼을 클릭한다.
+    //1. After executing main sample, click button 1.
+    //Verify step 1. Return the value '3'.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('input1', '3')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. wframe1_관련 2번 버튼(bigDecimal test(wframe))을 클릭한다.
+    //2. Click button 2 (bigDecimal test (wframe)) related to wframe1_.
+    //Verify step 2. Return the value '-14'.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wframe1_trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('wframe1_input1', '-14')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. wframe2_관련 2번 버튼(bigDecimal test(wframe))을 클릭한다.
+    //3. Click button 2 (bigDecimal test (wframe)) related to wframe2_.
+    //Verify step 3. Return the value '-12.8'.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wframe2_trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('wframe2_input1', '-12.8')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    requires("externalJS/big/big.min.js");
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 22-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="" id="textbox1" style="position: relative;width: 250px;height: 40px;font-size:24px;"></w2:textbox>
+        <w2:textarea label="" id="textarea1" style="position: relative;width: 250px;height: 60px;" readOnly="true"></w2:textarea>
+        <xf:trigger type="button" id="trigger1" style="width:120px;height:30px;" ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[1번 bigDecimal test]]></xf:label>
+        </xf:trigger>
+        <w2:input label="" id="input1" style="position: relative;width: 100px;height: 30px;"></w2:input>
+    	<w2:wframe id="wframe1" style="position: relative;width:750px;height:190px;top:20px;" src="wframe_bigDecimal_WEFF-189_(WSQ-3253)_sub.xml" scope="true"></w2:wframe>
+        <w2:wframe id="wframe2" style="position: relative;width:750px;height:190px;" src="wframe_bigDecimal_WEFF-189_(WSQ-3253)_sub.xml" scope="true"></w2:wframe>
+    </body>
+</html>
+ 

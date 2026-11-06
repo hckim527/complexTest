@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="base.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" >
+					<contentDesc>
+                		<use desc='사용설명'>
+                			그리드 소계(subTotal), 합계(footer)를 사용할 수 있습니다. 
+                		</use>
+                		<role desc='기능설명'>
+                			화면 우측 상단의 체크박스를 활용하여 소계와 합계를 제어합니다. &lt;br/&gt;
+							1. 소계숨김 '체크/체크해제'를 통하여 소계를 숨기거나 보이게 합니다. &lt;br/&gt;
+							2. 합계숨김 '체크/체크해제'를 통하여 합계를 숨기거나 보이게 합니다. &lt;br/&gt;
+							3. 합계상단 '체크/체크해제'를 통하여 합계를 상단/하단으로 위치하게 합니다.
+                		</role>
+                	</contentDesc>
+				</data>
+			</xf:instance>
+			<xf:submission id="getMeal" ref="req" target="res" action="meal.xml" method="post" mediatype="application/xml"
+				encoding="UTF-8" instance="" replace="instance" errorHandler="" customHandler="" mode="asynchronous" processMsg="">
+				<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.element = WebSquare.ModelUtil.findInstanceNode("res/vector");
+    grid1.setXML(element);
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+			</xf:submission>
+		</xf:model>
+		<script src="/poc_main/js/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    WebSquare.ModelUtil.executeSubmission("getMeal");
+    gValue.gridID = grid1.getID();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.gValue = {};
+    scwin.init();
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		
+	<xf:group id="group1" style="position:absolute;left:0px;right:0px;top:0px;bottom:10px;padding:10px 15px ;" class="contBox">
+			<xf:group id="group2" style="" class="titleBar">
+				<w2:textbox id="textbox1" style="" class="title02" label="그리드 소계, 합계"></w2:textbox>
+				<xf:group id="group3" style="" class="btnBox">
+					<xf:select appearance="full" id="checkbox1" selectedindex="-1" style="float:left;height:20px;" cols="3" rows="">
+						<xf:choices>
+							<xf:item>
+								<xf:label>소계 숨김</xf:label>
+								<xf:value>1</xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label>합계 숨김</xf:label>
+								<xf:value>2</xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label>합계 상단</xf:label>
+								<xf:value>3</xf:value>
+							</xf:item>
+						</xf:choices>
+						<script ev:event="oncheckboxclick(index,checked,value)" type="javascript"><![CDATA[
+							switch (index){
+								case "0" : if( checked ){
+											WebSquare.wUnit.getJq( ".gridSubtotalDefault" ).css( "display", "none" );
+										 } 
+										 else{
+										 	WebSquare.wUnit.getJq( ".gridSubtotalDefault" ).css( "display", "" );
+										 }  
+										 break;
+								case "1" : if( checked ){
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody").css( "display", "none" );
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "0px");
+										 } 
+										 else{
+										 	WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody").css( "display", "" );
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "22px");
+										 }
+										 break;
+								case "2" : if( checked ){
+											WebSquare.wUnit.getJq(".gridHeaderTableDefault .gridHeaderTableDefault").after(WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody"));
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "0px");
+										 } 
+										 else{
+										 	WebSquare.wUnit.getJq(".gridFooterTableDefault").append(WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody"));
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "22px");
+										 }
+										 break;
+							}
+							
+							var element = WebSquare.ModelUtil.findInstanceNode( "res/vector" );
+							grid1.setXML( element );
+							
+							
+						 ]]></script>
+						<script type="javascript" ev:event="onlabelclick(index,checked,value)"><![CDATA[
+							switch (index){
+								case "0" : if( checked ){
+											WebSquare.wUnit.getJq( ".gridSubtotalDefault" ).css( "display", "none" );
+										 } 
+										 else{
+										 	WebSquare.wUnit.getJq( ".gridSubtotalDefault" ).css( "display", "" );
+										 }  
+										 break;
+								case "1" : if( checked ){
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody").css( "display", "none" );
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "0px");
+										 } 
+										 else{
+										 	WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody").css( "display", "" );
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "22px");
+										 }
+										 break;
+								case "2" : if( checked ){
+											WebSquare.wUnit.getJq(".gridHeaderTableDefault .gridHeaderTableDefault").after(WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody"));
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "0px");
+										 } 
+										 else{
+										 	WebSquare.wUnit.getJq(".gridFooterTableDefault").append(WebSquare.wUnit.getJq("#"+gValue.gridID+"_gridFooterTDDefault_tbody"));
+											WebSquare.wUnit.getJq("#"+gValue.gridID+"_dataLayer").css("bottom", "22px");
+										 }
+										 break;
+							}
+							
+							var element = WebSquare.ModelUtil.findInstanceNode( "res/vector" );
+							grid1.setXML( element );
+						
+						 ]]></script>
+					</xf:select></xf:group>
+			</xf:group>
+			<xf:group id="group4" style="position:absolute;left:15px;right:20px;top:40px;bottom:10px;" class="gridWrap autoHeight">
+				<w2:grid baseNode="vector" repeatNode="data" scrollByColumn="false" id="grid1" style="position: relative;height:100%;" class="" valueNode="value" autoFit="lastColumn" oddEvenColorDisplay="false" fixedColumn="3" loadCount="1">
+					<w2:header id="g3header" style="">
+						<w2:row id="row34" style="">
+							<w2:column id="column887" style="height:60px" inputType="text" width="60" rowSpan="3" value="점포&lt;br/&gt;코드">
+							</w2:column>
+							<w2:column id="column886" style="height:60px" inputType="text" width="70" rowSpan="3" value="점포명"></w2:column>
+							<w2:column id="column840" inputType="text" rowSpan="3" style="height:20px;" value="마감&lt;br/&gt;여부" width="60">
+							</w2:column>
+							<w2:column id="column841" inputType="text" rowSpan="3" style="height:20px;" value="일자" width="100"></w2:column>
+							<w2:column colSpan="4" id="column842" inputType="text" style="height:20px;" value="출근 인원" width="280"></w2:column>
+							<w2:column id="column3" inputType="text" rowSpan="3" style="height:20px;" value="기준&lt;br/&gt;식수" width="70">
+							</w2:column>
+							<w2:column colSpan="3" id="column5" inputType="text" style="height:20px;" value="급식 인원" width="210"></w2:column>
+							<w2:column id="column867" style="height:60px" inputType="text" width="70" rowSpan="3" value="중식&lt;br/&gt;단가">
+							</w2:column>
+							<w2:column id="column872" style="height:60px" inputType="text" width="70" rowSpan="3" value="야식&lt;br/&gt;단가">
+							</w2:column>
+							<w2:column id="column877" style="height:60px" inputType="text" width="75" rowSpan="3" value="중식&lt;br/&gt;금액">
+							</w2:column>
+							<w2:column id="column882" style="height:60px" inputType="text" width="75" rowSpan="3" value="야식&lt;br/&gt;금액">
+							</w2:column>
+							<w2:column id="column35" inputType="text" rowSpan="3" style="height:20px;" value="특이사항" width="120"></w2:column>
+						</w2:row>
+						<w2:row id="row1" style="">
+							<w2:column colSpan="2" id="column12" inputType="text" style="height:20px;" value="8시간 미만 근무자" width="140"></w2:column>
+							<w2:column colSpan="2" id="column10" inputType="text" style="height:20px;" value="8시간 이상 근무자" width="140"></w2:column>
+							<w2:column id="column7" inputType="link" rowSpan="2" style="height:20px;" value="중식" width="70"></w2:column>
+							<w2:column id="column28" inputType="link" rowSpan="2" style="height:20px;" value="야식" width="70"></w2:column>
+							<w2:column id="column32" inputType="text" rowSpan="2" style="height:20px;" value="합계" width="70"></w2:column>
+						</w2:row>
+						<w2:row id="row2" style="">
+							<w2:column id="column22" inputType="text" style="height:20px;" value="전주결과" width="70"></w2:column>
+							<w2:column id="column21" inputType="link" style="height:20px;" value="금주계획" width="70"></w2:column>
+							<w2:column id="column20" inputType="text" style="height:20px;" value="전주결과" width="70"></w2:column>
+							<w2:column id="column19" inputType="link" style="height:20px;" value="금주계획" width="70"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody2" style="">
+						<w2:row id="row8" style="">
+							<w2:column id="STORECD" style="height:20px" inputType="text" width="70" colMerge="true"></w2:column>
+							<w2:column id="STORENM" style="height:20px" inputType="text" width="70" colMerge="true" hidden="true"></w2:column>
+							<w2:column id="CLOSE_SE_CODE" style="height:20px" inputType="select" width="70" colMerge="true" upperColumn="STORENM">
+								<w2:choices>
+									<w2:item>
+										<w2:label>미마감</w2:label>
+										<w2:value>0</w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label>마감</w2:label>
+										<w2:value>1</w2:value>
+									</w2:item>
+								</w2:choices>
+							</w2:column>
+							<w2:column id="APPLC_DE" style="height:20px" inputType="text" width="70" dataType="date" displayFormat="yyyy-MM-dd(EEE)">
+							</w2:column>
+							<w2:column id="BELOW" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="ATTEND_8_TM_BELOW_CNT" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="MONTHN" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="ATTEND_8_TM_MOTHN_CNT" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="CAL1" style="height:20px" inputType="expression" width="70" dataType="number" expression="(isNaN(parseInt(display('ATTEND_8_TM_BELOW_CNT'))) ? 0 : parseInt(display('ATTEND_8_TM_BELOW_CNT'))) +  (isNaN(parseInt(display('ATTEND_8_TM_MOTHN_CNT'))) ?  0 : parseInt( display('ATTEND_8_TM_MOTHN_CNT')) )" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="LUNCH_NMPR_CNT" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="LNMEAL_NMPR_CNT" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="CAL2" style="height:20px" inputType="expression" width="70" dataType="number" displayFormat="#,###" textAlign="right" expression="(isNaN(parseInt(display('LUNCH_NMPR_CNT'))) ? 0 : parseInt(display('LUNCH_NMPR_CNT'))) +  (isNaN(parseInt(display('LNMEAL_NMPR_CNT'))) ?  0 : parseInt( display('LNMEAL_NMPR_CNT')) )">
+							</w2:column>
+							<w2:column id="RSTRNT_LUNCH_UPC" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right" hidden="true">
+							</w2:column>
+							<w2:column id="RSTRNT_LNMEAL_UPC" style="height:20px" inputType="text" width="70" dataType="number" displayFormat="#,###" textAlign="right" hidden="true">
+							</w2:column>
+							<w2:column id="LUNCH_AMT" style="height:20px" inputType="expression" width="70" dataType="number" displayFormat="#,###" textAlign="right" expression="(isNaN(parseInt(display('LUNCH_NMPR_CNT'))) ? 0 : parseInt(display('LUNCH_NMPR_CNT'))) *  (isNaN(parseInt(display('RSTRNT_LUNCH_UPC'))) ?  0 : parseInt( display('RSTRNT_LUNCH_UPC')) )">
+							</w2:column>
+							<w2:column id="LNMEAL_AMT" style="height:20px" inputType="expression" width="70" dataType="number" displayFormat="#,###" textAlign="right" expression="(isNaN(parseInt(display('LNMEAL_NMPR_CNT'))) ? 0 : parseInt(display('LNMEAL_NMPR_CNT'))) *  (isNaN(parseInt(display('RSTRNT_LNMEAL_UPC'))) ?  0 : parseInt( display('RSTRNT_LNMEAL_UPC')) )">
+							</w2:column>
+							<w2:column id="REMARKS" style="height:20px" width="70" inputType="text" textAlign="left"></w2:column>
+						</w2:row>
+					</w2:gBody>
+					<w2:subTotal id="subTotal4" style="" targetColumnID="STORECD">
+						<w2:row id="row11" style="">
+							<w2:column id="column163" style="height:20px" width="280" inputType="text" colSpan="4" value="소계 (합)">
+							</w2:column>
+							<w2:column id="column159" style="height:20px" width="70" inputType="expression" expression="sum('BELOW')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column158" style="height:20px" width="70" inputType="expression" expression="sum('ATTEND_8_TM_BELOW_CNT')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column157" style="height:20px" width="70" inputType="expression" expression="sum('MONTHN')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column156" style="height:20px" width="70" inputType="expression" expression="sum('ATTEND_8_TM_MOTHN_CNT')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column155" style="height:20px" width="70" inputType="expression" expression="sum('CAL1')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column154" style="height:20px" width="70" inputType="expression" expression="sum('LUNCH_NMPR_CNT')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column153" style="height:20px" width="70" inputType="expression" expression="sum('LNMEAL_NMPR_CNT')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column152" style="height:20px" width="70" inputType="expression" expression="sum('CAL2')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column151" style="height:20px" width="70" inputType="expression" expression="sum('RSTRNT_LUNCH_UPC')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column150" style="height:20px" width="70" inputType="expression" expression="sum('RSTRNT_LNMEAL_UPC')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column149" style="height:20px" width="70" inputType="expression" expression="sum('LUNCH_AMT')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column148" style="height:20px" width="70" inputType="expression" expression="sum('LNMEAL_AMT')" textAlign="right" dataType="number" displayFormat="#,###">
+							</w2:column>
+							<w2:column id="column147" style="height:20px" width="70" inputType="text"></w2:column>
+						</w2:row>
+					</w2:subTotal>
+					<w2:footer id="footer2" style="" class="">
+						<w2:row id="row10" style="">
+							<w2:column id="column146" style="height:20px" inputType="text" width="280" colSpan="4" value="합계 (합)"></w2:column>
+							<w2:column id="column130" style="height:20px" inputType="expression" width="70" expression="sum('BELOW')                " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column126" style="height:20px" inputType="expression" width="70" expression="sum('ATTEND_8_TM_BELOW_CNT')" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column122" style="height:20px" inputType="expression" width="70" expression="sum('MONTHN')               " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column118" style="height:20px" inputType="expression" width="70" expression="sum('ATTEND_8_TM_MOTHN_CNT')" dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column114" style="height:20px" inputType="expression" width="70" expression="sum('CAL1')                 " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column110" style="height:20px" inputType="expression" width="70" expression="sum('LUNCH_NMPR_CNT')       " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column106" style="height:20px" inputType="expression" width="70" expression="sum('LNMEAL_NMPR_CNT')      " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column102" style="height:20px" inputType="expression" width="70" expression="sum('CAL2')                 " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column98" style="height:20px" inputType="expression" width="70" expression="sum('RSTRNT_LUNCH_UPC')     " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column94" style="height:20px" inputType="expression" width="70" expression="sum('RSTRNT_LNMEAL_UPC')    " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column90" style="height:20px" inputType="expression" width="70" expression="sum('LUNCH_AMT')            " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column86" style="height:20px" inputType="expression" width="70" expression="sum('LNMEAL_AMT')           " dataType="number" displayFormat="#,###" textAlign="right">
+							</w2:column>
+							<w2:column id="column82" style="height:20px" width="70" inputType="text"></w2:column>
+						</w2:row>
+					</w2:footer>
+					<script type="javascript" ev:event="onscrollend"><![CDATA[
+					grid1.setRowStyle(grid1.getRowCount()-1, "border-bottom" ,"1px solid #c3c3c3 !important");
+					
+					 ]]></script>
+				</w2:grid>
+			</xf:group>
+</xf:group></body>
+</html>
+ 

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+s			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    console.log("[tabControl_main_wframeMode.xml] scwin.onpageload");
+    //scwin.btn_trigger1_onclick();
+    //$w.setTimeout(function(){scwin.btn_trigger1_onclick();}, {delay:1000, key:"timeout1"});
+};
+scwin.onpageunload = function() {};
+scwin.addTab = function(tabId) {
+    var tabOpt = {
+        label: tabId,
+        closable: false,
+        addTabIndex: 0
+    };
+    var contOpt = {
+        frameMode: "wframe",
+        scope: true,
+        src: tabId + ".xml",
+        alwaysDraw: false,
+        title: tabId
+    };
+    tac_main.addTab(tabId, tabOpt, contOpt);
+};
+scwin.btn_trigger1_onclick = function(e) {
+    var tabId = "tab" + scwin.tabIndex;
+    scwin.addTab(tabId);
+    tac_main.setSelectedTabIndex(tabId);
+    scwin.tabIndex++;
+};
+scwin.tac_main_ondrawcomplete = function(tabID, idx, userID) {
+    console.log("scwin.tac_main_ondrawcomplete");
+};
+scwin.tac_main_ontabload = function(tabID, idx, userID) {
+    console.log("scwin.tac_main_ontabload");
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.tabIndex = 1;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group style="" id="" class="">
+			<w2:textbox label="TabControl adaptive Test" style="height: 30px;font-size: 23px;font-weight:bold" id=""></w2:textbox>
+		</xf:group>
+		<!-- spaInitCount=""으로 수정하면 WFrame Mode로 AddTAb을 수행하면 정상적으로 WFrame Tab이 생성된다.  -->
+		<!-- spaInitCount="3"으로 설정하면 WFrame Mode로 AddTAb을 수행해도 IFrame Tab이 생성된다. -->
+		<w2:tabControl useTabKeyOnly="true" id="tac_main" useMoveNextTabFocus="false" useConfirmMessage="false" confirmTrueAction="exist"
+			confirmFalseAction="new" alwaysDraw="false" style="height: 550px;position:relative; width:90%;" spaInitCount="0" ev:ondrawcomplete="scwin.tac_main_ondrawcomplete"
+			ev:ontabload="scwin.tac_main_ontabload" hiddenTab="false" windowMaxNum="5" adaptive="layout" adaptiveThreshold="900">
+			<w2:tabs disabled="false" style='width:100px; height:27px' label="Tab1" id="tabs1" tabWidth="100"></w2:tabs>
+			<w2:tabs disabled="false" style='width:100px; height:27px' label="Tab2" id="tabs2" tabWidth="100"></w2:tabs>
+			<w2:content alwaysDraw="true" style="height:400px;" id="content1" src="TabControl_class_tag_main_WPF-2112_(WSQ-3737)_subTab.xml" scope="true" frameMode="wframe"></w2:content>
+			<w2:content alwaysDraw="true" style="height:400px;" id="content2" src="TabControl_class_tag_main_WPF-2112_(WSQ-3737)_subTab.xml" scope="true" frameMode="wframe"></w2:content>
+		</w2:tabControl>
+		<xf:trigger type="button" style="width: 80px;height: 23px;position:relative;display:none;" id="btn_trigger1" ev:onclick="scwin.btn_trigger1_onclick">
+			<xf:label><![CDATA[Add Tab]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

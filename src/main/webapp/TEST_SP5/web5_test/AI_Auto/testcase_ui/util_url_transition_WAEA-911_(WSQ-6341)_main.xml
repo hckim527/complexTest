@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <script lazy="false" type="text/javascript"><![CDATA[
+// WAEA-911 : util.url transition(fadeout/slideup) jQuery 제거 검증 - [출발] 화면
+//
+// 판정 축이 두 개다.
+//   (1) 기능 등가성 : 구엔진/신엔진 모두 전환 후 정상 이동해야 한다. (회귀 없음)
+//   (2) jQuery 미사용 : 신엔진에서만 $.fn.fadeOut/slideUp 호출이 0 이어야 한다. (수정 반영)
+// 상태는 sessionStorage 로 넘긴다. 페이지가 이동하면 이 화면의 변수는 사라지므로.
+
+var W911_STATE = "WAEA911_STATE";
+var W911_LOG   = "WAEA911_LOG";
+
+scwin.readState = function() {
+    try { return JSON.parse(sessionStorage.getItem(W911_STATE)) || null; } catch (e) { return null; }
+};
+scwin.writeState = function(st) {
+    try { sessionStorage.setItem(W911_STATE, JSON.stringify(st)); } catch (e) {}
+};
+scwin.readLog = function() {
+    try { return JSON.parse(sessionStorage.getItem(W911_LOG)) || []; } catch (e) { return []; }
+};
+scwin.appendLog = function(line) {
+    var arr = scwin.readLog();
+    arr.push(line);
+    try { sessionStorage.setItem(W911_LOG, JSON.stringify(arr)); } catch (e) {}
+    scwin.renderLog();
+};
+scwin.renderLog = function() {
+    txa_log.setValue(scwin.readLog().join("\n") + "\n");
+};
+
+// ---- 경로 기본값 : 현재 화면과 같은 폴더의 target 파일 ----
+scwin.siblingPath = function(fileName) {
+    var m = location.search.match(/w2xPath=([^&]+)/);
+    var base = m ? decodeURIComponent(m[1]) : location.pathname;
+    return base.replace(/[^\/]*$/, "") + fileName;
+};
+
+// 입력 컨트롤 생성이 실패해도 테스트는 돌아가도록 폴백을 둔다.
+scwin._targetFallback = "";
+scwin.getTarget = function() {
+    if (typeof inpTarget !== "undefined" && inpTarget && inpTarget.getValue) {
+        return inpTarget.getValue();
+    }
+    return scwin._targetFallback;
+};
+scwin.setTarget = function(v) {
+    scwin._targetFallback = v;
+    if (typeof inpTarget !== "undefined" && inpTarget && inpTarget.setValue) {
+        inpTarget.setValue(v);
+    }
+};
+
+// ---- jQuery 스파이 : 원본에 위임하되 호출 횟수만 센다 ----
+// fadeOut/slideUp 만 감싼다. animate 까지 감싸면 fadeOut 내부 호출까지 중복으로 잡힌다.
+scwin.installJqSpy = function() {
+    if (typeof window.jQuery !== "function" || !window.jQuery.fn) {
+        return "jQuery 자체가 없음";
+    }
+    var fn = window.jQuery.fn;
+    if (fn.__waea911_spied) { return "설치됨(이미)"; }
+
+    var names = ["fadeOut", "slideUp"];
+    for (var i = 0; i < names.length; i++) {
+        (function(name) {
+            var orig = fn[name];
+            if (typeof orig !== "function") { return; }
+            fn[name] = function() {
+                scwin.bumpJq(name);
+                return orig.apply(this, arguments);
+            };
+        })(names[i]);
+    }
+    fn.__waea911_spied = true;
+    return "설치됨";
+};
+scwin.bumpJq = function(name) {
+    var st = scwin.readState();
+    if (!st) { return; }
+    st.jq[name] = (st.jq[name] || 0) + 1;
+    scwin.writeState(st);
+};
+
+// ---- rAF 강제 실패 : 첫 호출만 throw 후 스스로 원복 ----
+scwin.breakRAF = function() {
+    var orig = window.requestAnimationFrame;
+    window.requestAnimationFrame = function() {
+        window.requestAnimationFrame = orig;
+        throw new Error("WAEA-911 forced requestAnimationFrame failure");
+    };
+    setTimeout(function() { window.requestAnimationFrame = orig; }, 3000);
+};
+
+// ---- 공통 실행 ----
+// opt 가 null 이면 인자 1개로 호출한다. (transition/spa 미지정 = non-SPA baseline)
+scwin.start = function(caseName, opt, breakRaf) {
+    try { sessionStorage.removeItem(W911_STATE); } catch (e) {}
+
+    var spy = scwin.installJqSpy();
+    var target = scwin.getTarget();
+    if (!target) {
+        scwin.appendLog("ERROR : target 경로가 비어 있습니다.");
+        return;
+    }
+
+    scwin.writeState({
+        caseName: caseName,
+        opt: opt,
+        t0: new Date().getTime(),
+        jq: { fadeOut: 0, slideUp: 0 },
+        arrivals: 0,
+        breakRaf: !!breakRaf,
+        bodyStyleBefore: document.body.getAttribute("style") || "",
+        backPath: scwin.siblingPath("util_url_transition_WAEA-911_(WSQ-6341)_main.xml")
+    });
+
+    scwin.appendLog("----------------------------------------------------------");
+    scwin.appendLog("[시작] " + caseName);
+    scwin.appendLog("  opt = " + (opt === null ? "(인자 없음)" : JSON.stringify(opt)));
+    scwin.appendLog("  jQuery 스파이 = " + spy + " / rAF 강제실패 = " + (breakRaf ? "ON" : "OFF"));
+
+    if (breakRaf) { scwin.breakRAF(); }
+
+    var fn = (window.$p && typeof $p.url === "function")
+        ? function(u, o) { return (o === null) ? $p.url(u) : $p.url(u, o); }
+        : function(u, o) { return (o === null) ? WebSquare.util.url(u) : WebSquare.util.url(u, o); };
+
+    try {
+        fn(target, opt);
+    } catch (e) {
+        scwin.appendLog("  ERROR : url 호출 예외 - " + e.message);
+        scwin.appendLog("  -> 전환 효과가 실패해도 페이지 이동은 되어야 한다. 여기서 멈추면 FAIL.");
+    }
+};
+
+scwin.btn_fadeout_onclick = function() {
+    scwin.start("① SPA + fadeout", { spa: true, transition: "fadeout" }, false);
+};
+scwin.btn_slideup_onclick = function() {
+    scwin.start("② SPA + slideup", { spa: true, transition: "slideup" }, false);
+};
+scwin.btn_spa_none_onclick = function() {
+    scwin.start("③ SPA + transition 미설정 (하위호환)", { spa: true }, false);
+};
+scwin.btn_nonspa_onclick = function() {
+    scwin.start("④ non-SPA 미설정 (baseline)", null, false);
+};
+scwin.btn_raf_fail_onclick = function() {
+    scwin.start("⑤ SPA + fadeout + rAF 강제실패", { spa: true, transition: "fadeout" }, true);
+};
+
+// ---- 환경 덤프 : 수정 반영 여부를 눈으로 바로 확인 ----
+scwin.btn_dump_onclick = function() {
+    var u = (window.WebSquare && WebSquare.util) ? WebSquare.util : null;
+    var cs = window.getComputedStyle(document.body);
+
+    scwin.appendLog("----------------------------------------------------------");
+    scwin.appendLog("[환경]");
+    scwin.appendLog("  jQuery                    = " + (typeof window.jQuery === "function" ? (window.jQuery.fn && window.jQuery.fn.jquery) || "있음" : "없음"));
+    scwin.appendLog("  $p.url                    = " + (window.$p && typeof $p.url === "function"));
+    scwin.appendLog("  WebSquare.util.url        = " + (u && typeof u.url === "function"));
+    scwin.appendLog("  util._pageTransition      = " + (u && typeof u._pageTransition === "function"));
+    scwin.appendLog("     -> 이 헬퍼가 있으면 수정 반영된 신엔진, 없으면 구엔진(또는 캐시된 구 js).");
+    scwin.appendLog("  body display/opacity      = " + cs.display + " / " + cs.opacity);
+    scwin.appendLog("  body inline style         = \"" + (document.body.getAttribute("style") || "") + "\"");
+    scwin.appendLog("  target 경로               = " + scwin.getTarget());
+};
+
+scwin.btn_clear_onclick = function() {
+    try {
+        sessionStorage.removeItem(W911_LOG);
+        sessionStorage.removeItem(W911_STATE);
+    } catch (e) {}
+    txa_log.setValue("");
+};
+
+scwin.onpageload = function() {
+    window.WAEA_911_READY = true;
+    if (!scwin.getTarget()) {
+        scwin.setTarget(scwin.siblingPath("util_url_transition_WAEA-911_(WSQ-6341)_target.xml"));
+    }
+    scwin.renderLog();
+    if (scwin.readLog().length === 0) {
+        scwin.appendLog("WAEA-911 util.url transition 검증 [출발] 화면");
+        scwin.appendLog("① ~ ⑤ 를 하나씩 누르면 target 화면으로 이동하며 그쪽에서 판정 결과가 찍힙니다.");
+        scwin.appendLog("target 화면의 [돌아가기] 로 복귀해 다음 케이스를 실행하세요. 로그는 누적됩니다.");
+        scwin.appendLog("먼저 [환경] 을 눌러 구/신 엔진 여부를 확인하고 시작하는 것을 권장합니다.");
+    }
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:8px;">
+            <w2:textbox label="WAEA-911 util.url transition 검증 [출발]" style="display:block;font-weight:bold;margin:4px 2px;"/>
+
+            <w2:textbox label="target 경로" style="margin:2px;"/>
+            <xf:input id="inpTarget" style="width:520px;height:24px;margin:2px;"/>
+
+            <w2:textbox label="" style="display:block;"/>
+
+            <xf:trigger type="button" id="btn_fadeout" ev:onclick="scwin.btn_fadeout_onclick" style="width:230px;height:28px;margin:2px;">
+                <xf:label><![CDATA[① SPA + fadeout]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_slideup" ev:onclick="scwin.btn_slideup_onclick" style="width:230px;height:28px;margin:2px;">
+                <xf:label><![CDATA[② SPA + slideup]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_spa_none" ev:onclick="scwin.btn_spa_none_onclick" style="width:230px;height:28px;margin:2px;">
+                <xf:label><![CDATA[③ SPA + 미설정 (하위호환)]]></xf:label>
+            </xf:trigger>
+
+            <w2:textbox label="" style="display:block;"/>
+
+            <xf:trigger type="button" id="btn_nonspa" ev:onclick="scwin.btn_nonspa_onclick" style="width:230px;height:28px;margin:2px;">
+                <xf:label><![CDATA[④ non-SPA 미설정 (baseline)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_raf_fail" ev:onclick="scwin.btn_raf_fail_onclick" style="width:230px;height:28px;margin:2px;">
+                <xf:label><![CDATA[⑤ fadeout + rAF 강제실패]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_dump" ev:onclick="scwin.btn_dump_onclick" style="width:230px;height:28px;margin:2px;">
+                <xf:label><![CDATA[환경 (엔진 판별)]]></xf:label>
+            </xf:trigger>
+
+            <w2:textbox label="" style="display:block;"/>
+
+            <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick" style="width:80px;height:28px;margin:2px;">
+                <xf:label><![CDATA[clear]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <w2:textarea id="txa_log" readOnly="true" style="width:780px;height:320px;margin:8px;font-family:monospace;font-size:12px;background:#1e1e1e;color:#0f0;"/>
+    </body>
+</html>

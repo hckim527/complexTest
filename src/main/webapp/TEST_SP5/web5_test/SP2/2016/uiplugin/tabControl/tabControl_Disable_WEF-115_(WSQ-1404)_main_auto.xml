@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.btnOpenPopup_onclick = function(e) {
+    openPopup();
+};
+scwin._hasClass = function(id) {
+    if (!WebSquare.wUnit.getDomById($p.id + id)) {
+        return false;
+    }
+    return true;
+}
+scwin.__isDisabled = function(id) {
+    var className = WebSquare.wUnit.getDomById($p.id + id).className;
+    return className.indexOf("w2tabcontrol_disabled") >= 0;
+}
+scwin.setValue = function() {
+    if (WebSquare.wUnit.getJq('#popup_closeButton').length == 0) {
+        wfm_popup_popup_closeButton.click();
+    } else {
+        popup_closeButton.click();
+    }
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnOpenPopup').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin._hasClass('wfm_popup')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("set", "scwin.setValue()");
+    WebSquare.wUnit.addCommand("pause", "500");
+
+    WebSquare.wUnit.addCommand("assert", "scwin._hasClass('wfm_popup')", "false");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isDisabled('wq_uuid_3_tab_tab2')", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isDisabled('wq_uuid_3_tab_tab3')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    openPopup = function() {
+        window.options = {
+            "src": "tabControl_Disable_WEF-115_(WSQ-1404)_popup.xml",
+            "style": "position:absolute; top:0; width:100%; height:100%; z-index:9001"
+        };
+        WebSquare.layer.showModal();
+        WebSquare.util.dynamicCreate("wfm_popup", "wframe", options);
+    };
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 08-Feb-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload"><xf:group id="" style="padding:50px;"><xf:trigger id="btnOpenPopup" style="margin-bottom:10px;padding:5px 10px;" type="button" ev:onclick="scwin.btnOpenPopup_onclick"><xf:label><![CDATA[팝업창 열기]]></xf:label></xf:trigger><w2:tabControl id="" confirmTrueAction="exist" useConfirmMessage="false" useTabKeyOnly="true" confirmFalseAction="new" alwaysDraw="false" style="height:200px;">
+    		<w2:tabs id="tab1" style="" label="TAB 1" disabled="false"></w2:tabs>
+    		<w2:tabs id="tab2" style="" label="TAB 2" disabled="true"></w2:tabs>
+    		<w2:tabs id="tab3" style="" label="TAB 3" disabled="true"></w2:tabs>
+    		<w2:content id="content1" style="" alwaysDraw="false"></w2:content>
+    		<w2:content id="content2" style="" alwaysDraw="false"></w2:content>
+    		<w2:content id="content3" style="" alwaysDraw="false"></w2:content>
+    	</w2:tabControl></xf:group></body>
+</html>
+ 

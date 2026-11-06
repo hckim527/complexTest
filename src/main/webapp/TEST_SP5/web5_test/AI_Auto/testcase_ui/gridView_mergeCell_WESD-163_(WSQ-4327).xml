@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                        <w2:column id="col5" name="name5" dataType="text"></w2:column>
+                        <w2:column id="col6" name="name6" dataType="text"></w2:column>
+                        <w2:column id="col7" name="name7" dataType="text"></w2:column>
+                        <w2:column id="col8" name="name8" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "col1": "1111",
+        "col2": "aaaa",
+        "col3": "가가가가",
+        "col4": "123"
+    }, {
+        "col1": "1111",
+        "col2": "aaaa",
+        "col3": "가가가가",
+        "col4": "234"
+    }, {
+        "col1": "1111",
+        "col2": "aaaa",
+        "col3": "가가가가",
+        "col4": "34"
+    }, {
+        "col1": "2222",
+        "col2": "bbb",
+        "col3": "가가가가",
+        "col4": "546"
+    }, {
+        "col1": "2222",
+        "col2": "bbb",
+        "col3": "가가가가",
+        "col4": "73"
+    }, {
+        "col1": "2222",
+        "col2": "bbb",
+        "col3": "가가가가",
+        "col4": "732"
+    }, {
+        "col1": "333",
+        "col2": "ccc",
+        "col3": "가가가가",
+        "col4": "we"
+    }, {
+        "col1": "333",
+        "col2": "ccc",
+        "col3": "가가가가",
+        "col4": "1234"
+    }, {
+        "col1": "333",
+        "col2": "ccc",
+        "col3": "가가가가",
+        "col4": "09"
+    }, {
+        "col1": "1111",
+        "col2": "aaaa",
+        "col3": "가가가가",
+        "col4": "091"
+    }, {
+        "col1": "1111",
+        "col2": "aaaa",
+        "col3": "가가가가",
+        "col4": "029"
+    }];
+    dataList1.setJSON(jsonData);
+    var rowJSON = dataList1.getRowJSON(0);
+    var j = [];
+    for (var i = 0; i < 150; i++) {
+        var tmp = {};
+        for (var item in rowJSON) {
+            if (item == "rowStatus") continue;
+            if (item == "col1") tmp[item] = item + "_" + Math.floor(i / 3);
+            if (item == "col2") tmp[item] = "a" + Math.floor(i / 3);
+            if (item == "col3") tmp[item] = "가가가가";
+            if (item == "col4") tmp[item] = (i + 1);
+            if (item == "col5") tmp[item] = "나나나나" + (i + 1);
+            if (item == "col6") tmp[item] = "d" + (i + 1);
+            if (item == "col8" && ((i % 3) == 0 || (i % 5) == 0)) tmp[item] = "1";
+        }
+        j.push(tmp);
+    }
+    dataList1.setJSON(j);
+};
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    /*
+    var mergeInfo = {
+        
+    }; 
+    gridView2.mergeCell( mergeInfo );
+    */
+    var all = dataList1.getAllJSON();
+    console.log("before all: ", all);
+    dataList1.setBroadcast(false);
+    for (var i = 0; i < dataList1.getTotalRow(); i++) {
+        var iopRecp = "[" + dataList1.getCellData(i, "col1") + "] " + dataList1.getCellData(i, "col3") + "-" + dataList1.getCellData(i, "col2");
+        //dataList1.setCellData( i , "col5" , iopRecp ); //[입외]영수번호 form 만들기
+        all[i]["col5"] = iopRecp;
+        var cardTypeFm = "[" + dataList1.getCellData(i, "col1") + "] " + dataList1.getCellData(i, "col2");
+        //dataList1.setCellData( i , "col6" , cardTypeFm ); //[미수구분]카드타입 form 만들기
+        all[i]["col6"] = cardTypeFm;
+        var uncTypeFm = dataList1.getCellData(i, "col1") + "/" + dataList1.getCellData(i, "col3") + " [" + dataList1.getCellData(i, "col4") + "]";
+        //dataList1.setCellData( i , "col7" , uncTypeFm );
+        all[i]["col7"] = uncTypeFm;
+    }
+    console.log("after all: ", all);
+    dataList1.setJSON(all);
+    dataList1.setBroadcast(true, true);
+    for (var i = 0; i < dataList1.getTotalRow(); i++) {
+        var unclMdf = dataList1.getCellData(i, "col8");
+        if (unclMdf != "" && unclMdf == "1") { //미수변경=='1'일 때
+            gridView2.setCellColor(i, "col6", "#186bb6");
+            var mergeInfo = {
+                rowIndex: i,
+                rowSpan: 1,
+                colIndex: 0,
+                colSpan: 4,
+                noDraw: true
+            };
+            gridView2.mergeCell(mergeInfo); //접수일자, 유형, 영수번호 셀 병합
+        }
+    }
+};
+scwin.trigger2_onclick = function(e) {
+    gridView2.mergeClear();
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /*
+    scwin.sbm_masdetailList_submitdone = function(e) { //개인미수내역 서브미션 끝나고 실행
+        tot_cnt2.setValue( dtl_masdetailList.getTotalRow() );
+
+        for(var i=0; i<dtl_masdetailList.getTotalRow(); i++){ 
+
+            window.iopRecp ="["+dtl_masdetailList.getCellData( i , "admsOtptDvsn")+"] "+dtl_masdetailList.getCellData( i ,  "recpNo" )+"-"+dtl_masdetailList.getCellData( i ,  "billFrqn" );
+            dtl_masdetailList.setCellData( i , "iopRecp" , iopRecp ); //[입외]영수번호 form 만들기
+            window.cardTypeFm ="["+dtl_masdetailList.getCellData( i , "unclDvsn")+"] "+dtl_masdetailList.getCellData( i ,  "cardKind" );
+            dtl_masdetailList.setCellData( i , "uncCard" , cardTypeFm ); //[미수구분]카드타입 form 만들기
+            window.uncTypeFm = dtl_masdetailList.getCellData( i , "unclDvsn" )+"/"+dtl_masdetailList.getCellData( i , "cardKind" )+" ["+dtl_masdetailList.getCellData( i , "cardNm" )+"]";
+            dtl_masdetailList.setCellData( i , "uncTypeFm" , uncTypeFm );
+            
+            window.unclMdf = dtl_masdetailList.getCellData( i , "unclMdf" ); 
+            if(unclMdf!="" && unclMdf=="1"){ //미수변경=='1'일 때
+                grd_masList.setCellColor( i , "uncCard" , "#186bb6" );
+                window.mergeInfo = {rowIndex : i, rowSpan : 1, colIndex : 0, colSpan : 4, noDraw :true};    
+                grd_masList.mergeCell( mergeInfo ); //접수일자, 유형, 영수번호 셀 병합
+            }
+            scwin.startColIdx = grd_masList.getColumnIndex("prvOcrrDt"); //원발생일자
+            scwin.endColIdx = grd_masList.getColumnIndex("rltdDcmnNo"); //관련문서번호
+            scwin.lastColIdx = grd_masList.getColumnIndex("empCdDpst"); //입금쪽 직원코드
+            
+//          window.atchCnt = dtl_masdetailList.getCellData(i, "atchCnt");
+//          if(atchCnt > 1 ){
+//              grd_masList.setRowBackgroundColor(i, "yellow");
+//              for(var col=0; col<scwin.endColIdx+1; col++){
+//                  if(grd_masList.getMerged(i, col)==false){
+//                      window.mergeInfo = {rowIndex : i, rowSpan : atchCnt, colIndex : col, colSpan: 1, noDraw : true};    
+//                      grd_masList.mergeCell(mergeInfo);
+//                      
+//                  }
+//              }
+//                  
+//          }
+
+    };
+    
+    */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <w2:gridView id="gridView1" ignoreToggleOnDisabled="false" syncScroll="false" useShiftKey="true" style="width:616px;height:273px;" visibleRowNum="6"
+            scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" summaryAuto="false" summaryOnlyAuto="false" wheelRows="1"
+            applyAllColumnStyle="false" dataList="data:dataList1" ignoreCellClick="false" mergeCells="byrestriccol" mergeCol="col1,col2" mergeRefreshAlways="true">
+            <w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+            <w2:header style="" id="header1">
+                <w2:row style="" id="row1">
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="column7" value="name1" blockSelect="false"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="column5" value="name2" blockSelect="false"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="column3" value="name3" blockSelect="false"
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="column1" value="name4" blockSelect="false"
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody style="" id="gBody1">
+                <w2:row style="" id="row2">
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="col1" value="" blockSelect="false" displayMode="label" rowSpan="2">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="col2" value="" blockSelect="false" displayMode="label" rowSpan="2">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="button" style="" id="col3" value="" blockSelect="false" displayMode="label">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="col4" value="" blockSelect="false" displayMode="label">
+                    </w2:column>
+                </w2:row>
+                <w2:row style="" id="row3">
+                    <!-- <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="col1" value="" blockSelect="false" displayMode="label">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="col2" value="" blockSelect="false" displayMode="label">
+                    </w2:column> -->
+                    <w2:column removeBorderStyle="false" width="70" inputType="button" style="" id="col5" value="" blockSelect="false" displayMode="label">
+                    </w2:column>
+                    <w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="col6" value="" blockSelect="false" displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+            <xf:label><![CDATA[mergeCell]]></xf:label>
+        </xf:trigger>
+        <xf:trigger type="button" id="trigger2" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+            <xf:label><![CDATA[mergeClear]]></xf:label>
+        </xf:trigger>
+        <w2:gridView applyAllColumnStyle="false" dataList="data:dataList1" defaultCellHeight="20" id="gridView2" ignoreCellClick="false"
+            ignoreToggleOnDisabled="false" mergeCells="" scrollByColumn="false" scrollByColumnAdaptive="false"
+            style="width:100%;height:273px;" summaryAuto="false" summaryOnlyAuto="false" syncScroll="false" useShiftKey="true" autoFit="allColumn">
+            <w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+            <w2:header id="header2" style="">
+                <w2:row id="row3" style="">
+                    <w2:column blockSelect="false" id="column29" removeBorderStyle="false" style="" inputType="text" width="70"
+                        value="name1" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column27" removeBorderStyle="false" style="" inputType="text" width="70"
+                        value="name2" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column25" removeBorderStyle="false" style="" inputType="text" width="70"
+                        value="name3" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column23" removeBorderStyle="false" style="" inputType="text" width="70"
+                        value="name4" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column21" removeBorderStyle="false" style="" inputType="text" width="70"
+                        value="name5" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column19" removeBorderStyle="false" style="" inputType="text" width="70"
+                        value="name6" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column17" removeBorderStyle="false" style="" inputType="text" width="70"
+                        value="name7" displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column15" removeBorderStyle="false" style="" width="70" inputType="text"
+                        value="name8" displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody2" style="">
+                <w2:row id="row4" style="">
+                    <w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col4" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col5" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col6" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col7" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                        displayMode="label">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="col8" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+                        displayMode="label">
+                    </w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>
+ 

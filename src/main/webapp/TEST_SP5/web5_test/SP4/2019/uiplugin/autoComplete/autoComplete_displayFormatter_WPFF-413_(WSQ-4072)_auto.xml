@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            			<w2:column id="temp" name="name3" dataType="text" importFormatter="scwin.fun_import"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fun_import = function(a, b) {
+    return a.label + " (" + a.value + ")";
+}
+scwin.fun_display = function(data) {
+    var arrTemp = data.split("(");
+    return arrTemp[1].replace(")", "");
+}
+scwin.fun_display = function(data) {
+    var arrTemp = data.split("(");
+    return arrTemp[1].replace(")", "") + "_scopeFormatter";
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#autoComplete1_label').text() == 'a1_scopeFormatter'", "true");
+    WebSquare.wUnit.addCommand('pause', '500');
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setJSON([{
+        "label": "가나다",
+        "value": "a1"
+    }, {
+        "label": "고노도",
+        "value": "a2"
+    }, {
+        "label": "하카타",
+        "value": "a3"
+    }]);
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete id="autoComplete1" style="width:262px;height:27px;" search="start" interactionMode="" displayMode="label" useKeywordHighlight="true" submenuSize="auto" editType="select" interactionKey="" delimiter="-" displayFormatter="scwin.fun_display">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList1">
+    				<w2:label ref="temp"></w2:label>
+    				<w2:value ref="value"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    </body>
+</html>
+ 

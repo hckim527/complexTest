@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text"></w2:column>
+    					<w2:column id="col3" name="name3" dataType="text"></w2:column>
+    					<w2:column id="col4" name="name4" dataType="text"></w2:column>
+    					<w2:column id="col5" name="name5" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		var dataJson = [
+			{"col1":"101","col2":"201","col3":"-301","col4":"401","col5":"501"},
+			{"col1":"102","col2":"202","col3":"-301","col4":"402","col5":"501"},
+			{"col1":"103","col2":"203","col3":"10000","col4":"403","col5":"501"},
+			{"col1":"104","col2":"204","col3":"-302","col4":"404","col5":"502"},
+			{"col1":"105","col2":"205","col3":"-302","col4":"405","col5":"502"},
+			{"col1":"106","col2":"206","col3":"-303","col4":"406","col5":"503"},
+			{"col1":"107","col2":"207","col3":"-303","col4":"407","col5":"503"},
+			{"col1":"108","col2":"208","col3":"-304","col4":"408","col5":"504"},
+			{"col1":"109","col2":"209","col3":"-304","col4":"409","col5":"504"},
+			{"col1":"110","col2":"210","col3":"-304","col4":"410","col5":"504"},
+
+			{"col1":"108","col2":"208","col3":"304","col4":"408","col5":"505"},
+			{"col1":"109","col2":"209","col3":"304","col4":"409","col5":"505"},
+			{"col1":"110","col2":"210","col3":"304","col4":"410","col5":"505"},
+			{"col1":"108","col2":"208","col3":"-324","col4":"408","col5":"505"},
+			{"col1":"109","col2":"209","col3":"-364","col4":"409","col5":"506"},
+			{"col1":"110","col2":"210","col3":"-314","col4":"410","col5":"506"},
+			{"col1":"108","col2":"208","col3":"-384","col4":"408","col5":"506"},
+			{"col1":"109","col2":"209","col3":"-304","col4":"409","col5":"506"},
+			{"col1":"110","col2":"210","col3":"-304","col4":"410","col5":"507"}
+		]
+		dataList1.setJSON(dataJson);
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+	let i=0
+	let cnt=1; //그리드 칼럼 수 카운트용
+	scwin.gridView1_subtotalStyleFormatter = function(value, formattedValue, subtotalColumnId) { // value : 원본 데이터 formattedValue : 형태가 적용된 데이터 subtotalColumnId : 부분합 컬럼명
+		debugger;
+		if (subtotalColumnId !=="column13" && subtotalColumnId !=="column11") {
+        return "w2subtotaldefault";
+		}
+		const str = gridView1._getExcelSubtotalData(); // gridView1 subtotal 값 전제 스트링 가져오기
+	//	console.log(str)
+
+		//string->array 변환
+		const resultArray = str.replace(/"/g, '').split(',').map(val => val === '' ? '' : Number(val));
+	//	console.log(resultArray);
+
+			// 서브토탈 row별 값 리턴해서 비교하기
+			// 5개씩 자르기 : mf_gridView1.getColumnCount();-> row당 칼럼 5개
+			const group = resultArray.slice(i, i + 5); 
+
+			//Object.keys(mf_gridView1.subtotalObj.col5).length = 2 
+			//column11, column13에서만 서브토탈 데이터 표기하고 있어서 2로 연산
+			if(cnt>1&&cnt%2==1){ 
+			i=i+5;
+			}
+
+			// 원본 데이터와 배열 내 최대값 비교
+			for (let j = 0; j < group.length; j++) 
+			{
+
+				// if (Math.max(...group)===value) 
+				// 	{	
+				// 		cnt++;
+				// 		return "w2subtotalplus";
+				// 	} 
+				// 	else{
+				// 		cnt++;
+	        	// 		return "w2subtotalminus";
+	    		// } 
+				
+				switch (Math.max(...group) === value) {
+					case true:
+					cnt++;
+					return "w2subtotalplus";
+					case false:
+					cnt++;
+					return "w2subtotalminus";
+}
+
+
+
+			}
+	//		}
+}
+
+	
+	
+
+
+scwin.trigger1_onclick = function(e) {
+	jsnOptions = {
+    useSubTotal: "true", //필수 지정 - subTotal 표시
+    useSubTotalData: "true",
+    useStyle: "true", //필수 지정
+	useClass : "true",
+	//subTotalColor :"#d31fe0"
+   // rowNumSubTotalColor: "#0067A3", //행 번호 서브토탈 영역 배경색
+    };
+
+    gridView1.advancedExcelDownload(jsnOptions);
+};
+
+scwin.trigger3_onclick = function(e) {
+	jsnOptions = {
+    useSubTotal: "true", //필수 지정 - subTotal 표시
+    useSubTotalData: "true",
+    useStyle: "true", //필수 지정
+	useClass : "true",
+	fileName :"wese_1163.xlsx",
+	useSubTotalColumnClass : "true"
+	//subTotalColor :"#d31fe0"
+   // rowNumSubTotalColor: "#0067A3", //행 번호 서브토탈 영역 배경색
+    };
+
+    gridView1.advancedExcelDownload(jsnOptions);
+};
+]]></script>
+    	<style type="text/css"><![CDATA[
+    		.w2subtotalplus {
+                background-color : #d2f367;
+            }
+            .w2subtotalminus {
+                background-color : #68b6f1;
+            }
+            
+        .w2subtotaldefault {
+              background-color : #f6ad55;
+        }
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView id="gridView1" style="width:500px;height:394px;" scrollByColumn="false" defaultCellHeight="20"
+    		scrollByColumnAdaptive="false" dataList="data:dataList1" subtotalStyleFormatter="scwin.gridView1_subtotalStyleFormatter"
+    		drawType="native">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column5" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column4" value="name2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="name3" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column2" value="name4" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column1" value="name5" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col3" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col4" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col5" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:subTotal targetColumnID="col5" style="" id="subTotal1">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="expression" style="height:20px" id="column15" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="expression" style="height:20px" id="column14" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="expression" style="height:20px" id="column13" value="" displayMode="label"
+    					expression="SUM('col3');">
+    				</w2:column>
+    				<w2:column width="70" inputType="expression" style="height:20px" id="column12" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="expression" style="height:20px" id="column11" value="" displayMode="label"
+    					expression='SUM("col5")'>
+    				</w2:column>
+    			</w2:row>
+    		</w2:subTotal>
+    	</w2:gridView>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[excel]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3" style="width:217px;height:23px;" type="button">
+    		<xf:label><![CDATA[excel useSubTotalColumnClass]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

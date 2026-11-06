@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.showMessage = function(message) {
+    //  WebSquare.logger.printLog(message);
+    console.log(message);
+    //alert(message);
+}
+scwin.gridView1_oncellclick = function(row, col) {
+    scwin.showMessage("== oncellclick ==\n[row] = " + row + "\n[col] = " + col);
+    window.log = true;
+};
+scwin.gridView1_onsubtotalclick = function(info) {
+    scwin.showMessage("== onsubtotalclick ==\n[colID] = " + info.colID + "\n[element] = " + info.element.outerHTML);
+    window.log1 = true;
+};
+scwin.gridView1_onsubtotaldblclick = function(info) {
+    scwin.showMessage("== onsubtotaldblclick ==\n[colID] = " + info.colID + "\n[element] = " + info.element.outerHTML);
+    window.log2 = true;
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.setVal = function() {
+    scwin.fireDbClick(WebSquare.wUnit.getDomById('column7'));
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 7. 임의의 셀을 클릭한다.
+    //7. Click on any cell.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_7_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 7. oncellclick 이벤트가 실행되서 로그가 생성된다.
+    //7. The oncellclick event is executed and a log is generated.
+    WebSquare.wUnit.addCommand("assert", "window.log", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 8. Total 부분의 임의의 셀을 클릭한다.
+    //8. Click on any cell in the Total section.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('column7').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 8. onsubtotalclick 이벤트가 실행되서 로그가 생성된다.
+    //8. The onsubtotalclick event is executed and a log is generated.
+    WebSquare.wUnit.addCommand("assert", "window.log1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 9. Total 부분의 임의의 셀을 더블클릭한다. (코멘트확인)
+    //9. Double-click any cell in the Total section. (Comment confirmation)
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 9. onsubtotaldblclick 이벤트가 실행되서 로그가 생성된다.
+    //9. The onsubtotaldblclick event is executed and a log is generated.
+    WebSquare.wUnit.addCommand("assert", "window.log2", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.data = [];
+    for (var i = 0; i < 12; i++) {
+        data.push(i);
+        data.push(Math.floor(i / 3));
+        data.push(i * i);
+    }
+    dataList1.setData(data);
+    window.log = false;
+	window.log1 = false;
+	window.log2 = false;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 02-Mar-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="position: relative;width:598px;height:429px;" fixedColumnWithHidden="true" useShiftKey="true" ev:oncellclick="scwin.gridView1_oncellclick" ev:onsubtotalclick="scwin.gridView1_onsubtotalclick" ev:onsubtotaldblclick="scwin.gridView1_onsubtotaldblclick">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" colMerge="true"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:subTotal id="subTotal1" style="" targetColumnID="col2">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column9" style="" width="70" inputType="expression" expression="sum('col1')"></w2:column>
+    				<w2:column blockSelect="false" id="column8" style="" width="70" inputType="text"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" width="70" inputType="expression" expression="sum('col3')"></w2:column>
+    			</w2:row>
+    		</w2:subTotal>
+    	</w2:gridView>
+    </body>
+</html>
+ 

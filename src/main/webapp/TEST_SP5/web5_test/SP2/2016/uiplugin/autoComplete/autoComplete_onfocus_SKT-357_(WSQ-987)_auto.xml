@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.autoComplete1_onfocus = function(info) {
+    if (flag) {
+        flag = false;
+        WebSquare.wUnit.getDomById('input2').focus();
+    }
+};
+scwin.autoComplete1_onviewchange = function(info) {
+    flag = true;
+};
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getJq('#input2').attr('class') == 'w2input w2input_focus';
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 autoComplete1_onfocus 를 확인한다.
+    //1. In the Source tab, check autoComplete1_onfocus.
+    //Test step 2. autoComplete1_onviewchange 를 확인한다.
+    //2. Check autoComplete1_onviewchange.
+    //Verify step 3. The focus is moved to the second inputBox.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_itemTable_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.f = [];
+    for (var i = 0; i < 10; i++) {
+        f.push(i + "A");
+        f.push(i + "B");
+    }
+    dataList1.setData(f);
+    window.flag = false;
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 01-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete visibleRowNum="5" chooseOption="" id="autoComplete1" style="position: relative;width:268px;height:42px;"
+    		search="start" interactionMode="" displayMode="label" useKeywordHighlight="false" submenuSize="auto" editType="select" allOption="" ev:onfocus="scwin.autoComplete1_onfocus" ev:onviewchange="scwin.autoComplete1_onviewchange">
+    		<w2:choices>
+    			<w2:itemset nodeset="data:dataList1">
+    				<w2:label ref="col1"></w2:label>
+    				<w2:value ref="col2"></w2:value>
+    			</w2:itemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<xf:input id="input1" style="position: relative;width: 144px;height: 21px;"></xf:input>
+    	<xf:input id="input2" style="position: relative;width: 144px;height: 21px;"></xf:input>
+    	<xf:input id="input3" style="position: relative;width: 144px;height: 21px;"></xf:input>
+    </body>
+</html>
+ 

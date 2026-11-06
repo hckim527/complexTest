@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true"></w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	<w2:data use="true"></w2:data></w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [];
+    dataList1.setJSON(jsonData);
+}
+scwin.trigger1_onclick = function(e) {
+    var jsonData = [];
+    dataList2.setJSON(jsonData);
+};
+scwin.trigger2_onclick = function(e) {
+    grd3.setNoResultMessage("test");
+};
+scwin.trigger3_onclick = function(e) {
+    grp1.show();
+};
+scwin.trigger4_onclick = function(e) {
+    grd2.setNoResultMessage("test2");
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 상단의 tab2 > tab1 > setNoResultMessage 클릭 > tab2를 클릭하여 그리드뷰의 높이가 유지되는지 확인한다.
+    //1. After running the sample file, click tab2> tab1> setNoResultMessage at the top and click tab2 to check if the height of the grid view is maintained.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    //pc
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5_tab_tabs2').click()");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5_tab_tabs1').click()");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5_tab_tabs2').click()");
+    //mobile
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5').setSelectedTabIndex(1)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5').setSelectedTabIndex(0)");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5').setSelectedTabIndex(1)");
+    //Verify step 1. 상단의 tab2에 해당하는 그리드뷰의 높이가 유지된다.
+    //1. The height of the grid view corresponding to tab2 at the top is maintained.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'grd2').getBoundingClientRect().height > 200", "true");
+    //Test step 2. 아래의 조회 > setNoResultMessage 클릭 > grp1.show() 클릭 시 하단에 보여지는 그리드뷰의 높이가 유지되는지 확인한다.
+    //2. Click View> setNoResultMessage below> Grp1.show () Click to see if the height of the grid view shown at the bottom is maintained.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    //Verify step 2. 하단의 그리드뷰의 높이가 유지된다.(이전에는 tab2의 그리드뷰 및 하단의 그리드뷰 높이가 줄어들었음)
+    //2. Maintains the height of the grid view at the bottom (previously the height of the grid view of tab2 and the height of the grid view at the bottom)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'grd3').getBoundingClientRect().height > 200", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 12-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:tabControl useMoveNextTabFocus="false" id="" style="position: absolute ;width:855px;height:281px;" confirmTrueAction="exist"
+    		useTabKeyOnly="true" useConfirmMessage="false" confirmFalseAction="new" alwaysDraw="true">
+    		<w2:tabs label="tab1" id="tabs1" style="width:70px;height:30px;" disabled="false"></w2:tabs>
+    		<w2:tabs id="tabs2" style="width:70px;height:30px" label="tab2" disabled="false"></w2:tabs>
+    		<w2:content id="content1" style="height:251px;" alwaysDraw="false">
+    			<w2:gridView autoFit="allColumn" dataList="dataList1" fixedColumnWithHidden="true" id="grd1" ignoreCellClick="false"
+    				ignoreToggleOnDisabled="false" noResultMessage="" noResultMessageVisible="true" scrollByColumn="false"
+    				scrollByColumnAdaptive="false" style="position:absolute;width: 400px;height: 100%;border:1px solid;" summaryAuto="false"
+    				summaryOnlyAuto="false" useShiftKey="true">
+    				<w2:header id="header1" style="">
+    					<w2:row id="row1" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" style="height:20px"
+    							value="name1" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px"
+    							value="name2" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column5" inputType="text" style="height:20px"
+    							value="name3" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px"
+    							value="name4" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:20px"
+    							value="name5" width="70">
+    						</w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody1" style="">
+    					<w2:row id="row2" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col4" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col5" inputType="text" style="height:20px" width="70"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    		<w2:content id="content2" style="height:251px;" alwaysDraw="false">
+    			<w2:gridView autoFit="allColumn" dataList="dataList2" fixedColumnWithHidden="true" id="grd2" ignoreCellClick="false"
+    				ignoreToggleOnDisabled="false" noResultMessage="" noResultMessageVisible="true" scrollByColumn="false"
+    				scrollByColumnAdaptive="false" style="position:absolute;width: 400px;height: 100%;border:1px solid;" summaryAuto="false"
+    				summaryOnlyAuto="false" useShiftKey="true">
+    				<w2:header id="header1" style="">
+    					<w2:row id="row1" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" style="height:20px"
+    							value="name1" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px"
+    							value="name2" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column5" inputType="text" style="height:20px"
+    							value="name3" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px"
+    							value="name4" width="70">
+    						</w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" style="height:20px"
+    							value="name5" width="70">
+    						</w2:column>
+    					</w2:row>
+    				</w2:header>
+    				<w2:gBody id="gBody1" style="">
+    					<w2:row id="row2" style="">
+    						<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col4" inputType="text" style="height:20px" width="70"></w2:column>
+    						<w2:column blockSelect="false" displayMode="label" id="col5" inputType="text" style="height:20px" width="70"></w2:column>
+    					</w2:row>
+    				</w2:gBody>
+    			</w2:gridView>
+    		</w2:content>
+    	</w2:tabControl>
+    	<xf:group id="grp1" style="position:absolute;top:321px;left:20px;width:500px;height:45%;display: none;">
+    		<w2:gridView ignoreCellClick="false" id="grd3" dataList="dataList2" summaryAuto="false" ignoreToggleOnDisabled="false"
+    			style="position: absolute;width: 500px;height: 100%;left:0px;top:0px;border: 1px solid #000;" useShiftKey="true"
+    			scrollByColumn="false" fixedColumnWithHidden="true" scrollByColumnAdaptive="false" noResultMessageVisible="true">
+    			<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    			<w2:header id="header1" style="">
+    				<w2:row id="row1" style="">
+    					<w2:column id="column7" blockSelect="false" style="height:20px" width="70" inputType="text" value="name1"
+    						displayMode="label">
+    					</w2:column>
+    					<w2:column id="column5" blockSelect="false" style="height:20px" width="70" inputType="text" value="name2"
+    						displayMode="label">
+    					</w2:column>
+    					<w2:column id="column3" blockSelect="false" style="height:20px" width="70" inputType="text" value="name3"
+    						displayMode="label">
+    					</w2:column>
+    					<w2:column id="column1" blockSelect="false" style="height:20px" inputType="text" width="70" value="name4"
+    						displayMode="label">
+    					</w2:column>
+    				</w2:row>
+    			</w2:header>
+    			<w2:gBody id="gBody1" style="">
+    				<w2:row id="row2" style="">
+    					<w2:column id="col1" blockSelect="false" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    					<w2:column id="col2" blockSelect="false" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    					<w2:column id="col3" blockSelect="false" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    					<w2:column id="col4" blockSelect="false" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				</w2:row>
+    			</w2:gBody>
+    		</w2:gridView>
+    	</xf:group>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:157px;height:31px;left:538px;top:322px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[조회]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2"
+    		style="position: absolute;width:155px;height:31px;left:538px;top:363px;" type="button">
+    		<xf:label><![CDATA[setNoResultMessage('test');]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3"
+    		style="position: absolute;width:155px;height:31px;left:538px;top:403px;" type="button">
+    		<xf:label><![CDATA[grp1.show();]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger4_onclick" id="trigger4"
+    		style="position: absolute;width:157px;height:31px;left:871px;top:31px;" type="button">
+    		<xf:label><![CDATA[setNoResultMessage("test2");]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

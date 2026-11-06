@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataList id="dataList1">
+                <w2:columnInfo>
+                    <w2:column id="empNo" name="사번" dataType="text"/>
+                    <w2:column id="empName" name="이름" dataType="text"/>
+                    <w2:column id="dept" name="부서" dataType="text"/>
+                    <w2:column id="position" name="직급" dataType="text"/>
+                    <w2:column id="email" name="이메일" dataType="text"/>
+                    <w2:column id="phone" name="전화번호" dataType="text"/>
+                    <w2:column id="salary" name="급여" dataType="number"/>
+                </w2:columnInfo>
+            </w2:dataList>
+        </w2:dataCollection>
+    </xf:model>
+    <style>
+        .btn_area { margin-bottom: 10px; padding: 10px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; }
+        .btn_area button { margin-right: 6px; padding: 4px 12px; cursor: pointer; }
+        .log_area { margin-top: 10px; }
+    </style>
+    <script lazy="false" type="text/javascript"><![CDATA[
+
+    scwin.onpageload = function() {
+        // 200건 테스트 데이터 생성
+        var depts = ["개발팀","기획팀","디자인팀","QA팀","영업팀","인사팀","경영지원팀","마케팅팀"];
+        var positions = ["사원","대리","과장","차장","부장"];
+        var lastNames = ["김","이","박","최","정","강","조","윤","장","임","한","오","서","신","권","황","안","송","전","홍"];
+        var midNames = ["서","민","지","현","승","태","상","동","우","진","경","수","영","혁","광","성","정","하","은","인"];
+        var endNames = ["철","경","정","석","승","태","훈","율","원","준","현","연","도","웅","찬","호","빈","아","솔","림"];
+        var data = [];
+        for (var i = 0; i < 200; i++) {
+            var no = String(i + 1).padStart(3, "0");
+            var name = lastNames[i % 20] + midNames[Math.floor(i / 20) % 20] + endNames[Math.floor(i / 10) % 20];
+            var dept = depts[i % 8];
+            var pos = positions[i % 5];
+            data.push({
+                empNo: "E" + no,
+                empName: name,
+                dept: dept,
+                position: pos,
+                email: name.toLowerCase() + no + "@inswave.com",
+                phone: "010-" + String(1000 + (i * 37) % 9000).padStart(4, "0") + "-" + String(1000 + (i * 53) % 9000).padStart(4, "0"),
+                salary: 3000 + Math.floor(Math.random() * 7000)
+            });
+        }
+        dataList1.setJSON(data);
+
+        scwin.log("=== WAEA-175: gridView FindBar 테스트 ===");
+        scwin.log("데이터 " + data.length + "건 로드 완료");
+        scwin.log("");
+        scwin.log("[ 테스트 방법 ]");
+        scwin.log("1. 'FindBar 열기' 버튼 클릭 또는 gridView 셀 클릭 후 Ctrl+F");
+        scwin.log("2. 검색어 입력 후 0.5초 대기 또는 Enter");
+        scwin.log("3. Enter=다음, Shift+Enter=이전, ESC=닫기");
+        scwin.log("4. ▲▼ 버튼으로도 이동 가능");
+        scwin.log("5. 분할 검색: 'FindBar 열기 (분할검색)' 버튼으로 대량 데이터 비동기 검색 테스트");
+        scwin.log("");
+    };
+
+    // === 테스트 버튼 핸들러 ===
+
+    // 1. 기본 FindBar 열기
+    scwin.btn_openFindBar = function() {
+        grd_employee.openFindBar();
+        scwin.log("[1] openFindBar() — 기본 옵션 (Ctrl+F, 500ms 딜레이)");
+    };
+
+    // 2. 옵션 지정 FindBar 열기
+    scwin.btn_openFindBarCustom = function() {
+        grd_employee.openFindBar({
+            hotKey: "F2",
+            autoSearchDelay: 1000,
+            highlightColor: "#CCE5FF",
+            highlightTextColor: "#003366",
+            currentHighlightColor: "#FF6600",
+            caseSensitive: false
+        });
+        scwin.log("[2] openFindBar(커스텀) — F2, 1000ms, 파란 하이라이트");
+    };
+
+    // 3. 분할 검색 FindBar
+    scwin.btn_openFindBarSplit = function() {
+        grd_employee.openFindBar({
+            splitSearchRowCount: 50,
+            autoSearchDelay: 500
+        });
+        scwin.log("[3] openFindBar(분할검색) — 50행씩 비동기 분할 검색");
+    };
+
+    // 4. FindBar 닫기
+    scwin.btn_closeFindBar = function() {
+        grd_employee.closeFindBar();
+        scwin.log("[4] closeFindBar()");
+    };
+
+    // 5. API 직접 호출: find
+    scwin.btn_apiFind = function() {
+        var result = grd_employee.find("개발팀");
+        scwin.log("[5] find('개발팀') — " + result.total + "건 검색됨");
+    };
+
+    // 6. API 직접 호출: findNext
+    scwin.btn_apiFindNext = function() {
+        var result = grd_employee.findNext();
+        if (result) {
+            scwin.log("[6] findNext() — [" + (result.currentIndex + 1) + "/" + result.total + "] row=" + result.rowIndex + ", col=" + result.colId);
+        } else {
+            scwin.log("[6] findNext() — 결과 없음");
+        }
+    };
+
+    // 7. API 직접 호출: findPrev
+    scwin.btn_apiFindPrev = function() {
+        var result = grd_employee.findPrev();
+        if (result) {
+            scwin.log("[7] findPrev() — [" + (result.currentIndex + 1) + "/" + result.total + "] row=" + result.rowIndex + ", col=" + result.colId);
+        } else {
+            scwin.log("[7] findPrev() — 결과 없음");
+        }
+    };
+
+    // 8. API 직접 호출: clearFind
+    scwin.btn_apiClearFind = function() {
+        grd_employee.clearFind();
+        scwin.log("[8] clearFind()");
+    };
+
+    // 9. API 직접 호출: getFindInfo
+    scwin.btn_apiGetInfo = function() {
+        var info = grd_employee.getFindInfo();
+        if (info) {
+            scwin.log("[9] getFindInfo() — keyword: '" + info.keyword + "', [" + (info.currentIndex + 1) + "/" + info.total + "]");
+        } else {
+            scwin.log("[9] getFindInfo() — 검색 상태 없음");
+        }
+    };
+
+    // 10. 비동기 분할 검색 API 직접 호출
+    scwin.btn_apiFindAsync = function() {
+        scwin.log("[10] find('팀', {splitSearchRowCount: 50}) — 비동기 분할 검색 시작...");
+        var result = grd_employee.find("팀", {
+            splitSearchRowCount: 50,
+            onSearchProgress: function(status, processed, total, count) {
+                if (status === 0) scwin.log("  → 검색 시작");
+                else if (status === 1) scwin.log("  → 진행: " + processed + "/" + total + "행, " + count + "건 발견");
+                else if (status === 2) scwin.log("  → 완료: " + count + "건");
+            }
+        });
+        if (result && typeof result.then === "function") {
+            result.then(function(res) {
+                scwin.log("  → Promise 결과: " + res.total + "건 검색됨");
+            });
+        }
+    };
+
+    // 로그 유틸
+    scwin.logCount = 0;
+    scwin.log = function(msg) {
+        scwin.logCount++;
+        var current = txa_log.getValue();
+        txa_log.setValue(current + (current ? "\n" : "") + String(scwin.logCount).padStart(3, " ") + ". " + msg);
+        // 스크롤 하단으로
+        var el = document.getElementById("txa_log");
+        if (el) el.scrollTop = el.scrollHeight;
+    };
+
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group style="padding:10px;">
+        <w2:textbox tagname="h3" id="" label="WAEA-175: gridView FindBar 테스트" style="margin:0 0 10px 0;"/>
+
+        <xf:group class="btn_area" style="margin-bottom:10px;padding:10px;background:#f5f5f5;border:1px solid #ddd;">
+            <w2:textbox tagname="b" id="" label="FindBar UI" style="margin-right:10px;"/>
+            <w2:anchor id="btn1" ev:onclick="scwin.btn_openFindBar" style="margin-right:6px;padding:4px 12px;"><xf:label>FindBar 열기</xf:label></w2:anchor>
+            <w2:anchor id="btn2" ev:onclick="scwin.btn_openFindBarCustom" style="margin-right:6px;padding:4px 12px;"><xf:label>FindBar 열기 (커스텀)</xf:label></w2:anchor>
+            <w2:anchor id="btn3" ev:onclick="scwin.btn_openFindBarSplit" style="margin-right:6px;padding:4px 12px;"><xf:label>FindBar 열기 (분할검색)</xf:label></w2:anchor>
+            <w2:anchor id="btn4" ev:onclick="scwin.btn_closeFindBar" style="margin-right:6px;padding:4px 12px;"><xf:label>FindBar 닫기</xf:label></w2:anchor>
+        </xf:group>
+
+        <xf:group class="btn_area" style="margin-bottom:10px;padding:10px;background:#f0f5ff;border:1px solid #ccd;">
+            <w2:textbox tagname="b" id="" label="API 직접 호출" style="margin-right:10px;"/>
+            <w2:anchor id="btn5" ev:onclick="scwin.btn_apiFind" style="margin-right:6px;padding:4px 12px;"><xf:label>find('개발팀')</xf:label></w2:anchor>
+            <w2:anchor id="btn6" ev:onclick="scwin.btn_apiFindNext" style="margin-right:6px;padding:4px 12px;"><xf:label>findNext</xf:label></w2:anchor>
+            <w2:anchor id="btn7" ev:onclick="scwin.btn_apiFindPrev" style="margin-right:6px;padding:4px 12px;"><xf:label>findPrev</xf:label></w2:anchor>
+            <w2:anchor id="btn8" ev:onclick="scwin.btn_apiClearFind" style="margin-right:6px;padding:4px 12px;"><xf:label>clearFind</xf:label></w2:anchor>
+            <w2:anchor id="btn9" ev:onclick="scwin.btn_apiGetInfo" style="margin-right:6px;padding:4px 12px;"><xf:label>getFindInfo</xf:label></w2:anchor>
+            <w2:anchor id="btn10" ev:onclick="scwin.btn_apiFindAsync" style="margin-right:6px;padding:4px 12px;"><xf:label>분할검색 API</xf:label></w2:anchor>
+        </xf:group>
+
+        <w2:gridView id="grd_employee" dataList="data:dataList1" style="height:400px;width:100%;"
+            autoFit="allColumn" focusMode="both" findBar="true">
+            <w2:caption id="caption1" value="직원 목록 (200건)"/>
+            <w2:header id="header1">
+                <w2:row id="row_h1">
+                    <w2:column id="h_empNo" inputType="text" value="사번" width="70"/>
+                    <w2:column id="h_empName" inputType="text" value="이름" width="80"/>
+                    <w2:column id="h_dept" inputType="text" value="부서" width="100"/>
+                    <w2:column id="h_position" inputType="text" value="직급" width="70"/>
+                    <w2:column id="h_email" inputType="text" value="이메일" width="200"/>
+                    <w2:column id="h_phone" inputType="text" value="전화번호" width="130"/>
+                    <w2:column id="h_salary" inputType="text" value="급여" width="80"/>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody1">
+                <w2:row id="row_b1">
+                    <w2:column id="empNo" inputType="text" width="70" readOnly="true"/>
+                    <w2:column id="empName" inputType="text" width="80"/>
+                    <w2:column id="dept" inputType="text" width="100"/>
+                    <w2:column id="position" inputType="text" width="70"/>
+                    <w2:column id="email" inputType="text" width="200"/>
+                    <w2:column id="phone" inputType="text" width="130"/>
+                    <w2:column id="salary" inputType="text" width="80" textAlign="right"/>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+
+        <xf:group class="log_area" style="margin-top:10px;">
+            <w2:textbox tagname="b" id="" label="실행 로그" style="margin-bottom:4px;display:block;"/>
+            <w2:textarea id="txa_log" style="width:100%;height:250px;font-family:monospace;font-size:12px;color:#000000;background-color:#f8f8f5;border:1px solid #999;" readOnly="true"/>
+        </xf:group>
+    </xf:group>
+</body>
+</html>

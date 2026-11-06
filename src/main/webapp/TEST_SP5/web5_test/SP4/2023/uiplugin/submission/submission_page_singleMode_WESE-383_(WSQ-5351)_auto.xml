@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList baseNode="list" repeatNode="map" id="dc_Capital" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="City" name="도시영문" dataType="text" />
+        				<w2:column id="Code" name="도시코드" dataType="text" />
+        				<w2:column id="Cost" name="거리" dataType="text" />
+        			</w2:columnInfo>
+        			<w2:data use="true">
+        				<w2:row>
+        					<City><![CDATA[Seoul]]></City>
+        					<Code><![CDATA[KOR]]></Code>
+        					<Cost><![CDATA[100]]></Cost>
+        				</w2:row>
+        				<w2:row>
+        					<City><![CDATA[Paris]]></City>
+        					<Code><![CDATA[PA]]></Code>
+        					<Cost><![CDATA[300]]></Cost>
+        				</w2:row>
+        				<w2:row>
+        					<City><![CDATA[London]]></City>
+        					<Code><![CDATA[LN]]></Code>
+        					<Cost><![CDATA[400]]></Cost>
+        				</w2:row>
+        				<w2:row>
+        					<City><![CDATA[Tokyo]]></City>
+        					<Code><![CDATA[TK]]></Code>
+        					<Cost><![CDATA[200]]></Cost>
+        				</w2:row>
+        				<w2:row>
+        					<City><![CDATA[Pusan]]></City>
+        					<Code><![CDATA[KOR]]></Code>
+        					<Cost><![CDATA[50]]></Cost>
+        				</w2:row>
+        			</w2:data>
+        		</w2:dataList>
+        		<w2:dataList baseNode="list" repeatNode="map" id="dc_Capital_Copy" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column dataType="text" name="도시명(영문)" id="City" />
+        				<w2:column id="Code" name="도시코드" dataType="text" />
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataList baseNode="list" id="dc_Capital_Sub" repeatNode="map" saveRemovedData="true" style="">
+        			<w2:columnInfo>
+        				<w2:column dataType="text" id="City" name="도시영문" />
+        				<w2:column dataType="text" id="Code" name="도시코드" />
+        				<w2:column dataType="text" id="Cost" name="거리" />
+        			</w2:columnInfo>
+        			<w2:data use="true">
+        				<w2:row>
+        					<City><![CDATA[Seoul]]></City>
+        					<Code><![CDATA[KOR]]></Code>
+        					<Cost><![CDATA[200]]></Cost>
+        				</w2:row>
+        				<w2:row>
+        					<City><![CDATA[Paris]]></City>
+        					<Code><![CDATA[PA]]></Code>
+        					<Cost><![CDATA[300]]></Cost>
+        				</w2:row>
+        			</w2:data>
+        		</w2:dataList>
+        		<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection />
+        	<xf:submission id="submission1" ref='data:json,jsonData' target="data:json,dataList1" action="/test.json" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous"
+        		processMsg="" ev:submit="" ev:submitdone="scwin.submission1_submitdone" ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+var jsonData = {"aa": "test" };
+
+
+scwin.onpageload = function() {
+	var submissionObj = {
+    "id" : "submission2",
+    "ref" : "data:json,dc_reqDataMap",
+    "target" : "data:json,dc_resDataMap",
+    "action" : "/data/sampleData.json",
+    "method" : "post",
+    "mediatype" : "application/json",
+    "encoding" : "UTF-8",
+    "mode" : "asynchronous",
+    "processMsg" : "processing ~ ~ ~ ",
+   
+    };
+    $p.createSubmission( submissionObj );
+    
+    console.log("정적 submission => singleMode" ,$p.getComponentById("submission1"));
+    console.log("동적 submission => singlemode", $p.getComponentById("submission2")	);
+};
+
+
+
+scwin.submission1_submitdone = function(e) {
+debugger
+};
+
+	scwin.checkVal = function() {
+		return $p.getComponentById("submission2").singleMode == false;
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	
+    	
+    </body>
+</html>

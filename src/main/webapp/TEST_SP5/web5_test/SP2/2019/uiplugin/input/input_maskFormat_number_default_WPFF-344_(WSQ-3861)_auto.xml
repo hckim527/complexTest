@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+		
+		
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.simulate = function(element, eventName, acc) {
+    var options = scwin.extend(defaultOptions, arguments[2] || {});
+    var oEvent, eventType = null;
+    if (!!acc) {
+        options.pointerX = acc.x;
+        options.pointerY = acc.y;
+    }
+    for (var name in eventMatchers) {
+        if (eventMatchers[name].test(eventName)) {
+            eventType = name;
+            break;
+        }
+    }
+    if (!eventType)
+        throw new TypeError('Only HTMLEvents and MouseEvents interfaces are supported');
+    if (document.createEventObject) {
+        options.clientX = options.pointerX;
+        options.clientY = options.pointerY;
+        var evt = document.createEventObject();
+        oEvent = scwin.extend(evt, options);
+        try {
+            element.fireEvent('on' + eventName, oEvent);
+        } catch (e) {
+            if (element === window) {
+                document.fireEvent('on' + eventName);
+            }
+        }
+    } else if (document.createEvent) {
+        oEvent = document.createEvent(eventType);
+        if (eventType == 'HTMLEvents') {
+            oEvent.initEvent(eventName, options.bubbles, options.cancelable);
+        } else {
+            oEvent.initMouseEvent(eventName, options.bubbles, options.cancelable, document.defaultView,
+                options.detail, options.pointerX, options.pointerY, options.pointerX, options.pointerY,
+                options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, element);
+        }
+        element.dispatchEvent(oEvent);
+    } else {
+        throw new TypeError('Not Supported');
+    }
+    return element;
+}
+scwin.extend = function(destination, source) {
+    for (var property in source)
+        destination[property] = source[property];
+    return destination;
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#wq_uuid_3', 'key-sequence', {
+        sequence: '0'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#wq_uuid_4', 'key-sequence', {
+        sequence: '0'
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'wq_uuid_3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'wq_uuid_3').value == '000,000'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.eventMatchers = {
+        'HTMLEvents': /^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,
+        'MouseEvents': /^(?:click|dblclick|mouse(?:down|up|over|move|out|leave|wheel)|pointer(?:up|move))$/
+    };
+    window.defaultOptions = {
+        pointerX: 0,
+        pointerY: 0,
+        button: 0,
+        ctrlKey: false,
+        altKey: false,
+        shiftKey: false,
+        metaKey: false,
+        bubbles: true,
+        cancelable: true
+    };
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:output id="output3" label="" style="position: absolute;width:428px;height:26px;left:29px;top:23px;">
+    		<xf:label><![CDATA[maskFormat="default" dataType="number" displayFormat="000,000"]]></xf:label>
+    	</xf:output>
+    	<xf:output id="output4" label="" style="position: absolute;width:428px;height:26px;left:27px;top:118px;">
+    		<xf:label><![CDATA[maskFormat="default" dataType="number" displayFormat="00####"]]></xf:label>
+    	</xf:output>
+    	<xf:input adjustMaxLength="false" applyFormat="all" dataType="number" displayFormat="000,000" id="" maskFormat="default"
+    		style="position: absolute;width:280px;height:38px;left:29px;top:61px;">
+    	</xf:input>
+    	<xf:input adjustMaxLength="false" applyFormat="all" dataType="number" displayFormat="00####" id="" maskFormat="default"
+    		style="position: absolute;width:280px;height:38px;left:27px;top:161px;">
+    	</xf:input>
+    	<xf:output id="output5" label="" style="position: absolute;width:428px;height:26px;left:26px;top:221px;">
+    		<xf:label><![CDATA[maskFormat="default" dataType="number" displayFormat="00#,###"]]></xf:label>
+    	</xf:output>
+    	<xf:input adjustMaxLength="false" applyFormat="all" dataType="number" displayFormat="00#,###" id="" maskFormat="default"
+    		style="position: absolute;width:280px;height:38px;left:29px;top:263px;">
+    	</xf:input>
+    	<xf:output id="output6" label="" style="position: absolute;width:428px;height:26px;left:18px;top:322px;">
+    		<xf:label><![CDATA[maskFormat="default" dataType="number" displayFormat="000,0##"]]></xf:label>
+    	</xf:output>
+    	<xf:input adjustMaxLength="false" applyFormat="all" dataType="number" displayFormat="000,0##" id="" maskFormat="default"
+    		style="position: absolute;width:280px;height:38px;left:31px;top:369px;">
+    	</xf:input>
+    	<xf:output id="output7" label="" style="position: absolute;width:428px;height:26px;left:17px;top:420px;">
+    		<xf:label><![CDATA[maskFormat="default" dataType="number" displayFormat="##,####"]]></xf:label>
+    	</xf:output>
+    	<xf:input adjustMaxLength="false" applyFormat="all" dataType="number" displayFormat="##,####" id="" maskFormat="default"
+    		style="position: absolute;width:280px;height:38px;left:30px;top:455px;">
+    	</xf:input>
+    </body>
+</html>
+ 

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.invaildFn = function(a, b) {
+    //alert("invaildFn");
+};
+scwin.input1_onviewchange = function(info) {
+    console.log("onviewchange");
+};
+scwin.input1_onchange = function() {
+    console.log("onchange");
+};
+scwin.input1_onkeypress = function(e) {
+    //debugger;
+};
+scwin.trigger1_onclick = function(e) {
+    var obj = WebSquare.util.getChildren("", {
+        excludePlugin: "group trigger"
+    });
+    log1 = obj[1].validate();
+    //alert(obj[1].validate());
+};
+scwin.trigger2_onclick = function(e) {
+    var obj = WebSquare.util.getChildren("", {
+        excludePlugin: "group trigger"
+    });
+    log = obj[0].validate();
+    //alert(obj[0].validate());
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 'float'버튼을 클릭한다.
+    //1. After running the sample, click the 'float' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 알림창에 'true' 값이 보여진다. (이전에는 'false' 값이 보여짐)
+    //1. The 'true' value is displayed in the notification window. (Previously showing 'false' value)
+    WebSquare.wUnit.addCommand("assert", "log", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 'number'버튼을 클릭한다.
+    //2. Click the 'number' button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 알림창에 'true' 값이 보여진다.
+    //2. The 'true' value is displayed in the notification window.
+    WebSquare.wUnit.addCommand("assert", "log1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = ""; window.log1 = "";
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 22-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="width:80px;height:20px;position: absolute;left:28px;top:283px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[number]]></xf:label>
+    	</xf:trigger>
+    	<xf:input applyFormat="" invalidMessageFunc="scwin.invaildFn" fireEventOnInvalid="" mandatory=""
+    		displayFormat="#,###.#0" invalidMessage="" ev:onviewchange="scwin.input1_onviewchange" displaymessage="" id="input1" dataType="float"
+    		maxlength="4.2" style="position: absolute;width:270px;height:58px;left:26px;top:141px;font-size:12pt;"
+    		ev:onchange="scwin.input1_onchange">
+    	</xf:input>
+    	<xf:input adjustMaxLength="false" id="" style="position: absolute;width:270px;height:59px;left:25px;top:208px;" maxlength="6"></xf:input>
+    	<w2:textbox id="" style="position: absolute;width:150px;height:59px;left:304px;top:142px;font-size:13pt;"
+    		label="dataType : float&lt;br/&gt;maxLength : 4.2">
+    	</w2:textbox>
+    	<w2:textbox id="" label="dataType : number&lt;br/&gt;maxLength : 6"
+    		style="position: absolute;width:150px;height:59px;left:303px;top:208px;font-size:13pt;">
+    	</w2:textbox>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2" style="width:80px;height:23px;position: absolute;left:125px;top:283px;"
+    		type="button">
+    		<xf:label><![CDATA[float]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

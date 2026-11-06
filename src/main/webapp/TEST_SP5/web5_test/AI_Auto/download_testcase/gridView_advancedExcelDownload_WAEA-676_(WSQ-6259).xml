@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="float"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="number"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="number"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="number"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+	scwin.fn01 = function(a,b) {
+	console.log(123456);
+		var val1 = 120050005;
+		var val2 = 140050005;
+		debugger;
+		return val2;
+	};
+	
+		scwin.footerExp = function(value) {
+			if (value > 100000) {
+				//grdExp2.setFooterStyle("column36", "color", "red");
+			} else {
+				//grdExp2.setFooterStyle("column36", "color", "blue");
+			}
+			var val2 = 140050005;
+			return val2;
+		}	
+        
+	scwin.onpageload = function() {
+
+        $p.js("/websquare5_sp2/jira/2026/gear/matrixgear_25_woori.js", function(){
+            
+        });
+
+		var jsonData = [{"col1":"대기업","col2":"4.46", "col3":"10000.7", "col4":"", "col5":"10000.789"}
+						, {"col1":"대기업","col2":"5.44", "col3":"10000.78", "col4":"", "col5":"10000.789"}
+						, {"col1":"대기업(주)테스트기업","col2":"6.235", "col3":"10000.789", "col4":"", "col5":"10000.789"}
+						, {"col1":"중소기업", col2:"100000", "col3":"120000000.78965", "col4":"", "col5":"10000.789"}
+						, {"col1":"중소기업", col2:"200000", "col3":"10000.78964", "col4":"", "col5":"10000.789"}
+					, {"col1":"중소기업", col2:"900000", "col3":"10000.7896", "col4":"", "col5":"123450000.789"}]
+		dataList1.setJSON(jsonData);
+
+		gridView1.setCellClass(1,2, "test2");
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	scwin.excel_onFailureCallback = function(a,b,c,d){
+		console.log("bb onFailureCallback");
+
+
+	};
+	scwin.excel_onSuccessCallback = function(a,b,c,d){
+		console.log("bb onSuccessCallback");
+	}
+
+
+scwin.trigger1_onclick = function(e) {
+		var options = {
+	    			fileName : "excelDownload_test.xlsx",
+	    			type : "1"
+	    			,autoSizeColumn : "true"
+	    			,useStyle:"true"
+	    			,useClass:"true"
+	    			,useSubTotal:"true"
+	    			,useSubTotalData : "true"
+	    			,useFooter:"true"
+	    			//,useFooterData : "true"
+				,excelFooterEmptyToZero : "true" 
+	    }
+	    options.useXHR = "true";
+
+		var infoArr = [];
+		gridView1.advancedExcelDownload( options, infoArr );
+
+	    
+};
+
+scwin.trigger2_onclick = function(e) {
+		var options = {
+	    			fileName : "gear_excelDownload.xlsx",
+	    			type : "1"
+	    			,autoSizeColumn : "true"
+	    			,useStyle:"true"
+	    			,useClass:"true"
+	    			,useSubTotal:"true"
+	    			,useSubTotalData : "true"
+	    			,useFooter:"true"
+	    			,useFooterData : "true"
+	    }
+	    
+	    options.openFile = "true";
+	    options.useXHR = "true";
+	    options.advancedExcelDownloadURL = MatrixGear.getExcelDownloadURL();
+
+		options.onSuccessCallback = scwin.excel_onSuccessCallback;
+		options.onFailureCallback = scwin.excel_onFailureCallback;
+
+
+		return new Promise(function(res){
+			let onSuccessCallback = options.onSuccessCallback;
+			let onFailureCallback = options.onFailureCallback;
+
+			options.onFailureCallback = async function(action, msg){
+				res({isSuccess: false, fileName:options.fileName, message: msg});
+				console.log("gear onFailureCallback");
+				if(typeof onFailureCallback == "function"){
+					onFailureCallback.apply(this, arguments);
+				}
+			};
+
+			options.onSuccessCallback = async function(action, msg){
+				res({isSuccess: true, fileName:options.fileName, message: msg});
+				if(msg.result == false){
+					console.log("gear onFailureCallback");
+					if(typeof onFailureCallback == "function"){
+						onFailureCallback.apply(this, arguments);
+						return;
+					}
+				}
+
+				console.log("gear onSuccessCallback");
+				if(typeof onSuccessCallback == "function"){
+					onSuccessCallback.apply(this, arguments);
+				}
+			};
+		    var infoArr = [];
+		    
+			gridView1.advancedExcelDownload( options, infoArr );
+		});
+};
+
+scwin.trigger3_onclick = function(e) {
+		var options = {
+	    	fileName : "excelDownload_test.xlsx",
+	    		type : "1"
+	    		,autoSizeColumn : "true"
+	    		,useStyle:"true"
+	    		,useClass:"true"
+	    		,useSubTotal:"true"
+	    		,useSubTotalData : "true"
+	    		,useFooter:"true"
+	    		//,useFooterData : "true"
+			,excelFooterEmptyToZero : "true" 
+	    	}
+	    	options.useXHR = "true";
+
+		var infoArr = [];
+		gridView2.advancedExcelDownload( options, infoArr );
+
+};
+]]></script>
+
+		<style type="text/css"><![CDATA[
+			.test1 { color:red; }
+			.test2 { color:blue; }
+		 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[excelDown1]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3" style="width: 80px;height: 23px;" type="button">
+    		<xf:label><![CDATA[excelDown2]]></xf:label>
+    	</xf:trigger><xf:trigger type="button" id="trigger2" style="width:135px;height:23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[WGear excelDown]]></xf:label>
+    	</xf:trigger>
+    	<w2:gridView checkAllType="false" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+    		readOnly="true" style="width:800px;height:198px;" tooltipSec="0" dataList="data:dataList1" autoFit="allColumn">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="119" inputType="text" style="height:20px" id="column7" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="text" style="height:20px" id="column6" value="float" displayMode="label"></w2:column>
+    				<w2:column width="113" inputType="text" style="height:20px" id="column5" value="data+grid" displayMode="label"></w2:column>
+    				<w2:column width="115" inputType="text" style="height:20px" id="column4" value="displyFormat" displayMode="label"></w2:column>
+    				<w2:column width="128" inputType="text" style="height:20px" id="column3" value="excelFormat" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="119" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="text" style="height:20px" id="col2" displayFormat="#,##0.00" dataType="float"
+    					excelCellType="float" value="" displayMode="label">
+    				</w2:column>
+
+    				<w2:column width="113" inputType="text" style="height:20px" id="col3" value="" dataType="number"
+    					displayFormat="#,##0.0###" excelFormat="#,##0.0###" displayMode="label" class="test1">
+    				</w2:column>
+    				<w2:column width="115" inputType="text" style="height:20px" id="col4" value="" displayFormat="#,##0.0###"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column width="128" inputType="text" style="height:20px" id="col5" value="" excelFormat="#,##0.0###"
+    					displayMode="label">
+    				</w2:column>
+
+
+
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:subTotal targetColumnID="col1" style="" id="subTotal1">
+    			<w2:row style="" id="row5">
+    				<w2:column width="119" inputType="text" style="height:20px" id="column17" value="" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="expression" expression="SUM('col2')" style="height:20px" id="column16" value=""
+    					displayMode="label" displayFormat="#,##0.00" dataType="float" excelCellType="float">
+    				</w2:column>
+    				<w2:column width="113" inputType="expression" expression="SUM('col3')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column15" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="115" inputType="expression" expression="SUM('col4')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column14" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="128" inputType="expression" expression="SUM('col5')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column13" value="" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:subTotal>
+    		<w2:footer style="" id="footer1">
+    			<w2:row style="" id="row6">
+    				<w2:column width="119" inputType="text" style="height:20px" id="column22" value="" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="expression" expression="SUM('col2')" style="height:20px" id="column21" value=""
+    					displayMode="label" displayFormat="#,##0.00" dataType="float" excelCellType="float">
+    				</w2:column>
+    				<w2:column width="113" inputType="expression" expression="SUM('col3')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column20" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="115" inputType="expression" expression="SUM('col4')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column19" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="128" inputType="expression" expression="SUM('col5')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column18" value="" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:footer>
+    	</w2:gridView>
+    	<w2:gridView checkAllType="false" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView2"
+    		readOnly="true" style="width:800px;height:198px;" tooltipSec="0" dataList="data:dataList1" autoFit="allColumn">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="119" inputType="text" style="height:20px" id="column7" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="text" style="height:20px" id="column6" value="float" displayMode="label"></w2:column>
+    				<w2:column width="113" inputType="text" style="height:20px" id="column5" value="data+grid" displayMode="label"></w2:column>
+    				<w2:column width="115" inputType="text" style="height:20px" id="column4" value="displyFormat" displayMode="label"></w2:column>
+    				<w2:column width="128" inputType="text" style="height:20px" id="column3" value="excelFormat" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="119" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="text" style="height:20px" id="col2" displayFormat="#,##0.00" dataType="float"
+    					excelCellType="float" value="" displayMode="label">
+    				</w2:column>
+
+    				<w2:column width="113" inputType="text" style="height:20px" id="col3" value="" dataType="number"
+    					displayFormat="#,##0.0###" excelFormat="#,##0.0###" displayMode="label" class="test1">
+    				</w2:column>
+    				<w2:column width="115" inputType="text" style="height:20px" id="col4" value="" displayFormat="#,##0.0###"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column width="128" inputType="text" style="height:20px" id="col5" value="" excelFormat="#,##0.0###"
+    					displayMode="label">
+    				</w2:column>
+
+
+
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:subTotal targetColumnID="col1" style="" id="subTotal1">
+    			<w2:row style="" id="row5">
+    				<w2:column width="119" inputType="text" style="height:20px" id="column17" value="" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="expression" expression="SUM('col2')" style="height:20px" id="column16" value=""
+    					displayMode="label" displayFormat="#,##0.00" dataType="float" excelCellType="float">
+    				</w2:column>
+    				<w2:column width="113" inputType="expression" expression="SUM('col3')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column15" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="115" inputType="expression" expression="SUM('col4')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column14" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="128" inputType="expression" expression="SUM('col5')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column13" value="" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:subTotal>
+    		<w2:footer style="" id="footer1">
+    			<w2:row style="" id="row6">
+    				<w2:column width="119" inputType="text" style="height:20px" id="column22" value="" displayMode="label"></w2:column>
+    				<w2:column width="117" inputType="expression" expression="SUM('col2')" style="height:20px" id="column21" value=""
+    					displayMode="label" displayFormat="#,##0.00" dataType="float" excelCellType="float">
+    				</w2:column>
+    				<w2:column width="113" inputType="expression" expression="scwin.footerExp(sum('col3'))" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column20" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="115" inputType="expression" expression="SUM('col4')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column19" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column width="128" inputType="expression" expression="SUM('col5')" displayFormat="#,##0" dataType="number"
+    					style="height:20px" id="column18" value="" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:footer>
+    	</w2:gridView>	
+
+    	
+    </body>
+</html>

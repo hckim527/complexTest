@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_programName="숫자_멀티포맷">
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dma_sample">
+					<w2:keyInfo>
+						<w2:key id="type01" name="type01" dataType="text"/>
+						<w2:key id="type02" name="type02" dataType="text"/>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_sample" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="type01" name="type01" dataType="text"/>
+						<w2:column id="type02" name="type02" dataType="text"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false">
+			<![CDATA[
+ 	/****************************************************
+ 	 * 화면명 : number_multiFormat.xml
+ 	 * 화면 설명 : 숫자_멀티포맷
+ 	 * 작 성 자  : 김형준
+ 	 * 최초 작성 : 2022-04-25
+ 	 ****************************************************/
+ 	 
+ 	/*******************************
+ 	* 그리드 날짜 데이터
+ 	********************************/ 
+    scwin.jsonData1 = [
+        {
+            "type01" : "12345678",
+            "type02" : "12345678.12345",
+        },
+        {
+            "type01" : "12345678",
+            "type02" : "12345678.12",
+        },
+        {
+            "type01" : "12345678",
+            "type02" : "12345678.123",
+        },
+        {
+            "type01" : "12345678",
+            "type02" : "12345678.1234",
+        },
+    ];
+
+    /*******************************
+    * 화면 초기 로딩 시 호출
+    ********************************/
+    scwin.onpageload = function() {
+        gcm = {};
+        gcm.NUMBER_FORMAT = 2; //1이면 #,###.## 포맷 | 2이면 #.###,## 포맷
+        
+        scwin.searchEuroAutoFormat();
+        scwin.gridEuroAutoFormat();
+    };
+    
+    scwin.searchEuroAutoFormat = function(){
+	    
+        // 개발자가 input 컴포넌트에 setUserNumberFormat 속성을 사용한 경우에만 적용
+        $p.$(":wq(input)").wq().each(function(index, _this){
+
+            var dataType = _this.options.dataType;
+            var setUserNumberFormat = _this.options.setUserNumberFormat;
+            
+            // #,###.## 포맷
+            if(gcm.NUMBER_FORMAT == 1 && setUserNumberFormat == "true"){
+                
+                if(dataType == "number"){
+                    _this.setDisplayFormat("#,###");
+
+                } else if(dataType == "float"){
+                    _this.setDisplayFormat("#,###.##");
+                } 
+            // #.###,## 포맷    
+            } else if(gcm.NUMBER_FORMAT == 2 && setUserNumberFormat == "true"){
+            
+                if(dataType == "number"){
+                    // 동적으로 dataType을 euro로 변경하는 것은 웹스퀘어 스펙상 지원 안됨( _this.setDataType() 또는 _this.options.dataType)
+                    // changeCurrency를 이용하면 동적 변경 됨
+                    _this.changeCurrency("euro", "#.###");
+                    _this.options.customModelFormatter ="scwin.inputCustomFormat";
+                    _this.options.customModelUnformatter ="scwin.inputCustomUnFormat";
+
+                } else if(dataType == "float"){
+                    _this.changeCurrency("euro", "#.###,##");
+                    _this.options.customModelFormatter ="scwin.inputCustomFormat";
+                    _this.options.customModelUnformatter ="scwin.inputCustomUnFormat";
+                }
+            }
+             
+            // 개발자 정의한 displayFormat에 맞게 euroMask 변경(소수점, 콤마만 변경) 추후  반영
+            //var displayFormat = _this.options.displayFormat;
+                
+            //if(com.isEmpty(displayFormat)){
+            //    return false;
+            //}
+            
+            //var euroMaskRest = [...displayFormat];
+            //var euroMask = euroMaskRest.reduce(function(acc, cur){
+            //  if(cur == ",") return acc += ".";
+            //  else if(cur == ".") return acc += ",";
+            //  else return acc += cur;
+            //}, "");
+        });
+    };
+    
+    scwin.gridEuroAutoFormat = function(){
+    
+	    console.log("scwin.gridEuroAutoFormat >>>>> gcm.NUMBER_FORMAT=====", gcm.NUMBER_FORMAT);
+	    
+        // 개발자가 그리드 내부 컬럼에 setUserNumberFormat 속성을 사용한 경우에만 적용
+        $p.$(":wq(gridView)").wq().each(function(index, _this){
+
+           var columnIdArr = _this.getColumnOrder(true);
+           
+           // #,###.## 포맷
+           if(gcm.NUMBER_FORMAT == 1){
+               
+			   columnIdArr.forEach(function(elem){
+			   
+				    var setUserNumberFormat = _this.getCellInfo(elem).options.setUserNumberFormat;
+				    var dataType = _this.getDataType(elem);
+
+				    if(setUserNumberFormat == "true"){
+				        if(dataType == "number"){
+				            _this.setDisplayFormat(elem, "#,###");
+				        } else if(dataType == "float"){
+				            _this.setDisplayFormat(elem, "#,###.##");
+				        }
+				    } 
+				});
+			/****************************************************************************
+			* TO. 연구소 적원 : 아래 부분 확인해 바랍니다.
+			****************************************************************************/	
+            // #.###,## 포맷
+            } else if(gcm.NUMBER_FORMAT == 2){
+                
+                columnIdArr.forEach(function(elem){
+                
+                    var setUserNumberFormat = _this.getCellInfo(elem).options.setUserNumberFormat;
+                    var dataType = _this.getDataType(elem);
+                    
+                    if(setUserNumberFormat == "true"){
+                        var info = {
+                            colID : elem,
+                            type : "euro",
+                            delimiter : ".",
+                            decimalDelimiter : ",",
+                            customModelFormatter : "scwin.inputCustomFormat",
+                            customModelUnformatter : "scwin.inputCustomUnFormat"
+                        }
+                        if(elem == "type01"){
+                            var info = {
+                                colID : elem,
+                                type : "euro",
+                                format : "#.###,#"
+                            }
+                            //_this.changeCurrency(elem , "euro" , "#.###,#");
+                            info.format = "#.###,#";
+                            _this.changeCurrency(info);
+                        } else if(elem == "type02"){
+                            // gridView 속성에 euroMask="#.###,##"이라서 소수점 2자리까지 밖에 적용되지 않음
+                            //_this.changeCurrency(elem , "euro" , "#.###,###", ".", ","); // 소수점 3자리 적용되지 않음
+                            info.format = "#.###,###";
+                            _this.changeCurrency(info);
+                        }
+                    }
+                });
+            }
+        });
+    };
+    
+    /*******************************
+    * 조회조건 날짜 셋팅
+    ********************************/
+    scwin.setData = function() {
+	    ibx_type01.setValue("12345678");       //정수
+	    ibx_type02.setValue("12345678.1234");  //실수
+    };
+
+    /*******************************
+    * 그리드 조회
+    ********************************/
+    scwin.btn_search_onclick = function() {
+        dlt_sample.setJSON(scwin.jsonData1);
+    };
+
+    /*******************************
+    * 엑셀 다운로드
+    ********************************/
+    scwin.btn_down_onclick = function(e) {
+        var option = {
+            type : "1",
+            fileName : "data.xlsx",
+            readOnlyColor : "true"
+        };
+        com.downloadGridExcel(grd_sample, option);
+    };
+
+    scwin.inputCustomFormat = function(realData, formattedData) {
+        return realData.replace(",", ".");
+    };
+    
+    scwin.inputCustomUnFormat = function(realData, formattedData) {
+        return realData.replace(".", ",");
+    };
+
+    
+    /*******************************
+    * 화면 벗어날때 이벤트
+    ********************************/
+    scwin.onpageunload = function() {
+
+    };
+	
+	]]>
+		</script>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="sub_contents flex">
+			<xf:group class="pgtbox"/>
+			<xf:group class="dfbox">
+				<w2:textbox class="df_tit" label="조회조건" tagname="h2"/>
+				<xf:group class="fr">
+					<xf:trigger ev:onclick="scwin.setData" type="button" class="btn_cm">
+						<xf:label>
+							<![CDATA[숫자 셋팅]]>
+						</xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+			<xf:group class="tbbox">
+				<xf:group class="tb_inner" id="grp_sample">
+					<xf:group class="w2tb tb" tagname="table">
+						<w2:attributes>
+							<w2:summary/>
+						</w2:attributes>
+						<xf:group tagname="caption"/>
+						<xf:group tagname="colgroup">
+							<xf:group style="width:140px;" tagname="col"/>
+							<xf:group tagname="col"/>
+							<xf:group style="width:180px;" tagname="col"/>
+							<xf:group tagname="col"/>
+						</xf:group>
+						<xf:group tagname="tr" style="">
+							<xf:group class="w2tb_th" tagname="th">
+								<w2:attributes>
+									<w2:scope>row</w2:scope>
+								</w2:attributes>
+								<w2:textbox label="정수"/>
+							</xf:group>
+							<xf:group class="w2tb_td" tagname="td">
+								<xf:input class="ipt" id="ibx_type01" ref="data:dma_sample.type01" dataType="number" setUserNumberFormat="true"/>
+							</xf:group>
+							<xf:group class="w2tb_th" tagname="th">
+								<w2:attributes>
+									<w2:scope>row</w2:scope>
+								</w2:attributes>
+								<w2:textbox label="실수"/>
+							</xf:group>
+							<xf:group class="w2tb_td" tagname="td">
+								<xf:input class="ipt" id="ibx_type02" ref="data:dma_sample.type02" dataType="float" setUserNumberFormat="true"/>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+			<xf:group class="dfbox">
+				<w2:textbox class="df_tit" label="그리드" tagname="h2"/>
+				<xf:group class="fr">
+					<w2:anchor class="btn_cm ic_sch" id="btn_search" outerDiv="false" ev:onclick="scwin.btn_search_onclick">
+						<xf:label>
+							<![CDATA[Search : ]]>
+						</xf:label>
+					</w2:anchor>
+					<w2:anchor class="btn_icon excel_down" id="btn_down" outerDiv="false" toolTip="Excel download" ev:onclick="scwin.btn_down_onclick">
+						<xf:label>
+							<![CDATA[ excel_down]]>
+						</xf:label>
+					</w2:anchor>
+				</xf:group>
+			</xf:group>
+			<xf:group class="gvwbox">
+				<w2:gridView id="grd_sample" adaptiveThreshold="1024" autoFit="allColumn" autoFitMinWidth="800" class="wq_gvw" dataList="data:dlt_sample" defaultCellHeight="24" editModeEvent="ondblclick" fixedColumnWithHidden="true" keyMoveEditMode="true" rowStatusVisible="true" scrollByColumn="false" useShiftKey="true" euroMask="#.###,##" style="width:800px;height: 150px">
+					<w2:header id="header1">
+						<w2:row id="row2">
+							<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px;" value="정수" width="90"/>
+							<w2:column blockSelect="false" displayMode="label" id="column7_" inputType="text" style="height:20px;" value="실수" width="90"/>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody4" style="">
+						<w2:row id="row5" style="">
+							<w2:column id="type01" blockSelect="false" displayMode="label" inputType="text" width="90" dataType="number" setUserNumberFormat="true"/>
+							<w2:column id="type02" blockSelect="false" displayMode="label" inputType="text" width="90" dataType="float" setUserNumberFormat="true"/>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+				<xf:group class="btbox">
+					<w2:textbox class="txt count" label="Count" tagname="span"/>
+					<w2:textbox class="txt" displayFormat="#,###" id="tbx_tcnt" label="0" tagname="span"/>
+					<xf:group class="fr"/>
+				</xf:group>
+			</xf:group>
+			<xf:group class="exe_box">
+				<w2:textbox escape="false" label="사용자 숫자 포맷 샘플입니다." tagname="p"/>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+<!-- 정적 형태
+ * 조회조건
+<xf:group tagname="tr" style="">
+    <xf:group class="w2tb_th" tagname="th"><w2:attributes>
+            <w2:scope>row</w2:scope>
+        </w2:attributes>
+        <w2:textbox label="수동(정수)"></w2:textbox>
+    </xf:group>
+    <xf:group class="w2tb_td" tagname="td">
+        <xf:input class="ipt" id="ibx_type01" ref="data:dma_sample.type01"
+            dataType="euro"
+            customModelFormatter ="scwin.inputCustomFormat"
+            customModelUnformatter ="scwin.inputCustomUnFormat">
+        </xf:input>
+    </xf:group>
+    <xf:group class="w2tb_th" tagname="th">
+        <w2:attributes>
+            <w2:scope>row</w2:scope>
+        </w2:attributes>
+        <w2:textbox label="수동(실수)"></w2:textbox>
+    </xf:group>
+    <xf:group class="w2tb_td" tagname="td">
+        <xf:input class="ipt" id="ibx_type02" ref="data:dma_sample.type02"
+            dataType="euro"
+            customModelFormatter ="scwin.inputCustomFormat"
+            customModelUnformatter ="scwin.inputCustomUnFormat">
+        </xf:input>
+    </xf:group>
+</xf:group> 
+ 
+ * 그리드
+<w2:column id="type01" blockSelect="false" displayMode="label" inputType="text" width="80"
+     dataType="euro"
+     customModelFormatter="scwin.inputCustomFormat"
+     customModelUnformatter="scwin.inputCustomUnFormat">
+</w2:column>
+<w2:column id="type02" blockSelect="false" displayMode="label" inputType="text" width="80"
+     dataType="euro"
+     customModelFormatter="scwin.inputCustomFormat"
+     customModelUnformatter="scwin.inputCustomUnFormat">
+</w2:column>
+ -->

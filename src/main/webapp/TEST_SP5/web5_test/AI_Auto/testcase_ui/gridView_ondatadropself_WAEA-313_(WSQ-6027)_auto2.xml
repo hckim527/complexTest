@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <w2:type>DEFAULT</w2:type>
+    <w2:buildDate/>
+    <xf:model>
+        <xf:instance>
+            <data xmlns=""/>
+        </xf:instance>
+        <w2:dataCollection baseNode="map">
+            <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                    <w2:column id="column2" name="name2" dataType="text" width="100"></w2:column>
+                    <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                    <w2:column id="col5" name="name5" dataType="text"></w2:column>
+                    <w2:column id="col6" name="name6" dataType="text"></w2:column>
+                    <w2:column id="col7" name="name7" dataType="text"></w2:column>
+                    <w2:column id="col8" name="name8" dataType="text"></w2:column>
+                    <w2:column id="col9" name="name9" dataType="text"></w2:column>
+                    <w2:column id="col10" name="name10" dataType="text"></w2:column>
+                </w2:columnInfo>
+                <w2:data use="true">
+                    <w2:row>
+                        <col2><![CDATA[1]]></col2>
+                    </w2:row>
+                    <w2:row>
+                        <col2><![CDATA[2]]></col2>
+                    </w2:row>
+                    <w2:row>
+                        <col2><![CDATA[3]]></col2>
+                    </w2:row>
+                    <w2:row>
+                        <col2><![CDATA[4]]></col2>
+                    </w2:row>
+                    <w2:row>
+                        <col2><![CDATA[5]]></col2>
+                    </w2:row>
+                    <w2:row>
+                        <col2><![CDATA[6]]></col2>
+                    </w2:row>
+                </w2:data>
+            </w2:dataList>
+        </w2:dataCollection>
+        <w2:workflowCollection>
+        </w2:workflowCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+        
+        scwin.onpageload = function() {};
+        scwin.onpageunload = function() {};
+        scwin.gridView1_ondatadropself = function(info) {
+            console.log("id:" + info.id + ",fromRowIndex:" + info.fromRowIndex + ",toRowIndex:" + info.toRowIndex);
+        };
+
+        scwin.startResizing = function(event, thElement) {
+            document.body.style.cursor = 'col-resize'; // 커서 스타일 변경
+            scwin.isResizing = true;
+            scwin.currentThElement = thElement; // 현재 컬럼을 저장
+            scwin.startX = event.clientX; // 드래그 시작 위치
+            scwin.startWidth = thElement.offsetWidth; // 드래그 시작 너비
+            
+            // mousemove, mouseup 이벤트 리스너 추가
+            document.addEventListener('mousemove', scwin.resizeColumn);
+            document.addEventListener('mouseup', scwin.stopResizing);
+        }
+
+        scwin.resizeColumn = function(event) {
+            if (scwin.isResizing && scwin.currentThElement) {
+                const newWidth = scwin.startWidth + (event.clientX - scwin.startX);
+                if (newWidth > 50) { // 최소 너비 제한
+                    scwin.currentThElement.style.width = newWidth + 'px';
+                }
+            }
+        }
+
+        scwin.stopResizing = function() {
+            scwin.isResizing = false;
+            document.body.style.cursor = 'default'; // 커서 스타일 기본으로 되돌리기
+            
+            // mousemove, mouseup 이벤트 리스너 제거
+            document.removeEventListener('mousemove', scwin.resizeColumn);
+            document.removeEventListener('mouseup', scwin.stopResizing);
+        }
+
+        scwin.makeResizable = function(thElement) {
+            if (!thElement) return;
+
+            const resizer = document.createElement('div');
+            resizer.classList.add('resizer');
+            thElement.appendChild(resizer);
+
+            // 리사이저에 이벤트 추가
+            resizer.addEventListener('mousedown', function(event) {
+                scwin.startResizing(event, thElement);
+            });
+        }
+
+        scwin.checkVal = function() {
+            const th = WebSquare.wUnit.getDomById('gridView1_column2'); // 'name2'의 ID로 변경
+            if (th) {
+                scwin.makeResizable(th);
+                return true; // 정상적으로 실행된 경우 true 반환
+            } else {
+                console.error("Column not found.");
+                return false; // 컬럼이 없는 경우 false 반환
+            }
+        }
+
+        // WebSquare의 gridView가 로드된 후 checkVal 함수 호출
+        scwin.onpageload = function() {
+            setTimeout(function() {
+                scwin.checkVal();
+            }, 1000); // 1초 대기 후 실행
+        }
+
+        scwin.unitTest = function() {
+            // init
+            WebSquare.wUnit.start();
+            WebSquare.wUnit.addCommand("pause", "1000"); // 더 긴 대기
+            WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
+            WebSquare.wUnit.addCommand("pause", "500");
+
+            // Run and stop
+            WebSquare.wUnit.run();
+            WebSquare.wUnit.stop();
+        }
+        scwin.unitTest();
+    ]]></script>
+    <style>
+        .resizer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 10px;
+            height: 100%;
+            cursor: ew-resize; /* 슬라이더 커서 모양 */
+            z-index: 999; /* 다른 요소 위에 표시 */
+            user-select: none; /* 텍스트 선택 방지 */
+        }
+
+        /* 커서 스타일을 변경하기 위해 필요한 스타일 추가 */
+        #column2 {
+            position: relative; /* 자식 요소인 resizer를 상대적으로 배치하기 위해 */
+        }
+        
+        /* 테이블과 컬럼의 기본 스타일 설정 */
+        table {
+            width: 100%;
+            table-layout: fixed; /* 고정된 레이아웃 */
+        }
+    </style>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+        style="width:787px;height:500px;" ev:ondatadropself="scwin.gridView1_ondatadropself" dataDragDropSelf="true" columnMove="true">
+        <w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+        <w2:header id="header1" style="">
+            <w2:row id="row1" style="">
+                <w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="text" width="70" value="name1"
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="column2" removeBorderStyle="false" style="" inputType="text" width="100" value="name2"
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" inputType="text" width="70" value="name3"
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="col4" removeBorderStyle="false" style="" inputType="text" width="70" value="name4"
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="col5" removeBorderStyle="false" style="" width="70" inputType="text" value="name5"
+                    displayMode="label">
+                </w2:column>
+            </w2:row>
+        </w2:header>
+        <w2:gBody id="gBody1" style="">
+            <w2:row id="row2" style="">
+                <w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="col4" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+                    displayMode="label">
+                </w2:column>
+                <w2:column blockSelect="false" id="col5" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+                    displayMode="label">
+                </w2:column>
+            </w2:row>
+        </w2:gBody>
+    </w2:gridView>
+</body>
+</html>

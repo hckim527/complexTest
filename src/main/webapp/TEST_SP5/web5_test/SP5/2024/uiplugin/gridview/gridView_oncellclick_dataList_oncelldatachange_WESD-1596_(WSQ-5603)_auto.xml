@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true" ev:oncelldatachange="scwin.dataList1_oncelldatachange">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text"></w2:column>
+    					<w2:column id="col3" name="name3" dataType="text"></w2:column>
+    					<w2:column id="col4" name="name4" dataType="text"></w2:column>
+    					<w2:column id="col5" name="name5" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+        
+    scwin.onpageload = function() {
+		window.log_last = [];
+
+		var jsonData = [{col1:"a",col2:"a1",col3:"false", col4:"true"}
+						,{col1:"a",col2:"a2",col3:"false", col4:"true"}
+						,{col1:"a",col2:"a3",col3:"false", col4:"true"}
+						,{col1:"a",col2:"a4",col3:"false", col4:"true"}
+						,{col1:"a",col2:"a5",col3:"false", col4:"true"}
+						,{col1:"b",col2:"b1",col3:"false", col4:"true"}
+						,{col1:"b",col2:"b3",col3:"false", col4:"true"}
+						,{col1:"c",col2:"c1",col3:"false", col4:"true"}
+						,{col1:"c",col2:"c2",col3:"false", col4:"true"}
+						,{col1:"c",col2:"c3",col3:"false", col4:"true"}
+						,{col1:"d",col2:"d1",col3:"false", col4:"true"}
+						,{col1:"d",col2:"d2",col3:"false", col4:"true"}
+						,{col1:"d",col2:"d3",col3:"false", col4:"true"}];
+		dataList1.setJSON(jsonData);
+
+    };
+    
+    scwin.onpageunload = function() {
+        
+    };
+    	scwin.dataList1_oncelldatachange = function(info){
+			console.log("dataList1_oncelldatachange");
+			window.log_last.push('dataList1_oncelldatachange');
+    	}
+
+		scwin.gridView1_oncellclick = function(rowIdx, colIdx, colID){
+			if(colID == "col3" || colID == "col4"){
+				console.log("gridView1_oncellclick");
+				window.log_last.push('gridView1_oncellclick');
+			}
+		}
+
+	scwin.dbClick = function(id) {
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick(el);
+	}
+	scwin.fireDbClick = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('ondblclick');
+		} else if (document.createEvent) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function') {
+			node.ondblclick();
+		}
+	}
+
+	scwin.checkArrayOrder = function(arr) {
+		const expectedOrder = ['dataList1_oncelldatachange', 'gridView1_oncellclick'];
+		let isCorrect = arr.length === expectedOrder.length;
+		
+		debugger;
+		arr.forEach((value, index) => {
+			if (value !== expectedOrder[index]) {
+				isCorrect = false;
+			}
+		});
+
+		return isCorrect;
+	}
+	
+	scwin.checkVal1 = function() {
+		scwin.checkArrayOrder(window.log_last);
+		return scwin.checkArrayOrder(window.log_last);
+	}		
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_cell_0_2')");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col2').value = '11'");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_4').children[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest(); 
+	localStorage.removeItem("log");	
+	
+	
+	]]></script>
+    	<style type="text/css"><![CDATA[
+    		
+    	 ]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+
+
+    	<w2:gridView id="gridView1" style="width: 500px;height: 400px;" checkAllType="false" scrollByColumn="false" defaultCellHeight="20" autoFit="allColumn" 
+
+    		ev:oncellclick="scwin.gridView1_oncellclick"
+    		scrollByColumnAdaptive="false" dataList="data:dataList1">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="text" style="height:20px" id="column7" value="check" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column6" value="col1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column5" value="col2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column4" value="readOnly" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="column3" value="readOnly2" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="70" inputType="checkbox" checkboxLabel="aaa" style="height:20px" id="col5" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="button" readOnly="false" style="height:20px" id="col3" value="false" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="button" readOnly="true" style="height:20px" id="col4" value="true" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+    </body>
+</html>

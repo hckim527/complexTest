@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="WAEA_917_engine_jquerySupport_defaultLoad_guide">
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:mfeSubmission/>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css"><![CDATA[
+.guide-row { margin: 8px 0 16px 0; }
+]]></style>
+        <script lazy="false" type="text/javascript"><![CDATA[
+/*
+ * WAEA-917 가이드 샘플 - jquerySupport defaultLoad 설정으로 엔진 기본 jQuery 자동 로딩 제어
+ *
+ * [설정 규격] config.xml (또는 config.js)
+ *   <jquerySupport defaultLoad="false" />
+ *     - src 미지정 + defaultLoad="false" : 엔진 기본 jQuery(externalJS/jquery/jquery-3.7.1.min.js) 미로드
+ *     - defaultLoad 미지정(기본)         : 기존과 동일하게 엔진 기본 jQuery 로드 (하위호환)
+ *     - src 지정 시                      : defaultLoad 값과 무관하게 지정한 jQuery 로드 (src 우선)
+ *
+ * [확인 방법]
+ *   1. 기본 config 상태로 이 페이지를 열고 [상태 확인] : jQuery 3.7.1 로드됨
+ *   2. config.xml에 <jquerySupport defaultLoad="false" /> 설정 후 새로고침 : jQuery 미로드
+ *   3. src까지 지정하면 defaultLoad="false"여도 지정 jQuery가 로드됨
+ */
+scwin.onpageload = function() {
+    scwin.checkStatus();
+};
+
+scwin.checkStatus = function() {
+    var lines = [];
+    var conf = "";
+    try {
+        conf = WebSquare.core.getConfiguration("/WebSquare/jquerySupport/@defaultLoad");
+    } catch (e) {
+        conf = "(조회 실패: " + e.message + ")";
+    }
+    var src = "";
+    try {
+        src = WebSquare.core.getConfiguration("/WebSquare/jquerySupport/@src");
+    } catch (e) {
+        src = "";
+    }
+    lines.push("config jquerySupport/@defaultLoad : " + (conf === "" ? "(미지정)" : conf));
+    lines.push("config jquerySupport/@src         : " + (src === "" ? "(미지정)" : src));
+    lines.push("window.jQuery 존재 여부            : " + (window.jQuery ? "true" : "false"));
+    lines.push("jQuery 버전                        : " + (window.jQuery ? window.jQuery.fn.jquery : "-"));
+
+    var scripts = document.querySelectorAll("script[src*='jquery']");
+    var srcList = [];
+    for (var i = 0; i < scripts.length; i++) {
+        srcList.push(scripts[i].getAttribute("src"));
+    }
+    lines.push("문서 내 jQuery script 태그          : " + (srcList.length ? srcList.join(", ") : "(없음)"));
+
+    textarea1.setValue(lines.join("\n"));
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <h3>WAEA-917 jquerySupport defaultLoad 가이드 샘플</h3>
+        <p>config.xml의 <b>&lt;jquerySupport defaultLoad="false" /&gt;</b> 설정 조합별로 이 페이지를 열어 jQuery 로딩 상태를 확인합니다.</p>
+
+        <div class="guide-row">
+            <xf:trigger id="btnCheck" type="button" style="width:200px;height:25px;" ev:onclick="scwin.checkStatus">
+                <xf:label>상태 확인</xf:label>
+            </xf:trigger>
+        </div>
+        <w2:textarea id="textarea1" readOnly="true" style="width:900px;height:360px;font-family:Consolas,'Courier New',monospace;font-size:14px;line-height:1.6;white-space:pre;overflow:auto;"></w2:textarea>
+    </body>
+</html>

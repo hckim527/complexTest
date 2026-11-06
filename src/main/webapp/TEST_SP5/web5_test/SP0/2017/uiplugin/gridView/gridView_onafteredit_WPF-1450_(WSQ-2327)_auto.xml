@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<!-- gridView dataList -->
+            	<w2:dataList id="gridViewData" baseNode="list" style=""
+            		repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="대분류" dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="중분류" dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="소분류" dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<!-- 대분류 selectbox itemset -->
+            	<w2:dataList id="categoryData" baseNode="list" style="" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="label" dataType="text"></w2:column>
+            			<w2:column id="value" name="value" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>  
+            	<!-- 중분류 selectbox itemset -->           	
+            	<w2:dataList id="subCategoryData" baseNode="list" style="" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="subCategoryGubun" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            			<w2:column id="label" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:linkedDataList id="linkedSubCategoryData" style="" bind="subCategoryData">
+            		<w2:condition type="filter"><![CDATA[
+            			 subCategoryGubun ==  ref('data:gridViewData.col1')
+            		]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>
+            	<!-- 소분류 selectbox itemset -->
+            	<w2:dataList id="subSubCategoryData" baseNode="list" style="" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="subSubCategoryGubun" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            			<w2:column id="label" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>   
+            	<w2:linkedDataList id="linkedSubSubCategoryData" style="" bind="subSubCategoryData">
+            		<w2:condition type="filter"><![CDATA[
+            			 subSubCategoryGubun ==  ref('data:gridViewData.col2')
+            		]]></w2:condition>
+            		<w2:condition type="sort"><![CDATA[]]></w2:condition>
+            	</w2:linkedDataList>            	         	          	
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function() {
+    categoryData.setJSON([{
+        "label": "A",
+        "value": "A"
+    }, {
+        "label": "B",
+        "value": "B"
+    }]);
+    window.selectBoxObj2 = [{
+        "subCategoryGubun": "A",
+        "value": "A1",
+        "label": "A중분류-1"
+    }, {
+        "subCategoryGubun": "A",
+        "value": "A2",
+        "label": "A중분류-2"
+    }, {
+        "subCategoryGubun": "B",
+        "value": "B1",
+        "label": "B중분류-1"
+    }, {
+        "subCategoryGubun": "B",
+        "value": "B2",
+        "label": "B중분류-2"
+    }];
+    subCategoryData.setJSON(selectBoxObj2);
+    window.selectBoxObj3 = [{
+        "subSubCategoryGubun": "A1",
+        "value": "AA1-1",
+        "label": "A중분류-1-소분류1"
+    }, {
+        "subSubCategoryGubun": "A1",
+        "value": "AA1-2",
+        "label": "A중분류-1-소분류2"
+    }, {
+        "subSubCategoryGubun": "A2",
+        "value": "AA2-1",
+        "label": "A중분류-2-소분류1"
+    }, {
+        "subSubCategoryGubun": "A2",
+        "value": "AA2-2",
+        "label": "A중분류-2-소분류2"
+    }, {
+        "subSubCategoryGubun": "B1",
+        "value": "BB1-1",
+        "label": "B중분류-1-소분류1"
+    }, {
+        "subSubCategoryGubun": "B1",
+        "value": "BB1-2",
+        "label": "B중분류-1-소분류2"
+    }, {
+        "subSubCategoryGubun": "B2",
+        "value": "BB2-1",
+        "label": "B중분류-2-소분류1"
+    }, {
+        "subSubCategoryGubun": "B2",
+        "value": "BB2-2",
+        "label": "B중분류-2-소분류2"
+    }];
+    subSubCategoryData.setJSON(selectBoxObj3);
+    window.gridDataObj = [{
+            "col1": "A",
+            "col2": "A1",
+            "col3": "AA1-1"
+        },
+        {
+            "col1": "B",
+            "col2": "B1",
+            "col3": "BB1-1"
+        },
+        {
+            "col1": "A",
+            "col2": "A2",
+            "col3": "AA2-1"
+        },
+        {
+            "col1": "B",
+            "col2": "B2",
+            "col3": "BB2-1"
+        }
+    ];
+    gridViewData.setJSON(gridDataObj);
+
+}
+
+	scwin.changeNativeSelectOption = function(optionValue) {
+		// 셀렉트 박스 엘리먼트 가져오기
+		var selectElem = document.getElementById('mf_gridView1_cell_0_0_select_input_0');
+		if (!selectElem) {
+			console.error('셀렉트 박스를 찾을 수 없습니다.');
+			return;
+		}
+		// 셀렉트 박스 값 변경 (옵션 태그의 텍스트나 value가 optionValue와 일치해야 함)
+		selectElem.value = optionValue;
+		// change 이벤트 생성 및 디스패치(발생)
+		var event = new Event('change', { bubbles: true });
+		selectElem.dispatchEvent(event);
+		console.log('옵션이 "' + optionValue + '"로 변경되었습니다.');
+	}
+  	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('gridView1_cell_0_1').innerText.includes('B중분류-1');
+	}	
+  	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('gridView1_cell_0_2').innerText.includes('B중분류-1-소분류');
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		//WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.changeNativeSelectOption('B')");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+
+    <xf:group id="group2" style="height:370px;width:1038px;float:left;"><w2:textbox id="textbox1" style="position: relative;width:928px;height:103px;float:left;" label="- 대분류 컬럼과 중분류,소분류 컬럼은 selectBox 입니다.&lt;br/&gt;- 대분류는 categoryData(DataList) 을 노드셋으로 사용합니다.&lt;br/&gt;- 중분류는 linkedSubCategoryData(linkedDataList)을 노드셋으로 사용하며 filter Condition은 gridViewData.col1 == subCategoryGubun 정의하였습니다. &lt;br/&gt;- 소분류는 linkedSubSubCategoryData(linkedDataList)을 노드셋으로 사용하며 filter Condition은 gridViewData.col2 == subSubCategoryGubun 정의하였습니다. "></w2:textbox><w2:gridView id="gridView1" senseReader="true" dataList="gridViewData" style="position: relative;width:433px;height:164px;" useShiftKey="false" scrollByColumn="false" fixedColumnWithHidden="true">
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column id="column8" blockSelect="false" style="height:20px;" width="126" inputType="text" value="대분류(Category)">
+    				</w2:column>
+    				<w2:column id="column6" blockSelect="false" style="height:20px;" width="137" inputType="text" value="중분류(sub-Category)">
+    				</w2:column>
+    				<w2:column id="column4" blockSelect="false" style="height:20px;" inputType="text" width="164" value="소분류(sub-sub category)">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column id="col1" blockSelect="false" style="height:20px" chooseOption="" width="126" inputType="select" allOption="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:categoryData">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column id="col2" blockSelect="false" style="height:20px" chooseOption="" width="137" inputType="select" allOption="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:linkedSubCategoryData">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column id="col3" blockSelect="false" style="height:20px" chooseOption="" inputType="select" width="164" allOption="">
+    					<w2:choices>
+    						<w2:itemset nodeset="data:linkedSubSubCategoryData">
+    							<w2:label ref="label"></w2:label>
+    							<w2:value ref="value"></w2:value>
+    						</w2:itemset>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<script ev:event="onafteredit(rowIndex, colIndex, value, ev)" type="javascript"><![CDATA[
+                if(colIndex==0){
+                    // 0번 컬럼이 바뀌면 1번 컬럼이 바뀌고, 1번 컬럼이 바뀌면 2번 컬럼이 바뀜.
+                    // 즉, 0번 컬럼이 바뀌면 1번, 2번 컬럼이 바뀌므로 둘 다 갱신 필요.
+                    // linkedSubCategoryData.getCellData(0, "value")의 의미는 linkedCategoryData이 가진 첫번째 selectbox값을 의미한다.
+                    gridViewData.setCellData(rowIndex, "col2", linkedSubCategoryData.getCellData(0,"value")); 
+                    gridViewData.setCellData(rowIndex, "col3", linkedSubSubCategoryData.getCellData(0,"value"));
+                }
+                if(colIndex==1){ 
+                    // 1번 컬럼이 바뀌면 2번 컬림이 바뀜. 2번 컬럼에 대한 갱신 필요.
+                    // linkedSubSubCategoryData.getCellData(0, "value")의 의미는 linkedDataList2가 가진 첫번째 selectbox값을 의미한다.
+                    gridViewData.setCellData(rowIndex, "col3", linkedSubSubCategoryData.getCellData(0,"value"));
+                }                 		
+    		]]></script>
+    	</w2:gridView></xf:group></body>
+</html>
+ 

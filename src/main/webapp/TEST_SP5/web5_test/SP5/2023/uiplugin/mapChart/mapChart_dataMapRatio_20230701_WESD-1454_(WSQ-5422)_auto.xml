@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <title>WESD_1454_mapChart_20230701.xml</title>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <style>
+        </style>        
+        <script type="javascript" lazy="false"><![CDATA[
+            scwin.onpageload = function() {
+                
+            };
+            
+            scwin.onpageunload = function() {
+                
+            };
+
+			scwin.isWithinPercent = function(checkValue, baseValue, percentage){			
+				const margin = baseValue * (percentage / 100);
+				return (checkValue >= baseValue - margin) && (checkValue <= baseValue + margin);				
+			}
+
+			scwin.checkVal = function(){
+				const pathData = WebSquare.wUnit.getDomById('mapchart1_map').querySelectorAll('path')[12]
+				const width = 31.2;
+				const height = 54.29;
+				const bbox = pathData.getBBox();
+				window.width = bbox.width;
+				window.height = bbox.height;
+
+				console.log('Width:', width);
+				console.log('Height:', height);	
+				return scwin.isWithinPercent(bbox.width, width, 2) && scwin.isWithinPercent(bbox.height, height, 2)
+			}	
+			
+			scwin.unitTest = function(){
+				//init
+				WebSquare.wUnit.start();
+				WebSquare.wUnit.addCommand("pause", "500");		
+				WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+				WebSquare.wUnit.addCommand("pause", "500");		
+				
+				//Run  and stop
+				WebSquare.wUnit.run();
+				WebSquare.wUnit.stop();
+			}
+			scwin.unitTest();				
+
+		]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group>
+        	<w2:textbox label="mapChart : dataMapRatio_level0='simp01' dataMapRatio_level1='simp1' dataMapRatio_level2='simp1'" id="" style="position: relative;width:700px;height:41px;font-size:14pt;"></w2:textbox>
+            <w2:mapchart style="position: relative;width:400px;height:400px;background:white;" id="mapchart1" dataMapRatio_level0="simp01" dataMapRatio_level1="simp1" dataMapRatio_level2="simp1">
+        	</w2:mapchart>
+        </xf:group>
+        <xf:group>
+            <w2:textbox label="mapChart : dataMapRatio_level0='simp1' dataMapRatio_level1='simp1' dataMapRatio_level2='simp1'" id="" style="position: relative;width:700px;height:41px;font-size:14pt;"></w2:textbox>
+            <w2:mapchart style="position: relative;width:400px;height:400px;background:white;" id="mapchart2" dataMapRatio_level0="simp1" dataMapRatio_level1="simp1" dataMapRatio_level2="simp1">
+            </w2:mapchart>
+        </xf:group>
+        <xf:group>
+            <w2:textbox label="mapChart : dataMapRatio_level0='simp16' dataMapRatio_level1='simp16' dataMapRatio_level2='simp16'" id="" style="position: relative;width:700px;height:41px;font-size:14pt;"></w2:textbox>
+            <w2:mapchart style="position: relative;width:400px;height:400px;background:white;" id="mapchart3" dataMapRatio_level0="simp16" dataMapRatio_level1="simp16" dataMapRatio_level2="simp16">
+            </w2:mapchart>
+        </xf:group>
+    </body>
+</html>

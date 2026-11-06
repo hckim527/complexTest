@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" id="dl_list" repeatNode="map" ev:onrowpositionchange="">
+    				<w2:columnInfo>
+    					<w2:column id="chk" name="선택" dataType="text"></w2:column>
+    					<w2:column id="cltnIntinfoId" name="수집정첩보ID" dataType="text"></w2:column>
+
+    					<w2:column id="intinfoCltnDttm" name="수집일시" dataType="text"></w2:column>
+    					<w2:column id="rgstUc" name="등록부대코드" dataType="text"></w2:column>
+
+    					<w2:column id="rgstUnitNm" name="등록부대명" dataType="text"></w2:column>
+    					<w2:column id="navyctifdvcd" name="해군수집정보분류코드" dataType="text"></w2:column>
+    					<w2:column id="intinfoTgtDvsId" name="정첩보표적구분ID" dataType="text"></w2:column>
+    					<w2:column id="intinfoTitle" name="정첩보제목" dataType="text"></w2:column>
+    					<w2:column id="mimsTrsmssnYn" name="군사정보통합처리체계전송일시" dataType="date"></w2:column>
+    					<w2:column id="intinfoSrceNm" name="정첩보출처" dataType="text"></w2:column>
+    					<w2:column id="lbryDocId" name="자료실문서ID" dataType="text"></w2:column>
+    					<w2:column id="lbryDocUrlPtcls" name="자료실문서URL" dataType="text"></w2:column>
+    					<w2:column id="lbryYn" name="자료실문서유무" dataType="text"></w2:column>
+    					<w2:column id="lbry" name="문서이미지" dataType="text" ignoreStatus="true"></w2:column>
+    					<w2:column id="dsmtYn" name="전파여부" dataType="text"></w2:column>
+    					<w2:column id="dsmtTricdNm" name="전파송수신구분코드명" dataType="text"></w2:column>
+    					<w2:column id="dsmtDhms" name="전파일시분초" dataType="text"></w2:column>
+
+    					<w2:column id="dsmtUseYn" name="전파미설정" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<stylesheet src="/ui/pot/exc/aa/css/WebSquare.css" />
+    	<style src="/heagun/css/WebSquare.css" />
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    scvar.fn_listToggle(true);
+};
+scwin.trigger2_onclick = function(e) {
+    scvar.fn_listToggle(false);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grd_list_cell_2_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'grd_list_cell_17_1').style.backgroundColor == 'rgb(255, 128, 0)'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    for (var idx = 0; idx < 40; idx++) {
+        dl_list.insertRow(idx);
+    };
+    window.scvar = {};
+    scwin.toggleObj = {
+        height: ['600', '127']
+    };
+    /**
+     * 목록 더보기, 상세보기 등 화면 처리한다.
+     *
+     * @param <object> obj.grp 숨겨질 그룹
+     * @param <object> obj.btn 버튼
+     * @param <object> obj.grd 그리드
+     * @param <Array> obj.btnTxt 버튼 텍스트
+     * @param <Array> obj.height 그리드 높이
+     * @param <number> obj.rowIdx 포커스 행 인덱스
+     * @param <number> obj.colIdx 포커스 열 인덱스
+     * @date 2018. 09. 05
+     */
+    scvar.fn_toggle = function(obj) {
+        //debugger;
+        window.grp = obj.grp || WebSquare.wUnit.getJq('#grp_detail');
+        window.btn = obj.btn || trigger1;
+        window.id = btn.getID();
+        window.grd = obj.grd || grd_list;
+        window.btnTxt = obj.btnTxt || ['상세정보 보기', '상세정보 닫기'];
+        if (scwin.toggleObj.toggleFlag) {
+            WebSquare.wUnit.getJq('#' + id).removeClass('down').addClass('up');
+            grp.hide();
+            //btn.setValue(btnTxt[0]);
+            grd.setGridHeight(scwin.toggleObj.height[0]);
+            obj.toggleFlag = true;
+            //debugger;
+            console.log("down    " + scwin.toggleObj.rowIdx + " //  " + scwin.toggleObj.colIdx);
+            grd.setFocusedCell(scwin.toggleObj.rowIdx, scwin.toggleObj.colIdx, true); //false
+        } else {
+            WebSquare.wUnit.getJq('#' + id).removeClass('up').addClass('down');
+            grp.show();
+            //btn.setValue(btnTxt[1]);
+            grd.setGridHeight(scwin.toggleObj.height[1]);
+            obj.toggleFlag = true;
+            console.log("up    " + scwin.toggleObj.rowIdx + " //  " + scwin.toggleObj.colIdx);
+            grd.setFocusedCell(scwin.toggleObj.rowIdx, scwin.toggleObj.colIdx, true);
+        }
+        return obj.toggleFlag;
+    };
+    scvar.fn_listToggle = function(flag) {
+        //debugger;
+        scwin.toggleObj.rowIdx = grd_list.getFocusedRowIndex();
+        scwin.toggleObj.colIdx = grd_list.getFocusedColumnIndex();
+        scwin.toggleObj.toggleFlag = flag;
+        scwin.toggleFlag = scvar.fn_toggle(grd_list);
+    };
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView autoFit="allColumn" class="" dataList="dl_list"
+    		ev:onbeforesort="scwin.grd_list_onbeforesort" ev:oncellclick=""
+    		fastScroll="false"
+    		fixedColumnWithHidden="true" focusMode="row" id="grd_list" ignoreCellClick="false"
+    		readOnly="" readOnlyBackgroundColor="" rowNumHeaderValue="순번" rowNumVisible="true"
+    		rowNumWidth="50" scrollByColumn="false" selectedCellColor="" selectedCellOverColor=""
+    		selectedRowColor="#FF8000" selectedRowOverColor="" showSortableImage="true" sortEvent="onclick"
+    		sortable="true" style="height:127px;" tooltipDisplay="true" useShiftKey="true" focusFlow="" filterFocusMode="" ev:onviewchange="">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="chk" inputType="checkbox"
+    					sortable="false" style="height:20px;" value="선택" width="50">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="lbry" inputType="text" sortable="false"
+    					style="height:20px;" value="첨부" width="50">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="intinfoCltnDttm"
+    					inputType="text" style="height:20px;" value="수집일시" width="130">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="rgstUnitNm"
+    					inputType="text" style="height:20px;" value="등록부대" width="100">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="navyctifdvcd"
+    					inputType="text" style="height:20px;" value="정보유형" width="80">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="intinfoTgtDvsId"
+    					inputType="text" style="height:20px;" value="표적구분" width="85">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="intinfoTitle"
+    					inputType="text" style="height:30px;" value="제목" width="*">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="dsmtTricdNm" inputType="text"
+    					sortable="false" style="height:30px;" value="송수신구분" width="100">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="dsmtDhms" inputType="text"
+    					style="height:30px;" value="송신일시" width="130">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody columnClass="" id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="chk" inputType="checkbox"
+    					readOnly="false" style="height:30px;" width="50">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="lbry" imageWidth="15"
+    					inputType="text" readOnly="true" style="height:30px;" textAlign="center" width="50" value="">
+    				</w2:column>
+    				<w2:column blockSelect="false" calendarValueType="yearMonthDateTimeSec"
+    					displayFormat="yyyy-MM-dd HH:mm:SS" displayMode="label" id="intinfoCltnDttm"
+    					inputType="calendar" ioFormat="yyyyMMddHHmmSS" readOnly="true" style="height:30px;"
+    					textAlign="center" width="130">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="rgstUnitNm"
+    					inputType="text" readOnly="true" style="height:30px;" textAlign="left" width="100">
+    				</w2:column>
+    				<w2:column blockSelect="false" chooseOptionLabel="-선택-" displayMode="label"
+    					id="navyctifdvcd" inputType="text" readOnly="true" style="height:30px;"
+    					textAlign="center" width="80">
+    				</w2:column>
+    				<w2:column blockSelect="false" chooseOptionLabel="-선택-" displayMode="label"
+    					id="intinfoTgtDvsId" inputType="text" readOnly="true" style="height:30px;"
+    					textAlign="center" width="85">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="intinfoTitle"
+    					inputType="text" readOnly="true" style="height:30px;" textAlign="left" width="*">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="dsmtTricdNm"
+    					inputType="text" readOnly="true" style="height:30px;" textAlign="center" width="100">
+    				</w2:column>
+    				<w2:column blockSelect="false" calendarValueType="yearMonthDateTimeSec"
+    					displayFormat="yyyy-MM-dd HH:mm:SS" displayMode="label" id="dsmtDhms" inputType="calendar"
+    					ioFormat="yyyyMMddHHmmSS" readOnly="true" style="height:30px;" textAlign="center"
+    					width="130">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" style="width: 132px;height: 37px;" id="trigger1"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[펴기]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width: 144px;height: 37px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[접기]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

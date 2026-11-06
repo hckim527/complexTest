@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.___isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    if (myNav.indexOf('msie') != -1) {
+        return parseInt(myNav.split('msie')[1]);
+    } else if (myNav.substr(myNav.indexOf('rv') + 3, 2) == "11" || myNav.substr(myNav.indexOf('rv') + 2, 2) == "16") {
+        return true;
+    } else {
+        return false;
+    }
+}
+scwin.__isCheck = function() {
+    return scwin.___isIE() ? WebSquare.wUnit.getJq("#SearchBox1___input").hasClass("w2searchbox_reset_remove") : true;
+}
+scwin.setSimulate = function() {
+    WebSquare.wUnit.getJq('#SearchBox1___input').simulate('key-sequence', {
+        sequence: 'search'
+    });
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('SearchBox1___input').focus()");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#SearchBox1___reset').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Testcase test for IE Browser.
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 14-Mar-2018
+    window.addEventListener("keydown", function(e) {
+        console.log(e);
+    })
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:searchbox id="SearchBox1"
+    		style="position: absolute;width: 150px;height: 21px;">
+    	</w2:searchbox>
+    	<xf:input id="inputBox1"
+    		style="position: absolute;width: 144px;height: 21px;left:0px;top:44px;">
+    	</xf:input>
+    </body>
+</html>
+ 

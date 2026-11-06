@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+
+	};
+
+	scwin.onpageunload = function() {
+
+	};
+
+	scwin.btn_trigger1_onclick = function(e) {
+		requires("uiplugin.popup"); //팝업을 사용하기 위해 반드시 포함되어야 한다.
+
+		// 실제 전달할 데이터 정의 
+		var rowJSON = {
+			"Personal Info" : {
+				"Name" : "Lee",
+				"Age" : 50,
+				"Married" : false
+			},
+			"Region" : "Seoul",
+			"Carrier" : true
+		};
+
+		// 새로 열릴 화면에 데이터를 전달 (dataObject를 통해 전달 가능)
+
+		var dataObject = {
+			"type" : "json", // 데이터 타입. "json" 권장 
+			"name" : "param", // 데이터를 가져오기 위한 key 값. popup에서 $p.getParameter( "paramTest" )로 깨내올 수 있음.
+			"data" : rowJSON
+		// 실제 전달할 데이터
+		};
+
+		// 팝업 생성 옵션 지정
+		var options = {
+			id : "popup1",
+			type : "wframePopup",
+			width : "230px",
+			height : "250px",
+			top : "130px",
+			left : "200px",
+			popupName : "testPopup",
+			modal : true,
+			windowMoveType : "overflow",
+			//minVisibleWindowPixel : "100px",
+			resizable : true,
+			status : true,
+			menubar : false,
+			scrollbars : false,
+			title : false,
+			windowDragMove : true,
+			useControl : true,
+			controls : { minimize: false, maximize: false, close: true },
+			dataObject : dataObject
+		};
+
+		// 팝업 생성.
+		$p.openPopup("openPopup_windowDragMove_WESE-235_(WSQ-5279)_popup.xml", options);
+	};
+	
+	
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#popup1_header', 'drag-n-drop', {
+			dx: 0,
+			dy: 700
+		});
+	}
+	scwin.setSimulate2 = function() {
+		scwin.simulateWrapper('#treeview_label_6', 'drag-n-drop', {
+			dx: 10,
+			dy: 20
+		});
+	}
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getJq('#popup1').offset().top < WebSquare.wUnit.getJq('#_modal').height();
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest();
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="btn_trigger1" ev:onclick="scwin.btn_trigger1_onclick">
+    		<xf:label><![CDATA[팝업 오픈]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

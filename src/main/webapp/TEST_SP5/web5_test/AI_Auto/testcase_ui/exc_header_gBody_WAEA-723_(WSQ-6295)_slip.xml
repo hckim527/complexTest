@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="전장표 GridView EXC">
+		<w2:type palette="support">EXC</w2:type>
+		<w2:buildDate/>
+		<w2:model></w2:model>
+		<w2:publicInfo exposeType="all"></w2:publicInfo>
+		<script type="text/javascript" lazy="false"><![CDATA[
+/**
+ * @component
+ * @componentName exc_slip_gridView
+ * @pluginName 
+ * @inherit w2:gridView
+ * @company
+ * @developer
+ * @category /webTop/cm/udc/slip
+ * @notSupportBrowser 
+ * @version
+ * @htmlRender
+ * @icon
+ * @disableIcon
+ * @description
+ * @width
+ * @height
+ * @license
+ * @imagePath
+ * @homepage
+ */
+
+
+scwin.onpageload = function() {
+    
+};
+
+scwin.getCompName = function() {
+	return 'slip_99_comp_gridView';
+};
+
+/**
+ * 전장표 인쇄를 위한 데이터를 반환 한다.
+ */
+scwin.getSlipData = function(curInx, tPageCnt, LPI, CPI, LPI_PER_PIXEL, CPI_PER_PIXEL, MARGIN_LEFT, MARGIN_TOP, baseCompID) {
+
+	var rtnArr = [];
+	var $baseElm = $('#' + baseCompID);
+	var baseOffset = $baseElm.offset();
+	var pageSize = exc_slip_gridView.getUserData('PAGE_SIZE');
+	var sValArr  = exc_slip_gridView.getAllDisplayJSON();
+	var rowJson, sVal, $elm, _offset, _align, _width, colPos, rowPos;
+	var iCnt1 = (curInx + 1) * pageSize;
+
+	if (iCnt1 > exc_slip_gridView._dataList.getTotalRow()) iCnt1 = exc_slip_gridView._dataList.getTotalRow();
+
+	for (var idx1 = curInx * pageSize, inx = 0; idx1 < iCnt1; idx1++, inx++) {
+
+		rowJson = sValArr[idx1];
+
+		for (var idx2 = 0, iCnt2 = exc_slip_gridView.getTotalCol(); idx2 < iCnt2; idx2++) {
+
+			sVal = (rowJson[exc_slip_gridView.getColumnID(idx2)] || '').replaceAll('&nbsp;', ' ');
+			sVal = sVal.replaceAll('\u00A0', ' ');
+
+			if (sVal == '') continue;
+
+			$elm = $('#' + exc_slip_gridView.getID() + '_cell_' + inx + '_' + idx2);
+
+			_offset = $elm.offset();
+			_align  = $elm.css('text-align');
+			_width  = $elm.width();
+
+			_width = Math.round(parseInt(_width, 10) / CPI_PER_PIXEL);
+
+			colPos = Math.round((_offset.left - baseOffset.left - MARGIN_LEFT) / CPI_PER_PIXEL);
+
+			if (_align == 'center') {
+				colPos = colPos + (_width >> 1) - (WebSquare.util.getByteLength(sVal) >> 1);
+			} else if (_align == 'right') {
+				colPos = colPos + _width - WebSquare.util.getByteLength(sVal);
+			}
+
+			rtnArr.push({
+				'column'     : colPos + 1,
+				'line'       : Math.round((_offset.top - baseOffset.top - MARGIN_TOP) / LPI_PER_PIXEL),
+				'data'       : sVal
+			});
+
+			console.log(rtnArr[rtnArr.length - 1]);
+
+		}
+
+	}
+
+	return rtnArr;
+};
+
+scwin.getDataList = function() {
+    const propValue = this.options?.dataList || null;
+
+    // gridView 속성 중 dataList가 없는 경우 (빈 값도 허용)
+    if (propValue === null || propValue === undefined) { 
+        return; 
+    }
+
+    // 만약 dataList가 있더라도 data: prefix를 붙이지 않는 경우도 undefined를 반환한다.
+    if (!propValue.startsWith('data:')) {
+        return;
+    }
+
+    const dataList = propValue.replace('data:', ''); // data:를 제거한 실제 id만 추출한다.
+    
+    // [수정] EXC scope에서는 부모 페이지의 dataList를 찾을 수 없으므로 $p.top() 사용
+    return $p.getComponentById(dataList) || null;
+}	]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<!--/** WEBSQUARE EXC */
+			{
+			"disableIcon": "", "notSupportBrowser": "", "htmlRender": "", "icon": "",
+			"description": "전장표 GridView 컴포넌트. 인쇄 데이터 수집.",
+			"version": "",
+			"apis": [
+			{"name": "getCompName", "description": "컴포넌트 이름 반환", "params": [], "return": [{"description": "컴포넌트명", "type": "String"}]},
+			{"name": "getSlipData", "description": "인쇄 데이터 반환", "params": [], "return": [{"description": "인쇄 데이터 배열", "type": "Array"}]}
+			],
+			"pluginName": "slip_99_comp_gridView",
+			"inherit": "w2:gridView",
+			"width": "300px",
+			"company": "", "developer": "",
+			"componentName": "slip_99_comp_gridView",
+			"category": "Basic",
+			"properties": [
+			{"default": "", "necessary": "Y", "hidden": "N", "name": "id", "description": "Component id", "type": "string", "bindparent": "", "option": ""},
+			{"default": "", "necessary": "N", "hidden": "N", "name": "style", "description": "Component style", "type": "string", "bindparent": "", "option": ""},
+			{"default": "grid", "necessary": "Y", "hidden": "N", "name": "class", "description": "Component class", "type": "string", "bindparent": "", "option": ""}
+			],
+			"events": [],
+			"height": "23px"
+			}
+		-->
+		<w2:gridView id="exc_slip_gridView" style="" pluginName="exc_slip_gridView">
+		</w2:gridView>
+	</body>
+</html>

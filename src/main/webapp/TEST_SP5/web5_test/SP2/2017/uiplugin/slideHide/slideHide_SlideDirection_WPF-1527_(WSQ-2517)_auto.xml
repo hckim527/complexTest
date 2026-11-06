@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_slideHide = function(e) {
+    if (slideHide1.getUserData("edu_flag") == null) {
+        slideHide1.setUserData("edu_flag", "y");
+        slideHide1.startHide();
+    } else {
+        slideHide1.setUserData("edu_flag", null);
+        slideHide1.startSlide();
+    }
+};
+scwin.__isCloseToRight = function() {
+    //debugger;
+    if (slideLeft == "auto") {
+        return parseInt(WebSquare.wUnit.getJq("#slideHide1").css("left")) > 0;
+    }
+    return parseInt(WebSquare.wUnit.getJq("#slideHide1").css("left")) > parseInt(slideLeft);
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. 브라우저에서 slide/hide 버튼을 클릭한다.
+    //2. In your browser, click the slide / hide button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_1').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 2. 왼쪽에서 오른쪽으로 닫힌다. (그전버전에서는 IE 와 Edge 브라우저에서 오른쪽 -> 왼쪽으로 이동되는 현상발생)
+    //2. Close from left to right. (In previous versions, IE and Edge browser moved from right to left)
+    WebSquare.wUnit.addCommand("assert", "scwin.__isCloseToRight()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 13-Feb-2018
+    window.slideLeft = WebSquare.wUnit.getJq("#slideHide1").css("left");
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:trigger type="button" id="" style="width: 120px;height: 30px;margin-bottom: 10px;" ev:onclick="scwin.fn_slideHide">
+    		<xf:label><![CDATA[slide/hide]]></xf:label>
+    	</xf:trigger>
+    	<w2:slideHide firstStatus="slide" hideEvent="" id="slideHide1" moveSize="" showSize="15" slideDirection="left" slideEvent=""
+    		style="position:relative;width:95px;height:182px;border:1px solid #ccc;">
+    		<xf:group class="" ev:onclick="scwin.fn_slideHide" id="group4"
+    			style="position:absolute;left:0px;height:100%;width: 15px;background-color: #bbb;">
+    		</xf:group>
+    		<w2:textbox id="" label="Favorite"
+    			style="padding:10px 4px;margin-left:15px;color:#bbb;font-weight:bold;background-color:#fff;border-bottom:4px double #ccc;">
+    		</w2:textbox>
+    		<w2:textbox id="" label="- Fruits"
+    			style="padding:6px 4px;margin-left:15px;color:#bbb;font-weight:bold;background-color:#fff;">
+    		</w2:textbox>
+    		<w2:textbox id="" label="- Fish" style="padding:6px 4px;margin-left:15px;color:#bbb;font-weight:bold;background-color:#fff;"></w2:textbox>
+    	</w2:slideHide>
+    </body>
+</html>
+ 

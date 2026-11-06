@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>COMPONENT</w2:type>
+    	<w2:buildDate />
+    	<w2:MSA />
+    	<xf:model>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection />
+    	</xf:model>
+    	<w2:layoutInfo />
+    	<w2:publicInfo method="" />
+    	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	document.title = "FloatingLayer";
+	
+	floatingLayer1.hide();
+};
+
+scwin.trigger1_onclick = function(e) {
+	floatingLayer1.show();
+};
+
+scwin.trigger2_onclick = function(e) {
+    floatingLayer1.setHeaderHTML("<b style='color:red;'> changed header </b>");
+};
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('mf_floatingLayer1_headerHTML').innerText == 'header';
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group>
+    		<xf:trigger class="btn_in" id="trigger1" style="width:220px;" type="button" ev:onclick="scwin.trigger1_onclick">
+                <xf:label><![CDATA[floatingLayer1 show]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <xf:group>
+            <xf:trigger class="btn_in" id="trigger2" style="width:220px;" type="button" ev:onclick="scwin.trigger2_onclick">
+                <xf:label><![CDATA[floatingLayer1 setHeaderHTML]]></xf:label>
+            </xf:trigger>
+    	</xf:group>
+        <xf:group>
+    		<w2:floatingLayer accessibility="" id="floatingLayer1" movable="true" headerHTML="&lt;s style='color:white;font-size:20px;'&gt;header&lt;/s&gt;"
+    			style="position:absolute;width:300px;height:300px;left:51px;top:174px;" title="floatingLayer child">
+    			<xf:input adjustMaxLength="false" id="finput1" style="position:absolute;width:144px;height:21px;left:62px;top:20px;"></xf:input>
+    			<xf:input adjustMaxLength="false" id="finput2" style="position:absolute;width:144px;height:21px;left:62px;top:71px;"></xf:input>
+    			<xf:input adjustMaxLength="false" id="finput3" style="position:absolute;width:144px;height:21px;left:62px;top:119px;"></xf:input>
+    			<xf:trigger id="btn1" style="position:absolute;width:80px;height:23px;left:39px;top:197px;" type="button" class="btn_df">
+    				<xf:label><![CDATA[btn1]]></xf:label>
+    			</xf:trigger>
+    			<xf:trigger id="btn2" nextTabID="" style="position:absolute;width:80px;height:23px;left:165px;top:195px;"
+    				type="button" class="btn_df">
+    				<xf:label><![CDATA[btn2]]></xf:label>
+    			</xf:trigger>
+    		</w2:floatingLayer>
+    	</xf:group>
+    </body>
+</html>

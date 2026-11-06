@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    //alert(input1.getFormattedValue());
+    log = input1.getFormattedValue();
+};
+scwin.trigger3_onclick = function(e) {
+    //textarea 는 getFormattedValue API 가 없음
+    //alert(textarea1.getFormattedValue());
+};
+scwin.trigger4_onclick = function(e) {
+    //secret 은 비공개 API
+    //alert(secret1.getFormattedValue());
+    log1 = secret1.getFormattedValue();
+};
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 input1 / textarea1 / secret1 의 placeholder 부분을 확인한다.
+    //1. In the Source tab, check the placeholder part of input1 / textarea1 / secret1.
+    //Verify step 1. placeholder = "입력하세요"                
+    //Test step 2. 브라우저에서 input1 / secret1 의 getFormattedValue 버튼을 클릭한다. (Textarea는 getFormattedValue API 가 없어서 제외)
+    //2. In the browser, click the getFormattedValue button on input1 / secret1. (Textarea does not have getFormattedValue API)
+    //Verify step 2. A pop-up is created with "". (In previous versions, the "Please enter" popup was created.)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log1 == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = ""; window.log1 = "";
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 08-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    <xf:group id="group1" style="height:104px;width:500px;">
+    	<xf:input id="input1" style="width: 144px;height: 21px;" placeholder="입력하세요"></xf:input>
+    	<xf:trigger id="trigger1" style="width:145px;height:23px;" ev:onclick="scwin.trigger1_onclick" type="button">
+    		<xf:label><![CDATA[getFormattedValue]]></xf:label>
+    	</xf:trigger>
+    	<xf:textarea id="textarea1" style="width: 300px;height: 100px;" placeholder="입력하세요"></xf:textarea>
+
+    	<xf:trigger id="trigger3" style="width:145px;height:23px;vertical-align: top;" ev:onclick="scwin.trigger3_onclick" type="button">
+    		<xf:label><![CDATA[getFormattedValue]]></xf:label>
+    	</xf:trigger>
+    	
+    	<xf:secret id="secret1" style="width: 144px;height: 21px;" placeholder="입력하세요"></xf:secret><xf:trigger type="button" id="trigger4" style="width:145px;height:23px;" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[getFormattedValue]]></xf:label>
+    	</xf:trigger>
+    </xf:group></body>
+</html>
+ 

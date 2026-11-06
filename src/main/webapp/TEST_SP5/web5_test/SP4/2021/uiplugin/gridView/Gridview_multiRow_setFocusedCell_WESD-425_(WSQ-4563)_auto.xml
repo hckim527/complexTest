@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+    			<w2:dataList baseNode="list" repeatNode="map" id="orderList" saveRemovedData="true">
+    				<w2:columnInfo>
+    					<w2:column id="chk" name="체크유무" dataType="text"></w2:column>
+    					<w2:column id="orderName" name="처방명" dataType="text"></w2:column>
+    					<w2:column id="orderKoreanName" name="처방한글명" dataType="text"></w2:column>
+    					<w2:column id="oneDay" name="1일수량" dataType="text"></w2:column>
+    					<w2:column id="oneTime" name="1회수량" dataType="text"></w2:column>
+    					<w2:column id="unit" name="단위" dataType="text"></w2:column>
+    					<w2:column id="numberOfTime" name="횟수" dataType="text"></w2:column>
+    					<w2:column id="orderDay" name="날수" dataType="text"></w2:column>
+    					<w2:column id="dComent" name="참조사항" dataType="text"></w2:column>
+    					<w2:column id="koreanPrescription" name="처방전한명" dataType="text"></w2:column>
+    					<w2:column id="bckg" name="배경색" dataType="text"></w2:column>
+    					<w2:column id="slipSqno" name="처방전순번" dataType="text"></w2:column>
+    					<w2:column id="erYn" name="응급여부" dataType="text"></w2:column>
+    					<w2:column id="prscRtrvSort" name="처방조회정렬" dataType="text"></w2:column>
+    					<w2:column id="extChkRow" name="M참조사항" dataType="text"></w2:column>
+    					<w2:column id="extRow1" name="name16" dataType="text"></w2:column>
+    					<w2:column id="extRow2" name="name17" dataType="text"></w2:column>
+    					<w2:column id="prscBndl" name="처방묶음" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>			
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "orderName": "test1",
+        "orderKoreanName": "test1",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test1",
+        "extRow1": "1"
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test1",
+        "extRow1": "1"
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test1",
+        "extRow1": "1"
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test1",
+        "extRow1": ""
+    }];
+    //orderList.setJSON(jsonData);
+    orderList.insertRow();
+    scwin.trigger1_onclick();
+    setTimeout(function() {
+        debugger;
+        grd_orderList.setFocusedCell(grd_orderList.getRowCount() - 1, "orderKoreanName", true);
+    }, 500);
+};
+scwin.onpageunload = function() {};
+scwin.chkMultiCellVisible = function(grdObj, chkColumn, columnArrStr, modifiedIndex) {
+    modifiedIndex = parseInt(modifiedIndex);
+    var grdComp;
+    if (typeof grdObj !== "undefined") {
+        if (typeof grdObj === "string") {
+            grdComp = $p.getComponentById(grdObj);
+        } else {
+            grdComp = grdObj;
+        }
+    }
+    var dcObjId = grdComp.getDataList();
+    var dcObj = $p.getComponentById(dcObjId);
+    var gridId = grdComp.getID();
+    var rowCnt = dcObj.getTotalRow();
+    var multiColumnArr = columnArrStr.split(",");
+    var multiColumnArrLength = multiColumnArr.length;
+    for (var i = 0; i < rowCnt; i++) {
+        for (var j = 0; j < multiColumnArrLength; j++) {
+            var cellName = multiColumnArr[j];
+            var txt = dcObj.getCellData(i, chkColumn);
+            console.log("i = " + txt);
+            if (txt.trim() != "") {
+                grdComp.setCellVisible(i, cellName, true);
+            } else {
+                grdComp.setCellVisible(i, cellName, false);
+            }
+        }
+    }
+    if (modifiedIndex > -1) {
+        for (var j = 0; j < multiColumnArrLength; j++) {
+            //추가한 rowIndex show visible 처리 
+            grdComp.setCellVisible(modifiedIndex, cellName, true);
+        }
+    }
+};
+scwin.trigger1_onclick = function(e) {
+    var jsonData = [{
+        "orderName": "test4",
+        "orderKoreanName": "test4",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test3",
+        "orderKoreanName": "test3",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test3",
+        "orderKoreanName": "test3",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test3",
+        "orderKoreanName": "test3",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test3",
+        "orderKoreanName": "test3",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test3",
+        "orderKoreanName": "test3",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test3",
+        "orderKoreanName": "test3",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": ""
+    }, {
+        "orderName": "test3",
+        "orderKoreanName": "test3",
+        "extRow1": ""
+    }, {
+        "orderName": "test2",
+        "orderKoreanName": "test2",
+        "extRow1": "1"
+    }];
+    //debugger;
+    orderList.setBroadcast(false);
+    for (var i = 0; i < jsonData.length; i++) {
+        //		debugger;
+        var idx = orderList.getRowCount() - 1;
+        orderList.setRowJSON(idx, jsonData[i], true);
+        orderList.insertRow();
+    }
+    orderList.setBroadcast(true, true);
+    var chkColumnStr = "extChkRow,extRow1,extRow2";
+    scwin.chkMultiCellVisible(grd_orderList, "extRow1", chkColumnStr);
+};
+scwin.trigger2_onclick = function(e) {
+    var chkColumnStr = "extChkRow,extRow1,extRow2";
+    scwin.chkMultiCellVisible(grd_orderList, "extRow1", chkColumnStr);
+};
+scwin.checkVal = function() {
+    if (WebSquare.wUnit.getDomById($p.id + 'grd_orderList_headerRowNumber_bodyRow_17') == null)
+        return false;
+    return WebSquare.wUnit.getDomById($p.id + 'grd_orderList_headerRowNumber_bodyRow_17').innerText == '23';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "2500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger id="trigger1" style="width: 150px;height: 32px;" type="button"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setRowJSON]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger2" style="width: 150px;height: 32px;" type="button"
+    		ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[chkMultiCellVisible]]></xf:label>
+    	</xf:trigger>
+		<w2:gridView scrollByColumnAdaptive="false" rowNumVisible="true" rowStatusWidth="50" summaryAuto="false" useShiftKey="true" noSelect="true"
+			rowNumHeaderValue="번호" scrollByColumn="false" rowStatusHeaderValue="상태" focusMode="row" rowStatusVisible="true" defaultCellHeight="16"
+			fixedColumnWithHidden="true" rowNumWidth="50" dataList="data:orderList" ignoreCellClick="false" style="height:440px;" autoFit=""
+			id="grd_orderList" visibleRowNum="" sortable="true">
+			<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header style="" id="header1">
+				<w2:row style="" id="row1">
+					<w2:column removeBorderStyle="false" width="40" inputType="text" id="column9" sortable="false" value="체크유무"
+						blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="140" inputType="text" id="column7" value="처방명" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="100" inputType="text" id="column5" value="처방전한명" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="50" inputType="text" id="column3" value="1일수량" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="50" inputType="text" id="column1" value="1회수량" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="40" inputType="text" id="column20" value="단위" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="40" inputType="text" id="column18" value="횟수" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="40" inputType="text" id="column16" value="날수" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="column28" value="B" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="column26" value="L" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="column24" value="D" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="column22" value="N" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="140" inputType="text" id="column58" value="참조사항" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column60" value="급여" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column62" value="용법" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column64" value="주사방법" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column56" value="묶음" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column54" value="원내사유" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column52" value="상세설정" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column50" value="수령부서" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column48" value="상병그룹" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="100" inputType="text" id="column46" value="실시일자" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column44" value="처방상태" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column42" value="의사코드" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column40" value="입력직원" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column38" value="처리구분" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody style="height:200px;" id="gBody1">
+				<w2:row style="" id="row2">
+					<w2:column removeBorderStyle="false" width="40" inputType="checkbox" id="chk" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" blockSelect="false" displayMode="label" width="140" inputType="text"
+						id="orderKoreanName" class="tal" customFormatter="scwin.setColor">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="100" inputType="text" id="koreanPrescription" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="50" inputType="text" id="oneDay" class="tal" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="50" inputType="text" id="oneTime" class="tal" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="40" inputType="text" id="unit" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="40" inputType="text" id="numberOfTime" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="40" inputType="text" id="orderDay" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="col9" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="col10" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="col11" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="20" inputType="text" id="col12" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="140" inputType="text" id="dComent" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col14" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col15" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col16" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="prscBndl" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col18" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="button" id="col19" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col20" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="slipSqno" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="100" inputType="calendar" id="column47" blockSelect="false" displayMode="label"
+						viewType="icon">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column45" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column43" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column41" blockSelect="false" displayMode="label">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column39" blockSelect="false" displayMode="label">
+					</w2:column>
+				</w2:row>
+				<w2:row style="" id="extRow">
+					<w2:column removeBorderStyle="false" width="40" inputType="text" style="height:20px;" id="extChkRow" blockSelect="false"
+						displayMode="label">
+					</w2:column>
+
+					<w2:column removeBorderStyle="false" width="1030" inputType="text" style="height:0px;" id="extRow1" blockSelect="false"
+						displayMode="label" colSpan="18">
+					</w2:column>
+					<w2:column removeBorderStyle="false" width="450" inputType="text" style="height:0px;" id="extRow2" blockSelect="false"
+						displayMode="label" colSpan="7">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>
+ 

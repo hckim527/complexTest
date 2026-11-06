@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2006/xforms">
+<head>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataMap id="dataMap1">
+                <w2:keyInfo>
+                    <w2:key id="allow" name="allow" dataType="text"></w2:key>
+                    <w2:key id="extra" name="extra" dataType="text"></w2:key>
+                </w2:keyInfo>
+            </w2:dataMap>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.log = function(msg) {
+        var cur = txa_log.getValue();
+        txa_log.setValue(cur ? cur + "\n" + msg : msg);
+    };
+
+    // 테스트 케이스: reachCrossOK = "cross-origin 서버에 도달하는 것이 정상"인지 여부
+    //   허용 origin 만 true, 나머지(공격/우회/정상 상대경로)는 false
+    scwin._cases = function(allow) {
+        var host;
+        try { host = new window.URL(allow).host; } catch (e) { host = "localhost:8090"; }
+        return [
+            { label: "정상 상대경로(same-origin)",   input: "/jira/WAEA/974/main.xml",                    reachCrossOK: false },
+            { label: "허용 cross-origin",            input: allow + "/a.xml",                             reachCrossOK: true },
+            { label: "공격 http://evil",             input: "http://evil.example.com/pwn.xml",            reachCrossOK: false },
+            { label: "우회 https:/evil (슬래시 1개)", input: "https:/evil.example.com/pwn.xml",            reachCrossOK: false },
+            { label: "우회 선행 탭(%09)",            input: "\thttp://evil.example.com/pwn.xml",          reachCrossOK: false },
+            { label: "우회 선행 공백",               input: "   http://evil.example.com/pwn.xml",         reachCrossOK: false },
+            { label: "우회 userinfo(@)",             input: "http://" + host + "@evil.example.com/pwn.xml", reachCrossOK: false },
+            { label: "protocol-relative //evil",     input: "//evil.example.com/pwn.xml",                 reachCrossOK: false }
+        ];
+    };
+
+    // enable/allowOrigins 설정을 런타임에 강제(override)해 배포 config 와 무관하게 검증한다.
+    scwin._runBattery = function(enable, allow, extra, judge) {
+        var core = WebSquare.core, util = WebSquare.util;
+        if (!util || typeof util._getCrossFilterPath !== "function") {
+            scwin.log("  이 엔진에는 _getCrossFilterPath 가 없습니다 — w2xPath 필터 미도입 버전(취약점 비해당).");
+            return null;
+        }
+        var forced = {
+            "/WebSquare/w2xPathCrossFilter/@enable": enable,
+            "/WebSquare/w2xPathCrossFilter/@allowOrigins": allow
+        };
+        var orig = core.getConfiguration;
+        core.getConfiguration = function(x) {
+            return Object.prototype.hasOwnProperty.call(forced, x) ? forced[x] : orig.apply(this, arguments);
+        };
+        var pass = 0, fail = 0;
+        try {
+            var cases = scwin._cases(allow);
+            for (var i = 0; i < cases.length; i++) {
+                var c = cases[i];
+                var result = util._getCrossFilterPath(c.input, extra || "");
+                var ro;
+                try { ro = new window.URL(result, location.href).origin; } catch (e) { ro = location.origin; }
+                var reachesCross = (ro !== location.origin && ro !== "null");
+                var mark;
+                if (judge) {
+                    var ok = (reachesCross === c.reachCrossOK);
+                    ok ? pass++ : fail++;
+                    mark = ok ? "[PASS] " : "[FAIL] ";
+                } else {
+                    mark = "  ";
+                }
+                scwin.log(mark + c.label);
+                scwin.log("        입력 : " + c.input.replace(/\t/g, "\\t"));
+                scwin.log("        결과 : " + result + "   → " + (reachesCross ? "cross-origin 도달(" + ro + ")" : "same-origin 강등/유지"));
+            }
+        } finally {
+            core.getConfiguration = orig;
+        }
+        return judge ? { pass: pass, fail: fail } : null;
+    };
+
+    // [1] 필터 ON — 우회 전면 차단 + 허용/정상 경로 보존을 PASS/FAIL 로 판정
+    scwin.btn_runOn_onclick = function() {
+        var allow = ipt_allow.getValue().trim() || "http://localhost:8090";
+        var extra = ipt_extra.getValue().trim();
+        scwin.log("");
+        scwin.log("=== [1] 필터 ON  (w2xPathCrossFilter enable=\"true\" allowOrigins=\"" + allow + "\") ===");
+        if (extra) { scwin.log("    extraAllowOrigins(MFE/msaServer) = " + extra); }
+        var r = scwin._runBattery("true", allow, extra, true);
+        if (r) {
+            scwin.log("── 합계: PASS " + r.pass + " / FAIL " + r.fail + " ──");
+            if (r.fail === 0) {
+                scwin.log(">> 정상: 모든 우회 차단 + 허용/정상 경로 유지. (수정 반영 엔진)");
+            } else {
+                scwin.log(">> FAIL 존재: 우회가 통과됨 = 미수정(취약) 엔진 또는 회귀.");
+            }
+        }
+    };
+
+    // [2] 필터 OFF(미설정) — 기존 permissive 동작 보존(회귀 없음) 확인. 판정 없이 결과만 표시.
+    scwin.btn_runOff_onclick = function() {
+        var allow = ipt_allow.getValue().trim() || "http://localhost:8090";
+        scwin.log("");
+        scwin.log("=== [2] 필터 OFF (미설정/permissive 기본값) — 회귀 없음 확인 ===");
+        scwin.log("    필터 미설정 시 기존 동작(외부 URL 통과)이 유지되는 것이 정상입니다.");
+        scwin.log("    (//evil 만 XMLHttpRequest 특성상 기존대로 single-slash 강등)");
+        scwin._runBattery("false", allow, "", false);
+    };
+
+    scwin.btn_clear_onclick = function() {
+        txa_log.setValue("");
+        scwin.onpageload();
+    };
+
+    scwin.onpageload = function() {
+        dataMap1.set("allow", "http://localhost:8090");
+        dataMap1.set("extra", "");
+        txa_log.setValue([
+            "WAEA-974 — w2xPath cross-origin 로드 필터(w2xPathCrossFilter) 우회 차단 검증",
+            "대상 함수: WebSquare.util._getCrossFilterPath(path, extraAllowOrigins)",
+            "",
+            "[사용법]",
+            " 1) '허용 origin' 에 신뢰할 cross-origin 을 입력(기본 http://localhost:8090).",
+            " 2) [필터 ON 검증] 클릭 → 수정 엔진은 PASS 8 / FAIL 0.",
+            "    미수정(취약) 엔진은 우회 케이스(https:/evil, 선행 탭/공백, userinfo)가 FAIL.",
+            " 3) [필터 OFF 검증] 클릭 → 필터 미설정 시 기존 동작 유지(회귀 없음) 확인.",
+            "----------------------------------------------------------------------"
+        ].join("\n"));
+    };
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_main" style="width:820px; padding:12px;">
+        <w2:textbox class="tb_title" label="WAEA-974 w2xPath 필터 우회 차단 검증" style="display:block; font-size:15px; font-weight:bold; margin-bottom:10px;"></w2:textbox>
+
+        <xf:group style="margin-bottom:8px;">
+            <w2:textbox label="허용 origin(allowOrigins):" style="display:inline-block; width:170px;"></w2:textbox>
+            <xf:input id="ipt_allow" ref="data:dataMap1.allow" style="width:280px; height:26px;"></xf:input>
+        </xf:group>
+        <xf:group style="margin-bottom:10px;">
+            <w2:textbox label="extraAllowOrigins(MFE, 선택):" style="display:inline-block; width:170px;"></w2:textbox>
+            <xf:input id="ipt_extra" ref="data:dataMap1.extra" style="width:280px; height:26px;"></xf:input>
+        </xf:group>
+
+        <xf:group style="margin-bottom:10px;">
+            <xf:trigger type="button" id="btn_runOn" ev:onclick="scwin.btn_runOn_onclick" style="width:150px; height:30px;">
+                <xf:label><![CDATA[필터 ON 검증]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_runOff" ev:onclick="scwin.btn_runOff_onclick" style="width:180px; height:30px;">
+                <xf:label><![CDATA[필터 OFF 검증(회귀)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger type="button" id="btn_clear" ev:onclick="scwin.btn_clear_onclick" style="width:90px; height:30px;">
+                <xf:label><![CDATA[로그삭제]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+
+        <w2:textarea id="txa_log" style="width:800px; height:340px; font-family:monospace; font-size:12px; background:#1e1e1e; color:#0f0;" readOnly="true"/>
+    </xf:group>
+</body>
+</html>

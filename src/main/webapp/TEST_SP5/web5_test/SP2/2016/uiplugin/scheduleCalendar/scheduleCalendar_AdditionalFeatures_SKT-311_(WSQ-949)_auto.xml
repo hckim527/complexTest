@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" style=""
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="title" name="title" dataType="text">
+						</w2:column>
+						<w2:column id="start" name="start" dataType="text">
+						</w2:column>
+						<w2:column id="end" name="end" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<title><![CDATA[All Day Event]]></title>
+							<start><![CDATA[20160101120000]]></start>
+							<end><![CDATA[20160103000000]]></end>
+
+						</w2:row>
+						<w2:row>
+							<title><![CDATA[Long Event]]></title>
+							<start><![CDATA[20160107080000]]></start>
+							<end><![CDATA[20160110090000]]></end>
+
+						</w2:row>
+						<w2:row>
+							<title><![CDATA[Repeating Event]]></title>
+							<start><![CDATA[20160109]]></start>
+							<end><![CDATA[20160109]]></end>
+
+						</w2:row>
+						<w2:row>
+							<title><![CDATA[Meeting]]></title>
+							<start><![CDATA[20160112]]></start>
+							<end><![CDATA[20160112]]></end>
+
+						</w2:row>
+						<w2:row>
+							<title><![CDATA[Birthday Party]]></title>
+							<start><![CDATA[20160113]]></start>
+							<end><![CDATA[20160113]]></end>
+
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger3_onclick = function(e) {
+    var options = {
+        "sun": {
+            "header": {
+                "color": "#ff0000"
+            },
+            "body": {
+                "background": {
+                    "background-color": "#ff0000",
+                    "opacity": "0.2"
+                },
+                "num": {
+                    "color": "#ff0000"
+                }
+            }
+        },
+        "sat": {
+            "header": {
+                "color": "#0000ff"
+            },
+            "body": {
+                "background": {
+                    "background-color": "#0000ff",
+                    "opacity": "0.2"
+                },
+                "num": {
+                    "color": "#0000ff"
+                }
+            }
+        }
+    };
+    schdule1.setDayNameStyle(options);
+};
+scwin.trigger4_onclick = function(e) {
+    //schdule1.setHeaderBtn({"headerLeftBtn":true});
+    //schdule1.setHeaderBtn({"headerTitle":true});
+    //schdule1.setHeaderBtn({"headerRightBtn":false,"headerLeftBtn":false,"headerTitle":false});
+    //schdule1.setHeaderBtn({"headerRightBtn":true});
+    schdule1.setHeaderBtn({
+        "headerRightBtn": false
+    });
+};
+scwin.rgb2hex = function(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}
+scwin._checkRgb = function(rgb, hexa) {
+    var color;
+    if (rgb.indexOf("rgb") != -1) {
+        color = scwin.rgb2hex(rgb);
+        return color == hexa;
+    }
+    return rgb == hexa;
+}
+scwin.setVal = function() {
+    return scwin._checkRgb(WebSquare.wUnit.getJq('#schdule1 tr>td.fc-day:first').css('background-color'), '#ff0000');
+}
+scwin.setVal1 = function() {
+    return scwin._checkRgb(WebSquare.wUnit.getJq('#schdule1 tr>td.fc-day:nth-child(7)').css('background-color'), '#0000ff');
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 dataList1 을 확인한다.
+    //1. In the Source tab, check dataList1.
+    //Verify step 1. id = "dataList1" (data list binding)
+    //Test step 2. trigger3 function 을 있는지 확인한다.
+    //2. Make sure you have trigger3 function.
+    //Verify step 2. scwin.trigger3_onclick = function (e)
+    //Test step 3. trigger4 function 을 있는지 확인한다.
+    //3. Check if trigger4 function exists.
+    //Verify step 3. scwin.trigger4_onclick = function (e)
+    //Test step 4. 브라우저에서 setDayNameStyle 버튼을 클릭한다.
+    //4. In the browser, click the setDayNameStyle button.
+    //Verify step 4. The colors of weekends and weekends are changed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.fc-view-container').length == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.setVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.setVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. setHeaderBtn 버튼을 클릭한다.
+    //5. Click the setHeaderBtn button.
+    //Verify step 5. The month, week, and day in the upper right corner disappear.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.fc-month-button').attr('disabled') == 'disabled'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.fc-basicWeek-button').attr('disabled') == 'disabled'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.fc-basicDay-button').attr('disabled') == 'disabled'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 01-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:scheduleCalendar id="schdule1"
+			style="width:100%;height:400px;" defaultDate=""
+			editable="false" eventLimit="false" selectable="false" dataList="dataList1"
+			titleColumn="title" startColumn="start" endColumn="end"
+			headerRightBtn="false" headerLeftBtn="true" headerTitle="true" version="3.6">
+		</w2:scheduleCalendar>
+		<xf:group id="" style="height:23px;">
+			<xf:trigger type="button" id="trigger3"
+				style="position: relative;width: 120px;height: 23px;"
+				ev:onclick="scwin.trigger3_onclick">
+				<xf:label><![CDATA[setDayNameStyle]]></xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="trigger4"
+				style="width:121px;height:23px;margin:5px;" ev:onclick="scwin.trigger4_onclick">
+				<xf:label><![CDATA[setHeaderBtn]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>
+ 

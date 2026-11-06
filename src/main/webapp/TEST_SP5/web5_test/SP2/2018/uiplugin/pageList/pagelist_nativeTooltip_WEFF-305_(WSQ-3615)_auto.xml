@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.checktype1 = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'page01_prevPage_btn').title == '';
+}
+scwin.checktype2 = function() {
+    return WebSquare.wUnit.getDomById($p.id + 'page01_page_1').title == '1 선택';
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('page01_prevPage_btn')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('page01_page_1')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    page01.setCount(100, true);
+    page02.setCount(100, true);
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:textbox label="renderType:table" style="width: 150px;height: 23px;" id=""></w2:textbox>
+    	<w2:pageList displayFormat="#" id="page01" style="margin-top:0px;" pageSize="10" displayButtonType="display" renderType="table"
+    		buttonShowType="0" nativeTooltip="false">
+    	</w2:pageList>
+    	<w2:pageList pageSize="10" displayButtonType="display" id="page02" displayFormat="#"
+    		style="position: absolute ;left: 86px;top: 139px;width: 955px;height: 60px;" title="" displaySearchbox="" renderType="list">
+    	</w2:pageList>
+    	<w2:textbox id="" label="renderType:list" style="width: 150px;height: 23px;margin-top:60px;"></w2:textbox>
+    </body>
+</html>
+ 

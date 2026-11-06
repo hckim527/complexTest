@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <style>
+            .sp11 {
+                color:red;
+                font-size:15px;
+            }
+            
+            .customButton1 {
+            	background: red;
+            }
+            
+            .customButton2 {
+            	background: orange;
+            }
+            
+            .customButton3 {
+            	background: yellow;
+            }
+            
+            .customButton4 {
+            	background: green;
+            }
+            
+            .controlIcon1 {
+            	position: relative;
+            	display: inline-block;
+            	background-image : url(../uiplugin/windowContainer/images/align1.gif);
+				background-repeat : no-repeat;
+				cursor:pointer;
+            	width: 20px;
+            }
+            
+            .showWindowsIcon {
+            	position: absolute;
+            	display: inline-block;
+            	background: #88FF88;
+            	width: 23px;
+            	height: 100%;
+            	left: 139px;
+            	cursor: pointer;
+            }
+            
+        </style>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.createWindow = function() {
+    var c_cnt = 15;
+    var c_subName = "windowContainer_nameLayer_WEFF-18_(WSQ-3038)sub";
+    var c_xmlName = ".xml";
+    for (var i = 0; i < c_cnt; i++) {
+        windowContainer1.createWindow(c_subName + i, null, 'windowContainer_nameLayer_WEFF-18_(WSQ-3038)sub0.xml', "", null, "existWindow", null, null);
+    }
+};
+scwin.controlFormatter = function() {
+    // 1. isCustom이 true인 버튼은 oncustomcontrolclick이벤트가 발생하여 엔진내부에서 정의한 동작이 수행되지 않습니다.
+    // 2. 기본동작을 유지하기 위해서는 id와 className을 바꾸지 말아주세요.
+    // 3. 기본동작이 구현된 컨트롤 버튼의 아이디는 아래와 같습니다.
+    //    vertical, horizontal, cascade, sequential, closeAll, closeOthers, maximize, windowList
+    // 4. useTitle 속성은 컨트롤버튼에 title 속성을 사용할지 안할지에 대한 옵션입니다.
+    //    message/ko.js, message/en.js 에서 문구를 변경하실 수 있습니다.
+    // 5. isCustom을 true로 주실 경우, oncustomcontrolclick 이벤트가 발생합니다.
+    return [{
+        "id": "vertical",
+        "className": "w2windowContainer_controlIcon_vertical",
+        "useTitle": false,
+        "isCustom": false
+    }, {
+        "id": "horizontal",
+        "className": "w2windowContainer_controlIcon_horizontal",
+        "useTitle": false,
+        "isCustom": false
+    }, {
+        "id": "cascade",
+        "className": "w2windowContainer_controlIcon_cascade",
+        "useTitle": false,
+        "isCustom": false
+    }, {
+        "id": "sequential",
+        "className": "w2windowContainer_controlIcon_sequential",
+        "useTitle": false,
+        "isCustom": false
+    }, {
+        "id": "closeAll",
+        "className": "w2windowContainer_controlIcon_closeAll",
+        "useTitle": false,
+        "isCustom": false
+    }, {
+        "id": "windowList",
+        "className": "w2windowContainer_controlIcon_windowList",
+        "useTitle": true,
+        "isCustom": false
+    }];
+};
+scwin.doInit = function() {
+    this.createWindow();
+};
+scwin.convertStringInt = function(str) {
+    var res = str.replace("px", "");
+    return parseInt(res);
+}
+scwin.setValue = function(str) {
+    left = scwin.convertStringInt(WebSquare.wUnit.getJq('#windowContainer1_name').css('left'));
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플 실행 후 브라우저 화면을 줄인다.
+    //1. Reduce the browser screen after running the sample.
+    //Verify step 1. The move button (arrow) of the nameBar is shown.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('body').css('width', '50%');");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#windowContainer1_left').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#windowContainer1_right').css('display') == 'block'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setValue()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. nameBar 이동버튼을 왼쪽 또는 오른쪽으로 클릭한다.
+    //2. Move the nameBar button left or right  Click.
+    //Verify step 2. The movement of nameBar is moved by 500 pixels (there was no attribute before)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_left').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.convertStringInt(WebSquare.wUnit.getJq('#windowContainer1_name').css('left')) == (left + 500)", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    scwin.doInit();
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="height:511px;width: 100%;">
+    	<w2:textbox id="" style="position: relative;height:30px;font-size:18pt;width:100%;"
+    		label="WindowContainer nameLayerMoveGap">
+    	</w2:textbox>
+    	
+    	<w2:windowContainer buttonFormatter="scwin.buttonFormatter" windowMaxNum="30" id="windowContainer1" spaInitCount="0" nameLayerMoveGap="500"
+    		windowAutoResize="true" style="position: relative;height:600px;width:100%;" nameLayerMenu="false" tooltipDisplay="true" windowTooltipDisplay="true"
+    		nameLayerMove="true" hideTitleOnMaximize="false" useNameContainer="true" toolbarPosition="top" controlIconPosition="right" 
+    		useControlIconTitle="true">
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    </xf:group></body>
+</html>
+ 

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="code" name="name1" dataType="text"></w2:column>
+            			<w2:column id="name" name="name2" dataType="text"></w2:column>
+            			<w2:column id="desc" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<code><![CDATA[01]]></code>
+            				<name><![CDATA[딸기]]></name>
+            				<desc><![CDATA[장과류]]></desc>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[02]]></code>
+            				<name><![CDATA[사과]]></name>
+            				<desc><![CDATA[인과류]]></desc>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[03]]></code>
+            				<name><![CDATA[오렌지]]></name>
+            				<desc><![CDATA[인과류]]></desc>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[04]]></code>
+            				<name><![CDATA[바나나]]></name>
+            				<desc><![CDATA[열대과일류]]></desc>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[05]]></code>
+            				<name><![CDATA[토마토]]></name>
+            				<desc><![CDATA[과채류]]></desc>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[06]]></code>
+            				<name><![CDATA[참외]]></name>
+            				<desc><![CDATA[과채류]]></desc>
+            			</w2:row>
+            			<w2:row>
+            				<code><![CDATA[07]]></code>
+            				<name><![CDATA[아몬드]]></name>
+            				<desc><![CDATA[견과류]]></desc>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function(rowIndex, colIndex, label) {
+    //debugger;
+    if (colIndex === 1) {
+        return label + "test";
+    } else {
+        return label;
+    }
+};
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.checktype = function() {
+    return typeof WebSquare.wUnit.getObjById('selectBox1_tooltip')
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. Source 탭에서 selectBox1 의 tooltipDisplayItem 부분을 확인한다.
+    //1. In the Source tab, check the tooltipDisplayItem part of selectBox1.
+    // verify step 1. tooltipDisplayItem = 'true'
+    //Test step 2. gridView1 의  tooltipDisplayColumn 부분을 확인한다.
+    //2. Check the tooltipDisplayColumn part of gridView1.
+    //Verify step 2. tooltipDisplayColumn = 'col1'
+    // Test step 3. 브라우저에서 SelectBox 의 리스트목록을 마우스오버한다.
+    //3. Mouse over the list of SelectBox"s list in the browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectBox1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'selectBox1_itemTable_0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // verify step 3. 툴팁이 생성된다.
+    //3. A tooltip is created.
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 4. GridView 의 임의로 여러개 컬럼을 마우스오버한다.
+    //4. Mouse over multiple columns in the GridView.
+    // verify step 4. col1 컬럼만 툴팁이 생성된다.
+    //4. Only the col1 column is created with a tooltip.
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_0')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '0'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_1')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '1test'", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_2')");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '2222222222222222222'", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.arr = [];
+    for (var i = 0; i < 30; i++) {
+        arr[i] = i;
+    }
+    dataList1.setData(arr);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 25-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id="selectBox1" closeonmouseleave ="false"
+    		style="position: absolute;width:242px;height:44px;left:115px;top:115px;" displayMode="label" selectedData="true" optionOrder="false"
+    		allOption="" disabled="false" submenuSize="auto" tooltipDisplay="true" tooltipDisplayItem="true" tooltipTime="0.01">
+    		<xf:choices>
+    			<xf:item>
+    				<xf:label><![CDATA[11111111111111111]]></xf:label>
+    				<xf:value><![CDATA[1]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[22222222222222222]]></xf:label>
+    				<xf:value><![CDATA[2]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[33333333333333333]]></xf:label>
+    				<xf:value><![CDATA[3]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[44444444444444444]]></xf:label>
+    				<xf:value><![CDATA[4]]></xf:value>
+    			</xf:item>
+    			<xf:item>
+    				<xf:label><![CDATA[55555555555555555]]></xf:label>
+    				<xf:value><![CDATA[5]]></xf:value>
+    			</xf:item>
+    		</xf:choices>
+    	</xf:select1>
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1"
+    		style="position: absolute;width: 500px;height: 150px;left:104px;top:247px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true" tooltipDisplayColumn="col1" tooltipDisplay="true" tooltipShowAlways="true" tooltipFormatter="test" >
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column2" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column4" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="select" displayMode="label"
+    					allOption="" chooseOption="" tooltipDisplay="false"  tooltipTime="0.01" tooltipDisplayItem="true">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[111111111111111111]]></w2:label>
+    							<w2:value><![CDATA[1]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[2222222222222222222]]></w2:label>
+    							<w2:value><![CDATA[2]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[333333333333333333]]></w2:label>
+    							<w2:value><![CDATA[3]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[4444444444444444444]]></w2:label>
+    							<w2:value><![CDATA[4]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[55555]]></w2:label>
+    							<w2:value><![CDATA[5]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

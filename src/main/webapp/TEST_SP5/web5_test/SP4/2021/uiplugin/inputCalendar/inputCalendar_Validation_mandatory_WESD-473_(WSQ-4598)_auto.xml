@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:config>
+			<WebSquare>
+				<inputCalendar>
+					<invalidMessageFunc value="com.validateMsg"/>
+				</inputCalendar>
+			</WebSquare>
+		</w2:config>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dma_person">
+					<w2:keyInfo>
+						<w2:key id="name" name="이름" dataType="text"></w2:key>
+						<w2:key id="deptCd" name="부서" dataType="text"></w2:key>
+						<w2:key id="joinedDate" name="입사일자" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<name><![CDATA[홍길동]]></name>
+						<deptCd><![CDATA[D002]]></deptCd>
+						<joinedDate><![CDATA[]]></joinedDate>
+					</w2:data></w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    console.log($p.getFrameId());
+};
+scwin.onpageunload = function() {};
+scwin.btn_validation_onclick = function(e) {
+    var objArr = WebSquare.util
+        .getChildren(
+            tbl_content, {
+                excludePlugin: "group trigger textbox output calendar image span anchor pageInherit wframe itemTable",
+                recursive: true
+            });
+    for (var objIdx in objArr) {
+        var obj = objArr[objIdx];
+        if (objArr[objIdx].validate() === false) {
+            //debugger;
+            return false;
+        }
+    }
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ica_joinedDate_input').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ica_joinedDate_input').focus()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') != '필수 입력 항목 입니다.'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.com = {};
+    /**
+     * 유효성 검사 실패시 호출할 메시지를 반환한다.
+     * inputCalendar mandantory 검사 실패 시에는 invalidMessageFunc 속성에 정의된 com.validateMsg 함수가 호출되지만,
+     * inputCalendar dateValidCheck 검사 실패 시에는 invalidMessageFunc 속성에 정의된 com.validateMsg 함수가 호출되지 않음
+     */
+    com.validateMsg = function() {
+        window.msg = "";
+        window.invalidType = this.getType(); // invalid 타입
+        window.invalidValue = this.getValue(); // invalid 타입별 설정값
+        switch (invalidType) {
+            case "mandatory":
+                msg = "필수 입력 항목 입니다.";
+                break;
+            case "minLength":
+                msg = "최소 길이 " + invalidValue + "자리 이상으로 입력해야 합니다.";
+                break;
+            case "minByteLength":
+                msg = "최소 길이 " + invalidValue + "바이트 이상으로 입력해야 합니다.";
+                break;
+            default:
+                msg = "유효하지 않은 값이 입력 되었습니다.";
+                break;
+        }
+        //alert(msg);
+        //console.log(msg);
+        localStorage.setItem("log", msg);
+        return msg;
+    };
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group style="height:95px;padding:10px" id="">
+			<xf:trigger style="width:142px;height:29px;margin-top:0px;" id="btn_validation" type="button"
+				ev:onclick="scwin.btn_validation_onclick">
+				<xf:label><![CDATA[유효성 검사]]></xf:label>
+			</xf:trigger>
+			<xf:group class="w2tb" id="tbl_content" style="width:100%;margin-top:5px;" tagname="table">
+				<w2:attributes>
+					<w2:summary></w2:summary>
+				</w2:attributes>
+				<xf:group tagname="caption"></xf:group>
+				<xf:group tagname="colgroup">
+					<xf:group style="width:25.00%;" tagname="col"></xf:group>
+					<xf:group style="width:25.00%" tagname="col"></xf:group>
+					<xf:group style="width:25.00%;" tagname="col"></xf:group>
+					<xf:group style="width:25.00%" tagname="col"></xf:group>
+				</xf:group>
+				<xf:group style="" tagname="tr">
+					<xf:group class="w2tb_th" style="" tagname="th">
+						이름
+						<w2:attributes>
+							<w2:scope>row</w2:scope>
+						</w2:attributes>
+					</xf:group>
+					<xf:group class="w2tb_td" style="" tagname="td">
+						<xf:input adjustMaxLength="false" id="ibx_name10" mandatory="true" ref="data:dma_person.name"
+							style="width: 144px;height: 21px;">
+						</xf:input>
+					</xf:group>
+					<xf:group class="w2tb_th" style="" tagname="th">
+						부서
+						<w2:attributes>
+							<w2:scope>row</w2:scope>
+						</w2:attributes>
+					</xf:group>
+					<xf:group class="w2tb_td" style="" tagname="td">
+						<xf:select1 allOption="" appearance="minimal" chooseOption="" direction="auto" disabled="false"
+							disabledClass="w2selectbox_disabled" displayMode="label" id="sbx_deptCd10" mandatory="true" optionOrder="false"
+							ref="data:dma_person.deptCd" style="width: 148px;height: 21px;" submenuSize="auto">
+							<xf:choices>
+								<xf:item>
+									<xf:label><![CDATA[총무과]]></xf:label>
+									<xf:value><![CDATA[D001]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[인사과]]></xf:label>
+									<xf:value><![CDATA[D002]]></xf:value>
+								</xf:item>
+								<xf:item>
+									<xf:label><![CDATA[재무과]]></xf:label>
+									<xf:value><![CDATA[D003]]></xf:value>
+								</xf:item>
+							</xf:choices>
+						</xf:select1>
+					</xf:group>
+				</xf:group>
+				<xf:group style="" tagname="tr">
+					<xf:group class="w2tb_th" style="" tagname="th">
+						입사일자
+						<w2:attributes>
+							<w2:scope>row</w2:scope>
+						</w2:attributes>
+					</xf:group>
+					<xf:group class="w2tb_td" style="" tagname="td">
+						<w2:inputCalendar calendarValueType="yearMonthDate" focusOnDateSelect="false" footerDiv="false" id="ica_joinedDate"
+							mandatory="true" ref="data:dma_person.joinedDate" renderDiv="true" renderType="component" rightAlign="false"
+							style="width: 150px;height: 23px;" dateValidCheck="true" dateValidSet="true" invalidMessageFunc="">
+						</w2:inputCalendar>
+					</xf:group>
+					<xf:group class="w2tb_th" style="" tagname="th">
+						<w2:attributes>
+							<w2:scope>row</w2:scope>
+						</w2:attributes>
+					</xf:group>
+					<xf:group class="w2tb_td" style="" tagname="td"></xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
+ 

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1" dataType="text"></w2:column>
+            			<w2:column id="value" name="name2" dataType="text"></w2:column>
+            			<w2:column id="depth" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<label><![CDATA[label1]]></label>
+            				<value><![CDATA[label1]]></value>
+            				<depth><![CDATA[1]]></depth>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[label2]]></label>
+            				<value><![CDATA[label2]]></value>
+            				<depth><![CDATA[1]]></depth>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[label3]]></label>
+            				<value><![CDATA[label3]]></value>
+            				<depth><![CDATA[2]]></depth>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[label4]]></label>
+            				<value><![CDATA[label4]]></value>
+            				<depth><![CDATA[1]]></depth>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[label5]]></label>
+            				<value><![CDATA[label5]]></value>
+            				<depth><![CDATA[2]]></depth>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.treeview1_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {};
+scwin.treeview1_ondragover = function(dragNode, dropNode, dragControl, dropControl, e) {};
+scwin._checkErr = function() {
+    return WebSquare.logger.getErrorLog();
+}
+scwin.rgb2hex = function(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}
+scwin._checkRgb = function(id, hexa) {
+    var rgb = WebSquare.wUnit.getJq("#" + id).css("color");
+    var color;
+    if (rgb.indexOf("rgb") != -1) {
+        color = scwin.rgb2hex(rgb);
+        return color == hexa;
+    }
+    return rgb == hexa;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭 또는 Property 탭에서 useDrag 를 확인한다.
+    //1. Check useDrag in the Source tab or Property tab.
+    //Verify 1. useDrag="true"
+    //Test step 2. 브라우저에서 트리뷰의 임의의 label 을 체크한다.
+    //2. Check any label in the tree view in the browser.
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id + 'treeview1_label_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. label 이 체크된다.(굵은표시로 변함)
+    //2. The label is checked (changed to bold)
+    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'treeview1_label_1', '#383d41')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 로그 (Ctrl + 마우스 오른쪽) 을 확인한다.
+    //3. Check the log (Ctrl + right mouse).
+    //Verify 3. 에러로그가 생성되지 않는다. (그림참고)
+    //3. No error log is generated. (See illustration)
+    WebSquare.wUnit.addCommand("assert", "scwin._checkErr() == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 09-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:treeview useDrag="true" id="treeview1" style="position: absolute ;left: 73px;top: 56px;width: 286px;height: 442px;" lineShow=""
+    		tooltipGroupClass="false" dataType="listed" showTreeDepth="1" tooltipDisplay="true" showCheckbox="true" dynamicAppend="true" 
+    		hierarchy="true" refreshCheckboxModel="true" ev:ondrop="scwin.treeview1_ondrop" ev:ondragover="scwin.treeview1_ondragover">
+    		<w2:itemset nodeset="data:dataList1">
+    			<w2:label ref="label"></w2:label>
+    			<w2:value ref="value"></w2:value>
+    			<w2:depth ref="depth"></w2:depth>
+    			<w2:folder ref=""></w2:folder>
+    			<w2:checkbox ref=''></w2:checkbox>
+    			<w2:checkboxDisabled ref=''></w2:checkboxDisabled>
+    			<w2:image ref=""></w2:image>
+    			<w2:iconImage ref=''></w2:iconImage>
+    			<w2:selectedImage ref=""></w2:selectedImage>
+    			<w2:expandedImage ref=""></w2:expandedImage>
+    			<w2:leafImage ref=""></w2:leafImage>
+    		</w2:itemset>
+    	</w2:treeview>
+    </body>
+</html>
+ 

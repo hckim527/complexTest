@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="245">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="number"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<key1><![CDATA[11223344]]></key1>
+            		</w2:data>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+scwin.trigger1_onclick = function(e) {
+    console.log("getValue ::: "+input1.getValue());
+    span1.setValue("Input Value : [" + input1.getValue() + "] , DataMap Value : [" + dataMap1.get("key1") + "]");
+
+};
+
+scwin.trigger2_onclick = function(e) {
+    input1.setValue(123456);
+}; 
+
+scwin.trigger3_onclick = function(e) {
+    input1.setValue("123456");
+};
+
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('input1').value == '123,456';
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:input adjustMaxLength="false" id="input1" style="width: 144px;height: 21px;" maskFormat="reverse" displayFormat="#,###,###,###"
+    		ref="data:dataMap1.key1" maskFormatModelExcludeChar="," maskFormatModelExcludeCharValue="true" dataType="number">
+    	</xf:input>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[getValue]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width:121px;height:23px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[setValue(숫자)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="width:134px;height:23px;" id="trigger3" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[setValue(텍스트)]]></xf:label>
+    	</xf:trigger>
+    	<w2:span label="결과값" style="" id="span1"></w2:span>
+    </body>
+</html>

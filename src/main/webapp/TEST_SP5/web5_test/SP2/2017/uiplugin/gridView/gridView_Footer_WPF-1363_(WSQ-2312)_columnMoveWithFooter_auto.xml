@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var jsonData = [{
+            "col1": "test",
+            "col2": "test2"
+        },
+        {
+            "col1": "test",
+            "col2": "test2"
+        },
+        {
+            "col1": "test",
+            "col2": "test2"
+        },
+        {
+            "col1": "test",
+            "col2": "test2"
+        },
+        {
+            "col1": "test",
+            "col2": "test2"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+};
+scwin.trigger1_onclick = function(e) {
+    grd.setColumnOrder(["col3", "col2", "col1"]);
+};
+scwin.trigger2_onclick = function(e) {
+    grd.setColumnOrder(["col2", "col1", "col3"]);
+};
+scwin.trigger3_onclick = function(e) {
+    grd.setColumnOrder(["col1", "col3", "col2"]);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 grd 의 columnMove 부분을 확인한다.
+    //1. In the Source tab, check the columnMove part of grd.
+    //Verify step 1. columnMove = "true"
+    //Test step 2. columnMoveWithFooter 부분을 확인한다.
+    //2. Check columnMoveWithFooter.
+    //Verify step 2. columnMoveWithFooter = "true"
+    //Test step 3. 브라우저에서 columnMoveWithFooter ("col3","col2","col1") 버튼을 클릭한다.
+    //3. In your browser, click the columnMoveWithFooter ("col3", "col2", "col1") button.
+    //Verify step 3. The column and footer are changed in col3 / col2 / col1 order.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[0].innerText == 'col3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[1].innerText == 'col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[2].innerText == 'col1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[0].innerText == 'col3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[1].innerText == 'col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[2].innerText == 'col1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 4. columnMoveWithFooter ('col2','col1','col3') 버튼을 클릭한다.
+    //4. Click the columnMoveWithFooter ('col2', 'col1', 'col3') button.
+    //Verify step 4. The column and footer are changed to col2 / col1 / col3.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[0].innerText == 'col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[1].innerText == 'col1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[2].innerText == 'col3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[0].innerText == 'col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[1].innerText == 'col1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[2].innerText == 'col3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. columnMoveWithFooter ('col1','col3','col2') 버튼을 클릭한다.
+    //5. Click the columnMoveWithFooter ('col1', 'col3', 'col2') button.
+    //Verify step 5. The column and footer are changed in col1 / col3 / col2 order.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[0].innerText == 'col1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[1].innerText == 'col3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridHeaderStyle_0 th')[2].innerText == 'col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[0].innerText == 'col1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[1].innerText == 'col3'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.gridFooterStyle_0 td')[2].innerText == 'col2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.init();
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 10-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="grd"
+    		style="position: relative;width: 500px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		fixedColumnWithHidden="true" useShiftKey="true" columnMoveWithFooter="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="col1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="70" displayMode="label"
+    					value="col2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="70" inputType="text" displayMode="label"
+    					value="col3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:footer id="footer1" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" width="70" inputType="text" displayMode="label"
+    					value="col1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column8" style="height:20px;" width="70" inputType="text" displayMode="label"
+    					value="col2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" width="70" inputType="text" displayMode="label"
+    					value="col3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:footer>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width:293px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[columnMoveWithFooter ("col3","col2","col1")]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2" style="position: relative;width:293px;height:23px;margin-top:0px;"
+    		type="button">
+    		<xf:label><![CDATA[columnMoveWithFooter ("col2","col1","col3")]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3" style="position: relative;width:293px;height:23px;margin-top:0px;"
+    		type="button">
+    		<xf:label><![CDATA[columnMoveWithFooter ("col1","col3","col2")]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

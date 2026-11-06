@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_programName="공통코드 셋팅 (그리드 다단-동적)">
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_sample" baseNode="list" saveRemovedData="true" repeatNode="map"
+					ev:oncelldatachange="scwin.dlt_sample_oncelldatachange">
+					<w2:columnInfo>
+						<w2:column id="step1" name="step1" dataType="text"></w2:column>
+						<w2:column id="step2" name="step2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataList>
+				<w2:linkedDataList bind="dlt_step2" id="ldt_step2">
+					<w2:condition type="filter"><![CDATA[upCd == ref ('data:dlt_sample.step1')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+				<w2:linkedDataList bind="dlt_step2" id="ldt_step2_1">
+					<w2:condition type="filter"><![CDATA[upCd == ref ('data:dma_sample.step1')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_step1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="grpCd" name="name5" dataType="text"></w2:column>
+						<w2:column id="grpNm" name="name4" dataType="text"></w2:column>
+						<w2:column id="cd" name="name1" dataType="text"></w2:column>
+						<w2:column id="nm" name="name2" dataType="text"></w2:column>
+						<w2:column id="useYn" name="name3" dataType="text"></w2:column>
+						<w2:column id="upCd" name="name6" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_step2" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="grpCd" name="name1" dataType="text"></w2:column>
+						<w2:column id="grpNm" name="name2" dataType="text"></w2:column>
+						<w2:column id="cd" name="name3" dataType="text"></w2:column>
+						<w2:column id="nm" name="name4" dataType="text"></w2:column>
+						<w2:column id="useYn" name="name5" dataType="text"></w2:column>
+						<w2:column id="upCd" name="name6" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dma_sample">
+					<w2:keyInfo>
+						<w2:key id="step1" name="name1" dataType="text"></w2:key>
+						<w2:key id="step2" name="name2" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="sbm_selectList" ref='data:json,{"id":"dma_search","key":"srchBox"}'
+				target='data:json,{"id":"dlt_sample","key":"list"}' action="/sample/msgNoPageList.json" method="post" mediatype="application/json"
+				encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+				ev:submitdone="scwin.sbm_selectList_submitdone" ev:submiterror="" abortTrigger="">
+			</xf:submission>
+			<xf:submission abortTrigger="" action="/sample/msgSave.json" customHandler="" encoding="UTF-8" errorHandler="" ev:submit=""
+				ev:submitdone="scwin.sbm_saveList_submitdone" ev:submiterror="" id="sbm_saveList" instance="" mediatype="application/json" method="post"
+				mode="asynchronous" processMsg="" ref='data:json,{"action":"modified","id":"dlt_sample","key":"saveList"}' replace="" target=''
+				style="">
+			</xf:submission>
+			<xf:submission abortTrigger="" action="/sample/test.json" customHandler="" encoding="UTF-8" errorHandler="" ev:submit=""
+				ev:submitdone="scwin.sbm_test_submitdone" ev:submiterror="" id="sbm_test" instance="" mediatype="application/json" method="post"
+				mode="asynchronous" processMsg="" ref='data:json,{"action":"modified","id":"dlt_sample","key":"saveList"}' replace="" target=''
+				style="">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    /****************************************************
+     * 화면명 : GridStep.xml
+     * 화면 설명 : 그리드다단콤보
+     * 작 성 자  : 문철주
+     * 최초 작성 : 2021-11-17
+     ****************************************************/
+	 
+    dlt_step1.setJSON([{
+        "grpCd": "TEST1",
+        "grpNm": "대륙",
+        "cd": "10",
+        "nm": "아시아",
+        "useYn": "Y",
+        "upCd": ""
+    }, {
+        "grpCd": "TEST1",
+        "grpNm": "대륙",
+        "cd": "20",
+        "nm": "아메리카",
+        "useYn": "Y",
+        "upCd": ""
+    }, {
+        "grpCd": "TEST1",
+        "grpNm": "대륙",
+        "cd": "30",
+        "nm": "유럽",
+        "useYn": "Y",
+        "upCd": ""
+    }, {
+        "grpCd": "TEST1",
+        "grpNm": "대륙",
+        "cd": "40",
+        "nm": "아프리카",
+        "useYn": "Y",
+        "upCd": ""
+    }, {
+        "grpCd": "TEST1",
+        "grpNm": "대륙",
+        "cd": "50",
+        "nm": "오세아니아",
+        "useYn": "N",
+        "upCd": ""
+    }]);
+    dlt_step2.setJSON([{
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "11",
+        "nm": "대한민국",
+        "useYn": "Y",
+        "upCd": "10"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "12",
+        "nm": "중국",
+        "useYn": "Y",
+        "upCd": "10"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "13",
+        "nm": "일본",
+        "useYn": "N",
+        "upCd": "10"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "21",
+        "nm": "미국",
+        "useYn": "Y",
+        "upCd": "20"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "22",
+        "nm": "캐나다",
+        "useYn": "Y",
+        "upCd": "20"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "23",
+        "nm": "브라질",
+        "useYn": "N",
+        "upCd": "20"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "31",
+        "nm": "영국",
+        "useYn": "Y",
+        "upCd": "30"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "32",
+        "nm": "프랑스",
+        "useYn": "Y",
+        "upCd": "30"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "33",
+        "nm": "독일",
+        "useYn": "N",
+        "upCd": "30"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "41",
+        "nm": "이집트",
+        "useYn": "Y",
+        "upCd": "40"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "42",
+        "nm": "가나",
+        "useYn": "Y",
+        "upCd": "40"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "43",
+        "nm": "알제리",
+        "useYn": "N",
+        "upCd": "40"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "51",
+        "nm": "호주",
+        "useYn": "Y",
+        "upCd": "50"
+    }, {
+        "grpCd": "TEST2",
+        "grpNm": "국가",
+        "cd": "52",
+        "nm": "뉴질랜드",
+        "useYn": "Y",
+        "upCd": "50"
+    }]);
+    grd_sample.setColumnVisibleColumn("step1", "useYn", "N");
+    // linkedDataList로 ItemSet한 컬럼에 setColumnVisibleColumn 적용시 초기값 셋팅하면 선택되어 있지 않는 문제 해결방안 필요
+    grd_sample.setColumnVisibleColumn("step2", "useYn", "N");
+    //		sbx_step1.setVisibleColumn("useYn", "N");
+    //		sbx_step2.setVisibleColumn("useYn", "N");
+};
+scwin.dlt_sample_oncelldatachange = function(info) {
+    if (info.colID == "step1") {
+        // step1 변경시 step2 초기화
+        dlt_sample.setCellData(info.rowIndex, "step2", "");
+    }
+};
+scwin.btn_set_onclick = function(e) {
+    // 그리드 다단콤보의 초기값 셋팅
+    dlt_sample.setJSON([{
+        step1: "20",
+        step2: "23"
+    }, {
+        step1: "30",
+        step2: "33"
+    }, {
+        step1: "50",
+        step2: "52"
+    }]);
+    // SelectBox 다단콤보의 초기값 셋팅
+    // linkedDataList로 ItemSet한 SelectBox에 chooseOption을 true로 설정하면 초기값이 셋팅 안되는 문제 해결방안 필요
+    dma_sample.setJSON({
+        step1: "20",
+        step2: "23"
+    });
+    // 2단 콤보의 초기값을 다시 지정해야 함  (setVisibleColumn적용하든 안하든 마찬가지 현상)
+    //		dma_sample.setJSON({ step2:"23" });
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_set').click()");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grd_sample_cell_0_1').innerText == '브라질'", "true");
+    WebSquare.wUnit.addCommand("pause", "400");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('sbx_step2_label').innerText == '브라질'", "true");
+    WebSquare.wUnit.addCommand("pause", "400");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+
+		<xf:group class="sub_contents" id="" style="">
+			<xf:group class="dfbox" id="">
+				<w2:textbox class="df_tit" id="" label="그리드 다단콤보" style="" tagname="h2"></w2:textbox>
+				<xf:group class="fr" id="" style="">
+
+				</xf:group>
+				<xf:group id="" class="fr">
+					<xf:trigger class="btn_cm " ev:onclick="scwin.btn_set_onclick" id="btn_set" style="" type="button">
+						<xf:label><![CDATA[초기값 셋팅]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+			<xf:group class="gvwbox" id="" style="height : 200px;">
+				<w2:gridView autoFit="allColumn" class="wq_gvw" dataList="data:dlt_sample" fixedColumnWithHidden="true" focusMode=""
+					id="grd_sample" ignoreCellClick="false" ignoreToggleOnDisabled="false" rowNumHeaderValue="번호" rowNumVisible="false" rowNumWidth="30"
+					rowStatusHeaderValue="상태" scrollByColumn="false" scrollByColumnAdaptive="false" showSortableUseFilter="true" sortable="true"
+					style="height : 100%;" summaryAuto="false" useFilterList="true" useShiftKey="true" visibleRowNum="" sortEvent="" readOnly=""
+					rowStatusVisible="true" ev:onrowindexchange="scwin.grd_sample_onrowindexchange">
+					<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+					<w2:header id="header1" style="">
+						<w2:row id="row1" style="">
+							<w2:column removeBorderStyle="false" width="150" inputType="text" style="height:24px" id="column13"
+								value="step1" blockSelect="false" displayMode="label">
+							</w2:column>
+							<w2:column removeBorderStyle="false" width="150" inputType="text" style="height:24px" id="column15"
+								value="step2" blockSelect="false" displayMode="label">
+							</w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1" style="">
+						<w2:row id="row2" style="">
+							<w2:column removeBorderStyle="false" width="150" inputType="select" style="height:24px" id="step1" value=""
+								blockSelect="false" displayMode="label" allOption="" chooseOption="true" chooseOptionLabel="" ref="" disabled="" readOnly="">
+								<w2:choices>
+									<w2:itemset nodeset="data:dlt_step1">
+										<w2:label ref="nm"></w2:label>
+										<w2:value ref="cd"></w2:value>
+									</w2:itemset>
+								</w2:choices>
+							</w2:column>
+							<w2:column removeBorderStyle="false" width="150" inputType="select" style="height:24px" id="step2" value=""
+								blockSelect="false" displayMode="" allOption="" chooseOption="true" chooseOptionLabel="" ref="" readOnly="">
+								<w2:choices>
+									<w2:itemset nodeset="data:ldt_step2">
+										<w2:label ref="nm"></w2:label>
+										<w2:value ref="cd"></w2:value>
+									</w2:itemset>
+								</w2:choices>
+							</w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+			<xf:group class="dfbox" id="" style="">
+				<w2:textbox class="df_tit" id="" label="SelectBox 다단콤보" style="" tagname="h2"></w2:textbox>
+				<xf:group class="fr" id="">
+				</xf:group>
+			</xf:group>
+			<xf:group class="tbbox" id="" style="">
+				<xf:group class="w2tb tb" id="" style="width:100%;" tagname="table">
+					<w2:attributes>
+						<w2:summary></w2:summary>
+					</w2:attributes>
+					<xf:group tagname="colgroup">
+						<xf:group style="width:200px;" tagname="col"></xf:group>
+						<xf:group style="" tagname="col"></xf:group>
+						<xf:group style="width:200px;" tagname="col"></xf:group>
+						<xf:group tagname="col"></xf:group>
+					</xf:group>
+					<xf:group id="" tagname="tbody">
+						<xf:group style="" tagname="tr">
+							<xf:group class="w2tb_th" tagname="th">
+								<w2:attributes>
+									<w2:scope>row</w2:scope>
+								</w2:attributes>
+								<w2:textbox class="" id="" label="다단콤보" style="" tagname="p"></w2:textbox>
+							</xf:group>
+							<xf:group class="w2tb_td" tagname="td">
+								<w2:attributes>
+									<w2:colspan>3</w2:colspan>
+									<w2:rowspan>1</w2:rowspan>
+								</w2:attributes>
+								<xf:select1 allOption="" appearance="minimal" chooseOption="true" chooseOptionLabel="" class="wq_sel"
+									direction="auto" disabled="false" disabledClass="w2selectbox_disabled" displayMode="" id="sbx_step1" ref="data:dma_sample.step1"
+									style="width : 150px;" submenuSize="auto" textAlign="left" visibleColumnFalseValue="">
+									<xf:choices>
+										<xf:itemset nodeset="data:dlt_step1">
+											<xf:label ref="nm"></xf:label>
+											<xf:value ref="cd"></xf:value>
+										</xf:itemset>
+									</xf:choices>
+								</xf:select1>
+								<xf:select1 allOption="" appearance="minimal" chooseOption="true" chooseOptionLabel="" class="wq_sel"
+									direction="auto" disabled="false" disabledClass="w2selectbox_disabled" displayMode="" ev:onviewchange="" id="sbx_step2"
+									ref="data:dma_sample.step2" style="width : 150px;" submenuSize="auto" textAlign="left" visibleColumnFalseValue="">
+									<xf:choices>
+										<xf:itemset nodeset="data:ldt_step2_1">
+											<xf:label ref="nm"></xf:label>
+											<xf:value ref="cd"></xf:value>
+										</xf:itemset>
+									</xf:choices>
+								</xf:select1>
+							</xf:group>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html> 

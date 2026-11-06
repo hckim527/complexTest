@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript"><![CDATA[
+        /**
+         * squeeze 모드 테스트 레이아웃
+         * 논리 4x4 → 실제 24x24 (splitCnt=6)
+         *
+         *  논리 Col:  0     1     2     3
+         *  ┌─────┬───────────┬─────┐
+         *  │  A  │     B     │  C  │  Row 0
+         *  ├─────┴─────┬─────┼─────┤
+         *  │     D     │  E  │  F  │  Row 1
+         *  ├───────────┼─────┴─────┤
+         *  │           │           │  Row 2
+         *  │     G     │     H     │
+         *  │           │           │  Row 3
+         *  └───────────┴───────────┘
+         */
+        var S = 6; // splitCnt: 논리 1칸 = 실제 6유닛
+
+        scwin.onpageload = function() {
+            // Row 0: [A:1x1] [B:2x1] [C:1x1]
+            widgetContainer.addWidgets({id:"A", title:"A (1x1)", src:"widgetContainer_dragdrop_WAEA-595_(WSQ-6225)_black.xml", scope:true, x:0*S, y:0*S, unitWidth:1*S, unitHeight:1*S});
+            widgetContainer.addWidgets({id:"B", title:"B (2x1)", src:"widgetContainer_dragdrop_WAEA-595_(WSQ-6225)_red.xml",   scope:true, x:1*S, y:0*S, unitWidth:2*S, unitHeight:1*S});
+            widgetContainer.addWidgets({id:"C", title:"C (1x1)", src:"widgetContainer_dragdrop_WAEA-595_(WSQ-6225)_blue.xml",  scope:true, x:3*S, y:0*S, unitWidth:1*S, unitHeight:1*S});
+            // Row 1: [D:2x1] [E:1x1] [F:1x1]
+            widgetContainer.addWidgets({id:"D", title:"D (2x1)", src:"widgetContainer_dragdrop_WAEA-595_(WSQ-6225)_red.xml",   scope:true, x:0*S, y:1*S, unitWidth:2*S, unitHeight:1*S});
+            widgetContainer.addWidgets({id:"E", title:"E (1x1)", src:"widgetContainer_dragdrop_WAEA-595_(WSQ-6225)_black.xml", scope:true, x:2*S, y:1*S, unitWidth:1*S, unitHeight:1*S});
+            widgetContainer.addWidgets({id:"F", title:"F (1x1)", src:"wwidgetContainer_dragdrop_WAEA-595_(WSQ-6225)_blue.xml",  scope:true, x:3*S, y:1*S, unitWidth:1*S, unitHeight:1*S});
+            // Rows 2-3: [G:2x2] [H:2x2]
+            widgetContainer.addWidgets({id:"G", title:"G (2x2)", src:"widgetContainer_dragdrop_WAEA-595_(WSQ-6225)_blue.xml",  scope:true, x:0*S, y:2*S, unitWidth:2*S, unitHeight:2*S});
+            widgetContainer.addWidgets({id:"H", title:"H (2x2)", src:"widgetContainer_dragdrop_WAEA-595_(WSQ-6225)_black.xml", scope:true, x:2*S, y:2*S, unitWidth:2*S, unitHeight:2*S});
+        };
+
+        var count = 0;
+        scwin.trigger1_onclick = function(e) {
+            count++;
+            widgetContainer.addWidgets({
+                id: "W" + count,
+                title: "Added_" + count,
+                scope: true,
+                x: 0, y: 0,
+                unitWidth: 1, unitHeight: 1
+            });
+        };
+        ]]></script>
+    </head>
+    <body style="padding:20px;" ev:onpageload="scwin.onpageload">
+        <xf:trigger style="width: 120px;height: 39px;line-height:32px;padding:5px;background-color:#C0C0C0;font-size:15px;font-family:monospace;" id="trigger1" type="button" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[addWidgets()]]></xf:label>
+    	</xf:trigger>
+        <w2:widgetContainer id="widgetContainer"
+    		style="position: relative; width:100%; height:720px;border:1px solid black;margin-top: 20px;"
+            preventMaximizeByTitle="true"
+			cols="24"
+			rows="24"
+			unitHeightPixel="30"
+			horizontalMargin="8"
+			verticalMargin="8"
+			minUnitWidth="1"
+			minUnitHeight="1"
+    		widgetMove="true"
+            widgetResize="true"
+		>
+    	</w2:widgetContainer>
+
+    </body>
+</html>

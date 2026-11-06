@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="">
+					<listData>
+						<data>
+							<sID>1</sID>
+							<sName> a</sName>
+							<sAge>10</sAge>
+							<sGender>F</sGender>
+						</data>
+						<data>
+							<sID>2</sID>
+							<sName>  b</sName>
+							<sAge>20</sAge>
+							<sGender>M</sGender>
+						</data>
+						<data>
+							<sID>3</sID>
+							<sName>   c</sName>
+							<sAge>30</sAge>
+							<sGender>F</sGender>
+						</data>
+						<data>
+							<sID>4</sID>
+							<sName>    d</sName>
+							<sAge>40</sAge>
+							<sGender>M</sGender>
+						</data>
+						<data>
+							<sID>5</sID>
+							<sName>     xx</sName>
+							<sAge>50</sAge>
+							<sGender>M</sGender>
+						</data>						
+					</listData>
+					<removeRow>
+
+					</removeRow>
+				</data>
+			</xf:instance>
+			<xf:submission id="submission1" ref="res/testGrid" target="" action="/wqtemplate/testGrid.jsp" method="post" mediatype="" encoding="UTF-8" instance=""
+				replace="" errorHandler="" customHandler="" mode="" processMsg="">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.saveButtonExecute = function() {
+    alert("save Button Executed");
+    grid1.saveExcelFile('test.xslx', '0', '0');
+}
+scwin.accesskey = function() {
+    var targetElem = WebSquare.wUnit.getDomById($p.id + 'saveTrigger001');
+    alert("target:" + targetElem);
+    targetElem.accessKey = "w";
+    w.onkeypress = scwin.saveButtonExecute();
+}
+scwin.ShortcutKey = function(e) {
+    if (typeof e == "undefined") e = window.event;
+    if (isFormInput(e)) return true;
+    if (e.ctrlKey || e.altKey || e.metaKey) return true;
+    if (typeof e.charCode != 'undefined' && e.charCode == 0) return true;
+    if (typeof e.which != 'undefined' && e.which == 0) return true;
+    var cc = e.charCode ? e.charCode : e.keyCode;
+    if (cc >= 65 && cc <= 90 && !e.shiftKey) cc += 32;
+}
+scwin.advancedExcelDownload = function() {
+    /*
+     * @param     options JSON형태로 저장된 그리드의 엑셀 다운로드 옵션
+     * options.fileName         : [defalut: excel.xls] 다운로드하려는 파일의 이름
+     * options.sheetName        : [defalut: sheet] excel의 sheet의 이름
+     * options.type             : [defalut: 0] type이 0인 경우 실제 데이터 1인 경우 눈에 보이는 데이터를  2이면 들어가 있는 data 그대로(filter무시 expression 타입의 셀은 나오지 않음)
+     * options.removeColumns    : [defalut: 없음] 다운로드시 excel에서 삭제하려는 열의 번호(여러 개일 경우 ,로 구분)
+     * options.removeHeaderRows : [defalut: 없음] 다운로드시 excel에서 삭제하려는 Header의 row index(여러 개일 경우 ,로 구분)
+     * options.foldColumns      : [defalut: 없음] 다운로드시 excel에서 fold하려는 열의 번호(여러 개일 경우 ,로 구분)
+     * options.startRowIndex    : [defalut: 0] excel파일에서 그리드의 데이터가 시작되는 행의 번호(헤더 포함)
+     * options.startColumnIndex : [defalut: 0] excel파일에서 그리드의 데이터가 시작되는 열의 번호(헤더 포함)
+     * options.headerColor      : [defalut: #33CCCC] excel파일에서 그리드의 header부분의 색
+     * options.bodyColor        : [defalut: #FFFFFF] excel파일에서 그리드의 body부분의 색
+     * options.subTotalColor    : [defalut: #CCFFCC] excel파일에서 그리드의 subtotal부분의 색
+     * options.footerColor      : [defalut: #008000] excel파일에서 그리드의 footer부분의 색
+     * options.showProcess      : [defalut: true] 다운로드 시 프로세스 창을 보여줄지 여부
+     * options.massStorage      : [defalut: true] 대용량 다운로드 여부 (default는 true 이 옵션을 true로 하고 showConfirm을 false로 한 경우에 IE에서 신뢰할만한 사이트를 체크하는 옵션이 뜬다.)
+     * options.showConfirm      : [defalut: false] 다운로드 확인창을 띄울지 여부(옵션을 킨 경우 advancedExcelDownload를 호출후 사용자가 window의 버튼을 한번더 클릭해야 한다. massStorage는 자동으로 true가 된다)
+     * options.dataProvider     : [defalut: 없음] 대량데이터 처리 및 사용자 데이터를 가공할 수 있는 Provider Package
+     * options.providerRequestXml   : [defalut: 없음] Provider 내부에서 사용할 XML 문자열
+     * options.userDataXml      : [defalut: 없음] 사용자가 서버모듈 개발 시 필요한 데이터를 전송 할 수 있는 변수
+     * options.bodyWordwrap     : [defalut: false] 다운로드시 바디의 줄 바꿈 기능
+     * options.useEuroLocale    : [defalut: false] 다운로드시 유로화 처리 기능(,와 .이 반대인 경우처리)
+     * options.useHeader        : [defalut: true] 다운로드시 Header를 출력 할지 여부( "true"인경우 출력, "false"인경우 미출력)
+     * options.useSubTotal      : [defalut: false] 다운로드시 SubTotal을 출력 할지 여부( "true"인경우 출력, "false"인경우 미출력)
+     * options.useFooter        : [defalut: true] 다운로드시 Footer를 출력 할지 여부( "true"인경우 출력, "false"인경우 미출력)
+     * options.separator        : [defalut: ,] 다운로드시 서버로 데이터 전송할때, 데이터를 구분짓는 구분자, default는 comma(,)
+     * options.subTotalScale    : [defalut: -1] 다운로드시 subTotal 평균계산시 소수점 자리수를 지정
+     * options.subTotalRoundingMode  : [defalut: 없음] 다운로드시 subTotal 평균계산시 Round를 지정 한다. ("CEILING","FLOOR","HALF_UP")
+     * options.useStyle         : [defalut: false] 다운로드시 css를 제외한, style을 excel에도 적용할 지 여부 (배경색,폰트)
+     * options.printSet JSON형태로 저장된 Excel Print관련 설정
+     * options.printSet.fitToPage : [defalut: false] 엑셀 프린터 출력시 쪽맞춤 사용 유무 
+     * options.printSet.landScape : [defalut: false] 엑셀 프린터 출력시 가로 방향 출력 유무
+     * options.printSet.fitWidth  : [defalut: 1] 엑셀 프린터 출력시 용지너비
+     * options.printSet.fitHeigth : [defalut: 1] 엑셀 프린터 출력시 용지높이
+     * options.printSet.scale   : [defalut: 100] 엑셀 프린터 출력시 확대/축소 배율, scale을 사용할 경우 fitToPage는 false로 설정 해야 한다.
+     * @param     infoArr 그리드에 대한 내용을 추가로 다른 셀에 표현하는 경우 사용하는 배열
+     * infoArr.rowIndex         : 내용을 표시할 행번호  
+     * infoArr.colIndex         : 내용을 표시할 열번호
+     * infoArr.rowSpan          : 병합할 행의 수 
+     * infoArr.colSpan          : 병합할 열의 수
+     * infoArr.text             : 표시할 내용
+     * infoArr.textAlign        : 표시할 내용의 정렬 방법 (left, center, right)
+     * infoArr.fontSize         : font size 설정 ( ex) "20px" )
+     * infoArr.color            : font color 설정 ( ex) "red" )
+     * infoArr.fontWeight       : font weight 설정 ( ex) "bold" )
+     * infoArr.drawBorder       : cell의 border 지정 ( ex) true )
+     */
+    var options = {
+        fileName: "user.xlsx",
+        type: "0",
+        removeColumns: "",
+        foldColumns: "",
+        startRowIndex: 3,
+        startColumnIndex: 0,
+        headerColor: "#DBEEF3",
+        footerColor: "#92CDDC",
+        showProcess: true,
+        dataProvider: "",
+        useHeader: "true"
+    };
+    var infoArr = [];
+    var infoObj = {
+        rowIndex: 3,
+        colIndex: 0,
+        rowSpan: 1,
+        colSpan: 1,
+        text: "그리드 다운로드 샘플",
+        textAlign: "left",
+        drawBorder: false,
+        bgColor: "red",
+        color: "white"
+    };
+    infoArr.push(infoObj);
+    grid1.advancedExcelDownload(options, infoArr);
+}
+scwin.advancedExcelUpload = function() {
+    /*
+     * @param 		options JSON형태로 저장된 그리드의 엑셀 업로드 옵션
+     * options.type 			: [defalut:	0] 1이면 엑셀 파일이 그리드의 보이는 결과로 만들어져있을때  0이면 엑셀 파일이 그리드의 실제 데이터로 구성되어있을때 
+     * options.sheetNo			: [defalut:	0] excel파일에서 그리드의 데이터가 있는 sheet번호
+     * options.startRowIndex	: [defalut:	0] excel파일에서 그리드의 데이터가 시작되는 행의 번호(헤더 포함)
+     * options.startColumnIndex : [defalut:	0] excel파일에서 그리드의 데이터가 시작되는 열의 번호
+     * options.headerExist		: [defalut:	0] excel파일에서 그리드의 데이터에 header가 있는지 여부(1이면 header 존재 0이면 없음)
+     * options.footerExist		: [defalut: 1] excel파일에서 그리드의 데이터에 footer가 있는지 여부(1이면 footer 존재 0이면 없음 기본값은 1 그리드에 footer가 없으면 적용되지 않음)
+     * options.append			: [defalut: 0] excel파일에서 가져온 데이터를 그리드에 append시킬지 여부(1이면 현재 그리드에 데이터를 추가로 넣어줌 0이면 현재 그리드의 데이터를 삭제하고 넣음)
+     * options.hidden			: [defalut: 0] 읽어들이려는 엑셀파일에 hidden column이 저장되어 있는지 여부를 설정하는 int형 숫자(0이면  엑셀파일에 hidden 데이터가 없으므로 그리드 hidden column에 빈 데이터를 삽입  1 : 엑셀파일에 hidden 데이터가 있으므로 엑셀 파일로부터 hidden 데이터를 삽입 )	
+     * options.fillHidden		: [defalut: 0] Grid에 hiddenColumn에 빈 값을 넣을지를 결정하기 위한 int형 숫자(1이면 hidden Column에 빈 값을 저장하지 않음,0이면 hidden column이 저장되어있지 않은 Excel File이라 간주하고 hidden Column에 빈 값을 넣어줌)(hidden이 0인 경우에는 fillhidden은 영향을 끼치지 않음) 	
+     * options.skipSpace		: [defalut: 0] 공백무시 여부(1이면 무시 0이면 포함)
+     * options.insertColumns	: radio, checkbox와 같은 컬럼을 엑셀에서 받아 오지 않고, 사용자 컬럼 설정 으로 업로드 ( 데이터 구조 : [ { columnIndex:1, columnValue:"1" } ] )    
+     * options.popupUrl		    : 업로드시에 호출할 popup의 url
+     */
+    var options = {};
+    options.headerExist = "1"; //헤더의 존재 여부 입니다.
+    options.startRowIndex = "3"; //excel파일에서 gird의 데이터가 시작되 row의 index입니다..(헤더 포함)
+    options.startColumnIndex = "0"; //excel파일에서 gird의 데이터가 시작되는 column의 index입니다.(헤더 포함)
+    options.sheetNo = 0; //excel의 sheet번호입니다.
+    options.append = "0"; //append 여부입니다. 0이면 append하지 않고 새로 쓰고 1이면 그리드의 뒤쪽에 데이터를 추가로 붙여줍니다.
+    options.hidden = "1"; //1이면 그리드에서 엑셀 다운로드시에 hidden을 포함했다는 의미입니다. 즉 upload시에 그리드의 hidden Column에 값을 넣는다는 의미입니다.
+    grid1.scwin.advancedExcelUpload(options); //엑셀 업로드를 시작합니다.
+}
+scwin.spaceFormatter = function(value) {
+    //alert("value:" + value);
+    var aa = value.replaceAll(" ", '&nbsp;');
+    return aa;
+}
+scwin.onpageload = function() {
+    grid1.setXML(WebSquare.ModelUtil.findInstanceNode("listData"), true);
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="group26"
+			style="position:absolute;top:61px;left:46px;width:352px;height:311px;">
+			<w2:grid id="grid1" baseNode="listData" autoFit="allColumn"
+				style="position: absolute ;left:1px;top:36px;width:351px;height:232px;"
+				rowStatusVisible="true" rowStatusHeaderValue="상태"
+				editModeEvent="onclick" repeatNode="data">
+				<w2:header id="header1" style="">
+					<w2:row id="row1" style="">
+						<w2:column id="column7" style="height:20px"
+							width="70" inputType="text" value="ID">
+						</w2:column>
+						<w2:column id="column5" style="height:20px"
+							width="70" inputType="text" value="Name">
+						</w2:column>
+						<w2:column id="column3" style="height:20px"
+							width="70" inputType="text" value="Age">
+						</w2:column>
+						<w2:column id="column1" style="height:20px"
+							inputType="text" width="70" value="Gender">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1" style="">
+					<w2:row id="row2" style="">
+						<w2:column id="sID" style="height:20px"
+							width="70" inputType="text">
+						</w2:column>
+						<w2:column id="sName" style="height:20px"
+							width="70" inputType="text" displayFormatter="spaceFormatter">
+						</w2:column>
+						<w2:column id="sAge" style="height:20px"
+							width="70" inputType="text">
+						</w2:column>
+						<w2:column id="sGender" style="height:20px"
+							inputType="text" width="70">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:grid>
+			<xf:trigger id="trigger1"
+				style="position: absolute ;left:0px;top:1px;width:65px;height:23px;"
+				type="image">
+				<xf:label>행추가</xf:label>
+				<script ev:event="onclick" type="javascript"><![CDATA[
+    				
+    				// focused index
+    				//var rowIndex = grid1.getFocusedRowIndex();
+    				// 클릭한 row의 아래에 line생성
+    				//grid1.insertRow(rowIndex + 1);
+    				
+    				//마지막 row 아래 line 생성
+    				var rowIndex = grid1.getRowCount();
+    				grid1.insertRow(rowIndex + 1);
+    		 ]]></script>
+			</xf:trigger>
+			<xf:trigger id="trigger2"
+				style="position: absolute ;left:69px;top:1px;width:82px;height:23px;"
+				type="image">
+				<xf:label>removeRow</xf:label>
+				<script ev:event="onclick" type="javascript"><![CDATA[
+    		
+	    			// 선택한 row index 가져오기
+	    			var rowIndex = grid1.getFocusedRowIndex();
+	    			
+	    			// 선택하지 않으면 Index는 -1 을 반환하므로 !!!
+	    			if(rowIndex < 0) {
+	    				alert("삭제할 행을 선택해 주세요.");
+	    				return;
+	    			}
+	    			
+	    			// removeRow (완전히 삭제 후 가지고 있던 data반환)
+	    			var rowXML = grid1.getRowXML( rowIndex );
+					WebSquare.ModelUtil.setInstanceNode( rowXML, 'removeRow', '', 'append' );
+	    			var rmData = grid1.removeRow( rowIndex );
+	    			alert(rmData);
+    		 ]]></script>
+			</xf:trigger>
+			<xf:trigger id="trigger3"
+				style="position: absolute ;left:155px;top:1px;width:82px;height:23px;"
+				type="image">
+				<xf:label>deleteRow</xf:label>
+				<script ev:event="onclick" type="javascript"><![CDATA[
+    		
+	    			// 선택한 row index 가져오기
+	    			var rowIndex = grid1.getFocusedRowIndex();
+	    			
+	    			// 선택하지 않으면 Index는 -1 을 반환하므로 !!!
+	    			if(rowIndex < 0) {
+	    				alert("삭제할 행을 선택해 주세요.");
+	    				return;
+	    			}
+	    			
+	    			// deleteRow (삭제된 행 표시)
+	    			grid1.deleteRow( rowIndex );
+    		
+    		 ]]></script>
+			</xf:trigger>
+			<xf:trigger id="trigger5"
+				style="position: absolute ;left:244px;top:0px;width:108px;height:23px;"
+				type="image">
+				<xf:label>getModifiedXML</xf:label>
+				<script ev:event="onclick" type="javascript"><![CDATA[
+    		
+	    			// 수정된 xml 가져오기 (API)
+	    			var xml = grid1.getModifiedXML();
+	    			//alert(WebSquare.xml.serialize( xml ));
+	    			alert("변경건: " + WebSquare.xml.indent( xml ));
+    		
+    		 ]]></script>
+			</xf:trigger>
+		</xf:group>
+		<xf:trigger id="trigger11"
+			style="position: absolute ;left:147px;top:24px;width:100px;height:23px;"
+			type="image">
+			<xf:label>getUpdatedXML</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+    		alert(WebSquare.xml.indent( grid1.getUpdatedXML()));
+    		 ]]></script>
+		</xf:trigger>
+		<xf:trigger id="trigger12"
+			style="position: absolute ;left:43px;top:24px;width:100px;height:23px;"
+			type="image">
+			<xf:label>getInsertedXML</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+    				
+    				alert(WebSquare.xml.indent( grid1.getInsertedXML()));
+    		 ]]></script>
+		</xf:trigger>
+		<xf:trigger id="trigger13"
+			style="position: absolute ;left:253px;top:24px;width:100px;height:23px;"
+			type="image">
+			<xf:label>getDeletedXML</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+    		
+	    			alert(WebSquare.xml.indent( grid1.getDeletedXML()));
+    			//WebSquare.ModelUtil.setInstanceNode( doc , xpath , modelID , "append")
+    		 ]]></script>
+		</xf:trigger>
+		<xf:trigger id="saveTrigger001"
+			style="position: absolute ;left:414px;top:100px;width: 93px;height: 37px;"
+			type="image">
+			<xf:label>saveExcel</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+				//saveButtonExecute();
+				scwin.advancedExcelDownload();
+			 ]]></script>
+		</xf:trigger>
+		<xf:trigger id="trigger14"
+			style="position: absolute ;left:418px;top:174px;width: 93px;height: 37px;"
+			type="image">
+			<xf:label>uploadExcel</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+
+				scwin.advancedExcelUpload();
+			 ]]></script>
+		</xf:trigger>
+		<xf:trigger id="trigger15"
+			style="position: absolute ;left:416px;top:139px;width: 93px;height: 37px;"
+			type="image">
+			<xf:label>clearGrid</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+				grid1.removeAll();
+			 ]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

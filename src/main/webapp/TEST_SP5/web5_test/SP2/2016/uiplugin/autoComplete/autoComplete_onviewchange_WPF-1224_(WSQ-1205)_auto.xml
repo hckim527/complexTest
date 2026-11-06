@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dl_autoData" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="value" name="value" dataType="text"></w2:column>
+    					<w2:column id="label" name="label" dataType="text"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.autoComplete1_onviewchange = function(info) {
+    log = "autoComplete1_onviewchange!!!";
+    //alert("autoComplete1_onviewchange!!!");
+};
+scwin.checkVal = function() {
+    return log == 'autoComplete1_onviewchange!!!';
+}
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#autoComplete1_input', 'key-sequence', {
+        sequence: 'b'
+    });
+}
+scwin.setSimulate2 = function() {
+    scwin.simulateWrapper('#autoComplete1_input', 'key-combo', {
+        combo: 'TAB'
+    });
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 scwin.autoComplete1_onviewchange 을 확인한다.
+    //1. In the Source tab, check scwin.autoComplete1_onviewchange.
+    //Verify step 1. alert ('autoComplete1_onviewchange !!!');
+    //Test step 2. 브라우저에서 'b' 를 입력하고 Tab 키를 누른다.
+    //2. In your browser, type 'b' and press Tab.
+    //Verify step 2. The onviewchange event is raised while automatically selecting 'b1' at the top.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#autoComplete1_label').text() == 'b1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        "value": "A1",
+        "label": "b1"
+    }, {
+        "value": "A2",
+        "label": "b2"
+    }, {
+        "value": "A12",
+        "label": "b12"
+    }, {
+        "value": "A123",
+        "label": "b123"
+    }];
+    dl_autoData.setJSON(jsonData);
+    window.jsonData = [{
+        "value": "a1",
+        "label": "b1"
+    }, {
+        "value": "a2",
+        "label": "b2"
+    }, {
+        "value": "a12",
+        "label": "b12"
+    }, {
+        "value": "A123",
+        "label": "b123"
+    }];
+    dl_autoData.setJSON(jsonData);
+    autoComplete1.setItemSet("data:dl_autoData", "label", "value");
+    window.log = "";
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 10-Apr-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:autoComplete visibleRowNum="5" chooseOption="" id="autoComplete1" style="width: 130px;height: 56px;"
+    		search="contain" interactionMode="" displayMode="label" useKeywordHighlight="false" 
+    		submenuSize="auto" editType="select" allOption="" searchTarget="both" caseSensitive="false" noResult="first" ev:onviewchange="scwin.autoComplete1_onviewchange">
+    	</w2:autoComplete>
+    </body>
+</html>
+ 

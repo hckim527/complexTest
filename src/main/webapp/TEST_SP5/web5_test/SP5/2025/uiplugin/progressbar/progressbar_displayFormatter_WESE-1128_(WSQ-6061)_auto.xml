@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:workflowCollection />
+			<w2:dataCollection>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	progressbar1.animate(0,100,90000,function(){});
+	progressbar2.animate(0,100,90000,function(){});
+
+	//progressbar1.set(80);
+};
+scwin.onpageunload = function() {
+};
+
+scwin.progressbar2_displayFormatter = function(tmpVal) {
+	// 항상 소수점 2자리
+	var value = Number(tmpVal).toFixed(2) + "%";
+	
+	return value;
+}
+
+
+	scwin.isValidPercentageFormat = function(str) {
+		//소수점이하 두자릿수 확인
+		var regex = /^\d+\.\d{2}%$/;
+		return regex.test(str);
+	}
+	scwin.checkVal = function() {
+		const checkValue = WebSquare.wUnit.getDomById('progressbar1_bar').innerText;
+		return scwin.isValidPercentageFormat(checkValue);
+	}
+
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "1500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+
+]]></script>
+	<style type="text/css"><![CDATA[
+		.w2progressbar_bar {
+			overflow: visible;
+		}
+
+	]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<w2:progressbar duration="90000" min="0" max="100" step="1.333333" progressClass="type2"
+    		style="width: 200px;height: 23px;" id="progressbar1" 
+			
+			valueType="percent"
+			displayFormat="0.00">
+    	</w2:progressbar>
+		<w2:progressbar duration="90000" min="0" max="100" step="1.333333" progressClass="type2"
+    		style="width: 200px;height: 23px;" id="progressbar2" 
+
+			valueType="number"
+			displayFormatter="scwin.progressbar2_displayFormatter">
+    	</w2:progressbar>
+		
+	</body>
+</html>

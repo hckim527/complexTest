@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+
+};
+
+scwin.btn_openpopup_onclick = function (e) {
+
+	var opt = {
+		id: "popup_sample",
+		popupName: "samplePopup",
+		type : "wframePopup", 
+		modal: true,
+		width: 450,
+		height: 350,
+		top: "200px",
+		left: "300px"
+	}
+
+	$p.openPopup("trigger_tooltip_popup_WESE-847_(WSQ-5700)_popup.xml", opt);
+
+};
+
+	scwin.fireOver = function(node) {
+		if (document.createEventObject) {
+			node.fireEvent('onmouseover');
+		} else if (document.createEvent) {
+			window.evt = document.createEvent('MouseEvents');
+			evt.initEvent('mouseover', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.onmouseover == 'function') {
+			node.onmouseover();
+		}
+	}
+	scwin.mouseOverBehaviour = function(id) {
+		window.el = WebSquare.wUnit.getDomById(id);
+		scwin.fireOver(el);
+	}
+	scwin.checkVal1 = function(){
+		return WebSquare.wUnit.getDomById('wq_uuid_0_balloonTip').style.display == 'none';
+	}
+	scwin.unitTest = function(){
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_openpopup').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('popup_sample_wframe_btn_tooltip')");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup_sample_wframe_btn_tooltip').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:trigger type="button" id="btn_openpopup" style="width:110px;height:33px;position:absolute;top:25px;left:26px;" ev:onclick="scwin.btn_openpopup_onclick">
+    		<xf:label><![CDATA[팝업]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

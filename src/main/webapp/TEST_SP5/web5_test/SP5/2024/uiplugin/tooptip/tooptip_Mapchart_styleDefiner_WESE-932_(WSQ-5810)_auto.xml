@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map" />
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+
+};
+
+scwin.mapchart1_styleDefiner = function () {
+    var styleData = [
+        { "code": "11", "label": "서울", "showLabel": true, "class": "class1", "labelClass": "class2" },
+        { "code": "31021", "label": "성남시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31022", "label": "성남시", "showLabel": true, "class": "", "labelClass": "class2" },
+        { "code": "31023", "label": "성남시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31091", "label": "안산시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31092", "label": "안산시", "showLabel": true, "class": "", "labelClass": "class2" },
+        { "code": "31041", "label": "안양시", "showLabel": true, "class": "", "labelClass": "class2" },
+        { "code": "31042", "label": "안양시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31011", "label": "수원시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31012", "label": "수원시", "showLabel": true, "class": "", "labelClass": "class2" },
+        { "code": "31013", "label": "수원시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31014", "label": "수원시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31191", "label": "용인시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31192", "label": "용인시", "showLabel": true, "class": "", "labelClass": "class2" },
+        { "code": "31193", "label": "용인시", "showLabel": false, "class": "", "labelClass": "" },
+
+        { "code": "31101", "label": "고양시", "showLabel": true, "class": "", "labelClass": "class2" },
+        { "code": "31103", "label": "고양시", "showLabel": false, "class": "", "labelClass": "" },
+        { "code": "31104", "label": "고양시", "showLabel": false, "class": "", "labelClass": "" },
+    ];
+    return styleData;
+};
+
+// scwin.fireClick = function(node) {
+//     if (document.createEventObject || document.createEvent) {
+//         var evt = document.createEvent('MouseEvents');
+//         evt.initEvent('click', true, false);
+//         node.dispatchEvent(evt);
+//     } else if (typeof node.onclick == 'function') {
+//         node.onclick();
+//     }
+// };
+
+// scwin.click = function(cl) {
+//     var el = document.getElementsByClassName(cl)[0];
+//     scwin.fireClick(el);
+// };
+
+scwin.__triggerMouseover = function() {
+    var el = document.getElementsByClassName('municipality c39')[0];
+    scwin.fireMouseHover(el);
+};
+
+scwin.fireMouseHover = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+};
+
+scwin.checkTooltipSize = function() {
+    const tooltipElement = WebSquare.wUnit.getDomById('mapchart1_tooltip');
+
+    if (!tooltipElement) {
+        console.log('ID가 "mf_mapchart1_tooltip"인 요소를 찾을 수 없습니다.');
+        return false;
+    }
+
+    const rect = tooltipElement.getBoundingClientRect();
+    console.log('Top:', rect.top);
+
+    // 맵 크기 451, 툴팁 크기 26
+    return rect.top <= 425;
+};
+
+scwin.unitTest = function () {
+    //Unit 
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkTooltipSize()", "true");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+};
+
+scwin.unitTest();]]></script>
+		<style type="text/css"><![CDATA[
+    	    .class1 {
+                fill: yellow !important;
+            }
+            .class2 {
+            	fill: green !important;
+            }
+    	 ]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:mapchart style="width:583px;height:445px;border: solid;" styleDefiner="scwin.mapchart1_styleDefiner" id="mapchart1"></w2:mapchart>
+	</body>
+</html>

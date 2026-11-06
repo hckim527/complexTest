@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+console.log(WebSquare.util.isMobile());
+console.log(WebSquare.util.isTouchDevice());
+	
+	var jsonData = [
+    {"col1":"1","col2":"2","col3":"3"},
+    {"col1":"11","col2":"12","col3":"13"}
+    ];
+
+    dataList2.setJSON(jsonData);
+    
+    var jsonData2 = [
+    {"col1":"1","col2":"2","col3":"3"},
+    {"col1":"11","col2":"12","col3":"13"}
+    ];
+
+    dataList2.setJSON(jsonData2);
+};
+
+
+	scwin.checkAriaSelectedInsideCalendar = function() {
+		var calendarDiv = WebSquare.wUnit.getDomById("inputCalendar1_calendar_content");
+		var returnVal = true;
+		if (calendarDiv) {
+			var tdElements = calendarDiv.querySelectorAll("td");
+			// 선택된 각 td 요소를 순회하면서 aria-selected 속성이 있는지 확인
+			tdElements.forEach(function(td) {
+				if (td.hasAttribute("aria-selected")) {
+					console.log("요소 내용: '" + td.textContent.trim() + "' → aria-selected 속성 값:", td.getAttribute("aria-selected"));
+					returnVal = false;
+				} else {
+					//console.log("요소 내용: '" + td.textContent.trim() + "' → aria-selected 속성이 없습니다.");
+				}
+			});
+		} else {
+			console.log("id가 'mf_inputCalendar1_calendar_content'인 div 요소를 찾을 수 없습니다.");
+		}
+		return returnVal;
+	}
+
+	scwin.checkVal = function() {
+	debugger;
+		return scwin.checkAriaSelectedInsideCalendar();
+	}
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "1000");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_img').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	
+
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="">
+    	</xf:group>
+
+    	<xf:group id="" style="">
+    		<w2:inputCalendar id="inputCalendar1" style="position: relative;width: 150px;height: 23px;" calendarValueType="yearMonthDate"
+    			renderType="native">
+    		</w2:inputCalendar>
+    	</xf:group>
+    </body>
+</html>

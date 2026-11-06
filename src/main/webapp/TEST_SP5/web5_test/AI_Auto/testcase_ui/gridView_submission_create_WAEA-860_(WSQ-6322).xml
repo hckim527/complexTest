@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+        			<w2:columnInfo>
+        				<w2:column id="albumId" name="albumId" dataType="text"></w2:column>
+        				<w2:column id="id" name="id" dataType="text"></w2:column>
+        				<w2:column id="title" name="title" dataType="text"></w2:column>
+        				<w2:column id="url" name="url" dataType="text"></w2:column>
+        				<w2:column id="thumbnailUrl" name="thumbnailUrl" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection />
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+/* =========================================================================
+ * WAEA-860 검증용 _fix 샘플
+ * 핫픽스: 2026_0518_hotfix_WAEA_860.js (기준 REL_6_0_0_1438B_20260120_113942)
+ *
+ * 목적: submission mode=synchronous 일 때도 withCredentials 설정값이
+ *       실제 XMLHttpRequest.send 직전에 정상 반영되는지 확인.
+ *
+ * 확인 방법: 각 버튼을 누르고 콘솔의 "[XHR send] withCredentials = ..." 로그 확인.
+ *   - 압축 엔진 코드(r.send(b))를 직접 안 봐도 send 직전 값이 그대로 찍힘.
+ * ========================================================================= */
+
+// --- (1) XHR 가로채기: send 직전 withCredentials 값을 콘솔에 출력 ---
+(function () {
+    if (XMLHttpRequest.prototype.__waea860Patched) { return; }
+    XMLHttpRequest.prototype.__waea860Patched = true;
+
+    var _open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, async) {
+        this.__waea860_url = url;
+        this.__waea860_async = (async !== false); // 미지정 시 기본 true
+        return _open.apply(this, arguments);
+    };
+
+    var _send = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.send = function (body) {
+        console.log(
+            "[XHR send] withCredentials =", this.withCredentials,
+            "| mode =", (this.__waea860_async ? "asynchronous" : "synchronous"),
+            "| url =", this.__waea860_url
+        );
+        return _send.apply(this, arguments);
+    };
+})();
+
+// --- (2) 공통 submission 실행 함수 ---
+scwin.runCase = function (caseId, opt) {
+    // 같은 id 재실행 시 중복 방지를 위해 기존 submission 제거
+    try { $p.removeSubmission(caseId); } catch (e) {}
+
+    var tmpOpt = {
+        id: caseId,
+        target: "data:json,dataList1",
+        action: "gridView_submission_create_WAEA-860_(WSQ-6322).json",
+        mediatype: "application/json",
+        submitDoneHandler: "scwin.submitDoneHandler"
+    };
+    // 케이스별 옵션 병합 (mode / withCredentials)
+    for (var k in opt) { tmpOpt[k] = opt[k]; }
+
+    console.log("==== [" + caseId + "] 실행 / 설정값:",
+        "mode =", tmpOpt.mode,
+        ", withCredentials =", (tmpOpt.hasOwnProperty("withCredentials") ? tmpOpt.withCredentials : "(미지정)"));
+
+    $p.createSubmission(tmpOpt);
+    $p.executeSubmission(caseId);
+};
+
+scwin.submitDoneHandler = function (e) {
+    // 응답 수신 확인용
+    // console.log("submitDone", e);
+};
+
+// --- (3) 검증 케이스 ---
+// 케이스 1) 동기 + withCredentials true  → 기대: 핫픽스 후 true (핫픽스 전 false=버그)
+scwin.btnSyncTrue_onclick = function () {
+    scwin.runCase("caseSyncTrue", { mode: "synchronous", withCredentials: "true" });
+};
+// 케이스 2) 비동기 + withCredentials true → 기대: true (하위호환 유지)
+scwin.btnAsyncTrue_onclick = function () {
+    scwin.runCase("caseAsyncTrue", { mode: "asynchronous", withCredentials: "true" });
+};
+// 케이스 3) 동기 + withCredentials false → 기대: false (기본값 유지)
+scwin.btnSyncFalse_onclick = function () {
+    scwin.runCase("caseSyncFalse", { mode: "synchronous", withCredentials: "false" });
+};
+// 케이스 4) 동기 + withCredentials 미지정 → 기대: false (기본값 유지)
+scwin.btnSyncNone_onclick = function () {
+    scwin.runCase("caseSyncNone", { mode: "synchronous" });
+};
+// 케이스 전체 순차 실행
+scwin.btnRunAll_onclick = function () {
+    scwin.btnSyncTrue_onclick();
+    scwin.btnAsyncTrue_onclick();
+    scwin.btnSyncFalse_onclick();
+    scwin.btnSyncNone_onclick();
+};
+
+scwin.onpageload = function () {
+    console.log("WAEA-860 _fix 로드 완료. 버튼을 눌러 case별 withCredentials 값을 확인하세요.");
+};
+
+scwin.onpageunload = function () {};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="margin:8px 0;">
+            <xf:trigger id="btnSyncTrue" type="button" ev:onclick="scwin.btnSyncTrue_onclick" style="width:280px;height:26px;margin:2px;">
+                <xf:label><![CDATA[1) 동기 + withCredentials true (기대 true)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btnAsyncTrue" type="button" ev:onclick="scwin.btnAsyncTrue_onclick" style="width:280px;height:26px;margin:2px;">
+                <xf:label><![CDATA[2) 비동기 + withCredentials true (기대 true)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btnSyncFalse" type="button" ev:onclick="scwin.btnSyncFalse_onclick" style="width:280px;height:26px;margin:2px;">
+                <xf:label><![CDATA[3) 동기 + withCredentials false (기대 false)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btnSyncNone" type="button" ev:onclick="scwin.btnSyncNone_onclick" style="width:280px;height:26px;margin:2px;">
+                <xf:label><![CDATA[4) 동기 + 미지정 (기대 false)]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btnRunAll" type="button" ev:onclick="scwin.btnRunAll_onclick" style="width:280px;height:26px;margin:2px;">
+                <xf:label><![CDATA[전체 순차 실행]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+    	<w2:gridView checkAllType="false" defaultCellHeight="20" id="" style="width:592px;height:332px;" dataList="data:dataList1">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="text" style="" id="column15" value="albumId" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="column14" value="id" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="column13" value="title" displayMode="label"></w2:column>
+    				<w2:column width="94" inputType="text" style="" id="column12" value="url" displayMode="label"></w2:column>
+    				<w2:column width="208" inputType="text" style="" id="column11" value="thumbnailUrl" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="70" inputType="text" style="" id="albumId" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="id" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="title" value="" displayMode="label"></w2:column>
+    				<w2:column width="94" inputType="text" style="" id="url" value="" displayMode="label"></w2:column>
+    				<w2:column width="208" inputType="text" style="" id="thumbnailUrl" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

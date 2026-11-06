@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/SWING/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/SWING/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row></w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    ngmf.popupExcelExport("gridView1", "dataList1", false, "");
+};
+scwin.test = function() {
+    //alert("scwin.test");
+    alertShowed = true;
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Script 탭에서 scwin.test = function() 부분을 확인한다.
+    //1. In the Script tab, check scwin.test = function ().
+    //Verify step 1. alert("scwin.test");
+    //1. alert ("scwin.test");
+    //Test step 2. gridView1.setDisabled 부분을 확인한다.
+    //2. Check gridView1.setDisabled.
+    //Verify step 2. gridView1.setDisabled("grid", true);
+    //2. gridView1.setDisabled ("grid", true);
+    //Test step 3. 브라우저에서 name2 컬럼의 셀에 이미지를 클릭한다.
+    //3. In the browser, click the image in the cell of the name2 column.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').childNodes[0].click()");
+    //Verify step 3. 아무런 반응이 없다. (전버전에서는 disabled 상태에서도 imageClickFunction이 실행되어 팝업이 생성되었음.)
+    //3. There is no reaction. (In previous versions, imageClickFunction was executed even when disabled, resulting in a popup.)
+    WebSquare.wUnit.addCommand("assert", "alertShowed", "false");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.alertShowed = false;
+    //	dataList1.insertRow();
+    gridView1.setDisabled("grid", true);
+    //	gridView1.setCellDisabled( 0 , 1 , true );
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 28-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="gridView1" style="width: 500px;height: 150px;"
+			fixedColumnWithHidden="true" useShiftKey="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+					<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" value="name2"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4" style="">
+				<w2:row id="row5" style="">
+					<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="image" imageSrc="/SWING/lib/images/btn_lov.png"
+						imageClickFunction="scwin.test">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>
+ 

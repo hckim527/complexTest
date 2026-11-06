@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="Load More + No Result Message">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <w2:css href="/spall/cursor/cardView/base.css"/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dlt_comp" ev:oncelldatachange="scwin.dlt_comp_oncelldatachange"
+                    ev:oninsertrow="scwin.dlt_comp_oninsertrow" ev:onremoverow="scwin.dlt_comp_onremoverow"
+                    ev:ondataload="scwin.dlt_comp_ondataload" ev:onbeforecelldatachange="scwin.dlt_comp_onbeforecelldatachange">
+                    <w2:columnInfo>
+                        <w2:column id="complainType" name="민원타입" dataType="text"></w2:column>
+                        <w2:column id="complainNo" name="민원번호" dataType="text"></w2:column>
+                        <w2:column id="applicantName" name="신청인명" dataType="text"></w2:column>
+                        <w2:column id="statusCode" name="상태코드" dataType="text"></w2:column>
+                        <w2:column id="statusLabel" name="상태표시텍스트" dataType="text"></w2:column>
+                        <w2:column id="receivedAt" name="접수일자" dataType="text"></w2:column>
+                        <w2:column id="departmentName" name="담당부서" dataType="text"></w2:column>
+                        <w2:column id="processStatus" name="처리상태" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList baseNode="list" repeatNode="map" id="dlt_node">
+                    <w2:columnInfo>
+                        <w2:column id="label" name="name1" dataType="text"></w2:column>
+                        <w2:column id="value" name="name2" dataType="number"></w2:column>
+                    </w2:columnInfo>
+                    <w2:data use="true">
+                        <w2:row>
+                            <label><![CDATA[접수]]></label>
+                            <value><![CDATA[0]]></value>
+                        </w2:row>
+                        <w2:row>
+                            <label><![CDATA[진행]]></label>
+                            <value><![CDATA[1]]></value>
+                        </w2:row>
+                        <w2:row>
+                            <label><![CDATA[처리완료]]></label>
+                            <value><![CDATA[2]]></value>
+                        </w2:row>
+                    </w2:data>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <style type="text/css"><![CDATA[
+.load_more_wrapper {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    padding: 12px 0;
+}
+
+.load_more_status {
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+}
+
+.btn_load_more {
+    min-width: 120px;
+}
+
+.cardheaderbox {
+    display: flex;
+    gap: 12px;
+    padding: 5px;
+}
+
+.cardbodybox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+.loadMoreNoResult {
+    color: #334155;
+    background: #f8fafc;
+    border: 1px dashed #94a3b8;
+}
+        ]]></style>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.pageSize = 5;
+
+scwin.displayFormatter = function(value) {
+    var rowIndex = 0;
+    var comp = $p.getComponentById(this.callerId);
+    var generator = comp && comp.getGenerator ? comp.getGenerator() : null;
+
+    if (generator && generator.getUserData) {
+        rowIndex = generator.getUserData("rowIndex");
+    }
+
+    return Number(rowIndex || 0) + 1;
+};
+
+scwin.adaptiveFormatter = function(info) {
+    var width = info && info.width !== undefined ? info.width : arguments[0];
+
+    if (width < 768) {
+        this.addClass("loadMore_mobile");
+    } else {
+        this.removeClass("loadMore_mobile");
+    }
+};
+
+scwin.onadaptivechange = function() {
+    console.log("onadaptivechange Activate Check");
+};
+
+scwin.textFormatter = function(val) {
+    return "[" + val + "]";
+};
+
+scwin.setTextboxLabel = function(component, value) {
+    if (!component) {
+        return;
+    }
+
+    if (component.setLabel) {
+        component.setLabel(value);
+    } else if (component.setValue) {
+        component.setValue(value);
+    }
+};
+
+scwin.getViewRowCount = function(result) {
+    if (result && typeof result.newRowCount === "number") {
+        return result.newRowCount;
+    }
+
+    if (civ_test && civ_test.getViewRowCount) {
+        return civ_test.getViewRowCount();
+    }
+
+    return 0;
+};
+
+scwin.updateLoadMoreStatus = function(result) {
+    var total = dlt_comp && dlt_comp.getRowCount ? dlt_comp.getRowCount() : 0;
+    var viewRowCount = scwin.getViewRowCount(result);
+
+    viewRowCount = Math.min(viewRowCount, total);
+    scwin.setTextboxLabel(tbx_loadMoreStatus, "표시 " + viewRowCount + " / 전체 " + total + " (pageSize " + scwin.pageSize + ")");
+
+    if (btn_loadMore && btn_loadMore.setDisabled) {
+        btn_loadMore.setDisabled(viewRowCount >= total);
+    }
+    if (btn_loadMore20 && btn_loadMore20.setDisabled) {
+        btn_loadMore20.setDisabled(viewRowCount >= total);
+    }
+};
+
+scwin.updateLoadMoreStatusSoon = function(result) {
+    setTimeout(function() {
+        scwin.updateLoadMoreStatus(result);
+    }, 0);
+};
+
+scwin.getSampleData = function() {
+    return [
+        {
+            "complainType": "고충민원",
+            "complainNo": "101-2025-1-000001",
+            "applicantName": "홍길동",
+            "statusCode": 2,
+            "statusLabel": "처리완료",
+            "receivedAt": "2025-01-01 22:34:11",
+            "departmentName": "민원처리과",
+            "processStatus": 0
+        },
+        {
+            "complainType": "일반민원",
+            "complainNo": "101-2025-1-000002",
+            "applicantName": "김영희",
+            "statusCode": 2,
+            "statusLabel": "처리완료",
+            "receivedAt": "2025-01-07 06:39:35",
+            "departmentName": "행정지원과",
+            "processStatus": 1
+        },
+        {
+            "complainType": "생활불편",
+            "complainNo": "101-2025-1-000003",
+            "applicantName": "이철수",
+            "statusCode": 0,
+            "statusLabel": "접수중",
+            "receivedAt": "2025-01-19 05:01:32",
+            "departmentName": "복지정책과",
+            "processStatus": 0
+        },
+        {
+            "complainType": "교통불편",
+            "complainNo": "101-2025-1-000004",
+            "applicantName": "박민수",
+            "statusCode": 0,
+            "statusLabel": "접수중",
+            "receivedAt": "2025-01-19 07:28:12",
+            "departmentName": "생활민원과",
+            "processStatus": 2
+        },
+        {
+            "complainType": "환경민원",
+            "complainNo": "101-2025-1-000005",
+            "applicantName": "최서연",
+            "statusCode": 1,
+            "statusLabel": "진행중",
+            "receivedAt": "2025-01-10 10:12:43",
+            "departmentName": "환경관리과",
+            "processStatus": 1
+        },
+        {
+            "complainType": "복지상담",
+            "complainNo": "101-2025-1-000006",
+            "applicantName": "윤지호",
+            "statusCode": 1,
+            "statusLabel": "진행중",
+            "receivedAt": "2025-01-11 18:21:12",
+            "departmentName": "복지정책과",
+            "processStatus": 1
+        },
+        {
+            "complainType": "세무문의",
+            "complainNo": "101-2025-1-000007",
+            "applicantName": "강하준",
+            "statusCode": 0,
+            "statusLabel": "접수중",
+            "receivedAt": "2025-01-12 09:04:51",
+            "departmentName": "세무과",
+            "processStatus": 0
+        },
+        {
+            "complainType": "주택민원",
+            "complainNo": "101-2025-1-000008",
+            "applicantName": "오유진",
+            "statusCode": 2,
+            "statusLabel": "처리완료",
+            "receivedAt": "2025-01-13 16:48:39",
+            "departmentName": "주택과",
+            "processStatus": 2
+        },
+        {
+            "complainType": "고충민원",
+            "complainNo": "101-2025-1-000009",
+            "applicantName": "문서준",
+            "statusCode": 1,
+            "statusLabel": "진행중",
+            "receivedAt": "2025-01-14 11:24:02",
+            "departmentName": "민원처리과",
+            "processStatus": 1
+        },
+        {
+            "complainType": "일반민원",
+            "complainNo": "101-2025-1-000010",
+            "applicantName": "임수빈",
+            "statusCode": 2,
+            "statusLabel": "처리완료",
+            "receivedAt": "2025-01-15 13:25:10",
+            "departmentName": "행정지원과",
+            "processStatus": 2
+        },
+        {
+            "complainType": "생활불편",
+            "complainNo": "101-2025-1-000011",
+            "applicantName": "한민서",
+            "statusCode": 0,
+            "statusLabel": "접수중",
+            "receivedAt": "2025-01-16 08:33:21",
+            "departmentName": "생활민원과",
+            "processStatus": 0
+        },
+        {
+            "complainType": "교통불편",
+            "complainNo": "101-2025-1-000012",
+            "applicantName": "신건우",
+            "statusCode": 1,
+            "statusLabel": "진행중",
+            "receivedAt": "2025-01-17 15:02:44",
+            "departmentName": "교통행정과",
+            "processStatus": 1
+        }
+    ];
+};
+
+scwin.getAppendData = function() {
+    return [
+        {
+            "complainType": "append민원",
+            "complainNo": "201-2026-1-000001",
+            "applicantName": "append1",
+            "statusCode": 0,
+            "statusLabel": "접수중",
+            "receivedAt": "2026-07-08 09:00:00",
+            "departmentName": "append부서",
+            "processStatus": 0
+        },
+        {
+            "complainType": "append민원",
+            "complainNo": "201-2026-1-000002",
+            "applicantName": "append2",
+            "statusCode": 1,
+            "statusLabel": "진행중",
+            "receivedAt": "2026-07-08 10:00:00",
+            "departmentName": "append부서",
+            "processStatus": 1
+        },
+        {
+            "complainType": "append민원",
+            "complainNo": "201-2026-1-000003",
+            "applicantName": "append3",
+            "statusCode": 2,
+            "statusLabel": "처리완료",
+            "receivedAt": "2026-07-08 11:00:00",
+            "departmentName": "append부서",
+            "processStatus": 2
+        }
+    ];
+};
+
+scwin.getInsertData = function() {
+    return [
+        {
+            "complainType": "insertJSON",
+            "complainNo": "301-2026-1-000001",
+            "applicantName": "insertJSON",
+            "statusCode": 1,
+            "statusLabel": "진행중",
+            "receivedAt": "2026-07-09 09:30:00",
+            "departmentName": "insertJSON부서",
+            "processStatus": 1
+        }
+    ];
+};
+
+scwin.getCurrentRowIndex = function() {
+    var total = dlt_comp && dlt_comp.getRowCount ? dlt_comp.getRowCount() : 0;
+    var rowIndex = civ_test && typeof civ_test._startRow === "number" ? civ_test._startRow : 0;
+
+    if (total === 0) {
+        return -1;
+    }
+
+    return Math.min(rowIndex, total - 1);
+};
+
+scwin.dlt_comp_oncelldatachange = function(info) {
+    console.log("+++ dlt_comp oncelldatachange Activate +++");
+    console.log("info : " + info);
+};
+
+scwin.dlt_comp_oninsertrow = function(info) {
+    console.log("+++ dlt_comp oninsertRow Activate +++");
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.dlt_comp_onremoverow = function(info) {
+    console.log("+++ dlt_comp onremoverow Activate +++");
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.dlt_comp_ondataload = function() {
+    console.log("+++ dlt_comp ondataload Activate +++");
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.dlt_comp_onbeforecelldatachange = function(info) {
+    console.log("+++ dlt_comp onbeforecelldatachange Activate +++");
+};
+
+scwin.sbx_processStatus_onviewchange = function(info) {
+    console.log("+++ sbx_progressStatus onviewchange Activate +++");
+};
+
+scwin.btn_progress_onclick = function(e) {
+    console.log("btn_progress onClick Activate");
+};
+
+scwin.onpageload = function() {
+    var css = document.createElement("link");
+    css.href = "/spall/cursor/cardView/base.css";
+    css.type = "text/css";
+    css.rel = "stylesheet";
+    document.head.appendChild(css);
+
+    dlt_comp.options.saveRemovedData = false;
+    dlt_comp.setJSON(scwin.getSampleData());
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_addRow_onclick = function(e) {
+    console.log("addRow Click");
+    var idx = dlt_comp.insertRow();
+    var data = {
+        "complainType": "추가민원",
+        "complainNo": "102-1111-9-000050",
+        "applicantName": "지윤",
+        "statusCode": 2,
+        "statusLabel": "처리완료",
+        "receivedAt": "2026-12-31 23:59:59",
+        "departmentName": "행정지원과",
+        "processStatus": 0
+    };
+
+    dlt_comp.setRowJSON(idx, data, true);
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_removeRow_onclick = function(e) {
+    console.log("remove Click");
+    dlt_comp.removeRow();
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_removeAll_onclick = function(e) {
+    console.log("removeAll Click");
+    dlt_comp.removeAll();
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_setJSON_onclick = function(e) {
+    dlt_comp.setJSON(scwin.getSampleData());
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_setJSONAppend_onclick = function(e) {
+    dlt_comp.setJSON(scwin.getAppendData(), true);
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_insertJSON_onclick = function(e) {
+    dlt_comp.insertJSON(0, scwin.getInsertData());
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_setRowJSON_onclick = function(e) {
+    var idx = scwin.getCurrentRowIndex();
+
+    if (idx < 0) {
+        return;
+    }
+
+    dlt_comp.setRowJSON(idx, {
+        "complainType": "setRowJSON",
+        "complainNo": "999-9999-9-999999",
+        "applicantName": "setRowJSON",
+        "statusCode": 2,
+        "statusLabel": "처리완료",
+        "receivedAt": "2026-12-31 23:59:59",
+        "departmentName": "setRowJSON 테스트",
+        "processStatus": 0
+    }, true);
+};
+
+scwin.btn_setData_onclick = function(e) {
+    var data = [
+        "일반민원", "123-1234-1-123456", "setData", 1, "처리완료", "2026-07-01 10:00:00", "setData부서", 0,
+        "진상민원", "123-1234-1-123457", "setData", 2, "처리완료", "2026-07-02 10:00:00", "setData부서", 1,
+        "우수민원", "123-1234-1-123458", "setData", 2, "처리완료", "2026-07-03 10:00:00", "setData부서", 0,
+        "고충민원", "123-1234-1-123459", "setData", 1, "처리완료", "2026-07-04 10:00:00", "setData부서", 1,
+        "주택민원", "123-1234-1-123460", "setData", 0, "처리완료", "2026-07-05 10:00:00", "setData부서", 2,
+        "대출민원", "123-1234-1-123461", "setData", 1, "처리완료", "2026-07-06 10:00:00", "setData부서", 2,
+        "주식민원", "123-1234-1-123462", "setData", 0, "처리완료", "2026-07-07 10:00:00", "setData부서", 1
+    ];
+
+    dlt_comp.setData(data);
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_setRowData_onclick = function(e) {
+    var idx = scwin.getCurrentRowIndex();
+
+    if (idx < 0) {
+        return;
+    }
+
+    dlt_comp.setRowData(idx, ["추가민원", "333-3333-1-333333", "setRowData", 2, "처리완료", "2026-07-07 07:07:07", "setData부서", 2], true);
+};
+
+scwin.btn_setCellData_onclick = function(e) {
+    var row = scwin.getCurrentRowIndex();
+
+    if (row < 0) {
+        return;
+    }
+
+    dlt_comp.setCellData(row, 0, "setCellData 추가");
+};
+
+scwin.btn_removeRanges_onclick = function(e) {
+    var start = scwin.getCurrentRowIndex();
+    var total = dlt_comp.getRowCount();
+
+    if (start < 0) {
+        return;
+    }
+
+    dlt_comp.removeRange(start, Math.min(start + 4, total - 1));
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_removeRows_onclick = function(e) {
+    var total = dlt_comp.getRowCount();
+
+    if (total < 2) {
+        console.log("removeRows requires at least 2 rows. current: " + total);
+        return;
+    }
+
+    dlt_comp.removeRows([0, 1]);
+    scwin.updateLoadMoreStatusSoon();
+};
+
+scwin.btn_loadMore_onclick = function(e) {
+    var result = civ_test.loadMore();
+    scwin.updateLoadMoreStatus(result);
+};
+
+scwin.btn_loadMore20_onclick = function(e) {
+    var result = civ_test.loadMore(10);
+    scwin.updateLoadMoreStatus(result);
+};
+        ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group id="grp_wrap" style="padding: 10px;">
+            <xf:group id="grp_title" class="titbox">
+                <w2:textbox tagname="h2" style="height:23px;" id="tbx_title" label="CardView loadMore + noResultMessage Sample"></w2:textbox>
+            </xf:group>
+            <xf:group id="grp_testBtn2" class="titbox">
+                <xf:group style="padding-right: 10px;" class="rt">
+                    <xf:trigger id="btn_setJSON" type="button" ev:onclick="scwin.btn_setJSON_onclick" class="btn_cm">
+                        <xf:label><![CDATA[setJSON(data)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_setJSONAppend" type="button" ev:onclick="scwin.btn_setJSONAppend_onclick" class="btn_cm">
+                        <xf:label><![CDATA[setJSON(data, true)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_insertJSON" type="button" ev:onclick="scwin.btn_insertJSON_onclick" class="btn_cm">
+                        <xf:label><![CDATA[insertJSON(0, data)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_addRow" type="button" ev:onclick="scwin.btn_addRow_onclick" class="btn_cm">
+                        <xf:label><![CDATA[insertRow()]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_setRowJSON" type="button" ev:onclick="scwin.btn_setRowJSON_onclick" class="btn_cm">
+                        <xf:label><![CDATA[setRowJSON(row, data)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_setData" type="button" class="btn_cm" ev:onclick="scwin.btn_setData_onclick">
+                        <xf:label><![CDATA[setData(data)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_setRowData" type="button" class="btn_cm" ev:onclick="scwin.btn_setRowData_onclick">
+                        <xf:label><![CDATA[setRowData(row, data)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_setCellData" type="button" class="btn_cm" ev:onclick="scwin.btn_setCellData_onclick">
+                        <xf:label><![CDATA[setCellData(row, 0, value)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_removeRanges" type="button" class="btn_cm" ev:onclick="scwin.btn_removeRanges_onclick">
+                        <xf:label><![CDATA[removeRange(row, row + 4)]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_removeRows" type="button" class="btn_cm" ev:onclick="scwin.btn_removeRows_onclick">
+                        <xf:label><![CDATA[removeRows([0, 1])]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_removeRow" type="button" ev:onclick="scwin.btn_removeRow_onclick" class="btn_cm">
+                        <xf:label><![CDATA[removeRow()]]></xf:label>
+                    </xf:trigger>
+                    <xf:trigger id="btn_removeAll" type="button" class="btn_cm" ev:onclick="scwin.btn_removeAll_onclick">
+                        <xf:label><![CDATA[removeAll()]]></xf:label>
+                    </xf:trigger>
+                </xf:group>
+            </xf:group>
+            <xf:group id="grp3" style="margin-bottom: 15px;">
+                <xf:group id="grp_card2" style="width:100%;">
+                    <w2:cardView id="civ_test" dataList="data:dlt_comp" adaptive="true" readOnly="false"
+                        adaptiveThreshold="768:1,1024:2,1280:3" 
+                        
+                        pageSize="5" 
+                        usePageList="false" 
+                        useLoadMore="true"
+
+                        noResultMessageVisible="true" 
+                        noResultMessage="removeAll()로 데이터가 없습니다. setJSON 또는 데이터 추가를 눌러 복원하세요."
+                        noResultMessageClass="loadMoreNoResult" 
+                        noResultMessageStyle="margin:12px 0;padding:18px;text-align:center;"
+
+                        adaptiveFormatter="scwin.adaptiveFormatter" ev:onadaptivechange="scwin.onadaptivechange">
+                        <w2:columnInfo>
+                            <w2:header>
+                                <w2:column componentId="tbx_type" colId="complainType"/>
+                                <w2:column componentId="tbx_no" colId="complainNo"/>
+                                <w2:column componentId="tbx_name" colId="applicantName"/>
+                                <w2:column componentId="sbx_status" colId="processStatus"/>
+                            </w2:header>
+                            <w2:body>
+                                <w2:column componentId="tbx_at" colId="receivedAt"/>
+                                <w2:column componentId="tbx_depart" colId="departmentName"/>
+                                <w2:column componentId="sbx_processStatus" colId="statusCode"/>
+                            </w2:body>
+                        </w2:columnInfo>
+                        <w2:header id="header1">
+                            <xf:group id="grp_headerContent" class="cardheaderbox">
+                                <xf:group id="grp_num" style="padding:10px;">
+                                    <w2:textbox id="tbx_num" style="width: 10px;height: 23px;" label=""
+                                        displayFormatter="scwin.displayFormatter">
+                                    </w2:textbox>
+                                </xf:group>
+                                <xf:group id="grp_cont">
+                                    <xf:group>
+                                        <w2:textbox id="tbx_type" style="width: 150px;height: 23px;" ref=""
+                                            displayFormatter="scwin.textFormatter" tagname="h3">
+                                        </w2:textbox>
+                                        <w2:textbox id="tbx_no" ref="" style="width: 150px;height: 23px;"></w2:textbox>
+                                        <w2:textbox id="tbx_name" label="" ref="" style="width: 150px;height: 23px;"></w2:textbox>
+                                    </xf:group>
+                                </xf:group>
+                                <xf:group id="grp_status" style="margin: auto 0;">
+                                    <xf:select1 submenuSize="auto" appearance="minimal" disabledClass="w2selectbox_disabled" chooseOption=""
+                                        style="width: 100px;height: 28px;" disabled="false" id="sbx_status" allOption="" direction="auto"
+                                        ref="" textAlign="">
+                                        <xf:choices>
+                                            <xf:item>
+                                                <xf:label><![CDATA[접수중]]></xf:label>
+                                                <xf:value><![CDATA[0]]></xf:value>
+                                            </xf:item>
+                                            <xf:item>
+                                                <xf:label><![CDATA[진행중]]></xf:label>
+                                                <xf:value><![CDATA[1]]></xf:value>
+                                            </xf:item>
+                                            <xf:item>
+                                                <xf:label><![CDATA[처리완료]]></xf:label>
+                                                <xf:value><![CDATA[2]]></xf:value>
+                                            </xf:item>
+                                        </xf:choices>
+                                    </xf:select1>
+                                </xf:group>
+                            </xf:group>
+                        </w2:header>
+                        <w2:cBody id="cBody1">
+                            <xf:group id="grp_body" class="cardbodybox">
+                                <xf:group id="grp_bodyContent" style="margin-bottom:10px;">
+                                    <xf:group style="display:flex;">
+                                        <w2:textbox label="접수일자 : " style="width: 70px;height: 23px;"></w2:textbox>
+                                        <w2:textbox id="tbx_at" ref="" style="width: 200px;height: 23px;"></w2:textbox>
+                                    </xf:group>
+                                    <xf:group style="display:flex;">
+                                        <w2:textbox label="담당부서 : " style="width: 70px;height: 23px;"></w2:textbox>
+                                        <w2:textbox id="tbx_depart" label="" ref="" style="width: 150px;height: 23px;"></w2:textbox>
+                                    </xf:group>
+                                    <xf:select1 submenuSize="auto" appearance="minimal" disabledClass="w2selectbox_disabled"
+                                        chooseOption="true" chooseOptionLabel="선택하세요" style="width: 148px;height: 28px;" disabled="false"
+                                        id="sbx_processStatus" allOption="" direction="auto" ref="" textAlign="left"
+                                        ev:onviewchange="scwin.sbx_processStatus_onviewchange">
+                                        <xf:choices>
+                                            <xf:itemset nodeset="data:dlt_node">
+                                                <xf:label ref="label"></xf:label>
+                                                <xf:value ref="value"></xf:value>
+                                            </xf:itemset>
+                                        </xf:choices>
+                                    </xf:select1>
+                                </xf:group>
+                                <xf:group id="grp_btnwrap" style="display:flex;flex-direction:column;gap:5px;">
+                                    <xf:group id="grp_btnProgress">
+                                        <w2:button id="btn_progress" style="width: 100%;" label="진행상황 조회" class="btn_cm"
+                                            ev:onclick="scwin.btn_progress_onclick">
+                                        </w2:button>
+                                    </xf:group>
+                                    <xf:group id="grp_btnEx" style="display:flex;gap:5px;">
+                                        <w2:button id="btn_fix" style="width: 100%;" label="보정하기" class="btn_cm"></w2:button>
+                                        <w2:button id="btn_req" style="width: 100%;" label="증빙요청" class="btn_cm"></w2:button>
+                                        <w2:button id="btn_cancel" style="width: 100%;" label="취하하기" class="btn_cm"></w2:button>
+                                    </xf:group>
+                                </xf:group>
+                            </xf:group>
+                        </w2:cBody>
+                        <w2:pageList pageSize="10" displayButtonType="display" id="" displayFormat="#" style="" adaptiveThreshold="786"></w2:pageList>
+                    </w2:cardView>
+                </xf:group>
+            </xf:group>
+            <xf:group id="grp_loadMore" class="load_more_wrapper">
+                <w2:textbox id="tbx_loadMoreStatus" class="load_more_status" label="표시 0 / 전체 0 (pageSize 5)"></w2:textbox>
+                <xf:trigger id="btn_loadMore" type="button" class="btn_cm btn_load_more" ev:onclick="scwin.btn_loadMore_onclick">
+                    <xf:label><![CDATA[loadMore()]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btn_loadMore20" type="button" class="btn_cm" ev:onclick="scwin.btn_loadMore20_onclick">
+                    <xf:label><![CDATA[loadMore(10)]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2006/xforms">
+<head>
+    <title>WAEA-1075 서버시간 비정상 응답 검증</title>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataMap id="dataMap1">
+                <w2:keyInfo>
+                    <w2:key id="badUrl" name="badUrl" dataType="text"></w2:key>
+                </w2:keyInfo>
+            </w2:dataMap>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.log = function(msg) {
+        var cur = txa_log.getValue();
+        txa_log.setValue(cur ? cur + "\n" + msg : msg);
+    };
+
+    // yyyyMMddHHmmssSSS 를 읽기 쉬운 형태로 변환
+    scwin._fmt = function(s) {
+        if (!s || s.length < 14) {
+            return String(s);
+        }
+        return s.substring(0, 4) + "-" + s.substring(4, 6) + "-" + s.substring(6, 8) + " "
+             + s.substring(8, 10) + ":" + s.substring(10, 12) + ":" + s.substring(12, 14);
+    };
+
+    // yyyyMMddHHmmssSSS 를 밀리초로 변환
+    scwin._toMs = function(s) {
+        if (!s || s.length < 14) {
+            return NaN;
+        }
+        var d = new Date(Number(s.substring(0, 4)), Number(s.substring(4, 6)) - 1, Number(s.substring(6, 8)),
+                         Number(s.substring(8, 10)), Number(s.substring(10, 12)), Number(s.substring(12, 14)),
+                         Number(s.substring(14, 17) || 0));
+        return d.getTime();
+    };
+
+    // 서버시간 동기화 1회 실행. resource 를 주면 그 경로로 요청한다.
+    scwin._sync = async function(resource) {
+        var promiseObj = resource ? $p.updateServerTime("yyyyMMddHHmmssSSS", resource)
+                                  : $p.updateServerTime("yyyyMMddHHmmssSSS");
+        try {
+            var ret = await promiseObj;
+            if (typeof ret === "undefined") {
+                // 다른 서버시간 요청이 진행 중이어서 이번 호출은 건너뛴 상태
+                return { done: false, skipped: true };
+            }
+            return { done: true, skipped: false, value: ret };
+        } catch (e) {
+            return { done: false, skipped: false };
+        }
+    };
+
+    scwin.onpageload = function() {
+        //dataMap1.set("badUrl", "/WAEA-1075/session_expired.html");
+		dataMap1.set("badUrl", "updateServerTime_WAEA-1075_(WSQ-6435)_session_expired.html");
+        scwin.log("WAEA-1075 서버시간 비정상 응답 검증 샘플");
+        scwin.log("현재 서버시간 : " + $p.getCurrentServerDate("yyyy-MM-dd HH:mm:ss"));
+        scwin.log("[전체 검증 실행] 을 누르면 3개 항목을 자동 판정합니다.");
+    };
+
+    scwin.btn_runAll_onclick = async function() {
+        txa_log.setValue("");
+        var badUrl = dataMap1.get("badUrl");
+        scwin.log("=== WAEA-1075 검증 시작 ===");
+        scwin.log("비정상 응답 URL : " + badUrl);
+        scwin.log("");
+
+        var r1 = await scwin._sync(null);
+        if (r1.skipped) {
+            scwin.log("다른 서버시간 요청이 진행 중입니다. 잠시 후 다시 실행해 주십시오.");
+            return;
+        }
+        if (!r1.done) {
+            scwin.log("1. 정상 동기화 : 실패");
+            scwin.log("   서버시간 서비스(serverTime.wq) 응답을 먼저 확인해 주십시오.");
+            return;
+        }
+        scwin.log("1. 정상 동기화 : 성공");
+        var before = $p.getCurrentServerDate("yyyyMMddHHmmssSSS");
+        scwin.log("   동기화 후 서버시간 : " + scwin._fmt(before));
+        scwin.log("");
+
+        var r2 = await scwin._sync(badUrl);
+        if (r2.skipped) {
+            scwin.log("다른 서버시간 요청이 진행 중입니다. 잠시 후 다시 실행해 주십시오.");
+            return;
+        }
+        scwin.log("2. 비정상 응답 동기화 : " + (r2.done ? "성공으로 처리됨" : "실패로 처리됨"));
+        var after = $p.getCurrentServerDate("yyyyMMddHHmmssSSS");
+        scwin.log("   시도 후 서버시간 : " + scwin._fmt(after));
+        scwin.log("");
+
+        var t1 = (r2.done === false);
+        var t2 = (String(after).substring(0, 4) !== "1970");
+        var gap = Math.abs(scwin._toMs(after) - scwin._toMs(before));
+        var t3 = (gap < 10000);
+
+        scwin.log("--- 판정 ---");
+        scwin.log((t1 ? "PASS" : "FAIL") + " 1) 날짜 형식이 아닌 응답이 동기화 실패로 처리된다");
+        scwin.log((t2 ? "PASS" : "FAIL") + " 2) 시도 후 서버시간이 1970 으로 바뀌지 않는다");
+        scwin.log((t3 ? "PASS" : "FAIL") + " 3) 시도 전후 서버시간 차이가 10초 미만이다 (보정값 유지, 실측 "
+            + (isNaN(gap) ? "-" : gap) + "ms)");
+        scwin.log("");
+        scwin.log("=== 결과 : " + ((t1 && t2 && t3) ? "PASS" : "FAIL") + " ===");
+        if (!(t1 && t2 && t3)) {
+            scwin.log("보정값이 오염된 상태이면 [정상 동기화] 를 눌러 복구할 수 있습니다.");
+        }
+    };
+
+    scwin.btn_showTime_onclick = function() {
+        scwin.log("현재 서버시간 : " + $p.getCurrentServerDate("yyyy-MM-dd HH:mm:ss")
+            + " / 브라우저 시간 : " + $p.getFormattedDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
+    };
+
+    scwin.btn_syncNormal_onclick = async function() {
+        var r = await scwin._sync(null);
+        if (r.skipped) {
+            scwin.log("정상 동기화 : 다른 요청이 진행 중이어서 건너뛰었습니다.");
+            return;
+        }
+        scwin.log("정상 동기화 : " + (r.done ? "성공" : "실패")
+            + " / 서버시간 " + $p.getCurrentServerDate("yyyy-MM-dd HH:mm:ss"));
+    };
+
+    scwin.btn_syncBad_onclick = async function() {
+        var badUrl = dataMap1.get("badUrl");
+        var r = await scwin._sync(badUrl);
+        if (r.skipped) {
+            scwin.log("비정상 응답 동기화 : 다른 요청이 진행 중이어서 건너뛰었습니다.");
+            return;
+        }
+        scwin.log("비정상 응답 동기화 : " + (r.done ? "성공으로 처리됨" : "실패로 처리됨")
+            + " / 서버시간 " + $p.getCurrentServerDate("yyyy-MM-dd HH:mm:ss"));
+    };
+
+    scwin.btn_clearLog_onclick = function() {
+        txa_log.setValue("");
+    };
+    ]]></script>
+    <style type="text/css"><![CDATA[
+    .wrap { padding: 16px; }
+    .wrap .w2group { background-color: transparent; }
+    .title { font-size: 16px; font-weight: bold; }
+    .desc { font-size: 12px; color: #444444; }
+    .row { margin-top: 10px; }
+    .label { font-size: 12px; }
+    ]]></style>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group class="wrap">
+        <w2:textbox class="title" label="WAEA-1075 서버시간 비정상 응답 검증"></w2:textbox>
+        <xf:group class="row">
+            <w2:textbox class="desc" label="서버시간 동기화 요청이 HTTP 200 으로 날짜 형식이 아닌 본문을 반환하는 상황을 재현합니다."></w2:textbox>
+            <w2:textbox class="desc" label="아래 URL 은 세션 만료 후 로그인 페이지가 반환되는 상황을 대신합니다."></w2:textbox>
+        </xf:group>
+        <xf:group class="row">
+            <w2:textbox class="label" label="비정상 응답 URL"></w2:textbox>
+            <xf:input id="ipt_badUrl" ref="data:dataMap1.badUrl" style="width:420px;"></xf:input>
+        </xf:group>
+        <xf:group class="row">
+            <xf:trigger id="btn_runAll" type="button" ev:onclick="scwin.btn_runAll_onclick">
+                <xf:label><![CDATA[전체 검증 실행]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_showTime" type="button" ev:onclick="scwin.btn_showTime_onclick">
+                <xf:label><![CDATA[현재 서버시간 조회]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_syncNormal" type="button" ev:onclick="scwin.btn_syncNormal_onclick">
+                <xf:label><![CDATA[정상 동기화]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_syncBad" type="button" ev:onclick="scwin.btn_syncBad_onclick">
+                <xf:label><![CDATA[비정상 응답 동기화]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_clearLog" type="button" ev:onclick="scwin.btn_clearLog_onclick">
+                <xf:label><![CDATA[로그 지우기]]></xf:label>
+            </xf:trigger>
+        </xf:group>
+        <xf:group class="row">
+            <w2:textarea id="txa_log" style="width:760px; height:320px;"></w2:textarea>
+        </xf:group>
+    </xf:group>
+</body>
+</html>

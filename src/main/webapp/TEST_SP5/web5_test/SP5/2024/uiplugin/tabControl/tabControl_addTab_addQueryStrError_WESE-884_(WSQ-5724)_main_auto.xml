@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="">
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	window.loadcheck = 0;
+	console.log("mainTab.xml onpageload 실행");
+	scwin.add();
+	console.log(scwin.add());
+};
+
+
+
+scwin.add = async function(){
+	menuCd = "test";
+	tabObj = {closable:true, label:'부대상황보고관리'}
+	contObj = {
+		frameMode : "wframePreload",
+		scope : true,
+		src : "tabControl_addTab_addQueryStrError_WESE-884_(WSQ-5724)_sub.xml?menuCd=OMDUnitSitrepMg", 
+		//   /_wpack_/subTab.js?menuCd=OMDUnitSitrepMg 해당 경로로 적용 시 정상적으로 실행 됨
+		alwayDraw:false,
+		title:menuCd,
+		dataObject : {
+			type:'json',
+			name:'param'
+		}
+	};
+
+	var ret = await tabControl1.addTab(menuCd, tabObj, contObj);
+} 
+
+
+	scwin.checkVal1 = function() {
+		//alert(window.loadcheck)
+		return window.loadcheck == 1;
+	}
+	scwin.checkVal2 = function() {
+		return WebSquare.wUnit.getDomById('tabControl1_contents_test_body_wq_uuid_4') !== null;
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:tabControl id="tabControl1" alwaysDraw="false" style="width:500px;height:402px;">
+    	</w2:tabControl>
+    </body>
+</html>

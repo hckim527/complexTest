@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script type="text/javascript" lazy="false"><![CDATA[
+// WAEA-912 : UDC 내부 화면.
+// wframe(iframe) 과 달리 메인 문서 안에 그대로 렌더되므로 내부 탐색 경로가 다르다.
+// 탭 대상은 udcFirst → udcTextarea → udcLast 세 개뿐이어야 한다.
+// UDC 는 컴포넌트 스코프라 window[id] 로 잡히지 않는다. 식별자를 직접 쓴다.
+scwin.paint = function(comp, text) {
+    if (comp && typeof comp.setValue === "function") { comp.setValue(text); }
+};
+
+scwin.onpageload = function() {
+    window.WAEA_912_UDC_READY = true;
+    scwin.paint(udcReadOnlyFirst, "skip · readOnly");
+    scwin.paint(udcFirst,         "1번째 · udcFirst");
+    scwin.paint(udcTextarea,      "2번째 · udcTextarea");
+    scwin.paint(udcLast,          "3번째 · udcLast");
+    scwin.paint(udcReadOnlyLast,  "skip · readOnly");
+};
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:input id="udcReadOnlyFirst" style="position:absolute;left:20px;top:20px;width:190px;height:24px;" readOnly="true"></xf:input>
+        <xf:input id="udcFirst" style="position:absolute;left:20px;top:55px;width:190px;height:24px;"></xf:input>
+        <xf:textarea id="udcTextarea" style="position:absolute;left:20px;top:90px;width:190px;height:42px;"></xf:textarea>
+        <xf:input id="udcLast" style="position:absolute;left:20px;top:145px;width:190px;height:24px;"></xf:input>
+        <xf:input id="udcReadOnlyLast" style="position:absolute;left:230px;top:145px;width:190px;height:24px;" readOnly="true"></xf:input>
+    </body>
+</html>

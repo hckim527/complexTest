@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    $p.getFormattedDate(new Date(1626073377000), "yyyy년 MM월 dd일 (E) HH:mm:ss");
+    console.log("Date 오전 9시 전 : " + $p.getFormattedDate(new Date(1626047977000), "yyyy년 MM월 dd일 (E) HH:mm:ss"));
+    console.log("Date 오전 9시 후 : " + $p.getFormattedDate(new Date(1626048077000), "yyyy년 MM월 dd일 (E) HH:mm:ss"));
+    var temp = "Date 오전 9시 후 : " + $p.getFormattedDate(new Date(1626048077000), "yyyy년 MM월 dd일 (E) HH:mm:ss")
+	window.log = temp.indexOf('월');
+};
+scwin.onpageunload = function() {};
+scwin.checkVal = function() {
+	return window.log > 0;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    localStorage.removeItem("log");
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    </body>
+</html>
+ 

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <xf:model>
+        <w2:dataCollection>
+            <w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+                <w2:columnInfo>
+                    <w2:column id="status" name="Status" dataType="text"></w2:column>
+                    <w2:column id="amount" name="Amount" dataType="number"></w2:column>
+                    <w2:column id="balance" name="Balance" dataType="number"></w2:column>
+                    <w2:column id="name" name="Name" dataType="text"></w2:column>
+                </w2:columnInfo>
+            </w2:dataList>
+        </w2:dataCollection>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+    scwin.log = function(msg) {
+        var cur = txa_log.getValue();
+        var ts = new Date().toLocaleTimeString();
+        var line = "[" + ts + "] " + msg;
+        txa_log.setValue(cur ? cur + "\n" + line : line);
+    };
+
+    scwin.onpageload = function() {
+        scwin.log("WAEA-812 gridView exprColor/exprBackground 보존 테스트");
+        scwin.log("- 첫 화면에 amount column의 color/bg가 즉시 적용되어야 함");
+        scwin.log("- cell click 시 color는 유지, bg는 focus 색 (selectedCellColor) 으로 변경");
+        scwin.log("- 다른 cell click 시 이전 cell의 color/bg가 복원되어야 함");
+
+        var arr = [];
+        for (var i = 0; i < 30; i++) {
+            arr.push({
+                status: i % 3 === 0 ? "A" : (i % 3 === 1 ? "R" : "P"),
+                amount: i % 4 === 0 ? 20000 : 1000 + i * 100,
+                balance: i % 2 === 0 ? -((i + 1) * 50) : (i + 1) * 50,
+                name: "Item " + (i + 1)
+            });
+        }
+        dataList1.setJSON(arr);
+    };
+
+    scwin.btn_verify_onclick = function() {
+        scwin.log("=== 첫 화면 렌더링 검증 ===");
+        var pass = 0;
+        var fail = 0;
+
+        function getTD(trIndex, colId) {
+            var colIdx = grd1.tdIdList.indexOf(colId);
+            if (colIdx < 0) return null;
+            return grd1._getTDByIndex(trIndex * grd1.oneRowDataLength + colIdx);
+        }
+
+        var rowCount = dataList1.getRowCount();
+        var visibleRows = grd1.lastIndex - grd1.rowIndex + 1;
+        for (var r = 0; r < rowCount && r < visibleRows; r++) {
+            var bal = Number(dataList1.getCellData(r, "balance"));
+            var amt = Number(dataList1.getCellData(r, "amount"));
+            var td = getTD(r, "amount");
+            if (!td) continue;
+
+            var expectColor = bal < 0 ? "rgb(255, 0, 0)" : "rgb(0, 0, 0)";
+            if (td.style.color === expectColor) {
+                pass++;
+            } else {
+                scwin.log("[FAIL] row" + r + " color expected " + expectColor + ", got '" + td.style.color + "'");
+                fail++;
+            }
+
+            var expectBg = amt > 10000 ? "rgb(255, 204, 204)" : "rgb(255, 255, 255)";
+            if (td.style.backgroundColor === expectBg) {
+                pass++;
+            } else {
+                scwin.log("[FAIL] row" + r + " bg expected " + expectBg + ", got '" + td.style.backgroundColor + "'");
+                fail++;
+            }
+        }
+        scwin.log("=== 검증 종료 — PASS: " + pass + ", FAIL: " + fail + " ===");
+    };
+
+    scwin.btn_focus_test_onclick = function() {
+        scwin.log("=== Focus 후 다른 cell focus 시 색상 복원 검증 ===");
+        var pass = 0;
+        var fail = 0;
+
+        function getTD(trIndex, colId) {
+            var colIdx = grd1.tdIdList.indexOf(colId);
+            if (colIdx < 0) return null;
+            return grd1._getTDByIndex(trIndex * grd1.oneRowDataLength + colIdx);
+        }
+
+        // row0의 amount (bal=-50, color=red, amt=20000, bg=#FFCCCC)
+        var td0 = getTD(0, "amount");
+        var beforeColor = td0.style.color;
+        var beforeBg = td0.style.backgroundColor;
+        scwin.log("row0 amount 초기 — color=" + beforeColor + ", bg=" + beforeBg);
+
+        // row0 amount focus
+        grd1.setFocusedCell(0, "amount");
+        scwin.log("row0 amount focus 후 — color=" + td0.style.color + ", bg=" + td0.style.backgroundColor);
+
+        // row0 의 color 는 유지되어야 함
+        if (td0.style.color === beforeColor) {
+            scwin.log("[PASS] focus 후 color 유지");
+            pass++;
+        } else {
+            scwin.log("[FAIL] focus 후 color 손실");
+            fail++;
+        }
+
+        // row1 amount focus → row0 의 color/bg 가 복원되어야 함
+        grd1.setFocusedCell(1, "amount");
+        scwin.log("row1 amount focus 후 — row0 color=" + td0.style.color + ", bg=" + td0.style.backgroundColor);
+
+        if (td0.style.color === beforeColor) {
+            scwin.log("[PASS] 다른 cell focus 후 이전 cell color 복원");
+            pass++;
+        } else {
+            scwin.log("[FAIL] 다른 cell focus 후 이전 cell color 손실 (got '" + td0.style.color + "', expected '" + beforeColor + "')");
+            fail++;
+        }
+        if (td0.style.backgroundColor === beforeBg) {
+            scwin.log("[PASS] 다른 cell focus 후 이전 cell bg 복원");
+            pass++;
+        } else {
+            scwin.log("[FAIL] 다른 cell focus 후 이전 cell bg 손실 (got '" + td0.style.backgroundColor + "', expected '" + beforeBg + "')");
+            fail++;
+        }
+
+        scwin.log("=== Focus 검증 종료 — PASS: " + pass + ", FAIL: " + fail + " ===");
+    };
+    ]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+    <xf:group id="grp_main" style="padding:10px;">
+        <xf:trigger id="btn_verify" type="button" style="width:280px;height:32px;" ev:onclick="scwin.btn_verify_onclick"><xf:label>① 첫 화면 색상 적용 검증</xf:label></xf:trigger>
+        <xf:trigger id="btn_focus_test" type="button" style="width:340px;height:32px;margin-left:8px;" ev:onclick="scwin.btn_focus_test_onclick"><xf:label>② focus 변경 시 색상 복원 검증</xf:label></xf:trigger>
+        <w2:gridView id="grd1" dataList="data:dataList1" defaultCellHeight="20" style="width:100%;height:300px;margin-top:10px;">
+            <w2:header>
+                <w2:row>
+                    <w2:column id="hd_status" inputType="text" displayMode="label" value="Status" width="80"></w2:column>
+                    <w2:column id="hd_amount" inputType="text" displayMode="label" value="Amount" width="120"></w2:column>
+                    <w2:column id="hd_balance" inputType="text" displayMode="label" value="Balance" width="100"></w2:column>
+                    <w2:column id="hd_name" inputType="text" displayMode="label" value="Name" width="120"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody>
+                <w2:row>
+                    <w2:column id="status" width="80"></w2:column>
+                    <w2:column id="amount" width="120"
+                        exprColor="iif(balance &lt; 0, '#FF0000', '#000000')"
+                        exprBackground="iif(amount > 10000, '#FFCCCC', '#FFFFFF')"></w2:column>
+                    <w2:column id="balance" width="100"></w2:column>
+                    <w2:column id="name" width="120"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+        <w2:textarea id="txa_log" style="width:100%;height:260px;margin-top:10px;font-family:monospace;font-size:13px;" readOnly="true"></w2:textarea>
+    </xf:group>
+</body>
+</html>

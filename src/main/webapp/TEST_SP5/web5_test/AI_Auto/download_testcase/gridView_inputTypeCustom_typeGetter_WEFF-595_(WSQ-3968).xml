@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="bigDecimal"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col2><![CDATA[1]]></col2>
+            				<col1><![CDATA[일]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[0]]></col2>
+            				<col1><![CDATA[이]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[0]]></col2>
+            				<col1><![CDATA[삼]]></col1>
+            			</w2:row>
+            			<w2:row>
+            				<col2><![CDATA[2]]></col2>
+            				<col1><![CDATA[사]]></col1>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList4" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="bigDecimal"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[2019]]></col1>
+            				<col2><![CDATA[1.44442342512]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2018]]></col1>
+            				<col2><![CDATA[100]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[추세제거여부]]></col1>
+            				<col2><![CDATA[0]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[4번]]></col1>
+            				<col2><![CDATA[4321.12]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.getType1 = function(info) {
+    debugger;
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var returnInfo;
+    var inputType = dataList1.getCellData(rowIndex, colIndex);
+    switch (inputType) {
+        case "0":
+            returnInfo = {
+                id: "dynamic_select_" + rowIndex + "_" + colIndex,
+                inputType: "select",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList4",
+                    label: "col1",
+                    value: "col2"
+                }
+            }
+            break;
+        case "autoComplete":
+            returnInfo = {
+                id: "dynamic_autoComplete_" + rowIndex + "_" + colIndex,
+                inputType: "autoComplete",
+                options: {
+                    viewType: "icon"
+                },
+                itemSet: {
+                    nodeset: "data:dataList4",
+                    label: "label",
+                    value: "value"
+                }
+            }
+            break;
+        case "textImage":
+            if (globalViewType) {
+                returnInfo = {
+                    id: "dynamic_textImage_" + rowIndex + "_" + colIndex,
+                    inputType: "textImage",
+                    options: {
+                        viewType: "icon",
+                        imageSrc: "/SAMPLE/W5/project/dynamic/alz.jpg",
+                        textAlign: "center"
+                    }
+                }
+            } else {
+                returnInfo = {
+                    id: "dynamic_textImage_2_" + rowIndex + "_" + colIndex,
+                    inputType: "textImage",
+                    options: {
+                        imageSrc: "/SAMPLE/W5/project/dynamic/alz.jpg",
+                        textAlign: "center"
+                    }
+                }
+            }
+            break;
+    }
+    if (returnInfo) {
+        console.log("[typeGetter] (" + rowIndex + ", " + colIndex + ") : " + returnInfo.inputType);
+    }
+    return returnInfo;
+}
+scwin.anchor1_onclick = function() {
+    gridView3.advancedExcelDownload({
+        type: 1,
+        useFooter: true,
+        useFooterData: true
+    });
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.globalViewType = true;
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView id="gridView3" style="width:253px;height:150px;left:61px;top:173px;margin-top:-110px;" scrollByColumn="false"
+    		defaultCellHeight="20" scrollByColumnAdaptive="false" dataList="data:dataList1" autoFit="allColumn">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="column3" value="name1" blockSelect="false"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="column1" value="name2" blockSelect="false"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column removeBorderStyle="false" width="70" inputType="text" style="" id="col1" value="" blockSelect="false"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column removeBorderStyle="false" width="70" inputType="" style="" id="col2" value="" blockSelect="false"
+    					displayMode="label" typeGetter="getType1">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:anchor outerDiv="false" style="width: 100px;height: 23px;margin-top:55px;margin-left:10px;" id="anchor1" ev:onclick="scwin.anchor1_onclick">
+    		<xf:label><![CDATA[엑셀다운]]></xf:label>
+    	</w2:anchor>
+	</body>
+</html>
+ 

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_screenName="gridview 샘플">
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dlt_sample1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="샘플1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="샘플2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="textImage" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1111]]></col1>
+            				<col2><![CDATA[2222]]></col2>
+            				<col3><![CDATA[sdssd]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3333]]></col1>
+            				<col2><![CDATA[4444]]></col2>
+            				<col3><![CDATA[ddd]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[5555]]></col1>
+            				<col2><![CDATA[6666]]></col2>
+            				<col3><![CDATA[ddff]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+
+
+scwin.grd_imageClick = function(rowIdx, colId, nowValue){
+    console.log("============imageClickFunction=============")
+    console.log("rowIdx : " + rowIdx, ", colID : " +  colId,", nowValue : " + nowValue)
+	window.check_nowValue = nowValue;
+    
+    let colIdx = grd_sample1.getColumnIndex("col3")
+    console.log("getCellDisplayData : "  + grd_sample1.getCellDisplayData(rowIdx, colIdx))
+    console.log("dlt_sample1의 데이터 확인 : " + dlt_sample1.getCellData(rowIdx,colIdx))
+    console.log("==========================================")
+
+
+}
+
+
+scwin.grd_sample1_onviewchange = function (info) {
+    console.log("===============onviewchange===============")
+    console.log("oldValue : " + info.oldValue)
+    console.log("newValue : " + info.newValue)
+
+};
+
+	scwin.fireDbClick = function(node){
+		if( document.createEventObject ) {
+			node.fireEvent('ondblclick') ;
+		} else if( document.createEvent ) {
+			var evt = document.createEvent('MouseEvents');
+			evt.initEvent('dblclick', true, false);
+			node.dispatchEvent(evt);
+		} else if (typeof node.ondblclick == 'function' ) {
+			node.ondblclick();
+		}
+	}
+
+	scwin.Dbclick = function(id){
+		var el = WebSquare.wUnit.getDomById(id);
+		scwin.fireDbClick (el);
+	}	
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#G_'+$p.id+'grd_sample1__col3', 'key-sequence', {
+			sequence: '111'
+		});
+	}	
+	scwin.checkVal = function() {
+		return window.check_nowValue == 'sdssd111';
+	}		
+	scwin.unitTest = function(){
+		//init
+		WebSquare.wUnit.start();
+
+		WebSquare.wUnit.addCommand("pause", "500");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd_sample1_cell_0_2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");			
+		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grd_sample1_cell_0_2')");	
+		WebSquare.wUnit.addCommand("pause", "500");			
+
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");	
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_textImage_button')[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();		
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView checkAllType="false" defaultCellHeight="20" id="grd_sample1" style="width: 600px;height: 250px;margin: 30px"
+    		dataList="data:dlt_sample1" ev:oncellclick="scwin.grd_sample1_oncellclick" autoFit="allColumn"
+    		ev:ontextimageclick="scwin.grd_sample1_ontextimageclick" ev:oneditkeydown="scwin.grd_sample1_oneditkeydown"
+    		ev:onviewchange="scwin.grd_sample1_onviewchange">
+    		<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header1">
+    			<w2:row style="" id="row1">
+    				<w2:column width="70" inputType="text" style="" id="column3" value="샘플1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="grd_column2" value="샘플2" displayMode="label"></w2:column>
+    				<w2:column width="241" inputType="textImage" style="" id="column1" value="textImage" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody1">
+    			<w2:row style="" id="row2">
+    				<w2:column width="70" inputType="text" style="" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="col2" value="" displayMode="label"></w2:column>
+    				<w2:column imageWidth="10" width="241" viewType="icon" inputType="textImage" style=""
+    					imageSrc="WSQ-5892.png" id="col3" imageAlign="left" textImageRenderType="div" displayMode="label"
+    					imageClickFunction="scwin.grd_imageClick" imageHeight="10">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+
+    </body>
+</html>

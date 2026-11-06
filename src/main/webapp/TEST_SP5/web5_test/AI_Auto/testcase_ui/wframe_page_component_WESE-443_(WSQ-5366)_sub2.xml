@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList11" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="trdt" name="name1" dataType="text"></w2:column>
+            			<w2:column id="amount" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<trdt><![CDATA[20230303]]></trdt>
+            				<amount><![CDATA[773000000]]></amount>
+            				<col3><![CDATA[11]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<amount><![CDATA[657000]]></amount>
+            				<col3><![CDATA[2]]></col3>
+            				<trdt><![CDATA[20230304]]></trdt>
+            			</w2:row>
+            			<w2:row>
+            				<amount><![CDATA[547000]]></amount>
+            				<col3><![CDATA[5]]></col3>
+            				<trdt><![CDATA[20230305]]></trdt>
+            			</w2:row>
+            			<w2:row>
+            				<amount><![CDATA[510000]]></amount>
+            				<col3><![CDATA[7]]></col3>
+            				<trdt><![CDATA[20230306]]></trdt>
+            			</w2:row>
+            			<w2:row>
+            				<amount><![CDATA[321000]]></amount>
+            				<col3><![CDATA[9]]></col3>
+            				<trdt><![CDATA[20230307]]></trdt>
+            			</w2:row>
+            			<w2:row>
+            				<amount><![CDATA[870000]]></amount>
+            				<col3><![CDATA[0]]></col3>
+            				<trdt><![CDATA[20230308]]></trdt>
+            			</w2:row>
+            			<w2:row>
+            				<amount><![CDATA[250000]]></amount>
+            				<col3><![CDATA[5]]></col3>
+            				<trdt><![CDATA[20230309]]></trdt>
+            			</w2:row>
+            			<w2:row>
+            				<amount><![CDATA[450010]]></amount>
+            				<col3><![CDATA[3]]></col3>
+            				<trdt><![CDATA[20230310]]></trdt>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {	
+	var op = {  
+		"formatNumberScale": "1",
+		"numberScaleValue": "1000,1000,1000",
+		//Customizing number scale units
+		"numberScaleUnit": "천,백만,10억"
+	}
+	chart1.setChartAttribute(op);
+
+	chart1.draw();
+};
+
+
+scwin.dataTypeFormatter = function (obj, chartType, id) { //와 같이 설정 하면 됩니다. 파라미터 정보로 차트ID, 차트 객체, 차트 Type등을 넘겨줍니다
+	
+	if (chartType === "MSLine") {	
+		if(obj['categories'][0]['category'][0].label.indexOf("/") < 0) { //이미 / 로 세팅한건지 확인
+			for (var i = 0; i < obj['categories'][0]['category'].length; i++) {
+				obj['categories'][0]['category'][i].label = obj['categories'][0]['category'][i].label.substr(4, 2) + '/' + obj['categories'][0]['category'][i].label.substr(6, 2)
+			}
+
+		}
+		
+		return obj;
+	}
+};
+
+]]></script>
+
+
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:fusionchart accessibility="true" drawType="javascript" runflashAt="IE6,IE7,IE8" ref="data:dataList11" seriesType="advanced" chartType="MSLine"
+    		style="width: 500px;height: 300px;" id="chart1" dataTypeFormatter="scwin.dataTypeFormatter" version="" seriesColumns='[["amount", "col3"]]' labelNode="trdt">
+    	</w2:fusionchart>
+    </body>
+</html>

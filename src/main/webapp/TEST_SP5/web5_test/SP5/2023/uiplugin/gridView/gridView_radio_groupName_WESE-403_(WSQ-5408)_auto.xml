@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dlt_list1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="radioCol" name="라디오 컬럼" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+				
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+    var json = [{"radioCol":"Y"},{"radioCol":"Text"}];
+    dlt_list1.setJSON(json);
+
+    //var json2 = [{"radioCol":"rdo", "radioY":"", "radioN":""},{"radioCol":"text", "radioY":"", "radioN":""}];
+    //dlt_list2.setJSON(json2);
+
+    scwin.fn_setInputType();
+    //scwin.fn_setInputType2();  
+    
+};
+
+/* 질문) setCellInputType API를 이용하여 동적으로 컬럼 타입을 변경하려 할 때 dataList에 바인딩된 컬럼이 없다면 
+            사용 할 수 없나요 ? */
+scwin.fn_setInputType = function(){
+    var rtnInfoTxt = {inputType: "text"};
+
+    var rtnInfo1 = {inputType: "radio"
+                   ,options : {groupName:"radioCol", groupValue:"Y"}
+                   };
+
+    var rtnInfo2 = {inputType: "radio"
+                   ,options : {groupName:"radioCol", groupValue:"N"}
+                   }; 
+
+    var _cnt = dlt_list1.getTotalRow();
+
+    for(var i=0; i<_cnt; i++){
+        var _radioCol = dlt_list1.getCellData(i, "radioCol");
+        if(_radioCol == "Y"){
+            grdDyp1.setCellInputType(i, "radioY", rtnInfo1);
+            grdDyp1.setCellInputType(i, "radioN", rtnInfo2);
+        }else{
+            grdDyp1.setCellInputType(i, "radioY", rtnInfoTxt);
+            grdDyp1.setCellInputType(i, "radioN", rtnInfoTxt);
+        }
+    }                        
+};
+
+		scwin.checkVal1 = function() {
+			return WebSquare.wUnit.getDomById('grdDyp1_cell_0_1').children[0].nodeName == 'INPUT';
+		}
+		scwin.checkVal2 = function() {
+			return WebSquare.wUnit.getDomById('grdDyp1_cell_0_2').children[0].nodeName == 'INPUT';
+		}
+		scwin.unitTest = function() {
+			//Unit
+			WebSquare.wUnit.start();
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+			WebSquare.wUnit.addCommand("pause", "500");
+				
+			//Run test and stop
+			WebSquare.wUnit.run();
+			WebSquare.wUnit.stop();
+		}	
+		scwin.unitTest()
+		
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="padding: 10px;">
+    	<w2:textbox style="font-weight:bold;margin-bottom: 10px;" id="" label="일반적인 groupName을 이용한 radio 선택 그리드 "></w2:textbox>
+    	<w2:gridView checkAllType="false" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="grdCom"
+    		style="height: 150px;margin-bottom: 10px;" dataList="data:dlt_list1">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="100" inputType="text" style="" id="column3" value="라디오 컬럼" displayMode="label"></w2:column>
+    				<w2:column width="100" inputType="text" style="" id="column7" value="Y" displayMode="label"></w2:column>
+    				<w2:column width="100" inputType="text" style="" id="column5" value="N" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="100" inputType="text" style="" id="radioCol" value="" displayMode="label"></w2:column>
+    				<w2:column width="100" inputType="radio" style="" id="radioY" value="" displayMode="label" groupName="radioCol"
+    					groupValue="Y">
+    				</w2:column>
+    				<w2:column width="100" inputType="radio" style="" id="radioN" value="" displayMode="label" groupName="radioCol"
+    					groupValue="N">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<w2:textbox id="" label="위의 gridView를 동적으로 표현 -setCellInputType API 활용 =&gt; dataList의 없는 컬럼을 이용할 경우 생성되지 않습니다."
+    		style="font-weight:bold;margin-bottom: 10px;">
+    	</w2:textbox>
+    	<w2:gridView checkAllType="false" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="grdDyp1"
+    		style="height: 150px;margin-bottom: 10px;" dataList="data:dlt_list1" setCellInputTypeCustom="true">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="100" inputType="text" style="" id="column3" value="라디오 컬럼" displayMode="label"></w2:column>
+    				<w2:column width="100" inputType="text" style="" id="column7" value="Y" displayMode="label"></w2:column>
+    				<w2:column width="100" inputType="text" style="" id="column5" value="N" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="100" inputType="text" style="" id="radioCol" value="" displayMode="label"></w2:column>
+    				<w2:column width="100" inputType="custom" style="" id="radioY" value="" displayMode="label"></w2:column>
+    				<w2:column width="100" inputType="custom" style="" id="radioN" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </xf:group></body>
+</html>

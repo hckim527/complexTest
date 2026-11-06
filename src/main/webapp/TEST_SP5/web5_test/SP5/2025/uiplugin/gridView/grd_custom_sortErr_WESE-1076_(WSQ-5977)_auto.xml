@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="chk" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<chk><![CDATA[Y]]></chk>
+            				<col2><![CDATA[1]]></col2>
+            				<col3><![CDATA[a]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<chk><![CDATA[Y]]></chk>
+            				<col2><![CDATA[2]]></col2>
+            				<col3><![CDATA[b]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<chk><![CDATA[N]]></chk>
+            				<col2><![CDATA[3]]></col2>
+            				<col3><![CDATA[c]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<chk><![CDATA[Y]]></chk>
+            				<col2><![CDATA[4]]></col2>
+            				<col3><![CDATA[d]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+    for(let i = 0; i < dataList1.getRowCount(); i++){
+        if (dataList1.getCellData(i, "chk") === "Y") {
+        grd1.setCellReadOnly(i, "chk", false);
+        grd1.setCellInputType(i, "chk", {
+        inputType: "checkbox",
+        });
+
+    }
+    else {
+        grd1.setCellReadOnly(i, "chk", true);
+        grd1.setCellInputType(i, "chk", {
+        inputType: "text",
+        });
+    }
+    }
+};
+
+	scwin.checkCheckboxStates = function(tbodyId, skipIndex) {
+		const tbody = WebSquare.wUnit.getDomById(tbodyId);
+		const rows = Array.from(tbody.querySelectorAll('tr')); // NodeList를 배열로 변환
+		const checkboxStates = [];
+		let reValue = true;
+		rows.forEach((row, index) => {
+			if (row.classList.contains('w2grid_hidedRow')) {
+				return; 
+			}
+			const checkboxCell = row.querySelector('td[data-colindex="1"]');
+			if (checkboxCell) {
+				const checkbox = checkboxCell.querySelector('input[type="checkbox"]');
+				if(index != skipIndex){
+					if (!checkbox.checked) {
+						reValue = false;
+					}
+				}
+			}
+		});
+
+		return reValue;
+	}
+	scwin.checkVal1 = function() {
+		return scwin.checkCheckboxStates('grd1_body_tbody', 2);
+	}
+	scwin.checkVal2 = function() {
+		return !scwin.checkCheckboxStates('grd1_body_tbody', 2);
+	}	
+	scwin.checkVal3 = function() {
+		return WebSquare.wUnit.getDomById('grd1_cell_2_0').querySelector('input[type="checkbox"]').checked
+	}		
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_column6').querySelectorAll('input')[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_column6').querySelectorAll('input')[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()","true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_column6').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_column6').querySelectorAll('input')[0].click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()","true");
+		WebSquare.wUnit.addCommand("pause", "500");			
+
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="data:dataList1" scrollByColumnAdaptive="false" rowNumVisible="true" rowStatusWidth="50" useShiftKey="true" readOnly="true"
+						rowNumHeaderValue="No" scrollByColumn="true" rowStatusHeaderValue="" focusMode="row" rowStatusVisible="false"
+						fixedColumnWithHidden="true" rowNumWidth="50" ignoreCellClick="false" style="height:507px;" id="grd1"
+						class="wq-gvw" ignoreToggleOnDisabled="false" ev:oncellclick="scwin.fnGrdListOncellclick"
+						ev:oncontextclick="eventLib.gridOncontextclick" ev:oncontextopen="eventLib.gridOncontextopen" setCellInputTypeCustom="true"
+						contextMenu="true" ev:onheaderclick="scwin.fnGrdListOnheaderclick" sortEvent="onclick" sortable="true" dataDragSelect="true">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="70" inputType="checkbox" style="" id="column6" value="name1" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="column5" value="name2" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="column4" value="name3" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="column3" value="name4" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="70" inputType="custom" style="" id="chk" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="col2" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="col3" value="" displayMode="label"></w2:column>
+    				<w2:column width="70" inputType="text" style="" id="col4" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>

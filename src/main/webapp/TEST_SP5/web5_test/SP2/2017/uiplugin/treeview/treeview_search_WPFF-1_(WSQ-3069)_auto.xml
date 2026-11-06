@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map"
+					ev:onbeforecelldatachange="scwin.dataList1_onbeforecelldatachange" ev:oncelldatachange="scwin.dataList1_oncelldatachange">
+					<w2:columnInfo>
+						<w2:column id="MENU_ID" name="name1" dataType="text"></w2:column>
+						<w2:column id="MENU_NM" name="name2" dataType="text"></w2:column>
+						<w2:column id="LEVEL_CNT" name="name3" dataType="text"></w2:column>
+						<w2:column id="CHK" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger2_onclick = function(e) {
+    var json = dataList1.getAllJSON();
+    json.forEach(function(o) {
+        o["MENU_NM"] = o["MENU_NM"].replace(/<([^>]+)>/gi, ""); // 태그제거
+    });
+    dataList1.setJSON(json);
+    treeview1.spanAll(true);
+    var word = input1.getValue();
+    /* 접었다 펴면 스타일 사라짐..
+    		treeview1.setCustomFormatter(function(label, formattedLabel, node){
+    			var jNode = WebSquare.wUnit.getJq("#treeview1_label_"+node.index).eq(0); 
+    		    var html = jNode.html();
+    		    html = html.replaceAll(word, "<span style='color:red'>"+word+"</span>");
+    		    jNode.html(html);
+    		});		
+    	
+    */
+    var arr_idx = dataList1.getMatchedIndex("MENU_NM", word, false);
+    arr_idx.forEach(function(ix) {
+        var label = dataList1.getCellData(ix, "MENU_NM");
+        dataList1.setCellData(ix, "MENU_NM", label.replaceAll(word, "<span style='color:red'>" + word + "</span>"));
+    });
+    //treeview1.findNodeByValue(word, true);
+    //treeview1.spanNode(arr_idx[0], true, true);
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플 실행 후 검색버튼을 클릭한다.
+    //1. Click the Search button after running the sample.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. menu1-1 메뉴가 스타일이 적용되어 빨강색으로 보여진다. (이전에는 menu1-1 메뉴가 테그값이 포함되어 보여짐)
+    //1. menu1-1 The style is applied to the menu and is shown in red. (Previously menu1-1 menu is shown with tag value)\
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('treeview1_label_2').textContent == 'menu1-1'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('treeview1_label_2').childNodes[0].style.color == 'red'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    dataList1.setJSON([{
+        "MENU_ID": "menu1",
+        "MENU_NM": "menu1",
+        "LEVEL_CNT": "1",
+        "CHK": "y",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu1-1",
+        "MENU_NM": "menu1-1",
+        "LEVEL_CNT": "2",
+        "CHK": "n",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu1-1-1",
+        "MENU_NM": "menu1-1-1",
+        "LEVEL_CNT": "3",
+        "CHK": "y",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu1-1-2",
+        "MENU_NM": "menu1-1-2",
+        "LEVEL_CNT": "3",
+        "CHK": "y",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu1-2",
+        "MENU_NM": "menu1-2",
+        "LEVEL_CNT": "2",
+        "CHK": "y",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu1-2-1",
+        "MENU_NM": "menu1-2-1",
+        "LEVEL_CNT": "3",
+        "CHK": "1",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu1-2-1-1",
+        "MENU_NM": "menu1-2-1-1",
+        "LEVEL_CNT": "4",
+        "CHK": "n",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu1-2-1-2",
+        "MENU_NM": "menu1-2-1-2",
+        "LEVEL_CNT": "4",
+        "CHK": "1",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu2",
+        "MENU_NM": "menu2",
+        "LEVEL_CNT": "1",
+        "CHK": "n",
+        "rowStatus": "R"
+    }, {
+        "MENU_ID": "menu2-1",
+        "MENU_NM": "menu2-1",
+        "LEVEL_CNT": "2",
+        "CHK": "y",
+        "rowStatus": "R"
+    }]);
+    treeview1.spanAll(true);
+    input1.setValue("menu1-1");
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 23-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<w2:treeview id="treeview1" checkAllChildNodes=""
+			dataType="listed" lineShow="" renderType="virtual"
+			style="position:absolute;width:200px;height:250px;left:54px;top:66px;"
+			useDrag="" tooltipGroupClass="false" checkboxDisabledFalseValue=""
+			checkboxDisabledTrueValue="" alwaysDraw="" accessibility=""
+			showTreeDepth="1" ev:onviewchange="scwin.treeview1_onviewchange"
+			ev:onlabelclick="scwin.treeview1_onlabelclick"
+			ev:onrightbuttonclick="scwin.treeview1_onrightbuttonclick"
+			escape="false">
+			<w2:itemset nodeset="data:dataList1">
+				<w2:label ref="MENU_NM"></w2:label>
+				<w2:value ref="MENU_ID"></w2:value>
+				<w2:depth ref="LEVEL_CNT"></w2:depth>
+				<w2:folder ref=""></w2:folder>
+				<w2:checkbox ref=""></w2:checkbox>
+				<w2:checkboxDisabled ref=""></w2:checkboxDisabled>
+				<w2:image ref=""></w2:image>
+				<w2:iconImage ref=""></w2:iconImage>
+				<w2:selectedImage ref=""></w2:selectedImage>
+				<w2:expandedImage ref=""></w2:expandedImage>
+				<w2:leafImage ref=""></w2:leafImage>
+			</w2:itemset>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+		//alert(33);
+		 ]]></script>
+		</w2:treeview>
+
+		<xf:input id="input1"
+			style="position: absolute ;left:58px;top:19px;width:111px;height:21px;">
+		</xf:input>
+		<xf:trigger type="button" id="trigger2"
+			style="position: absolute ;left:184px;top:19px;width:55px;height:23px;" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[검색]]></xf:label>
+		</xf:trigger>
+	</body>
+</html> 

@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireEvent = function(id, event) {
+    var dom = WebSquare.wUnit.getDomById($p.id + id);
+    if (dom) {
+        eval("dom." + event + "();");
+    }
+}
+scwin.fireEvent2 = function(id) {
+    var dom = WebSquare.wUnit.getDomById($p.id + id);
+    if (dom) {
+        grid1.clickRightButtonCell({
+            srcElement: dom
+        });
+    }
+}
+scwin.draw = function() {
+    chart_test_flash.setJSONData(dataObj);
+    chart_test_javascript.setJSONData(dataObj1);
+}
+scwin.fc_test = function() {
+    var obj1 = chart_test_flash.fc();
+    var obj3 = chart_test_javascript.fc();
+    var obj2 = FusionCharts.items["fc_chart_test_flash"];
+    var obj4 = FusionCharts.items["fc_chart_test_javascript"];
+    if (obj1 == obj2 && obj3 == obj4) {
+        return "true";
+    } else {
+        return "false";
+    }
+};
+scwin.getJSONData_test = function() {
+    var chartData = chart_test_flash.getJSONData();
+    textarea1.setValue(chartData);
+    var chartData1 = chart_test_javascript.getJSONData();
+    textarea2.setValue(chartData1);
+    return "true";
+};
+scwin.getDataAsCSV_test = function() {
+    var chartData = chart_test_flash.getDataAsCSV();
+    textarea1.setValue(chartData);
+    var chartData1 = chart_test_javascript.getDataAsCSV();
+    textarea2.setValue(chartData1);
+    return "true";
+};
+scwin.setchartAttribute_test = function() {
+    var options = {
+        "caption": "Half Yearly Revenue Analysis",
+        "yaxisname": "Revenue",
+        "numberprefix": "$"
+    };
+    chart_test_flash.setChartAttribute(options);
+    chart_test_flash.scwin.draw();
+    chart_test_javascript.setChartAttribute(options);
+    chart_test_javascript.scwin.draw();
+};
+scwin.getchartAttribute_test = function() {
+    var options = chart_test_flash.getChartAttribute();
+    textarea1.setValue(JSON.stringify(options));
+    var options1 = chart_test_flash.getChartAttribute();
+    textarea2.setValue(JSON.stringify(options1));
+    return "true";
+};
+scwin.setPlotColor_test = function() {
+    var color = ["169fe6", "ed5564", "00ba84", "fca651", "8766ca"];
+    chart_test_flash.setPlotColor(color);
+    chart_test_flash.scwin.draw();
+    chart_test_javascript.setPlotColor(color);
+    chart_test_javascript.scwin.draw();
+    return "true";
+};
+scwin.addTrendLine_test = function() {
+    var options = {
+        startValue: "500000",
+        color: "FF0000",
+        displayValue: "Check"
+    };
+    chart_test_flash.addTrendLine(options);
+    chart_test_flash.scwin.draw();
+    chart_test_javascript.addTrendLine(options);
+    chart_test_javascript.scwin.draw();
+};
+scwin.applyStyle_test = function() {
+    var options1 = {
+        "color": "FF0000",
+        "font": "15",
+        "bold": "1"
+    };
+    var options2 = {
+        "duration": "2",
+        "start": "0",
+        "param": "_x"
+    };
+    //chart_test.applyStyle("font", "captionFont", options1, ["Caption","XAXISNAME"]);
+    chart_test_flash.applyStyle("animation", "dataplot_ani", options2, ["dataPlot"]);
+    chart_test_javascript.applyStyle("font", "captionFont", options1, ["Caption", "XAXISNAME"]);
+};
+scwin.configure_test = function() {
+    var data = {
+        chart: {},
+        data: []
+    };
+    chart_test_flash.fc().setJSONData(data);
+    chart_test_flash.configure({
+        "ChartNoDataText": "데이타가 없습니다."
+    });
+    chart_test_flash.fc().render(chart_test_flash.render);
+    chart_test_javascript.fc().setJSONData(data);
+    chart_test_javascript.configure({
+        "ChartNoDataText": "데이타가 없습니다."
+    });
+    chart_test_javascript.fc().render(chart_test_javascript.render);
+};
+scwin.dispose = function() {
+    chart_test_flash.fc().scwin.dispose();
+    chart_test_javascript.fc().scwin.dispose();
+};
+scwin.test = function() {
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("set", "trigger1.click()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "trigger2.click()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", trigger3.click());
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "chart_test_flash.setAccessibility(true)");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "chart_test_javascript.setAccessibility(true)");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "scwin.getJSONData_test()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "scwin.getDataAsCSV_test()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "scwin.setchartAttribute_test()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("assert", "scwin.getchartAttribute_test()", "true");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("assert", "scwin.setPlotColor_test()", "true");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "scwin.applyStyle_test()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "scwin.addTrendLine_test()");
+    WebSquare.wUnit.addCommand("pause", "200");
+    WebSquare.wUnit.addCommand("set", "scwin.dispose()");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload = function() {
+    window.dataObj = {
+        "chart": {},
+        "categories": [{
+            "category": [{
+                    "label": "8/6/2006"
+                },
+                {
+                    "label": "8/7/2006"
+                },
+                {
+                    "label": "8/8/2006"
+                },
+                {
+                    "label": "8/9/2006"
+                },
+                {
+                    "label": "8/10/2006"
+                },
+                {
+                    "label": "8/11/2006"
+                },
+                {
+                    "label": "8/12/2006"
+                }
+            ]
+        }],
+        "dataset": [{
+                "seriesname": "Offline Marketing",
+                "data": [{
+                        "value": "1327"
+                    },
+                    {
+                        "value": "1826"
+                    },
+                    {
+                        "value": "1699"
+                    },
+                    {
+                        "value": "1511"
+                    },
+                    {
+                        "value": "1904"
+                    },
+                    {
+                        "value": "1957"
+                    },
+                    {
+                        "value": "1296"
+                    }
+                ]
+            },
+            {
+                "seriesname": "Search",
+                "renderas": "Area",
+                "data": [{
+                        "value": "2042"
+                    },
+                    {
+                        "value": "3210"
+                    },
+                    {
+                        "value": "2994"
+                    },
+                    {
+                        "value": "3115"
+                    },
+                    {
+                        "value": "2844"
+                    },
+                    {
+                        "value": "3576"
+                    },
+                    {
+                        "value": "1862"
+                    }
+                ]
+            },
+            {
+                "seriesname": "Paid Search",
+                "renderas": "Line",
+                "data": [{
+                        "value": "850"
+                    },
+                    {
+                        "value": "1010"
+                    },
+                    {
+                        "value": "1116"
+                    },
+                    {
+                        "value": "1234"
+                    },
+                    {
+                        "value": "1210"
+                    },
+                    {
+                        "value": "1054"
+                    },
+                    {
+                        "value": "802"
+                    }
+                ]
+            },
+            {
+                "seriesname": "From Mail",
+                "data": [{
+                        "value": "541"
+                    },
+                    {
+                        "value": "781"
+                    },
+                    {
+                        "value": "920"
+                    },
+                    {
+                        "value": "754"
+                    },
+                    {
+                        "value": "840"
+                    },
+                    {
+                        "value": "893"
+                    },
+                    {
+                        "value": "451"
+                    }
+                ]
+            }
+        ]
+    };
+    window.dataObj1 = {
+        "chart": {},
+        "categories": [{
+            "category": [{
+                    "label": "8/6/2006"
+                },
+                {
+                    "label": "8/7/2006"
+                },
+                {
+                    "label": "8/8/2006"
+                },
+                {
+                    "label": "8/9/2006"
+                },
+                {
+                    "label": "8/10/2006"
+                },
+                {
+                    "label": "8/11/2006"
+                },
+                {
+                    "label": "8/12/2006"
+                }
+            ]
+        }],
+        "dataset": [{
+                "seriesname": "Offline Marketing",
+                "data": [{
+                        "value": "1327"
+                    },
+                    {
+                        "value": "1826"
+                    },
+                    {
+                        "value": "1699"
+                    },
+                    {
+                        "value": "1511"
+                    },
+                    {
+                        "value": "1904"
+                    },
+                    {
+                        "value": "1957"
+                    },
+                    {
+                        "value": "1296"
+                    }
+                ]
+            },
+            {
+                "seriesname": "Search",
+                "renderas": "Area",
+                "data": [{
+                        "value": "2042"
+                    },
+                    {
+                        "value": "3210"
+                    },
+                    {
+                        "value": "2994"
+                    },
+                    {
+                        "value": "3115"
+                    },
+                    {
+                        "value": "2844"
+                    },
+                    {
+                        "value": "3576"
+                    },
+                    {
+                        "value": "1862"
+                    }
+                ]
+            },
+            {
+                "seriesname": "Paid Search",
+                "renderas": "Line",
+                "data": [{
+                        "value": "850"
+                    },
+                    {
+                        "value": "1010"
+                    },
+                    {
+                        "value": "1116"
+                    },
+                    {
+                        "value": "1234"
+                    },
+                    {
+                        "value": "1210"
+                    },
+                    {
+                        "value": "1054"
+                    },
+                    {
+                        "value": "802"
+                    }
+                ]
+            },
+            {
+                "seriesname": "From Mail",
+                "data": [{
+                        "value": "541"
+                    },
+                    {
+                        "value": "781"
+                    },
+                    {
+                        "value": "920"
+                    },
+                    {
+                        "value": "754"
+                    },
+                    {
+                        "value": "840"
+                    },
+                    {
+                        "value": "893"
+                    },
+                    {
+                        "value": "451"
+                    }
+                ]
+            }
+        ]
+    };
+    scwin.draw();
+    //   scwin.test();
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<xf:group id="g-1" style="position:relative;top:5px;left:10px;width:98%;height:20%;">
+    		<xf:output id="o-1"
+    			style="position:relative;top:0px;left:0px;float:left;width:100%;height:20px;border:1px solid #d4d4d4;background:#4272d4;color:white;font-size:15px;text-align:center;"
+    			class="" label="asdf">
+    			<xf:label>TEST CASE</xf:label>
+    		</xf:output>
+    		<xf:group id="g-2" style="position: relative;left:0px;width: 100%;height: 165px;float:left;border:1px solid #d4d4d4;"
+    			class="">
+    			<xf:group id="g-3" style="position: relative ;height:100%;width:65%;bottom:0;float:left;" class="">
+    				<xf:group id="g-4" style="position: relative;width: 100%;height: 100%;margin-top:0px;" class="" tagname="">
+    					<xf:group id="g-5" style="position: relative ;width: 100%px;height: 20px;font-size:15px;" class=""
+    						tagname="li">
+    						<w2:textbox id="t-1"
+    							style="position: relative;height: 100%;color:white;font-size:13px;background:#4272d4;width: 98%;left:2px;border:1px solid #d4d4d4;top:2px;font-weight:bold;"
+    							label="TestCase 설명">
+    						</w2:textbox>
+    					</xf:group>
+    					<w2:textbox id="t-2"
+    						style="position: relative;height:55px;font-size:13px;width:98%;left:2px;border:1px solid #d4d4d4;top:2px;"
+    						label='- fusionChart MSCombiDY2D 차트 api테스트케이스'>
+    					</w2:textbox>
+    					<xf:group id="g-6" style="position: relative ;width: 100%px;height: 20px;font-size:15px;margin-top:5px;"
+    						class="" tagname="li">
+    						<w2:textbox id="t-3"
+    							style="position: relative;height: 100%;color:white;font-size:13px;background:#4272d4;width: 98%;left:2px;border:1px solid #d4d4d4;font-weight:bold;"
+    							label="확인사항 및 특이사항">
+    						</w2:textbox>
+    						<w2:textbox id="t-4"
+    							style="position: relative;height: 55px;font-size:13px;width: 98%;left:2px;border:1px solid #d4d4d4;"
+    							label='- api에 따른 차트변화와 get함수가 차트데이터를 가지고 오는지 확인'>
+    						</w2:textbox>
+    					</xf:group>
+    				</xf:group>
+    			</xf:group>
+    			<xf:group id="g-7" style="position: relative ;height:100%;width: 35%;bottom:0;float:left;" class="">
+    				<xf:group id="g-8" style="position: relative;width: 100%;height: 100%;margin-top:0px;" class="" tagname="">
+    					<xf:group id="g-9" style="position: relative ;height:20px;font-size:15px;width: 100%px;" class=""
+    						tagname="li">
+    						<w2:textbox id="t-5" style="position: relative;height: 100%;font-size:13px;width: 100%;"
+    							label="작성일자 : 2014년 3월 11일 (김창옥)">
+    						</w2:textbox>
+    					</xf:group>
+    					<xf:group id="g-10" style="position: relative ;height:20px;font-size:15px;width: 100%px;" class=""
+    						tagname="li">
+    						<w2:textbox id="t-6" style="position: relative;height: 100%;font-size:13px;width: 100%;"
+    							label="버그질라/리뷰보드 ID : NA / NA">
+    						</w2:textbox>
+    					</xf:group>
+    					<xf:group id="g-11" style="position: relative ;height:20px;font-size:15px;width: 100%px;" class=""
+    						tagname="li">
+    						<w2:textbox id="t-7" style="position: relative;height: 100%;font-size:13px;width: 100%;"
+    							label="컴포넌트 : fusionchart">
+    						</w2:textbox>
+    					</xf:group>
+    					<xf:group id="g-12" style="position: relative ;height:20px;font-size:15px;width: 100%px;" class=""
+    						tagname="li">
+    						<w2:textbox id="t-8" style="position: relative;height: 100%;font-size:13px;width: 100%;"
+    							label="Event : none">
+    						</w2:textbox>
+    					</xf:group>
+    					<xf:group id="g-13" style="position: relative ;height:20px;width: 100%px;font-size:15px;" class=""
+    						tagname="li">
+    						<w2:textbox id="t-9" style="position: relative;height: 100%;font-size:13px;width: 100%;"
+    							label='Property : none'>
+    						</w2:textbox>
+    					</xf:group>
+    					<xf:group class="" id="g-14" style="position: relative ;height:20px;width: 100%px;font-size:15px;"
+    						tagname="li">
+    						<w2:textbox id="t-10" label="Function : " style="position: relative;height: 100%;font-size:13px;width: 100%;">
+    						</w2:textbox>
+    						<w2:textbox id="t-11" label="fc(), setAccessibility(), scwin.draw(), setJSONData(), getJSONData(), getDataAsCSV(), setChartAttribute(), getChartAttribute(), setPlotColor(), applyStyle(), addTrendLine(), configure()"
+    							style="position: relative;height: 100%;font-size:13px;width: 100%;float:left;">
+    						</w2:textbox>
+    					</xf:group>
+    				</xf:group>
+    			</xf:group>
+    		</xf:group>
+    	</xf:group>
+    	<xf:group class="" id="group28" style="position: relative ; top:5px; left:10px; width:98%; height:80%; float:left;">
+    		<w2:textbox id="textbox28" label="MSCombiDY2D Chart"
+    			style="position: relative;height: 5%;color:white;font-size:25px;background:#4272d4;width: 100%;border:1px solid #d4d4d4;font-weight:bold;">
+    		</w2:textbox>
+    		<xf:group id="group112" class="" style="position: relative ; width:50%; height:70%; float:left;">
+    			<w2:textbox id="textbox29" label="flash rendered"
+    			style="position: relative;height: 15px;color:white;font-size:15px;background:#4272d4;width: 100%;border:1px solid #d4d4d4;font-weight:bold; margin-top:1px">
+    			</w2:textbox>
+    			<w2:fusionchart chartType="MSCombiDY2D" drawType="flash" id="chart_test_flash"
+    				style="position:relative; width:49%; height:99%; float:left;">
+    			</w2:fusionchart>
+    			<xf:textarea id="textarea1" style="position: relative ; width:49%; height:98%; float:left;"></xf:textarea>
+    		</xf:group>
+    		<xf:group class="" id="group114" style="position: relative ; width:50%; height:70%; float:left;">
+    			<w2:textbox id="textbox30" label="javascript rendered"
+    			style="position: relative;height: 15px;color:white;font-size:15px;background:#4272d4;width: 100%;border:1px solid #d4d4d4;font-weight:bold; margin-top:1px">
+    			</w2:textbox>
+    			<w2:fusionchart chartType="MSCombiDY2D" drawType="mixed" id="chart_test_javascript"
+    				style="position:relative; width:49%; height:99%; float:left;">
+    			</w2:fusionchart>
+    			<xf:textarea id="textarea2" style="position: relative ; width:49%; height:98%; float:left;"></xf:textarea>
+    		</xf:group>
+    		<xf:group id="group113" class="" style="position: relative ; width:100%; height:20%; float:left;">
+                <xf:trigger type="button" id="trigger1" style="position: relative; float:left; width: 100px;height: 30px;">
+                    <xf:label>draw()</xf:label>
+                    <script type="javascript" ev:event="onclick"><![CDATA[
+                        scwin.draw();
+                     ]]></script>
+                </xf:trigger>
+                <xf:trigger type="button" id="trigger2" style="position: relative; float:left; width: 100px;height: 30px;">
+                    <xf:label>fc_test()</xf:label>
+                    <script type="javascript" ev:event="onclick"><![CDATA[
+                        scwin.fc_test();
+                     ]]></script>
+                </xf:trigger>
+                <xf:trigger type="button" id="trigger3" style="position: relative; float:left; width: 100px;height: 30px;">
+                    <xf:label>setJSONData()</xf:label>
+                    <script type="javascript" ev:event="onclick"><![CDATA[
+                        chart_test_flash.setJSONData(dataObj1);
+                        chart_test_javascript.setJSONData(dataObj);
+                     ]]></script>
+                </xf:trigger>
+            </xf:group></xf:group>
+    </body>
+</html>
+ 

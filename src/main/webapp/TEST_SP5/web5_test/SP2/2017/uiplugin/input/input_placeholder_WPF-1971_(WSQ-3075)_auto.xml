@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    input1.setPlaceholder("test");
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. IE9,8,7,6에서 샘플 실행 후 inputbox에 "123"값을 입력 후 하단의 "setPlaceholder"버튼을 클릭한다.
+    //After executing the sample in IE9,8,7,6, input box has '123' value
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input1').setValue('123')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 값이 유지되어 보여진다.(이전에는 API에서 설정한 값 'test'이 보여짐)
+    //The value is retained (Previously the value 'test' set by the API)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input1').getValue()", "123");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 입력값을 삭제 후 마우스를 포커스 아웃시킨다.
+    //After deleting the input value, focus the mouse out.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input1').setValue('')");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').blur()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 값이 'test'로 변경되어 보여진다.(정상)
+    //The value is changed to 'test' (Normal)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input1').getAttribute('placeholder')", "test");
+    //WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 27-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:input id="input1" style="position: absolute;width:353px;height:157px;left:195px;top:121px;"></xf:input>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:360px;height:80px;left:197px;top:300px;font-size:13pt;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[setPlaceholder]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

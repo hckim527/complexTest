@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+		// =========================================================================
+		// [windowContainer] 열려 있는 탭의 id를 못 찾는 문제 재현 샘플
+		//   고객사 : 한국은행(역외) / 대상 엔진 : AI 6.0 (고객 빌드 0.1485B)
+		//   증상   : 열려 있는 탭을 프로그램으로 선택할 수 없고,
+		//            getSelectedWindowId() 가 엉뚱한 값 또는 undefined 를 반환한다.
+		//   고객 지적 : "selectedWindowHistory 가 세팅되지 않는다"  → 사실로 확인됨.
+		// -------------------------------------------------------------------------
+		// [원인 : 엔진 소스 확인 완료 — 라인번호는 근접버전 0.1561B 기준]
+		//
+		// 1) selectNameLayer(refID) 는 selectedWindowHistory 에 refID 가
+		//    "있을 때만" 동작한다. (3978행)
+		//
+		//      for (var i = 0; i < this.selectedWindowHistory.length; i++) {
+		//          if (this.selectedWindowHistory[i] == refID) { ... this.selectWindow(); ... }
+		//      }
+		//
+		//    무매칭이면 early return 도 예외도 없이 "조용히" 함수가 끝난다.
+		//    → nowWindow / selectedIndex 미갱신, onwindowchange 미발생, 반환값도 없음.
+		//    (원 주석 : "ff에서 window 닫았는데 쓰레기dom이 맘대로 click해서 없는게 들어옴"
+		//      = 유령 클릭 방어용 가드인데, 정상 창까지 같이 막아버린다)
+		//
+		// 2) 그런데 history 에 넣는 코드는 addHistory() 단 한 곳(3826행)뿐이고,
+		//    그 호출처는 사실상 selectWindow() 내부 3분기(3734 / 3787 / 3790)뿐이다.
+		//
+		// 3) 그 selectWindow() 는 맨 첫 줄에서 컨테이너가 0 크기면 즉시 return 한다. (3673행)
+		//
+		//      if (this.dom.window.offsetWidth == 0 || this.dom.window.offsetHeight == 0) return;
+		//
+		//    ※ _createWindow 가 넘기는 { skipVisibilityCheck:true } (2386행) 는
+		//      이 가드와 무관하다. 이 옵션은 selectWindow → increaseZIndex(3860행) 로
+		//      전달되어 3895행 optimizeRenderComponent 분기에서만 쓰인다.
+		//      즉 3673행 가드를 우회하는 수단은 애초에 없다.
+		//
+		//    ⇒ 컨테이너가 숨김/미레이아웃 상태에서 만든 창은 history 에 영영 안 들어간다.
+		//
+		// 4) getSelectedWindowId() 는 this.windows[this.selectedIndex].windowId (6816행).
+		//    selectedIndex 가 -1 로 남아 있으면 this.windows[-1] 접근 →
+		//    TypeError 가 try/catch 에 먹혀 undefined 가 반환된다. (= 못 찾는다)
+		//
+		// [부가 경로]
+		//  · 최소화 : _onminimize 가 현재창 최소화 시 history 를 2번 pop(3506-3507),
+		//    비활성창은 splice(3513). includeMinimizeWindow="true" 가 아니면
+		//    "최소화된 창은 history 에 없는 게 정상" 이다.
+		//  · setWindowTabOrder(arr) : 전체 창에 removeNameLayer 를 돌려 history 를
+		//    통째로 비우고 복구하지 않는다. (별개의 알려진 지뢰)
+		//
+		// [핫픽스와의 관계 — 실물 대조 완료]
+		//  · 2026_0714_hotfix_WAEA_1005.js : override = __createWindowByObj / _createWindow / performAction
+		//  · 2026_0803_hotfix_WAEA_1059.js : override = selectWindow / fixWindow / unfixWindow /
+		//                                    moveNameLayer / setAction / handleClickEvent 등
+		//  → override 대상이 겹치지 않아 상호 덮어쓰기(clobber) 는 없다.
+		//  → 1005 는 selectWindowOnCreate:false 일 때 addHistory 를 선등록해 두어 안전하고,
+		//    1059 는 selectWindow 의 addHistory 3분기를 모두 보존했다.
+		//  ⇒ 이 문제는 두 핫픽스와 무관한 "스톡 엔진 구조" 이슈다.
+		// -------------------------------------------------------------------------
+		// [사용법]
+		//   [A] 정상 케이스 → 진단 : history 에 5개 다 있음 / getSelectedWindowId() 정상
+		//   [B] 재현 케이스 → 진단 : history 비어 있음 / getSelectedWindowId() undefined
+		//        이어서 [프로그램 선택 시도] → 아무 일도 안 일어남 (증상 재현)
+		//        이어서 [응급 복구]        → 선택 정상 동작 (원인 확정)
+		// =========================================================================
+
+		var CHILD = "windowContainer_selectedWindowHistory_WAEA-1088_(WSQ-6436)_child.xml";
+
+		scwin.opened = { windowContainer1: [], windowContainer2: [] };
+
+		scwin.getWC = function(wcId) {
+			return (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+		};
+
+		scwin.log = function(msg) {
+			console.log(msg);
+			var box = document.getElementById("logBox");
+			if (box) { box.value = msg + "\n" + box.value; }
+		};
+
+		scwin.line = function() {
+			scwin.log("--------------------------------------------------");
+		};
+
+		// getSelectedWindowId() 안전 호출 래퍼.
+		//   selectedIndex 가 -1 이면 엔진이 TypeError 를 던지므로 그대로 부르면
+		//   호출한 함수가 통째로 중단된다. (실측: Cannot read properties of undefined)
+		scwin.safeSelectedWindowId = function(wc) {
+			try {
+				var v = wc.getSelectedWindowId();
+				return (typeof v === "undefined") ? "undefined" : v;
+			} catch (e) {
+				return "★ 예외발생(" + e.message + ") = 열린 탭의 id를 못 찾음";
+			}
+		};
+
+		// ── 창 생성 공통 ─────────────────────────────────────────────
+		//   createWindow(title, iconUrl, src, windowTitle, windowId, openAction,
+		//                closeAction, windowTooltip, windowHeaderHTML, options)
+		//   ※ windowHeaderHTML 이 9번째, options 가 10번째다. (가이드 표기와 다름)
+		scwin.makeWindows = function(wcId, count) {
+			var wc     = scwin.getWC(wcId);
+			var prefix = (wcId === "windowContainer1") ? "A" : "B";
+			scwin.closeAll(wcId);
+			for (var i = 1; i <= count; i++) {
+				var winId = prefix + "win" + i;
+				var title = prefix + "-창" + i;
+				wc.createWindow(title, null, CHILD, title, winId, "newWindow", "", "", "", {});
+				scwin.opened[wcId].push(winId);
+			}
+		};
+
+		scwin.closeAll = function(wcId) {
+			var wc  = scwin.getWC(wcId);
+			var ids = scwin.opened[wcId].slice();
+			for (var i = 0; i < ids.length; i++) { wc.closeWindow(ids[i]); }
+			scwin.opened[wcId] = [];
+		};
+
+		// ── [A] 정상 : 컨테이너가 보이는 상태에서 생성 ────────────────
+		scwin.btnMakeA_onclick = function() {
+			scwin.line();
+			scwin.makeWindows("windowContainer1", 5);
+			scwin.log("[A] 보이는 상태에서 창 5개 생성 완료 → 진단 눌러보세요.");
+		};
+
+		// ── [B] 재현 : 컨테이너를 숨긴 채로 생성한 뒤 표시 ────────────
+		//   실무에서는 탭/아코디언에 가려진 화면, 초기 레이아웃 전 onpageload 생성 등이 해당.
+		scwin.btnMakeB_onclick = function() {
+			scwin.line();
+			var wrap = document.getElementById("wrapB");
+			wrap.style.display = "none";                  // ← 컨테이너를 0 크기로
+			scwin.log("[B] 컨테이너 숨김(display:none) 상태로 전환");
+
+			scwin.makeWindows("windowContainer2", 5);
+			scwin.log("[B] 숨긴 상태에서 창 5개 생성 — selectWindow() 가 3673행에서 early return");
+
+			wrap.style.display = "";                      // ← 다시 표시
+			scwin.log("[B] 컨테이너 다시 표시 → 탭은 보이지만 history 는 비어 있음. 진단 눌러보세요.");
+		};
+
+		// ── 진단 : windows[] 와 selectedWindowHistory 차집합 ──────────
+		//   ※ selectedWindowHistory / windows / selectedIndex 는 엔진 내부 값으로
+		//     API 가이드에 없는 비공개 멤버다. 원인 확인 목적으로만 사용한다.
+		//     (공개 API 는 getSelectedWindowId() / getSelectedIndex() )
+		scwin.diagnose = function(wcId) {
+			var wc = scwin.getWC(wcId);
+			scwin.line();
+			scwin.log("### 진단 : " + wcId);
+			scwin.log("  컨테이너 크기  : " + wc.dom.window.offsetWidth + " x " + wc.dom.window.offsetHeight
+			          + (wc.dom.window.offsetWidth === 0 || wc.dom.window.offsetHeight === 0 ? "   ← 0 이면 addHistory 미실행" : ""));
+			scwin.log("  nowWindow      : " + wc.nowWindow);
+			scwin.log("  selectedIndex  : " + wc.getSelectedIndex());
+			scwin.log("  history        : [" + wc.selectedWindowHistory.join(", ") + "]  (" + wc.selectedWindowHistory.length + "건)");
+			scwin.log("  창 개수        : " + wc.windows.length + "건");
+
+			var missing = [];
+			for (var i = 0; i < wc.windows.length; i++) {
+				var w = wc.windows[i];
+				var inHistory = wc.selectedWindowHistory.indexOf(w.id) !== -1;
+				if (!inHistory) { missing.push(w.windowId); }
+				scwin.log("    - windowId=" + w.windowId + " / 내부id=" + w.id
+				          + " / inHistory=" + inHistory
+				          + " / minimized=" + w.window.windowInfo.minimized);
+			}
+
+			// 공개 API 결과 — 증상이 여기서 드러난다
+			//   ※ selectedIndex 가 -1 이면 this.windows[-1].windowId 접근으로
+			//     TypeError 가 "그대로 밖으로 던져진다". (undefined 반환이 아님 — 실측 확인)
+			//     따라서 호출부는 반드시 try/catch 로 감싸야 한다.
+			scwin.log("  getSelectedWindowId() → " + scwin.safeSelectedWindowId(wc));
+			scwin.log("  history 누락 창 : " + (missing.length ? "[" + missing.join(", ") + "]  ★ 이 창들이 선택 불가" : "없음"));
+		};
+
+		scwin.btnDiagA_onclick = function() { scwin.diagnose("windowContainer1"); };
+		scwin.btnDiagB_onclick = function() { scwin.diagnose("windowContainer2"); };
+
+		// ── 프로그램 선택 시도 (증상 재현의 핵심) ─────────────────────
+		//   기존 windowId 로 openAction="selectWindow" 를 주고 createWindow 를 호출하면
+		//   엔진은 __createWindow(2087행) → performAction("selectWindow") (2089행)
+		//        → selectNameLayer(winInfoObj.id) (2195행) 로 들어간다.
+		//   이때 history 에 그 id 가 없으면 아무 일도 일어나지 않는다.
+		scwin.btnSelectB_onclick = function() {
+			var wc     = windowContainer2;
+			var target = "Bwin2";
+			scwin.line();
+			scwin.log("[B] '" + target + "' 프로그램 선택 시도 (openAction=selectWindow)");
+			var before = wc.nowWindow;
+			wc.createWindow("B-창2", null, CHILD, "B-창2", target, "selectWindow", "", "", "", {});
+			var after = wc.nowWindow;
+			scwin.log("  nowWindow      : " + before + "  →  " + after);
+			scwin.log("  getSelectedWindowId() → " + scwin.safeSelectedWindowId(wc));
+			scwin.log(before === after
+				? "  ★ 변화 없음 = selectNameLayer 가 history 무매칭으로 조용히 무시됨 (증상 재현)"
+				: "  정상 선택됨");
+		};
+
+		// ── 응급 복구 : history 를 직접 채워 넣고 다시 선택 ───────────
+		//   addHistory() 는 비공개 내부 메서드다. 원인 확정용 실험이며,
+		//   운영 적용은 엔진팀 정식 수정(핫픽스)으로 받는 것이 맞다.
+		scwin.btnRepairB_onclick = function() {
+			var wc = windowContainer2;
+			scwin.line();
+			scwin.log("[B] 응급 복구 : 누락된 창을 history 에 직접 주입");
+			for (var i = 0; i < wc.windows.length; i++) {
+				var w = wc.windows[i];
+				if (wc.selectedWindowHistory.indexOf(w.id) === -1) {
+					wc.addHistory(w.id);
+					scwin.log("  addHistory(" + w.id + ")  ← " + w.windowId);
+				}
+			}
+			scwin.log("  복구 후 history = [" + wc.selectedWindowHistory.join(", ") + "]");
+			scwin.log("  이제 [프로그램 선택 시도] 를 다시 눌러보세요 → 정상 동작하면 원인 확정.");
+		};
+
+		scwin.btnCloseAll_onclick = function() {
+			scwin.closeAll("windowContainer1");
+			scwin.closeAll("windowContainer2");
+			scwin.line();
+			scwin.log("전체 창 닫기 완료");
+		};
+
+		scwin.btnClearLog_onclick = function() {
+			var box = document.getElementById("logBox");
+			if (box) { box.value = ""; }
+		};
+
+		scwin.onpageload = function() {
+			scwin.log("windowContainer selectedWindowHistory 재현 샘플");
+			scwin.log("순서 : [A] 생성 → [A] 진단  /  [B] 생성 → [B] 진단 → 선택 시도 → 응급 복구 → 선택 시도");
+		};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+
+		<div style="padding:8px 10px;font-size:13px;line-height:1.7;">
+			<b style="font-size:15px;">windowContainer — 열려 있는 탭의 id를 못 찾는 문제 재현</b><br />
+			<span style="color:#555;">
+				원인 : 창 생성 시 컨테이너가 0 크기면 <code>selectWindow()</code> 가 즉시 return 하여
+				<code>addHistory()</code> 가 실행되지 않고, 그 결과 <code>selectNameLayer()</code> 가
+				history 무매칭으로 선택 요청을 조용히 무시한다.
+			</span>
+		</div>
+
+		<!-- ── [A] 정상 케이스 ───────────────────────────────────── -->
+		<div style="padding:6px 10px;">
+			<b>[A] 정상 — 컨테이너가 보이는 상태에서 생성</b>
+			<xf:trigger type="button" id="btnMakeA" ev:onclick="scwin.btnMakeA_onclick" style="height:23px;margin-left:8px;">
+				<xf:label>A 창 5개 생성</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnDiagA" ev:onclick="scwin.btnDiagA_onclick" style="height:23px;">
+				<xf:label>A 진단</xf:label>
+			</xf:trigger>
+		</div>
+		<w2:windowContainer id="windowContainer1"
+			useCloseButton="true"
+			useFixButton="true"
+			nameLayerMove="true"
+			windowMaxNum="30"
+			defaultWidth="260px" defaultHeight="140px"
+			style="position:relative;width:960px;height:230px;margin:0px 0px 10px 10px;border:solid 1px gray;"
+			frameMode="wframe">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+
+		<!-- ── [B] 재현 케이스 ───────────────────────────────────── -->
+		<div style="padding:6px 10px;">
+			<b style="color:#c00;">[B] 재현 — 숨긴 상태에서 생성한 뒤 표시</b>
+			<xf:trigger type="button" id="btnMakeB" ev:onclick="scwin.btnMakeB_onclick" style="height:23px;margin-left:8px;">
+				<xf:label>B 창 5개 생성(숨김→표시)</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnDiagB" ev:onclick="scwin.btnDiagB_onclick" style="height:23px;">
+				<xf:label>B 진단</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnSelectB" ev:onclick="scwin.btnSelectB_onclick" style="height:23px;">
+				<xf:label>Bwin2 프로그램 선택 시도</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnRepairB" ev:onclick="scwin.btnRepairB_onclick" style="height:23px;">
+				<xf:label>응급 복구(addHistory 주입)</xf:label>
+			</xf:trigger>
+		</div>
+		<div id="wrapB">
+			<w2:windowContainer id="windowContainer2"
+				useCloseButton="true"
+				useFixButton="true"
+				nameLayerMove="true"
+				windowMaxNum="30"
+				defaultWidth="260px" defaultHeight="140px"
+				style="position:relative;width:960px;height:230px;margin:0px 0px 10px 10px;border:solid 1px #c00;"
+				frameMode="wframe">
+				<w2:windowToolbar>
+					<w2:controlIconLayer>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+					</w2:controlIconLayer>
+					<w2:nameLayer></w2:nameLayer>
+					<w2:selectedNameLayer></w2:selectedNameLayer>
+				</w2:windowToolbar>
+			</w2:windowContainer>
+		</div>
+
+		<!-- ── 로그 ──────────────────────────────────────────────── -->
+		<div style="padding:6px 10px;">
+			<xf:trigger type="button" id="btnCloseAll" ev:onclick="scwin.btnCloseAll_onclick" style="height:23px;">
+				<xf:label>전체 닫기</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnClearLog" ev:onclick="scwin.btnClearLog_onclick" style="height:23px;">
+				<xf:label>로그 지우기</xf:label>
+			</xf:trigger>
+		</div>
+		<textarea id="logBox" readonly="readonly"
+			style="width:960px;height:230px;margin:0px 0px 10px 10px;font-family:Consolas,monospace;font-size:12px;line-height:1.5;"></textarea>
+
+	</body>
+</html>

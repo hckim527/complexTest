@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection>
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col0" name="name4"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col1" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col2" name="name2"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="col3" name="name3"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.setColumnID = function(obj) {
+    //debugger;
+    var column = {};
+    var columnArr = [];
+    var gridHeader = "",
+        gridBody = "";
+    //json의 첫번째 데이터에서 컬럼의 id와 개수 정보 확
+    for (var k in obj[0]) {
+        //dataList를 동적으로 만들기 위한 컬럼 정
+        column = {};
+        column["id"] = k;
+        column["dataType"] = "text";
+        columnArr.push(column);
+        //gridView의 컬럼 정보 정의
+        gridHeader += '<w2:column blockSelect="false" id="' + 'h' + k + '" style="height:20px" inputType="text" width="70" value="' + k + '" useFilter="true"></w2:column>';
+        if (k == 'col1') {
+            gridBody += '<w2:column blockSelect="false" id="' + k + '" style="height:20px" inputType="text" width="70" useFilter="true"></w2:column>'
+        } else {
+            gridBody += '<w2:column blockSelect="false" id="' + k + '" style="height:20px" inputType="text" width="70" useFilter="true"></w2:column>'
+        }
+    }
+    //gridView 정보 정의 
+    //xml 형식을 정의 하면 <w2:gridView 에 xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" 포함 합니다.
+    var gridStr = '<w2:gridView xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" dataList="dataList1" scrollByColumn="false" id="gridView1" style="width: 300px;height: 350px;" fixedColumnWithHidden="true" useShiftKey="false" ev:ongroupby="scwin.ongroupby" groupbyZone="true" groupbyFilterBox="true" customFilterBox="true" useFilterList="true" rowNumWidth="" >' +
+        '<w2:header id="header1" style="">' +
+        '<w2:row id="row1" style="">' +
+        gridHeader +
+        '</w2:row>' +
+        '</w2:header>' +
+        '<w2:gBody id="gBody1" style="">' +
+        '<w2:row id="row2" style="">' +
+        gridBody +
+        '</w2:row>' +
+        '</w2:gBody>' +
+        '</w2:gridView>';
+    gridView1.setGridStyle(WebSquare.xml.parse(gridStr, true));
+    dataList1.setJSON(obj);
+}
+scwin.ongrp = function(options) {
+    options.groupbyHeader = [];
+    options.groupbyFooter = [];
+    gridView1.groupby(options);
+};
+scwin.ongroupby = function(options) {
+    options.groupbyHeader = [];
+    options.groupbyFooter = [];
+    options.hideFooter = true;
+    this.groupby(options);
+    return false;
+}
+scwin.___isCheckLog = function() {
+    return WebSquare.logger.getErrorLog() == "";
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_groupbyFilterBox_select_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. groupbyFilterBox에 'ALL'또는 '전체'부분이 나타나지 않는다.(기능개선 전에는 'ALL'또는 '전체'부분이 나타남)
+    //1. 'ALL' or 'ALL' parts do not appear in groupbyFilterBox ('ALL' or 'ALL' parts appear before improvement)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_groupbyFilterBox_select_label').innerText != 'ALL'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_groupbyFilterBox_select_itemTable_0') == null", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.___isCheckLog()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData1 = [{
+        "col0": "0",
+        "col1": "test",
+        "col2": "test",
+        "col3": "test",
+        "col4": "test4",
+        "col5": "test5",
+        "col6": "test"
+    }, {
+        "col0": "01",
+        "col1": "test",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "01",
+        "col1": "test1",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "02",
+        "col1": "test1",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "02",
+        "col1": "test2",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "02",
+        "col1": "test2",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "03",
+        "col1": "test3",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "03",
+        "col1": "test3",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "03",
+        "col1": "test4",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "04",
+        "col1": "test4",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "04",
+        "col1": "test5",
+        "col2": "test",
+        "col3": "test"
+    }, {
+        "col0": "04",
+        "col1": "test5",
+        "col2": "test",
+        "col3": "test"
+    }];
+    dataList1.setJSON(jsonData1);
+    //dataList 에 넣을 json
+    //        scwin.setColumnID(jsonData1);
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 18-July-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false"
+    		id="gridView1" style="width:418px;height:400px;"
+    		groupbyZone="true" customFilter="true" groupbyFilterBox="true"
+    		ev:ongroupby="scwin.ongroupby" useFilterList="true"
+    		fixedColumnWithHidden="true" useShiftKey="false">
+    		<w2:caption id="caption1" style=""
+    			value="this is a grid caption.">
+    		</w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column7"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name4">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col0"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col1"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1"
+    		style="width: 80px;height: 23px;float : left;">
+    		<xf:label><![CDATA[동적그리드]]></xf:label>
+    		<script ev:event="onclick" type="javascript"><![CDATA[ 
+    			scwin.setColumnID(jsonData1);
+    		]]></script>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <!-- ListView에 바인딩될 DataList -->
+                <w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true"
+                    ev:ondataload="scwin.dataList1_ondataload"
+                    ev:oninsertrow="scwin.dataList1_oninsertrow"
+                    ev:onremoverow="scwin.dataList1_onremoverow"
+                    >
+                    <w2:columnInfo>
+                        <w2:column id="no" name="번호" dataType="text"></w2:column>
+                        <w2:column id="donateDt" name="기부일자" dataType="text"></w2:column>
+                        <w2:column id="applyDt" name="신청일자" dataType="text"></w2:column>
+                        <w2:column id="procDt" name="처리일자" dataType="text"></w2:column>
+                        <w2:column id="taxId" name="납세자번호" dataType="text"></w2:column>
+                        <w2:column id="donor" name="기부자명" dataType="text"></w2:column>
+                        <w2:column id="issueTp" name="발급유형" dataType="text"></w2:column>
+                        <w2:column id="donateTp" name="기부유형" dataType="text"></w2:column>
+                        <w2:column id="gubun" name="구분" dataType="text"></w2:column>
+                        <w2:column id="refNo" name="관리번호" dataType="text"></w2:column>
+                        <w2:column id="amt" name="금액" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+    scwin.generateRandomData();
+};
+
+// 100개 랜덤 데이터 생성
+scwin.generateRandomData = function (append) {
+    var data = [];
+    var issueTpArr = ["사업자등록번호", "주민등록번호"];
+    var donateTpArr = ["종교단체외(지정)", "특례(법정)", "고향사랑(재난지역)"];
+    var gubunArr = ["현금"];
+    var donorArr = ["단체테스트1", "단체테스트2", "일반과세사업자"];
+    
+    for (var i = 0; i < 100; i++) {
+        var month = "07";
+        var day = String(Math.floor(Math.random() * 28) + 1).padStart(2, "0");
+        var amt = Math.floor(Math.random() * 100000) + 1;
+        
+        // 납세자번호: 사업자번호 형태 또는 주민번호 형태
+        var taxId;
+        var issueTp = issueTpArr[Math.floor(Math.random() * issueTpArr.length)];
+        if (issueTp === "사업자등록번호") {
+            taxId = "101-22-345**";
+        } else {
+            taxId = String(Math.floor(Math.random() * 90000) + 10000) + "********";
+        }
+        
+        data.push({
+            no: String(i + 1),
+            donateDt: "2025." + month + "." + day + ".",
+            applyDt: "2025." + month + "." + day + ".",
+            procDt: "2025." + month + "." + day + ".",
+            taxId: taxId,
+            donor: donorArr[Math.floor(Math.random() * donorArr.length)],
+            issueTp: issueTp,
+            donateTp: donateTpArr[Math.floor(Math.random() * donateTpArr.length)],
+            gubun: gubunArr[Math.floor(Math.random() * gubunArr.length)],
+            refNo: String(Math.floor(Math.random() * 10) + 1),
+            amt: String(amt),
+        });
+    }
+    
+    dataList1.setJSON(data, append === true);
+    scwin.updateLoadMoreStatus();
+    console.log(append === true ? "100개 랜덤 데이터 append 완료!" : "100개 랜덤 데이터 생성 완료!");
+};
+
+scwin.onpageunload = function () {
+
+};
+
+// ============================================================================
+// Load More
+// ============================================================================
+
+scwin.btnLoadMore_onclick = function () {
+    var result = listView1.loadMore();
+    scwin.updateLoadMoreStatus(result);
+    checkAll.setValue("");
+};
+
+scwin.btnLoadMore20_onclick = function () {
+    var result = listView1.loadMore(20);
+    scwin.updateLoadMoreStatus(result);
+    checkAll.setValue("");
+};
+
+scwin.updateLoadMoreStatus = function(result) {
+    var viewRowCount = listView1.getViewRowCount();
+    var totalRowCount = dataList1.getRowCount();
+    var hasMore = result ? result.hasMore : viewRowCount < totalRowCount;
+    var statusLabel = "표시 " + viewRowCount + " / 전체 " + totalRowCount;
+
+    if (result) {
+        statusLabel += " (이전 " + result.oldRowCount + ", 현재 " + result.newRowCount + ")";
+    }
+
+    if (typeof tbxLoadMoreStatus !== "undefined" && tbxLoadMoreStatus && typeof tbxLoadMoreStatus.setLabel === "function") {
+        tbxLoadMoreStatus.setLabel(statusLabel);
+    }
+    if (typeof btnLoadMore !== "undefined" && btnLoadMore && typeof btnLoadMore.setDisabled === "function") {
+        btnLoadMore.setDisabled(!hasMore);
+    }
+    if (typeof btnLoadMore20 !== "undefined" && btnLoadMore20 && typeof btnLoadMore20.setDisabled === "function") {
+        btnLoadMore20.setDisabled(!hasMore);
+    }
+    if (typeof btnLoadMore !== "undefined" && btnLoadMore && typeof btnLoadMore.setLabel === "function") {
+        btnLoadMore.setLabel(hasMore ? "loadMore()" : "마지막 row까지 표시됨");
+    }
+};
+
+// ============================================================================
+// DataList 삽입 테스트
+// ============================================================================
+
+// setJSON: 전체 데이터 교체
+scwin.btnSetJSON_onclick = function (e) {
+    scwin.generateRandomData();
+};
+
+// setJSON append: 기존 데이터 뒤에 추가
+scwin.btnSetJSONAppend_onclick = function (e) {
+    scwin.generateRandomData(true);
+};
+
+// insertJSON: 특정 위치에 행 삽입
+scwin.btnInsertJSON_onclick = function (e) {
+    var data = [
+        { no: "INS", donateDt: "2025.07.30.", applyDt: "2025.07.30.", procDt: "2025.07.30.", taxId: "101-22-345**", donor: "신규추가테스트", issueTp: "사업자등록번호", donateTp: "종교단체외일반(지정)", gubun: "현금", refNo: "99", amt: "99999" }
+    ];
+    dataList1.insertJSON(0, data);  // 0번째 위치에 삽입
+};
+
+// setRowJSON: 특정 행 데이터 교체
+scwin.btnSetRowJSON_onclick = function (e) {
+    var cnt = dataList1.getRowCount();
+    if (cnt === 0) {
+        console.log("데이터가 없습니다.");
+        return;
+    }
+    var rowData = { no: "MOD", donateDt: "2025.07.30.", applyDt: "2025.07.30.", procDt: "2025.07.30.", taxId: "99999********", donor: "행교체테스트", issueTp: "주민등록번호", donateTp: "특례(법정)", gubun: "현금", refNo: "88", amt: "88888" };
+    dataList1.setRowJSON(0, rowData, true);  // 0번째 행 교체
+};
+
+// ============================================================================
+// DataList 수정 테스트
+// ============================================================================
+
+// setCellData: 특정 셀 데이터 수정
+scwin.btnSetCellData_onclick = function (e) {
+    var cnt = dataList1.getRowCount();
+    if (cnt === 0) {
+        console.log("데이터가 없습니다.");
+        return;
+    }
+    dataList1.setCellData(0, "donor", "셀수정완료");  // 0번째 행의 donor 컬럼 수정
+};
+
+// ============================================================================
+// DataList 삭제 테스트
+// ============================================================================
+
+// removeRows: 여러 행 삭제
+scwin.btnRemoveRows_onclick = function (e) {
+    var cnt = dataList1.getRowCount();
+    if (cnt < 2) {
+        console.log("행이 2개 이상 필요합니다. 현재: " + cnt);
+        return;
+    }
+    dataList1.removeRows([0, 1]);  // 0, 1번째 행 삭제
+};
+
+// removeRow: 단일 행 삭제
+scwin.btnRemoveRow_onclick = function (e) {
+    var cnt = dataList1.getRowCount();
+    if (cnt === 0) {
+        console.log("데이터가 없습니다.");
+        return;
+    }
+    dataList1.removeRow(0);  // 0번째 행 삭제
+};
+
+// removeAll: 전체 삭제
+scwin.btnRemoveAll_onclick = function (e) {
+    dataList1.removeAll();
+};
+
+// ============================================================================
+// 체크박스 기능
+// ============================================================================
+
+// 전체선택 체크박스 변경 시
+scwin.checkAll_onchange = function(info) {
+    var isChecked = checkAll.getValue() === "1";
+    var viewRowCount = listView1.getViewRowCount();
+    
+    for (var i = 0; i < viewRowCount; i++) {
+        var chkComp = listView1.getCellComponentById(i, "checkbox1");
+        if (chkComp) {
+            chkComp.setValue(isChecked ? "1" : "");
+        }
+    }
+};
+
+// 선택삭제 버튼 클릭
+scwin.btnSelectDelete_onclick = function(e) {
+    var checkedIndexes = scwin.getCheckedRowIndexes();
+    if (checkedIndexes.length === 0) {
+        alert("선택된 행이 없습니다.");
+        return;
+    }
+    
+    // 역순으로 삭제해야 인덱스가 밀리지 않음
+    checkedIndexes.sort(function(a, b) { return b - a; });
+    for (var i = 0; i < checkedIndexes.length; i++) {
+        dataList1.removeRow(checkedIndexes[i]);
+    }
+    
+    // 전체선택 체크박스 해제
+    checkAll.setValue("");
+};
+
+// 선택된 행의 rowIndex 배열 가져오기
+scwin.getCheckedRowIndexes = function() {
+    var checkedIndexes = [];
+    var viewRowCount = listView1.getViewRowCount();
+    var firstRowIdx = listView1.getFirstRowIndex();
+    
+    for (var i = 0; i < viewRowCount; i++) {
+        var chkComp = listView1.getCellComponentById(i, "checkbox1");
+        if (chkComp && chkComp.getValue() === "1") {
+            checkedIndexes.push(firstRowIdx + i);  // 절대 인덱스 반환
+        }
+    }
+    return checkedIndexes;
+};
+
+// ============================================================================
+// DataList 이벤트 테스트
+// ============================================================================
+
+// ondataload: DataList 데이터 전체 변경 시 (setJSON, setXML, setData 등)
+scwin.dataList1_ondataload = function() {
+    console.log("dataList1_ondataload: 데이터 로드 완료, 총 " + dataList1.getRowCount() + "건");
+    scwin.updateLoadMoreStatus();
+};
+
+// oninsertrow: DataList 행 추가 시 (insertJSON, insertRow 등)
+scwin.dataList1_oninsertrow = function(info) {
+    var insertedDataObj = info.insertedDataObj;
+    var insertedRows = Object.keys(insertedDataObj);
+    console.log("dataList1_oninsertrow: " + insertedRows.length + "건 추가됨, rowIndex=" + insertedRows.join(","));
+    scwin.updateLoadMoreStatus();
+};
+
+// onremoverow: DataList 행 삭제 시 (removeRow, removeRows, removeAll 등)
+scwin.dataList1_onremoverow = function(info) {
+    var removedDataObj = info.removedDataObj;
+    var removedRows = Object.keys(removedDataObj);
+    console.log("dataList1_onremoverow: " + removedRows.length + "건 삭제됨, rowIndex=" + removedRows.join(","));
+    scwin.updateLoadMoreStatus();
+};
+
+// ============================================================================
+// ListView 이벤트 테스트
+// ============================================================================
+
+// onadaptivechange: Adaptive 모드 변경 시
+scwin.listView1_onadaptivechange = function(mode) {
+    console.log("listView1_onadaptivechange: " + mode);
+};
+
+// ============================================================================
+// Adaptive 스타일 포맷터
+// ============================================================================
+/**
+ * adaptiveFormatter는 새로운 페이지 로드 시마다 호출 (PC, Mobile 모드에 따라 스타일 등 변경 가능)
+ */
+scwin.listView1_adaptiveFormatter = function(info) {
+    var mode = info.mode;
+    if (mode === "mobile") {
+        for (var i = 0; i < info.rows.length; i++) {
+            var row = info.rows[i];
+            var viewIndex = row.viewIndex;
+            var rowElement = $p.getComponentById(row.elementId);
+            // 모바일 뷰에서 원하는 동작 작성
+        }
+    }
+};
+
+]]></script>
+
+	<style type="text/css"><![CDATA[
+
+/* ============================================================================
+   기존 스타일 재정의
+   ============================================================================ */
+
+.w2group {
+    background-color: unset;
+}
+
+/* 전체 컨테이너 - 둥근 모서리, 배경색, 패딩 */
+.w2listView {
+    border: none;
+    font: 14px "Pretendard GOV", NanumGothicRound, NotoSansKR, "맑은 고딕", "Malgun Gothic", sans-serif;
+}
+
+/* 헤더 영역 - 둥근 모서리, 배경색 */
+.w2listView_header {
+    border: 1px solid #c8ddd7;
+    border-radius: 6px;
+}
+
+/* 바디 영역 */
+.w2listView_body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin:10px 0 0;
+    border: none;
+}
+
+/* ============================================================================
+   행 스타일
+   ============================================================================ */
+
+/* 헤더 행 */
+.header_row {
+    display: flex;
+    height: 70px;
+}
+
+/* 바디 행 (반복부) */
+.body_row {
+    display: flex;
+    border: 1px solid #e1eeea;
+    border-radius: 6px;
+    height: 70px;
+}
+
+/* ============================================================================
+   셀 스타일
+   ============================================================================ */
+
+/* 기본 셀 */
+.cell {
+    padding: 8px 6px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    position: relative;
+}
+
+/* 셀 우측 구분선 */
+.cell::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background-color: #e7e7e7;
+}
+
+.cell:last-child::after {
+    display: none;
+}
+
+/* 체크박스 셀 */
+.cell_checkbox {
+    width: 40px;
+    flex-shrink: 0;
+}
+
+/* 가변 너비 셀 */
+.cell_flex {
+    min-width: 130px;
+    flex: 1;
+}
+
+/* 큰 너비 셀 */
+.cell_large {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+/* 작은 너비 셀 */
+.cell_small {
+    width: 70px;
+    flex-shrink: 0;
+}
+
+/* ============================================================================
+   폼 요소 스타일
+   ============================================================================ */
+
+/* 버튼 */
+.btn {
+    padding: 6px 12px;
+    border: 1px solid #C4CDD5;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    border-radius: 4px;
+}
+
+.btn:hover {
+    background: #f5f5f5;
+}
+
+/* ============================================================================
+   Load More
+   ============================================================================ */
+
+.load_more_wrapper {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    padding: 12px 0;
+}
+
+.load_more_status {
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+}
+
+.btn_load_more {
+    min-width: 120px;
+}
+
+.listview_noresult_message {
+    padding: 16px;
+    color: #666;
+    text-align: center;
+}
+
+/* ============================================================================
+   모바일 뷰 스타일
+   ============================================================================ */
+
+.w2listView_mobile_line {
+    height: 23px;
+}
+
+	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group id="grp_main" style="padding: 20px;">
+            
+            <!-- 페이지 타이틀 -->
+            <w2:textbox id="tbx_title" label="ListView loadMore + noResultMessage Sample" style="font-size: 18px; font-weight: bold; margin-bottom: 8px;"></w2:textbox>
+            
+            <!-- API 테스트용 버튼 영역 -->
+            <xf:group id="" class="top_btn_row" style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-bottom: 8px;">
+                <xf:trigger id="btnSetJSON" ev:onclick="scwin.btnSetJSON_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[setJSON(data)]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnSetJSONAppend" ev:onclick="scwin.btnSetJSONAppend_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[setJSON(data, true)]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnInsertJSON" ev:onclick="scwin.btnInsertJSON_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[insertJSON(0, data)]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnSetRowJSON" ev:onclick="scwin.btnSetRowJSON_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[setRowJSON(0, data, true)]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnSetCellData" ev:onclick="scwin.btnSetCellData_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[setCellData(0, "donor", "셀수정완료")]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            <xf:group id="" class="top_btn_row" style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-bottom: 8px;">
+                <xf:trigger id="btnSelectDelete" ev:onclick="scwin.btnSelectDelete_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[체크박스 선택 삭제]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnRemoveRows" ev:onclick="scwin.btnRemoveRows_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[removeRows([0, 1])]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnRemoveRow" ev:onclick="scwin.btnRemoveRow_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[removeRow(0)]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnRemoveAll" ev:onclick="scwin.btnRemoveAll_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[removeAll()]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            
+            <!-- ============================================
+                 ListView 컴포넌트
+                 ============================================ -->
+            <w2:listView id="listView1" 
+                class=""
+                style="width: 100%;height: auto;"
+                dataList="data:dataList1" 
+                
+                adaptive="true"
+                adaptiveThreshold="800"
+                adaptiveFormatter="scwin.listView1_adaptiveFormatter"
+
+                useFooter="false"
+                usePageList="false"
+                useLoadMore="true"
+                pageSize="5"
+                
+                noResultMessageVisible="true"
+                noResultMessage="표시할 데이터가 없습니다. setJSON(data) 버튼으로 데이터를 다시 생성할 수 있습니다."
+                noResultMessageClass="listview_noresult_message"
+                noResultMessageStyle="padding: 22px 16px; color: #333;"
+
+                ev:onadaptivechange="scwin.listView1_onadaptivechange"
+
+                >
+                <w2:columnInfo>
+                    <w2:header>
+                        <w2:column componentId="header_no"/>
+                        <w2:column componentId="header_donateDt"/>
+                        <w2:column componentId="header_applyDt"/>
+                        <w2:column componentId="header_procDt"/>
+                        <w2:column componentId="header_taxId"/>
+                        <w2:column componentId="header_donor"/>
+                        <w2:column componentId="header_issueTp"/>
+                        <w2:column componentId="header_donateTp"/>
+                        <w2:column componentId="header_gubun"/>
+                        <w2:column componentId="header_refNo"/>
+                        <w2:column componentId="header_amt"/>
+                    </w2:header>
+                    <w2:body>
+                        <w2:column componentId="no1" colId="no" headerComponentId="header_no"/>
+                        <w2:column componentId="donateDt1" colId="donateDt" headerComponentId="header_donateDt"/>
+                        <w2:column componentId="applyDt1" colId="applyDt" headerComponentId="header_applyDt"/>
+                        <w2:column componentId="procDt1" colId="procDt" headerComponentId="header_procDt"/>
+                        <w2:column componentId="taxId1" colId="taxId" headerComponentId="header_taxId"/>
+                        <w2:column componentId="donor1" colId="donor" headerComponentId="header_donor"/>
+                        <w2:column componentId="issueTp1" colId="issueTp" headerComponentId="header_issueTp"/>
+                        <w2:column componentId="donateTp1" colId="donateTp" headerComponentId="header_donateTp"/>
+                        <w2:column componentId="gubun1" colId="gubun" headerComponentId="header_gubun"/>
+                        <w2:column componentId="refNo1" colId="refNo" headerComponentId="header_refNo"/>
+                        <w2:column componentId="amt1" colId="amt" headerComponentId="header_amt"/>
+                    </w2:body>
+                </w2:columnInfo>
+                
+                <!-- Header 영역: 1회만 렌더링 -->
+                <w2:header id="header1" style="background-color: #eefbf7;">
+                    <xf:group id="grp_header" class="header_row" >
+                        <xf:group class="cell cell_checkbox">
+                            <xf:select appearance="full" id="checkAll" style="position: relative;width: 21px;height: 21px;" separator=","
+                                selectedindex="-1" cols="" rows="1"
+                                ev:onchange="scwin.checkAll_onchange">
+                                <xf:choices>
+                                    <xf:item>
+                                        <xf:label><![CDATA[]]></xf:label>
+                                        <xf:value><![CDATA[1]]></xf:value>
+                                    </xf:item>
+                                </xf:choices>
+                            </xf:select>
+                        </xf:group>
+                        <xf:group class="cell cell_small">
+                            <w2:textbox id="header_no" label="번호"></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell cell_large">
+                            <w2:textbox id="header_donateDt" label="기부일자"></w2:textbox>
+                            <w2:textbox id="header_applyDt" label="신청일자"></w2:textbox>
+                            <w2:textbox id="header_procDt" label="처리일자"></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell cell_flex">
+                            <w2:textbox id="header_taxId" label="납세자번호"></w2:textbox>
+                            <w2:textbox id="header_donor" label="기부자명"></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell cell_flex">
+                            <w2:textbox id="header_issueTp" label="발급유형"></w2:textbox>
+                            <w2:textbox id="header_donateTp" label="기부유형"></w2:textbox>
+                            <w2:textbox id="header_gubun" label="구분"></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell cell_large">
+                            <w2:textbox id="header_refNo" label="관리번호"></w2:textbox>
+                        </xf:group>
+                        <xf:group class="cell cell_flex">
+                            <w2:textbox id="header_amt" label="금액"></w2:textbox>
+                        </xf:group>
+                    </xf:group>
+                </w2:header>
+                
+                <!-- Body 영역: DataList Row 수만큼 반복 -->
+                <w2:lBody id="lBody1">
+                    <xf:group id="grp_row" class="body_row">
+                        <!-- 체크박스 -->
+                        <xf:group class="cell cell_checkbox">
+                            <xf:select id="checkbox1" selectedindex="-1" appearance="full" style="width: 21px;height: 21px;">
+                                <xf:choices>
+                                    <xf:item>
+                                        <xf:label><![CDATA[]]></xf:label>
+                                        <xf:value><![CDATA[1]]></xf:value>
+                                    </xf:item>
+                                </xf:choices>
+                            </xf:select>
+                        </xf:group>
+                        <!-- 번호 -->
+                        <xf:group class="cell cell_small">
+                            <w2:textbox id="no1" label=""></w2:textbox>
+                        </xf:group>
+                        <!-- 날짜 정보 (다중 라인) -->
+                        <xf:group class="cell cell_large">
+                            <w2:textbox id="donateDt1" label=""></w2:textbox>
+                            <w2:textbox id="applyDt1" label=""></w2:textbox>
+                            <w2:textbox id="procDt1" label=""></w2:textbox>
+                        </xf:group>
+                        <!-- 납세자번호, 기부자명 -->
+                        <xf:group class="cell cell_flex">
+                            <w2:textbox id="taxId1" label=""></w2:textbox>
+                            <w2:textbox id="donor1" label=""></w2:textbox>
+                        </xf:group>
+                        <!-- 발급유형 정보 (다중 라인) -->
+                        <xf:group class="cell cell_flex">
+                            <w2:textbox id="issueTp1" label=""></w2:textbox>
+                            <w2:textbox id="donateTp1" label=""></w2:textbox>
+                            <w2:textbox id="gubun1" label=""></w2:textbox>
+                        </xf:group>
+                        <!-- 관리번호 -->
+                        <xf:group class="cell cell_large" style="text-align: right;">
+                            <w2:textbox id="refNo1" label=""></w2:textbox>
+                        </xf:group>
+                        <!-- 금액 -->
+                        <xf:group class="cell cell_flex" style="align-items: center;">
+                            <xf:input id="amt1" style="width: 100px;height: 25px;text-align: right;font-size: 14px;" displayFormat="#,###"></xf:input>
+                        </xf:group>
+                    </xf:group>
+                </w2:lBody>
+                
+            </w2:listView>
+
+            <xf:group id="grp_loadMore" class="load_more_wrapper">
+                <w2:textbox id="tbxLoadMoreStatus" class="load_more_status" label="표시 0 / 전체 0"></w2:textbox>
+                <xf:trigger id="btnLoadMore" ev:onclick="scwin.btnLoadMore_onclick" type="button" class="btn btn_load_more">
+                    <xf:label><![CDATA[loadMore()]]></xf:label>
+                </xf:trigger>
+                <xf:trigger id="btnLoadMore20" ev:onclick="scwin.btnLoadMore20_onclick" type="button" class="btn">
+                    <xf:label><![CDATA[loadMore(20)]]></xf:label>
+                </xf:trigger>
+            </xf:group>
+            
+        </xf:group>
+    </body>
+</html>

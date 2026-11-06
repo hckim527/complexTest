@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<root>
+                		<ui>
+                		</ui>
+                		<response>
+                			<gridData>
+                				<gridData_row>
+                					<col1>11</col1>
+                					<col2>aaaaa</col2>
+                					<combo>
+                						<item>
+                							<label>aa</label>
+                							<value>11</value>
+                						</item>
+                						<item>
+                							<label>bb</label>
+                							<value>22</value>
+                						</item>
+                					</combo>
+                				</gridData_row>
+								<gridData_row>
+                					<col1>33</col1>
+                					<col2>bbbbb</col2>
+                					<combo>
+                						<item>
+                							<label>cc</label>
+                							<value>33</value>
+                						</item>
+                						<item>
+                							<label>dd</label>
+                							<value>44</value>
+                						</item>
+                					</combo>
+                				</gridData_row>                				
+                			</gridData>
+                		</response>
+                		
+                		<response2>
+							<gridData>
+                				<gridData_row>
+                					<col1>66</col1>
+                					<col2>ccccc</col2>
+                					<combo>
+                						<item>
+                							<label>ee</label>
+                							<value>55</value>
+                						</item>
+                						<item>
+                							<label>ff</label>
+                							<value>66</value>
+                						</item>
+                					</combo>
+                				</gridData_row>
+								<gridData_row>
+                					<col1>88</col1>
+                					<col2>ddddd</col2>
+                					<combo>
+                						<item>
+                							<label>gg</label>
+                							<value>77</value>
+                						</item>
+                						<item>
+                							<label>hh</label>
+                							<value>88</value>
+                						</item>
+                					</combo>
+                				</gridData_row>                				
+                			</gridData>
+                		</response2>
+                	</root>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {}		
+scwin.getType = function(info) {
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    if (colIndex == 0) {
+        debugger;
+        var inputType = "select";
+        var returnInfo;
+        switch (inputType) {
+            case "select":
+                returnInfo = {
+                    id: "dynamic_select_" + rowIndex + "_" + colIndex,
+                    inputType: "select",
+                    options: {
+                        viewType: "icon"
+                    },
+                    itemSet: {
+                        nodeset: "root/ui/gridData/gridData_row[" + (rowIndex + 1) + "]/combo/item",
+                        label: "label",
+                        value: "value"
+                    }
+                }
+                break;
+        }
+        return returnInfo;
+    }
+};
+
+]]></script>
+        
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    WebSquare.ModelUtil.removeInstanceNode("root/ui/gridData");
+    var xmlDoc = WebSquare.ModelUtil.findInstanceNode("root/response/gridData");
+    WebSquare.ModelUtil.setInstanceNode({
+        doc: xmlDoc,
+        xpath: "root/ui",
+        mode: "replaceAll"
+    });
+    grid1.setRef({
+        ref: "root/ui/gridData"
+    })
+};
+scwin.trigger2_onclick = function(e) {
+    WebSquare.ModelUtil.removeInstanceNode("root/ui/gridData");
+    var xmlDoc = WebSquare.ModelUtil.findInstanceNode("root/response2/gridData");
+    WebSquare.ModelUtil.setInstanceNode({
+        doc: xmlDoc,
+        xpath: "root/ui",
+        mode: "replaceAll"
+    });
+    grid1.setRef({
+        ref: "root/ui/gridData"
+    })
+};
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:grid baseNode="gridData" repeatNode="gridData_row" id="grid1" style="width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true" ref="root/ui/gridData" setCellInputType="false">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" removeBorderStyle="false" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="custom" width="70" value="" displayMode="label" typeGetter="scwin.getType"></w2:column>
+    				<w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[copy1]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[copy2]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

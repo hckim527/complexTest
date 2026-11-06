@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>		
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map"/>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	gen1.insertChild(0);
+
+    //gen1.getChild(0, "ipt1").setNextTabID(gen1.getChild(0, "ipt2"));
+	gen1.getChild(0, "ipt1").setNextTabID(gen1.getChild(0, "ipt2").id);
+};
+
+	scwin.simulateWrapper = function(target, type, options) {
+		WebSquare.wUnit.getJq(target).simulate(type, options);
+	}
+	scwin.setSimulate1 = function() {
+		scwin.simulateWrapper('#gen1_0_ipt2', 'key-sequence', {
+			sequence: '123456'
+		});
+	}
+	scwin.checkVal = function() {
+		return WebSquare.wUnit.getDomById('gen1_0_ipt3').classList.contains('w2input_focus');
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gen1_0_ipt2').click()");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		//WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gen1_0_ipt2').focus()");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="padding: 10px"><xf:group id="" tagname="section"><w2:textbox style="margin-bottom: 10px;" id="" label="generator를 이용하지 않을 경우 nextTabID가 정상 동작합니다. &lt;br/&gt;(처음 inputbox 부터 숫자 6개를 차례로 입력하면 다음 inputbox로 focus가 이동합니다.)" escape="false">
+    	</w2:textbox><xf:group style="padding: 10px;margin-top: 10px;" id="">
+    		<xf:input nextTabID="i2" maxByteLength="6" displayFormat="####-##" adjustMaxLength="false" style="width: 144px;height: 21px;margin-right:10px;" id="i1" autoFocus="true"></xf:input>
+    		<xf:input nextTabID="i3" maxByteLength="6" displayFormat="####-##" adjustMaxLength="false" style="width: 144px;height: 21px;margin-right:10px;" id="i2" autoFocus="true"></xf:input>
+    		<xf:input maxByteLength="6" displayFormat="####-##" adjustMaxLength="false" style="width: 144px;height: 21px;margin-right:10px;" id="i3" autoFocus="true"></xf:input>
+    	</xf:group></xf:group>
+    	
+    	
+    <xf:group id="" tagname="section"><w2:textbox style="margin-bottom: 10px;margin-top: 10px;" id="" label="1. generator에 inputbox를 3개 그린 후 각각의 inputBox에는 nextTabID, autoFocus, maxByteLength를 적용합니다.&lt;br/&gt;2. generator내에 inputbox에 nextTabID를 설정하면 에러가 발생합니다.&lt;br/&gt;3. setNextTabID API를 이용해도 동일하게 에러가 발생합니다." escape="false">
+    	</w2:textbox><w2:generator style="padding: 10px;" id="gen1">
+    		<xf:input nextTabID="ipt2" maxByteLength="6" displayFormat="####-##" adjustMaxLength="false" style="width: 144px;height: 21px;margin-right: 10px;" id="ipt1" autoFocus="true">
+    		</xf:input>
+    		<xf:input nextTabID="ipt3" maxByteLength="6" displayFormat="####-##" adjustMaxLength="false" style="width: 144px;height: 21px;margin-right: 10px;" id="ipt2" autoFocus="true">
+    		</xf:input>
+    		<xf:input maxByteLength="6" displayFormat="####-##" adjustMaxLength="false" style="width: 144px;height: 21px;" id="ipt3" autoFocus="true"></xf:input>
+
+    	</w2:generator></xf:group></xf:group></body>
+</html>

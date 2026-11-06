@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list"
+            		saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="label" name="name1"
+            				dataType="text">
+            			</w2:column>
+            			<w2:column id="value" name="name2"
+            				dataType="text">
+            			</w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<label><![CDATA[-10000]]></label>
+            				<value><![CDATA[-10000]]></value>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[2000]]></label>
+            				<value><![CDATA[2000]]></value>
+            			</w2:row>
+            			<w2:row>
+            				<label><![CDATA[30000]]></label>
+            				<value><![CDATA[30000]]></value>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    fusionchart1.exportJSChart("jpg");
+};
+scwin.trigger2_onclick = function(e) {
+    //alert(fusionchart1.getActionURI());
+    localStorage.setItem("log", fusionchart1.getActionURI());
+};
+scwin.trigger3_onclick = function(e) {
+    //alert(fusionchart1.setActionURI("test"));
+    log1 = fusionchart1.setActionURI("test");
+    localStorage.setItem("log1", fusionchart1.setActionURI("test"));
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 get버튼을 실행한다.
+    //1. Execute the get button after executing the sample file.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'engine/servlet/customexportFusionChart.jsp'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 get버튼을 실행한다.
+    //1. Execute the get button after executing the sample file.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    // verify step 1. 알림창에 'engine/servlet/customexportFusionChart.jsp'값이 보여진다.
+    //1. The 'engine / servlet / customexportFusionChart.jsp' value is displayed in the notification window.
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log1') == 'true'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. 다시 get버튼을 실행한다.
+    //3. Execute the get button again.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    // verify step 3. 알림창에 'test'값이 보여진다.
+    //3. The 'test' value is displayed in the notification window.
+    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log') == 'test'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.toptions = {
+        "startValue": "10000",
+        "color": "FF0030",
+        "displayValue": "TrendLine"
+    };
+    //fusionchart1.addTrendLine(toptions);
+    window.options = {
+        "caption": "Monthly revenue for last year",
+        "subCaption": "Harry's SuperMart",
+        "xAxisName": "Month",
+        "yAxisName": "Revenues (In USD)",
+        "placevaluesInside": "1",
+        "numberPrefix": "$",
+        "showXAxisLine": "10",
+        "theme": "fint",
+        "rotatevalues": "30",
+        "showValues": "true",
+        "numDivLines": "5",
+        "labelFontSize": "30"
+    };
+    fusionchart1.setChartAttribute(options);
+    fusionchart1.draw();
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 25-Jan-2018
+    window.isShow = (fusionchart1.getActionURI() == "engine/servlet/customexportFusionChart.jsp");
+    localStorage.removeItem("log");
+    localStorage.removeItem("log1");
+    //end unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:fusionchart seriesType="simple" runflashAt="IE6,IE7,IE8" id="fusionchart1" chartType="Column2D"
+    		style="position: relative;width: 500px;height: 300px;" drawType="javascript" accessibility="false" ref="data:dataList1"
+    		labelNode="label" valueNode="value" seriesNode="" actionURI="engine/servlet/customexportFusionChart.jsp">
+    	</w2:fusionchart>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[차트다운로드]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[get]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[set]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.simulateWrapper = function(target, type, options) {
+    WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+    scwin.simulateWrapper('#popup_window_wframe_header', 'drag', {
+        dx: -60,
+        dy: 0
+    });
+}
+scwin.checkVal = function() {
+	return WebSquare.wUnit.getJq('#popup_window_wframe_drag').css('display') === undefined;
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 1. 샘플파일 1번을 실행하고 createPopup_window_wframe' 버튼을 클릭한다.
+    //1. Run sample file 1 and click the 'createPopup_window_wframe' button.
+    //Verify step 1. A popup window named focusTest is displayed.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#popup_window_wframe').length == 1", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 팝업화면을 마우스로 드래그하여 5초 이상 누르면서 유지한다.
+    //2. Drag and hold the pop-up screen for 5 seconds or more.
+    //Verify step 2. The pop-up screen disappears after 5 seconds. At this time, the dotted line pop-up screen disappears normally (previously, it remained).
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "5000");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+ 
+scwin.onpageload = function() {
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 27-Apr-2018
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	
+        <xf:trigger type="button" id="trigger4" style="position: relative;width: 200px;height: 23px;">
+            <xf:label><![CDATA[CreatePopup_window_wframe]]></xf:label>
+            <script ev:event="onclick" type="javascript"><![CDATA[
+                if(WebSquare._xv !== "SP5"){requires("uiplugin.popup");}       
+                var opts = {
+                    "id" : "popup_window_wframe",
+                    "type" :  "window",
+                    "width" : 300 + "px",
+                    "height" : 300 + "px",
+                    "top" : 250, 
+                    "left" : 250,
+                    "popupName" : "focusTest",
+                    "modal" : false, 
+                    "useIFrame" : true,
+                    "title" : "focusTest",
+                    "frameMode" : "wframe"
+                };
+                WebSquare.util.openPopup("popup_gostLayer_SKT-715_(WSQ-2362)_popup.xml", opts);
+        ]]></script>
+        </xf:trigger>
+    </body>
+</html>
+ 

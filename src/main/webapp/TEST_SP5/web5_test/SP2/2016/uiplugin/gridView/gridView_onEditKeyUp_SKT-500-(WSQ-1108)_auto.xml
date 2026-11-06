@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[2]]></col2>
+            				<col3><![CDATA[3]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[a]]></col1>
+            				<col2><![CDATA[b]]></col2>
+            				<col3><![CDATA[c]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[l]]></col1>
+            				<col2><![CDATA[m]]></col2>
+            				<col3><![CDATA[n]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.gridView2_oneditkeyup = function(info) {
+    if (info.keyCode === 13) {
+        dataList1.insertRow();
+    }
+};
+scwin.fireDbClick = function(id) {
+    var node = WebSquare.wUnit.getDomById($p.id + id);
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.__isBackground = function() {
+    var color = WebSquare.wUnit.getJq("#gridView2_cell_0_2").css("background-color");
+    if (color.indexOf("rgb") < 0) {
+        return color == "#fca73c";
+    }
+    return color == "rgb(252, 167, 60)";
+}
+scwin.setVal = function() {
+    scwin.fireDbClick('gridView2_cell_0_1');
+}
+scwin.setSimulate1 = function() {
+    WebSquare.wUnit.getJq('#G_gridView2__col2').simulate('key-combo', {
+        combo: 'ENTER'
+    });
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify  1.  edit모드로 변경된다.
+    //1. Change to edit mode.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView2__col2').css('display')", "block");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 그 상태에서 EnterKey를 누른다.
+    //2. In that state, press EnterKey.
+    //WebSquare.wUnit.addCommand("set", "");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2.  readonly인 name3항목필드로 포커스가 이동되고 row가 추가된다.(이전에는 다음필드가 readonly일경우 row가 추가되지 않았음)
+    //2. The focus is moved to the readonly name3 item field and the row is added. (Previously the row was not added if the next field was readonly.)
+    WebSquare.wUnit.addCommand("assert", "scwin.__isBackground()", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView2_body_tbody tr').not('.w2grid_hidedRow').length == 4", "true");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 15-Mar-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="gridView2"
+    		style="position: absolute;width: 500px;height: 150px;" fixedColumnWithHidden="true" useShiftKey="true" ev:oneditkeyup="scwin.gridView2_oneditkeyup" enterKeyMove="right">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="text" width="70" allOption="" chooseOption="">
+    					<w2:choices>
+    						<w2:item>
+    							<w2:label><![CDATA[new row]]></w2:label>
+    							<w2:value><![CDATA[a]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[new row]]></w2:label>
+    							<w2:value><![CDATA[d]]></w2:value>
+    						</w2:item>
+    						<w2:item>
+    							<w2:label><![CDATA[new row]]></w2:label>
+    							<w2:value><![CDATA[s]]></w2:value>
+    						</w2:item>
+    					</w2:choices>
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text" readOnly="true"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

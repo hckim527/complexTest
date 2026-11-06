@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.inputCalendar1_onviewchange = function(info) {
+    console.log(info.oldValue + " " + info.newValue);
+};
+scwin.inputCalendar1_ondateselect = function(dateStr, dateObj) {
+    console.log(dateStr);
+};
+scwin.inputCalendar2_onviewchange = function(info) {
+    console.log(info.oldValue + " " + info.newValue);
+};
+scwin.inputCalendar2_ondateselect = function(dateStr, dateObj) {
+    console.log(dateStr);
+};
+scwin.calendar2_onclick = function(e) {
+    console.log("click");
+};
+scwin.inputCalendar13_ondateselect = function(dateStr, dateObj) {
+    if (dateStr) {
+        console.log(dateStr);
+        inputCalendar13.disableBeforeDate(dateStr);
+    }
+};
+scwin.inputCalendar14_ondateselect = function(dateStr, dateObj) {
+    if (dateStr) {
+        inputCalendar14.disableAfterDate(dateStr);
+    }
+};
+scwin.trigger1_onclick = function(e) {
+    inputCalendar13.enableAllDate();
+};
+scwin.trigger2_onclick = function(e) {
+    inputCalendar14.enableAllDate();
+};
+scwin.trigger3_onclick = function(e) {
+    inputCalendar15.enableAllDate();
+};
+scwin.__checkCal = function() {
+    var b = true
+    WebSquare.wUnit.getJq("#inputCalendar15_calendar_content table tbody td").each(function(i, el) {
+        if (WebSquare.wUnit.getJq(el).text() >= "11" && (WebSquare.wUnit.getJq(el).text() <= "27") && WebSquare.wUnit.getJq(el).hasClass("w2calendar_date_on")) {
+            if (WebSquare.wUnit.getJq(el).hasClass("w2calendar_date_disable")) {
+                console.log(1);
+                console.log(el);
+                b = false;
+            }
+        } else {
+            if (!WebSquare.wUnit.getJq(el).hasClass("w2calendar_date_disable")) {
+                b = false;
+            }
+        }
+    });
+    return b;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 상단의 inputCalendar를 클릭하거나 직접 입력한다.(예 : 20170915)
+    //1. After running the sample file, click the inputCalendar at the top or enter it manually (eg 20170915).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#inputCalendar15_input').val(20170915)");
+    WebSquare.wUnit.addCommand("pause", "100");
+    // verify step 1. inputCalendar의 값이 20170915로 입력되어진다.
+    //1. The value of inputCalendar is entered as 20170915.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar15_input').val()", "20170915");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. inputCalendar에 20170801을 입력 또는 선택하여 입력한 후 blur 이벤트를 발생시킨다.(포커스 아웃)
+    //2. Input or select 20170801 in inputCalendar, and then generate a blur event (focus out).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_img').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_header_last_month').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_calendar_cell_0_2').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_img').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. 비활성화 구간의 값입력 시 이전의 날짜로 돌아간다.(20170915)
+    //2. When entering the value of the inactive section, return to the previous date. (20170915)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar15_input').val()", "20170915");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Test step 3. IE6, IE7, IE8에서 inputCalendar 클릭 시 20170911 ~ 20170927 날짜만 활성화되는지 확인한다.
+    //3. In IE6, IE7, IE8, click on inputCalendar and check that only 20170911 ~ 20170927 date is activated.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_img').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 3. IE6, IE7, IE8에서 20170911 ~ 20170927 날짜만 활성화되고 이전날짜와 이후날짜는 비활성화되어진다
+    //3. In IE6, IE7, IE8, only date 20170911 ~ 20170927 will be activated, and previous date and future date will be inactive.
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkCal()", "true");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 09-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<style>
+		.w2calendar_date_disable{
+		color:gray;
+		}
+	</style>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="" style="position:absolute;top:345px;left:68px;width:837px;height:239px;">
+			<xf:group id="" style="position:absolute;top:77px;left:0px;width:818px;height:162px;">
+				<w2:inputCalendar renderType="component" id="inputCalendar13" renderDiv="true" footerDiv="false" disableDateValidSet="true"
+					ev:ondateselect="scwin.inputCalendar13_ondateselect" calendarValueType="yearMonthDate"
+					style="position: absolute;width:369px;height:84px;left:-2px;top:-14px;" rightAlign="false" weekStartsOn="0" focusOnDateSelect="false"
+					dateValidCheck="true" validCheck="true">
+				</w2:inputCalendar>
+				<w2:inputCalendar id="inputCalendar14" disableDateValidSet="true" renderType="component" dateValidCheck="true"
+					ev:ondateselect="scwin.inputCalendar14_ondateselect" footerDiv="false" renderDiv="true" calendarValueType="yearMonthDate"
+					style="position: absolute;width:369px;height:84px;left:448px;top:-15px;" rightAlign="false" weekStartsOn="0" focusOnDateSelect="false"
+					validCheck="true">
+				</w2:inputCalendar>
+				<xf:trigger id="trigger1" style="position: absolute;width:256px;height:47px;left:141px;top:104px;font-size:12pt;" ev:onclick="scwin.trigger1_onclick"
+					type="button">
+					<xf:label><![CDATA[inputCalendar13.enableAllDate()]]></xf:label>
+				</xf:trigger>
+				<w2:textbox label="전체 날짜 활성화 :" id="" style="position: absolute;width:174px;height:29px;left:426px;top:108px;font-size:13pt;">
+				</w2:textbox>
+				<xf:trigger id="trigger2" style="position: absolute;width:251px;height:46px;left:574px;top:107px;font-size:12pt;" ev:onclick="scwin.trigger2_onclick"
+					type="button">
+					<xf:label><![CDATA[inputCalendar14.enableAllDate()]]></xf:label>
+				</xf:trigger>
+				<w2:textbox id="" label="전체 날짜 활성화 :" style="position: absolute;width:174px;height:29px;left:-7px;top:109px;font-size:13pt;">
+				</w2:textbox>
+			</xf:group>
+			<w2:textbox id="" style="position: absolute;width:390px;height:62px;left:0px;top:1px;font-size:12pt;" label="ID: inputCalendar13&lt;br/&gt;날짜 선택 시 해당 날짜 기준 이전날짜 Disable처리&lt;br/&gt;[disableBeforeDate API]">
+			</w2:textbox>
+			<w2:textbox id="" style="position: absolute;width:390px;height:62px;left:447px;top:0px;font-size:12pt;" label="ID: inputCalendar14&lt;br/&gt;날짜 선택 시 해당 날짜 기준 이후날짜 Disable처리&lt;br/&gt;[disableAfterDate API]">
+			</w2:textbox>
+		</xf:group>
+		<xf:group id="" style="position:absolute;top:27px;left:60px;width:855px;height:246px;">
+			<w2:inputCalendar renderType="component" footerDiv="false" disableDateValidSet="true" 
+				weekStartsOn="0" disableBeforeDate="20170911" disableAfterDate="20170927"  id="inputCalendar15" renderDiv="true"
+				calendarValueType="yearMonthDate" style="position: absolute;width:369px;height:84px;left:10px;top:78px;" rightAlign="false"
+				focusOnDateSelect="false">
+			</w2:inputCalendar>
+			<xf:trigger id="trigger3" style="position: absolute;width:245px;height:47px;left:149px;top:199px;font-size:12pt;" ev:onclick="scwin.trigger3_onclick"
+				type="button">
+				<xf:label><![CDATA[inputCalendar15.enableAllDate()]]></xf:label>
+			</xf:trigger>
+			<w2:textbox id="" style="position: absolute;width:848px;height:77px;left:7px;top:0px;font-size:12pt;"
+				label="ID: inputCalendar15&lt;br/&gt;disableBeforeDate속성 값과 dsiableAfterDate속성 값 사이의 날짜만 활성화되고 나머지 날짜들은 비활성화 처리됨&lt;br/&gt;disableBeforeDate : 20170911&lt;br/&gt;disableAfterDate : 20170927&lt;br/&gt;">
+			</w2:textbox>
+			<w2:textbox id="" style="position: absolute;width:174px;height:29px;left:0px;top:200px;font-size:13pt;" label="전체 날짜 활성화 :">
+			</w2:textbox>
+		</xf:group>
+	</body>
+</html>
+ 

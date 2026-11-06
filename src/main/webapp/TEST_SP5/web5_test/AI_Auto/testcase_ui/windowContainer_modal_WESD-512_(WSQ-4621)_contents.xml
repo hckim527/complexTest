@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_programName="팝업 frameModal Test">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dma_params">
+            		<w2:keyInfo>
+            			<w2:key id="regCode" name="name1" dataType="text"></w2:key>
+            			<w2:key id="position" name="name2" dataType="text"></w2:key>
+            			<w2:key id="office" name="name3" dataType="text"></w2:key>
+            			<w2:key id="age" name="name4" dataType="text"></w2:key>
+            			<w2:key id="startDate" name="name5" dataType="text"></w2:key>
+            			<w2:key id="salary" name="name6" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<regCode><![CDATA[홍길동]]></regCode>
+            			<position><![CDATA[Chief Executive Officer (CEO)]]></position>
+            			<office><![CDATA[London]]></office>
+            			<age><![CDATA[33]]></age>
+            			<startDate><![CDATA[20180505]]></startDate>
+            			<salary><![CDATA[162700]]></salary>
+            		</w2:data>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {};
+scwin.onpageunload = function() {};
+scwin.onloadcompleted = function() {};
+scwin.btn_wframeModal_onclick = function(e) {
+    var url = "./windowContainer_modal_WESD-512_(WSQ-4621)_wframePopup.xml"
+    var data = {
+        paramsData1: dma_params.getJSON(),
+        paramsData2: "샘플파라미터",
+        callbackFn: "scwin.popupCallBack"
+    };
+    var options = {
+        id: "wframePop", // 팝업 id 에 '_'를 제외한 특수기호 사용 금지
+        popupName: "직원 조회", // 팝업 타이틀
+        width: 560,
+        height: 500,
+        modal: true,
+        top: "167px",
+        left: "187px",
+        frameModal: scwin.$w.getFrameId()
+    };
+    scwin.openPopup(scwin, url, options, data);
+};
+scwin.openPopup = function(scwin, url, opt, data) {
+    try {
+        var _dataObj = {
+            type: "json",
+            data: data,
+            name: "param"
+        };
+        var options = {
+            id: opt.id,
+            type: opt.type || "wframePopup",
+            width: opt.width,
+            height: opt.height,
+            top: opt.top,
+            left: opt.left,
+            popupName: opt.popupName || "",
+            modal: (opt.modal == false) ? false : true,
+            useModalStack: (opt.useModalStack == false) ? false : true,
+            style: opt.style || "",
+            srcData: opt.srcData || null,
+            destData: opt.destData || null,
+            dataObject: _dataObj,
+            xml: opt.xml || null,
+            resizable: (opt.resizable == false) ? false : true,
+            status: opt.status || false,
+            menubar: opt.menubar || false,
+            scrollbars: true,
+            title: opt.title || false,
+            useMaximize: opt.useMaximize || false,
+            useModalDisable: opt.useModalDisable || false,
+            closeAction: opt.closeAction || "",
+            className: opt.className || "",
+            fullscreen: opt.fullscreen || false,
+            useControl: opt.useControl || false,
+            foldOnMinimized: opt.foldOnMinimized || false,
+            controls: opt.controls || {
+                minimize: false,
+                maximize: false,
+                close: false
+            },
+            foldSize: opt.foldSize || {
+                width: 500
+            },
+            useATagBtn: opt.useATagBtn || false,
+            disableCloseButton: opt.disableCloseButton || false,
+            alwaysOnTop: opt.alwaysOnTop || false,
+            windowDragMove: opt.windowDragMove || false,
+            processMsgFrame: opt.processMsgFrame || false,
+            frameModal: opt.frameModal,
+            isPopupCloseAction: opt.isPopupCloseAction || false
+        };
+        if (options.type == "browserPopup") {
+            if (options.closeAction) {
+                _dataObj.data._menuInfo['closeAction'] = options.closeAction;
+            }
+            options.closeAction = ""
+        } else {
+            if (options.isPopupCloseAction) {
+                options.popupCloseAction = options.closeAction;
+                options.closeAction = "";
+            }
+        }
+        options.dataObject = _dataObj;
+        return scwin.$w.openPopup(url, options);
+    } catch (e) {
+        console.error("[com.cf.win._openPopup] Exception :: " + e);
+    }
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    /**
+     * 함수설명 : 버튼 클릭 이벤트 - wframe 팝업 (Modeless, frameModal:기본값)
+     */
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<xf:group tagname="section" id="" class="">
+    		<xf:group class="dfbox" id="" style="">
+    			<w2:textbox id="" label="frameModal 옵션으로 Dim 영역 설정" style="" tagname="h3"></w2:textbox>
+    		</xf:group>
+    		<xf:group style="" id="" class="tbbox">
+    			<xf:group tagname="table" style="" id="" class="w2tb tb">
+    				<w2:attributes>
+    					<w2:summary></w2:summary>
+    				</w2:attributes>
+    				<xf:group tagname="caption">디테일&amp;nbsp;테이블(1단)</xf:group>
+    				<xf:group tagname="colgroup">
+    					<xf:group tagname="col" style="width:25%;"></xf:group>
+    				</xf:group>
+    				<xf:group id="" tagname="thead"></xf:group><xf:group id="" tagname="tbody"><xf:group tagname="tr" style="">
+	<xf:group tagname="td" class="w2tb_td">
+		<w2:attributes></w2:attributes>
+		<xf:trigger class="btn_in" ev:onclick="scwin.btn_wframeModal_onclick" id="btn_wframeModal" style="" type="button">
+			<xf:label><![CDATA[case1 wframe Model]]></xf:label>
+		</xf:trigger>
+	</xf:group></xf:group></xf:group></xf:group>
+    		</xf:group>
+
+
+    	</xf:group>
+    </body>
+</html>
+ 

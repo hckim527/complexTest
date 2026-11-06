@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList baseNode="list" repeatNode="map" id="dlList" saveRemovedData="true" initRowPosition="0">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="vvd" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+                <w2:dataList baseNode="list" id="dlCode" repeatNode="map" style="" initRowPosition="">
+                    <w2:columnInfo>
+                        <w2:column dataType="text" id="code" name="code"></w2:column>
+                        <w2:column id="value" name="value" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection></w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.codeDate = [{
+            "code": "one",
+            "value": "1",
+        },
+        {
+            "code": "two",
+            "value": "2",
+        }
+    ];
+    dlCode.setJSON(scwin.codeDate);
+};
+scwin.gvGridList1_onviewchange = function(info) {
+    console.log(info);
+};
+scwin.onpageunload = function() {};
+scwin.btnAddRow_onclick = function() {
+    dlList.insertRow(0);
+    var selInfo = {
+        inputType: "select",
+        options: {
+            selectedData: "true",
+            viewType: "icon",
+            chooseOption: "true" //적용안됨.
+                ,
+            chooseOptionLabel: "- 선택 -"
+        },
+        itemSet: {
+            nodeset: "data:dlCode",
+            label: "code",
+            value: "value"
+        }
+    };
+    gvGridList1.setCellInputType(0, "col1", selInfo);
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnAddRow').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gvGridList1_cell_0_0').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2table_sb_row').length == 3", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group class="wrap" id="" style="">
+            <xf:trigger type="button" style="width: 80px;height: 23px;" id="btnAddRow" ev:onclick="scwin.btnAddRow_onclick">
+                <xf:label><![CDATA[add row]]></xf:label>
+            </xf:trigger>
+            <w2:gridView id="gvGridList1" style="width: 100%;height: 200px;" dataList="data:dlList" autoFit="none" rowStatusVisible="true"
+                class="cm_grid edit" ev:oncellclick="" ev:onrowstatusclick="" ev:oneditkeyup="" ev:oneditkeydown=""
+                ev:onviewchange="scwin.gvGridList1_onviewchange" dynamic="true" setCellInputTypeCustom="true">
+                <w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+                <w2:header style="" id="header1">
+                    <w2:row style="" id="row3">
+                        <w2:column removeBorderStyle="false" width="180" inputType="text" style="height:20px;" id="column10"
+                            value="inputType=&quot;custom&quot;&lt;br/&gt;setCellInputType =&gt; selecct&lt;br/&gt;(chooseOption = 'true')" blockSelect="false" displayMode="label">
+                        </w2:column>
+                        <w2:column removeBorderStyle="false" width="150" inputType="text" style="height:20px;" id="column12"
+                            value="selecct&lt;br/&gt;(chooseOption = 'true')" blockSelect="false" displayMode="label">
+                        </w2:column>
+                        <w2:column removeBorderStyle="false" width="150" inputType="text" style="height:20px;" id="column14" value="selecct&lt;br/&gt;(chooseOption = 'false')"
+                            blockSelect="false" displayMode="label">
+                        </w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody style="height:20px" id="gBody1">
+                    <w2:row style="" id="row2">
+                        <w2:column removeBorderStyle="false" width="180" inputType="custom" style="" id="col1" value="" blockSelect="false"
+                            displayMode="label" chooseOption="" chooseOptionLabel="">
+                        </w2:column>
+                        <w2:column removeBorderStyle="false" width="150" inputType="select" style="" id="col2" value="" blockSelect="false"
+                            displayMode="label" allOption="" chooseOption="true" ref="" chooseOptionLabel="- 선택 -" viewType="icon">
+                            <w2:choices>
+                                <w2:itemset nodeset="data:dlCode">
+                                    <w2:label ref="code"></w2:label>
+                                    <w2:value ref="value"></w2:value>
+                                </w2:itemset>
+                            </w2:choices>
+                        </w2:column>
+                        <w2:column removeBorderStyle="false" width="70" inputType="select" style="" id="col3" value="" blockSelect="false"
+                            displayMode="label" allOption="" chooseOption="false" ref="" chooseOptionLabel="">
+                            <w2:choices>
+                                <w2:item>
+                                    <w2:label><![CDATA[1]]></w2:label>
+                                    <w2:value><![CDATA[1]]></w2:value>
+                                </w2:item>
+                                <w2:item>
+                                    <w2:label><![CDATA[2]]></w2:label>
+                                    <w2:value><![CDATA[2]]></w2:value>
+                                </w2:item>
+                            </w2:choices>
+                        </w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+        </xf:group>
+    </body>
+
+</html> 

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dl_rcptInfo" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="false">
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkLog = function() {
+    //return WebSquare.logger.getErrorLog();
+    var log = WebSquare.logger.getLog()
+    return (log.indexOf("3===4") != -1) && (log.indexOf("2===2") != -1);
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkLog()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+            "col1": "1111",
+            "col2": "2222"
+        },
+        {
+            "col1": "3333",
+            "col2": "4444"
+        }
+    ];
+    dl_rcptInfo.setJSON(jsonData);
+    spn_cntGrpPrsts.setLabel("3");
+    spn_totCntGrpPrsts.setValue("4");
+    //alert(spn_cntGrpPrsts.getLabel() +"==="+ spn_totCntGrpPrsts.getValue() );
+    WebSquare.logger.printLog(spn_cntGrpPrsts.getLabel() + "===" + spn_totCntGrpPrsts.getValue());
+    //데이터리스트 dl_rcptInfo 의 행을 생성해놓고
+    spn_cntGrpPrsts.setLabel(dl_rcptInfo.getRowCount());
+    spn_totCntGrpPrsts.setValue(dl_rcptInfo.getRowCount());
+    //alert(spn_cntGrpPrsts.getLabel() +"==="+ spn_totCntGrpPrsts.getValue() );
+    WebSquare.logger.printLog(spn_cntGrpPrsts.getLabel() + "===" + spn_totCntGrpPrsts.getValue());
+    //데이터리스트 dl_rcptInfo 의 행을 생성해놓고 변수에 담아서
+    window.temp = dl_rcptInfo.getRowCount();
+    spn_cntGrpPrsts.setLabel(temp);
+    spn_totCntGrpPrsts.setValue(temp);
+    //alert(spn_cntGrpPrsts.getLabel() +"==="+ spn_totCntGrpPrsts.getValue() );
+    WebSquare.logger.printLog(spn_cntGrpPrsts.getLabel() + "===" + spn_totCntGrpPrsts.getValue());
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:span label="111" id="spn_cntGrpPrsts" style="" escape="true"></w2:span>
+    	<w2:span label="222" id="spn_totCntGrpPrsts" style="" escape="true"></w2:span>
+    </body>
+</html>
+ 

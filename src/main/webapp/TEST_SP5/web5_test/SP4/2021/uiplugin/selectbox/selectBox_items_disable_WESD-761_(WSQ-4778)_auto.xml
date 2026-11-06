@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList3" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList_execution" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+
+	scwin.onpageload = function() {
+		var data1 = [];
+		var data2 = [];
+		var data3 = [];
+		for (var i = 0; i < 20; i++) {
+			data1.push(i);
+			data1.push(i);
+			data1.push(i % 2);
+			data1.push(i % 3 ? true : false);
+			data2.push(i + "_c");
+			data2.push(i + "");
+			data2.push(i % 2);
+			data2.push(i % 3 ? true : false);
+			data3.push(i + "_a");
+			data3.push(i + "");
+			data3.push(i % 2);
+			data3.push(i % 3 ? true : false);
+		}
+		dataList1.setData(data1);
+		dataList2.setData(data2);
+		dataList3.setData(data3);
+		radio_comp.setSelectedIndex(0);
+		radio_func.setSelectedIndex(0);
+		radio_param.setSelectedIndex(0);
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	scwin.trigger_exec_onclick = function(e) {
+		$p.getComponentById(radio_comp.getValue())[radio_func.getValue()](radio_param.getValue());
+	};
+	
+	scwin.radio_func_onchange = function() {
+		if (radio_func.getValue() === "setNodeSet") {
+			dataList_execution.setData(["dataList1","data:dataList1","dataList2","data:dataList2","dataList3","data:dataList3"]);
+		} else {
+			dataList_execution.setData(["col3(짝수 row disable)","col3","col4(3의 배수 row disable)","col4"]);
+		}
+	};
+	
+	scwin.checkVal = function() {
+		return document.getElementsByClassName('w2selectbox_item_disabled').length != 0;
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger_exec').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectbox1_button').click()");
+		WebSquare.wUnit.addCommand("pause", "400");		
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+	]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<xf:group id="" style="height:480px;width:610px;">
+    		<xf:group id="" style="height:480px;width:300px;float:left;">
+    			<w2:textbox id="" style="width: 250px;height: 23px;font-size:14pt;font-weight:bold;" label="selectbox1"></w2:textbox>
+    			<xf:select1 disabledClass="w2selectbox_disabled" id="selectbox1" ref="" appearance="minimal"
+    				style="width:226px;height:55px;" direction="auto" chooseOption="true" allOption="true" submenuSize="auto" disabled="false">
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dataList1">
+    						<xf:label ref="col1"></xf:label>
+    						<xf:value ref="col2"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:select1>
+    			<w2:textbox id="" style="height: 23px;width:250px;font-size:14pt;font-weight:bold;" label="selectbox_native1"></w2:textbox>
+    			<xf:select1 disabledClass="w2selectbox_disabled" id="selectbox_native1" renderType="native" ref="" appearance="minimal"
+    				style="width:226px;height:55px;" direction="auto" chooseOption="true" allOption="true" submenuSize="auto" disabled="false">
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dataList1">
+    						<xf:label ref="col1"></xf:label>
+    						<xf:value ref="col2"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:select1>
+    			<w2:textbox id="" style="height: 23px;width:250px;font-size:14pt;font-weight:bold;" label="checkcombobox1"></w2:textbox>
+    			<xf:checkcombobox id="checkcombobox1" displayAllOptionLabel="false" ref="" appearance="minimal"
+    				style="height:55px;width:226px;" search="" direction="auto" chooseOption="" displayMode="label" allOption="" disabled="false"
+    				submenuSize="auto">
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dataList2">
+    						<xf:label ref="col1"></xf:label>
+    						<xf:value ref="col2"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:checkcombobox>
+    			<w2:textbox id="" style="height: 23px;width:250px;font-size:14pt;font-weight:bold;" label="autoComplete1"></w2:textbox>
+    			<w2:autoComplete id="autoComplete1" interactionMode="" useKeywordHighlight="false" ref="" style="height:55px;width:226px;"
+    				search="start" chooseOption="" allOption="" submenuSize="auto" editType="select">
+    				<w2:choices>
+    					<w2:itemset nodeset="data:dataList3">
+    						<w2:label ref="col1"></w2:label>
+    						<w2:value ref="col2"></w2:value>
+    					</w2:itemset>
+    				</w2:choices>
+    			</w2:autoComplete>
+    		</xf:group>
+    		<xf:group class="" id="" style="height: 480px;width: 300px;float:right;">
+    			<xf:trigger type="button" id="trigger_exec" style="width: 100px;height: 32px;font-size:16pt;" ev:onclick="scwin.trigger_exec_onclick">
+    				<xf:label><![CDATA[execute]]></xf:label>
+    			</xf:trigger>
+    			<w2:textbox label="실행 명령문 설정" id="" style="width: 250px;height: 32px;font-size:14pt;font-weight:bold;"></w2:textbox>
+    			<w2:textbox label="대상 component" id="" style="height: 23px;font-size:12pt;width:250px;"></w2:textbox>
+    			<xf:select1 appearance="full" id="radio_comp" style="width: 250px;height: 120px;" selectedIndex="-1" cols="" rows="" ref="">
+    				<xf:choices>
+    					<xf:item>
+    						<xf:label><![CDATA[selectbox1]]></xf:label>
+    						<xf:value><![CDATA[selectbox1]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[selectbox_native1]]></xf:label>
+    						<xf:value><![CDATA[selectbox_native1]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[checkcombobox1]]></xf:label>
+    						<xf:value><![CDATA[checkcombobox1]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[autoComplete1]]></xf:label>
+    						<xf:value><![CDATA[autoComplete1]]></xf:value>
+    					</xf:item>
+    				</xf:choices>
+    			</xf:select1>
+    			<w2:textbox label="실행 함수" id="" style="height: 23px;font-size:12pt;width:250px;"></w2:textbox>
+    			<xf:select1 appearance="full" id="radio_func" style="width: 250px;height:50px;" selectedIndex="-1" cols="" rows="" ref="" ev:onchange="scwin.radio_func_onchange">
+    				<xf:choices>
+    					<xf:item>
+    						<xf:label><![CDATA[setEnableColumn]]></xf:label>
+    						<xf:value><![CDATA[setEnableColumn]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[setNodeSet]]></xf:label>
+    						<xf:value><![CDATA[setNodeSet]]></xf:value>
+    					</xf:item>
+    				</xf:choices>
+    			</xf:select1>
+    			<w2:textbox label="전달 인자" id="" style="height: 23px;font-size:12pt;width:250px;"></w2:textbox>
+    			<xf:select1 appearance="full" id="radio_param" style="width: 250px;height:150px;" selectedIndex="-1" cols="" rows="" ref="">
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dataList_execution">
+    						<xf:label ref="col1"></xf:label>
+    						<xf:value ref="col2"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:select1>
+
+    		</xf:group>
+    	</xf:group></body>
+</html>

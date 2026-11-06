@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView2.setTopRowIndex(90);
+};
+scwin.trigger2_onclick = function(e) {
+    gridView2.setTopRowIndex(90, true);
+};
+scwin.trigger3_onclick = function(e) {
+    gridView2.setTopRowIndex(90, true, true);
+};
+scwin.gridView2_onscrollend = function(e) {
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    if (G < 2000) {
+        var u = [];
+        G = G + 20;
+        for (var i = 0; i < 20 * 3; i++) {
+            u.push(i);
+        }
+        dataList1.setData(u, true);
+    }
+    log1 = true;
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 2. 새로고침(F5)후 2번을 클릭한다.
+    //2. Click Refresh (F5) and then 2.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. 그리드 스크롤의 index가 90번째가 맨위로 보이게 이동되고 onscrollend이벤트가 발생하지 않아 콘솔창에 값이 보여지지 않는다.
+    //2. The index of the grid scroll is moved to the top so that the onscrollend event does not occur and the value is not displayed in the console window.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2').getTopRowIndex() == 90", "true");
+    WebSquare.wUnit.addCommand("assert", "log1", "false");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+
+scwin.onpageload = function() {
+    window.log1 = false;
+    window.G = 100;
+    window.u = [];
+    for (var i = 0; i < G * 3; i++) {
+        u.push(i);
+    }
+    dataList1.setData(u);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 28-Feb-2018
+    //End unitTest
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<!-- <w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" style="position: relative;width:348px;height:59px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" rowNumVisible="true" defaultCellHeight="27">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView> -->
+
+    	<w2:gridView dataList="dataList1" fixedColumnWithHidden="true" id="gridView2" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		rowNumVisible="true" scrollByColumn="false" style="position: relative;width:348px;height:331px;" useShiftKey="true" ev:onscrollend="scwin.gridView2_onscrollend" defaultCellHeight="27">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" style="height:20px" value="name1"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px" value="name2"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px" value="name3"
+    					width="70">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:20px" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+        <xf:group>
+            <xf:group>
+                
+                <xf:trigger type="button" id="trigger1" style="position: relative;width:200px;height:50px;margin-bottom:20px;" ev:onclick="scwin.trigger1_onclick">
+                    <xf:label><![CDATA[1번 setTopRowIndex(90);]]></xf:label>
+                </xf:trigger>
+                <w2:span label=" onscrollend 이벤트 발생 "/>
+            </xf:group>
+            <xf:group>               
+                <xf:trigger type="button" id="trigger2" style="position: relative;width:200px;height:50px;margin-bottom:20px;" ev:onclick="scwin.trigger2_onclick">
+                    <xf:label><![CDATA[2번 setTopRowIndex(90, true)]]></xf:label>
+                </xf:trigger>
+                 <w2:span label=" onscrollend 이벤트 발생안함 "/>
+            </xf:group>
+            <xf:group>               
+                <xf:trigger type="button" id="trigger3" style="position: relative;width:200px;height:50px;" ev:onclick="scwin.trigger3_onclick">
+                    <xf:label><![CDATA[3번 setTopRowIndex(90, true, true)]]></xf:label>
+                </xf:trigger>
+                 <w2:span label=" onscrollend 이벤트 발생안함 + 포커스 자동설정 "/>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>
+ 

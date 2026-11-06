@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    var jsonData = [{
+        "col1": "a1",
+        "col2": "a1"
+    }, {
+        "col1": "a2",
+        "col2": "a2"
+    }, {
+        "col1": "a3",
+        "col2": "a3"
+    }, {
+        "col1": "a4",
+        "col2": "a4"
+    }, {
+        "col1": "a5",
+        "col2": "a5"
+    }, {
+        "col1": "a6",
+        "col2": "a6"
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.onpageunload = function() {};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    // Step 1. 샘플실행 후 브라우저의 넓이를 줄인다.
+    // Step 1. Reduce the width of the browser after running the sample.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('body').css('width', '400px')");
+    //Step 2. autoComplete의 List의 넓이를 확인한다.
+    // Step 2. Check the width of the List of autoComplete.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#autoComplete1_button').click()");
+    //Verify 2. autoComplete의 List의 넓이가 줄어든 만큼 List size도 동일하게 줄어들어 보여진다. (이전에는 List size가 기존 넓이만큼 보여짐)
+    //Verify 2. As the width of the List of autoComplete is reduced, the List size is reduced to the same size.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#autoComplete1').css('width')", "120px");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#autoComplete1_gridViewItemTable').css('width') == '122px'", "true");
+	WebSquare.wUnit.addCommand("assert", "Math.abs(parseInt(WebSquare.wUnit.getJq('#autoComplete1_gridViewItemTable').css('width'), 10) - 122) <= 1", "true");
+    //Step 3. selectbox의 List의 넓이를 확인한다.
+    // Step 3. Check the width of the List in the selectbox.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#sel1_button').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#sel1').css('width')", "120px");
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#sel1_gridViewItemTable').css('width') == '122px'", "true");
+	WebSquare.wUnit.addCommand("assert", "Math.abs(parseInt(WebSquare.wUnit.getJq('#sel1_gridViewItemTable').css('width'), 10) - 122) <= 1", "true");	
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:autoComplete chooseOption="false" displayMode="label" editType="select" id="autoComplete1" interactionMode="" search="start"
+    		style="position: absolute ;left: 76px;top: 131px;width:30%;height:38px;" submenuSize="auto" useKeywordHighlight="false"
+    		visibleRowNum="5" direction="auto">
+    		<w2:choices>
+    			<w2:gridViewItemset autoFit="true" height="" hideHeader="" label="col1" nodeset="data:dataList1" rowMouseOver=""
+    				wheelStop="true"
+    				rowMouseOverColor="" selectedRowColor="" value="col2" visibleRowNum="" width="">
+    				<w2:item header="2" headerStyle="" hidden="" ref="col1" style=""></w2:item>
+    				<w2:item header="23" headerStyle="" hidden="" ref="col2" style=""></w2:item>
+    			</w2:gridViewItemset>
+    		</w2:choices>
+    	</w2:autoComplete>
+    	<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" chooseOption="false" displayMode="label" optionOrder="false"
+    		allOption="false" submenuSize="auto" direction="auto" id="sel1"
+    		style="position: absolute ;left:77px;top:283px;width:30%;height:38px;" disabled="false" renderType="component">
+    		<xf:choices>
+    			<w2:gridViewItemset autoFit="" selectedRowColor="" height="" visibleRowNum="" rowMouseOver="" width=""
+    				wheelStop="true"
+    				nodeset="data:dataList1" value="col2" rowMouseOverColor="" label="col1" hideHeader="">
+    				<w2:item ref="col1" style="" hidden="" headerStyle="" header="2"></w2:item>
+    				<w2:item ref="col2" style="" hidden="" headerStyle="" header="23"></w2:item>
+    			</w2:gridViewItemset>
+    		</xf:choices>
+    	</xf:select1>
+    	<w2:textbox label="autoComplete" id="" style="position: absolute ;left: 79px;top: 71px;width: 167px;height: 46px;"></w2:textbox>
+    	<w2:textbox label="selectbox" id="" style="position: absolute ;left:76px;top:225px;width: 155px;height: 42px;"></w2:textbox>
+    	<xf:trigger type="button" id="" style="position: absolute ;left: 82px;top: 2300px;width: 147px;height: 42px;">
+    		<xf:label></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

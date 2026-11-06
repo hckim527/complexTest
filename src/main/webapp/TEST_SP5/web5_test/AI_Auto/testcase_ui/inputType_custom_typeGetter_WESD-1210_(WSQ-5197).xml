@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" >
+				</data>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="inputTypeList">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList3" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="javascript" lazy="false"><![CDATA[
+		
+				var getType = function ( info ) {
+					
+					var rowIndex = info.rowIndex;
+					var colIndex = info.colIndex;
+	
+					var returnInfo;
+					var inputType = inputTypeList.getCellData( rowIndex, colIndex );
+	
+					switch(inputType) {
+						case "radio": 
+							returnInfo = {
+								id : "dynamic_radio_" + rowIndex + "_" + colIndex,
+								inputType : "radio",
+								options : {
+									groupName: "radio_"+rowIndex
+								}
+								
+							}
+							break;
+						case "checkbox":
+							returnInfo = {
+								id : "dynamic_checkbox_" + rowIndex + "_" + colIndex,
+								inputType : "checkbox",
+								options : {
+	
+								}
+								
+							} 
+							break;
+						case "button":
+							returnInfo = {
+								id : "dynamic_button_" + rowIndex + "_" + colIndex,
+								inputType : "button",
+								options : {
+	
+								}
+								
+							}
+							break;
+						case "calendar": 
+							returnInfo = {
+								id : "dynamic_calendar_" + rowIndex + "_" + colIndex,
+								inputType : "calendar",
+								options : {
+									viewType: "icon"
+								}
+								
+							}
+							break;
+						case "image": 
+							returnInfo = {
+								id : "dynamic_image_" + rowIndex + "_" + colIndex,
+								inputType : "image",
+								options : {
+									imageSrc : "s2.gif"
+								}
+								
+							}
+							break;
+						case "link": 
+							returnInfo = {
+								id : "dynamic_link_" + rowIndex + "_" + colIndex,
+								inputType : "link",
+								options : {
+	
+								}
+								
+							}
+							break;
+						case "select": 
+							returnInfo = {
+								id : "dynamic_select_" + rowIndex + "_" + colIndex,
+								inputType : "select",
+								options : {
+									viewType: "icon"
+								},
+								itemSet : {
+									nodeset: "data:dataList3", 
+									label: "label",
+									value: "value"
+								}
+								
+							}
+							break;
+						case "autoComplete": 
+							returnInfo = {
+								id : "dynamic_autoComplete_" + rowIndex + "_" + colIndex,
+								inputType : "autoComplete",
+								options : {
+									viewType: "icon"
+								},
+								itemSet : {
+									nodeset: "data:dataList3", 
+									label: "label",
+									value: "value"
+								}
+								
+							}
+							break;
+						case "checkcombobox": 
+							returnInfo = {
+								id : "dynamic_checkcombobox_" + rowIndex + "_" + colIndex,
+								inputType : "checkcombobox",
+								options : {
+									viewType: "icon"
+								},
+								itemSet : {
+									nodeset: "data:dataList3", 
+									label: "label",
+									value: "value"
+								}
+							
+							}
+							break;
+						case "textarea":
+							returnInfo = {
+								id : "dynamic_textarea_" + rowIndex + "_" + colIndex,
+								inputType : "textarea",
+								options : {
+	
+								}
+								
+							}
+							break;
+						case "text": 
+							returnInfo = {
+								id : "dynamic_text_" + rowIndex + "_" + colIndex,
+								inputType : "text",
+								options : {
+									
+								}
+								
+							}
+							break;
+						case "textImage": 
+							returnInfo = {
+								id : "dynamic_textImage_" + rowIndex + "_" + colIndex,
+								inputType : "textImage",
+								options : {
+									viewType: "icon",
+									imageSrc : "s.gif",
+									textAlign : "center"
+								}
+	
+							}
+							break;
+					}
+					
+					return returnInfo;
+				};		
+		
+			scwin.onpageload = function() {
+				var itemArr = [
+					{'label':'AA','value':'11'},
+					{'label':'BB','value':'22'},
+					{'label':'CC','value':'33'},
+					{'label':'DD','value':'44'}
+				];
+				dataList3.setJSON(itemArr);
+			
+				var dataArr = [
+				    "radio",
+					"checkbox",
+					"button",
+					"calendar",
+					"image",
+					"link",
+					"select",
+					"autoComplete",
+					"checkcombobox",
+					"textarea",
+					"text",
+					"textImage"
+				];
+	
+				var tempData = [];
+				var tempData2 = [];
+				for(var i = 0; i < 200; i++) {
+					var data = dataArr[ i % dataArr.length ];
+					var data2 = data;
+					if(data === "image") {
+						data2 = "s2.gif";
+					}
+					tempData.push(data);
+					tempData2.push(data2);
+				}
+				inputTypeList.setData(tempData.slice(0));			
+			
+				var jsonData = [{"col1":"radio","col2":"checkbox","col3":"button","col4":"calendar","col5":"s2.gif"},{"col1":"link","col2":"select","col3":"autoComplete","col4":"checkcombobox","col5":"textarea"},{"col1":"text","col2":"textImage","col3":"radio","col4":"checkbox","col5":"button"},{"col1":"calendar","col2":"s2.gif","col3":"link","col4":"select","col5":"autoComplete"},{"col1":"checkcombobox","col2":"textarea","col3":"text","col4":"textImage","col5":"radio"},{"col1":"checkbox","col2":"button","col3":"calendar","col4":"s2.gif","col5":"link"},{"col1":"select","col2":"autoComplete","col3":"checkcombobox","col4":"textarea","col5":"text"},{"col1":"textImage","col2":"radio","col3":"checkbox","col4":"button","col5":"calendar"},{"col1":"s2.gif","col2":"link","col3":"select","col4":"autoComplete","col5":"checkcombobox"},{"col1":"textarea","col2":"text","col3":"textImage","col4":"radio","col5":"checkbox"},{"col1":"button","col2":"calendar","col3":"s2.gif","col4":"link","col5":"select"},{"col1":"autoComplete","col2":"checkcombobox","col3":"textarea","col4":"text","col5":"textImage"},{"col1":"radio","col2":"checkbox","col3":"button","col4":"calendar","col5":"s2.gif"},{"col1":"link","col2":"select","col3":"autoComplete","col4":"checkcombobox","col5":"textarea"},{"col1":"text","col2":"textImage","col3":"radio","col4":"checkbox","col5":"button"},{"col1":"calendar","col2":"s2.gif","col3":"link","col4":"select","col5":"autoComplete"},{"col1":"checkcombobox","col2":"textarea","col3":"text","col4":"textImage","col5":"radio"},{"col1":"checkbox","col2":"button","col3":"calendar","col4":"s2.gif","col5":"link"},{"col1":"select","col2":"autoComplete","col3":"checkcombobox","col4":"textarea","col5":"text"},{"col1":"textImage","col2":"radio","col3":"checkbox","col4":"button","col5":"calendar"},{"col1":"s2.gif","col2":"link","col3":"select","col4":"autoComplete","col5":"checkcombobox"},{"col1":"textarea","col2":"text","col3":"textImage","col4":"radio","col5":"checkbox"},{"col1":"button","col2":"calendar","col3":"s2.gif","col4":"link","col5":"select"},{"col1":"autoComplete","col2":"checkcombobox","col3":"textarea","col4":"text","col5":"textImage"},{"col1":"radio","col2":"checkbox","col3":"button","col4":"calendar","col5":"s2.gif"},{"col1":"link","col2":"select","col3":"autoComplete","col4":"checkcombobox","col5":"textarea"},{"col1":"text","col2":"textImage","col3":"radio","col4":"checkbox","col5":"button"},{"col1":"calendar","col2":"s2.gif","col3":"link","col4":"select","col5":"autoComplete"},{"col1":"checkcombobox","col2":"textarea","col3":"text","col4":"textImage","col5":"radio"},{"col1":"checkbox","col2":"button","col3":"calendar","col4":"s2.gif","col5":"link"},{"col1":"select","col2":"autoComplete","col3":"checkcombobox","col4":"textarea","col5":"text"},{"col1":"textImage","col2":"radio","col3":"checkbox","col4":"button","col5":"calendar"},{"col1":"s2.gif","col2":"link","col3":"select","col4":"autoComplete","col5":"checkcombobox"},{"col1":"textarea","col2":"text","col3":"textImage","col4":"radio","col5":"checkbox"},{"col1":"button","col2":"calendar","col3":"s2.gif","col4":"link","col5":"select"},{"col1":"autoComplete","col2":"checkcombobox","col3":"textarea","col4":"text","col5":"textImage"},{"col1":"radio","col2":"checkbox","col3":"button","col4":"calendar","col5":"s2.gif"},{"col1":"link","col2":"select","col3":"autoComplete","col4":"checkcombobox","col5":"textarea"},{"col1":"text","col2":"textImage","col3":"radio","col4":"checkbox","col5":"button"},{"col1":"calendar","col2":"s2.gif","col3":"link","col4":"select","col5":"autoComplete"}];
+				dataList1.setJSON(jsonData);
+	
+	
+	gridView1.setColumnVisible("col2", false);
+
+			};
+			
+			scwin.onpageunload = function() {
+				
+			};
+
+		
+scwin.trigger1_onclick = function(e) {
+	gridView1.setColumnVisible("col2", false);
+};
+
+scwin.trigger2_onclick = function(e) {
+	gridView1.setColumnVisible("col2", true);
+
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<xf:group class="cont_wrap type1" id="" style="">
+			<xf:group class="grpbox" id="" style="">
+				<xf:group class="sub_cont" id="" style="">
+					<w2:gridView id="gridView1" style="width:705px;height:264px;" scrollByColumn="false" defaultCellHeight="20"
+						scrollByColumnAdaptive="false" dataList="data:dataList1" rowNumVisible="true" fixedColumn="4">
+						<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+						<w2:header style="" id="header2">
+							<w2:row style="" id="row3">
+								<w2:column removeBorderStyle="false" width="110" inputType="text" style="height:20px" id="column7"
+									value="name1" blockSelect="false" displayMode="label">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="110" inputType="text" style="height:20px" id="column6"
+									value="name2" blockSelect="false" displayMode="label">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="110" inputType="text" style="height:20px" id="column5"
+									value="name3" blockSelect="false" displayMode="label">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="110" inputType="text" style="height:20px" id="column4"
+									value="name4" blockSelect="false" displayMode="label">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="110" inputType="text" style="height:20px" id="column3"
+									value="name5" blockSelect="false" displayMode="label">
+								</w2:column>
+							</w2:row>
+						</w2:header>
+						<w2:gBody style="" id="gBody2">
+							<w2:row style="" id="row4">
+								<w2:column removeBorderStyle="false" width="70" inputType="custom" style="height:20px" id="col1" value=""
+									blockSelect="false" displayMode="label" typeGetter="getType">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="70" inputType="custom" style="height:20px" id="col2" value=""
+									blockSelect="false" displayMode="label" typeGetter="getType">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="70" inputType="custom" style="height:20px" id="col3" value=""
+									blockSelect="false" displayMode="label" typeGetter="getType">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="70" inputType="custom" style="height:20px" id="col4" value=""
+									blockSelect="false" displayMode="label" typeGetter="getType">
+								</w2:column>
+								<w2:column removeBorderStyle="false" width="70" inputType="custom" style="height:20px" id="col5" value=""
+									blockSelect="false" displayMode="label" typeGetter="getType">
+								</w2:column>
+							</w2:row>
+						</w2:gBody>
+					</w2:gridView>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+		<xf:trigger type="button" style="position:absolute;top:287px;left:202px;width:176px;height:38px;" id="trigger1"
+			ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[setColumnVisible="false"]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" style="position:absolute;top:285px;left:8px;width:180px;height:39px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[setColumnVisible="true"]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

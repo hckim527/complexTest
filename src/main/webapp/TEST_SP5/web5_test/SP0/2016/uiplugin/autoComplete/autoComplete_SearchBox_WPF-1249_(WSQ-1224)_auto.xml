@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<script type="javascript"><![CDATA[
+]]></script>
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
+     <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+         <xf:instance>
+          <data xmlns="" />
+         </xf:instance>
+         <w2:workflowCollection></w2:workflowCollection>
+         <w2:dataCollection>
+          <w2:dataList id="dl_cbo_CselCd" baseNode="list" saveRemovedData="true" repeatNode="map">
+           <w2:columnInfo>
+            <w2:column id="CODE" name="CODE" dataType="text"></w2:column>
+            <w2:column id="FULL_NM" name="FULL_NM" dataType="text"></w2:column>
+           </w2:columnInfo>
+          </w2:dataList> 
+         </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" src="/coweb/js/common.js"></script>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.simulateWrapper = function(target, type, options) {
+	WebSquare.wUnit.getJq(target).simulate(type, options);
+}
+scwin.setSimulate1 = function() {
+	scwin.simulateWrapper('#cbo_CselCd_input', 'key-sequence', {
+		sequence: '53'
+	});
+}
+scwin.setSimulate2 = function() {
+	scwin.simulateWrapper('#cbo_CselCd_input', 'key-combo', {
+		combo: 'DOWN_ARROW'
+	});
+}		
+scwin.setSimulate3 = function() {
+	scwin.simulateWrapper('#cbo_CselCd_itemTable_0', 'key-combo', {
+		combo: 'ENTER'
+	});
+}		
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cbo_CselCd_label').click()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#cbo_CselCd_input').val('')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 1. '53' 에 해당하는 데이터가 리스트에 출력된다.
+    //1. Data corresponding to '53' is output to the list.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#cbo_CselCd_input').val() == '53'", "true");
+    //Test step 2. 키보드 아래버튼을 누른다.
+    //2. Press the button below the keyboard.
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 2. 출력된 데이터리스트에서 이동된다.
+    //2. It is moved from the list of output data.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#cbo_CselCd_input').val() == '53010101 : 53010101 : '", "true");
+    //Test step 3. 임의의 데이터를 선택하고 엔터버튼을누른다.
+    //3. Select any data and press the Enter button.
+    WebSquare.wUnit.addCommand("set", "scwin.setSimulate3()");
+    WebSquare.wUnit.addCommand("pause", "100");
+    //Verify step 3. 임의의 데이터가 선택된다.
+    //3. Any data is selected.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('cbo_CselCd_label').innerText == '53010101 : 53010101 :'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    /*
+    	7/22 엔진부터 searchbox 에 값을 입력하여 아이템 리스트 팝업후 방향키로 선택시 첫번째 아이템이 무조건 선택됨
+    	WPF-1157 [휠라코리아] autoComplete searchTarget="both" 일때 label 검색 후 엔터 입력시 검색데이터와는 상관없이 첫번째 값 선택됨
+    */
+    dl_cbo_CselCd.setData(['53010101', '', '53030101', '']);
+    //cbo_CselCd.setItemSet("data:dl_cbo_CselCd","FULL_NM","CODE")
+    cbo_CselCd.setNodeSet("data:dl_cbo_CselCd", "FULL_NM", "CODE");
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+  <w2:autoComplete chooseOption="true" chooseOptionLabel="ALL" displayMode="value delim label" searchTarget="both" delimiter=" : " editType="select" id="cbo_CselCd" interactionMode="" search="start" submenuSize="auto" useKeywordHighlight="false" visibleRowNum="5" ref="data:search.strCselCd"  noResult="useData" style="width:300px;height:30px;">
+   <w2:choices>
+   </w2:choices>
+  </w2:autoComplete>    
+    </body>
+</html> 

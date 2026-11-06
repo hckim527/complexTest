@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+
+		//wUnit test를 위한 config.xml 설정
+		<w2:config>
+		<WebSquare>
+		<submission>
+            <externalHandler value="scwin.externalFunction"/>
+			<externalResponseHandler value="scwin.externalResponseFunction"/>
+		</submission>
+		</WebSquare>
+		</w2:config>
+
+
+
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1" dataType="text"></w2:column>
+        				<w2:column id="col2" name="name2" dataType="text"></w2:column>
+        				<w2:column id="col3" name="name3" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+        		<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="col1" name="name1" dataType="text"></w2:column>
+        				<w2:column id="col2" name="name2" dataType="text"></w2:column>
+        				<w2:column id="col3" name="name3" dataType="text"></w2:column>
+        			</w2:columnInfo>
+        			<w2:data use="true">
+        				<w2:row>
+        					<col1><![CDATA[11]]></col1>
+        					<col2><![CDATA[22]]></col2>
+        					<col3><![CDATA[33]]></col3>
+        				</w2:row>
+        				<w2:row>
+        					<col1><![CDATA[44]]></col1>
+        					<col2><![CDATA[55]]></col2>
+        					<col3><![CDATA[66]]></col3>
+        				</w2:row>
+        				<w2:row>
+        					<col1><![CDATA[77]]></col1>
+        					<col2><![CDATA[88]]></col2>
+        					<col3><![CDATA[99]]></col3>
+        				</w2:row>
+        			</w2:data>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="data:json,dataList1" target="data:json,dataList2" action="Submission_externalResponseHandler_WPFF-128_(WSQ-3277).json" method="post" mediatype="application/json"
+        		encoding="UTF-8" instance="" replace="" errorHandler="" customHandler="" mode="" processMsg="" ev:submit=""
+        		ev:submitdone="" ev:submiterror="" >
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.externalResponseFunction = function(value, submissionID) {
+    var test = '{"dataList2":[{"col1": "11","col2": "22","col3": "33"}]}';
+    //alert("decryptVal : " + test);
+    return test;
+};
+scwin.externalFunction = function(value, submissionID) {
+    //alert("암호화할 값:::"+value);
+    return value;
+    /*
+    암호화과정
+    var encryptVal = externalEncryptFunction(value);//업체제공 API연
+    return encryptVal;
+    */
+};
+scwin.trigger1_onclick = function(e) {
+    WebSquare.ModelUtil.executeSubmission("submission1");
+};
+scwin.checkVal1 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_0_0').text() == '11';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_0_1').text() == '22';
+}
+scwin.checkVal3 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_0_2').text() == '33';
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 0. config.xml의 submission항목에 설정추가(샘플파일에서 동작할수있게 추가되어 config.xml에서 설정 필요 없음)
+    //0. Added setting to submission item in config.xml (no need to set in config.xml because it is added to work in sample file)
+    //Verify step 0. <externalHandler value = 'scwin.externalFunction' /> <externalResponseHandler value = 'scwin.externalResponseFunction' />
+    //Test step 1. 샘플실행 후 'submission'버튼을 클릭하여 gridView에 복호화된 정상값이 보여지는지 확인
+    //1. After running the sample, click the 'submission' button to check whether the decoded normal value is displayed in gridView
+    //Verify step 1. The decoded values (11, 22, 33) are displayed normally.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 06-Mar-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList2" scrollByColumn="false" id="gridView1" style="position: absolute;width:231px;height:150px;left:41px;top:129px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true"
+    		ev:oncellclick="scwin.gridView1_oncellclick">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+    					value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column2" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" inputType="text" width="70" displayMode="label"
+    					value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody3" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute;width:202px;height:67px;left:284px;top:129px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[submission]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

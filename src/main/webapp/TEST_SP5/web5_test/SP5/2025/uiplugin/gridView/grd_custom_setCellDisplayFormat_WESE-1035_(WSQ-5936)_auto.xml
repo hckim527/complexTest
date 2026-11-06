@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="number"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        scwin.onpageload = function() {
+            
+            scwin.makeGrid();
+            //dataList1.setData(['data1','data2','data3']);
+            
+            var jsonData = [{"col1":"1","col2":"a", "col3":"10000"},{"col1":"2","col2":"a","col3":"10100000"},{"col1":"3", "col3":"1000000"}
+                            ,{"col1":"11","col2":"b", "col3":"1001.12"},{"col1":"22", "col3":"1002"},{"col1":"33", "col3":"1003"}
+                            ,{"col1":"111", "col3":"1004"},{"col1":"222","col2":"a", "col3":"1000"},{"col1":"333","col2":"b", "col3":"10001.01"}];
+            dataList1.setJSON(jsonData);
+            for(var i=0; i<dataList1.getRowCount(); i++){
+                var col2Val = dataList1.getCellData(i, "col2");
+                if(col2Val == "a"){
+                    gridView1.setCellDisplayFormat(i, "col3", "#,##0");
+                    gridView2.setCellDisplayFormat(i, "col3", "#,##0");
+                }else if(col2Val == "b"){
+                    gridView1.setCellDisplayFormat(i, "col3", "#,##0.00");
+                    gridView2.setCellDisplayFormat(i, "col3", "#,##0.00");
+                }
+            }
+        };
+        
+        scwin.gridView_displayFormatter = function(){
+            
+        }
+    
+    scwin.onpageunload = function() {
+        
+    };
+        scwin.makeGrid = function() {
+            var gridViewStr = "";
+            
+            gridViewStr +='<w2:gridView xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms" dataList="dataList1" dataDragSelect="true" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1" style="width: 500px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" rowNumVisible="true" rowNumWidth="50" rowNumHeaderValue="순번" fixedColumnWithHidden="true" useShiftKey="true" setCellInputTypeCustom="true">';
+            
+            gridViewStr +='<w2:header id="header1" style="">';
+            gridViewStr +='<w2:row id="row1" style="">'; //1번 헤더
+            
+            gridViewStr +='<w2:column blockSelect="false" id="column1" style="height:20px" inputType="text" width="70" displayMode="label" value="name1"></w2:column>';
+            gridViewStr +='<w2:column blockSelect="false" id="column2" style="height:20px" inputType="text" width="70" displayMode="label" value="name2"></w2:column>';
+            gridViewStr +='<w2:column blockSelect="false" id="column3" style="height:20px" width="70" inputType="text" displayMode="label" value="name3"></w2:column>';
+            
+            gridViewStr +='</w2:row>';
+
+            gridViewStr +='</w2:header>';
+            gridViewStr +='<w2:gBody id="gBody1" style="">';
+            gridViewStr +='<w2:row id="row2" style="">';
+            
+            gridViewStr +='<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>';
+            gridViewStr +='<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>';
+            gridViewStr +='<w2:column blockSelect="false" id="col3" style="height:20px" width="70" inputType="custom" dataType="number" displayMode="label"></w2:column>';
+            
+            gridViewStr +='</w2:row>';
+            gridViewStr +='</w2:gBody>';
+            
+            
+            gridViewStr +='</w2:gridView>';         
+            $p.dynamicCreate("gridView1", "gridView", gridViewStr, grp);
+
+        };
+
+	scwin.checkVal = function() {
+		const val1 = WebSquare.wUnit.getDomById('gridView1_cell_4_2').innerText;
+		const val2 = WebSquare.wUnit.getDomById('gridView1_cell_5_2').innerText;
+		return val1 == '1,000' && val2 == '10,001.01';
+	}	
+	scwin.unitTest = function() {
+		//init
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "1000");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_scrollY_div').scrollTop = 100");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");	
+		//Run  and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest()	        
+        
+        
+       ]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+        <xf:group style="width: 200px;height: 200px;" id="grp"></xf:group>
+        <w2:gridView checkAllType="false" defaultCellHeight="20"
+         setCellInputTypeCustom="true"
+         id="gridView2" style="width: 500px;height: 150px;" dataList="data:dataList1">
+            <w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+            <w2:header style="" id="header2">
+                <w2:row style="" id="row3">
+                    <w2:column width="70" inputType="text" style="" id="column5" value="name1" displayMode="label"></w2:column>
+                    <w2:column width="70" inputType="text" style="" id="column4" value="name2" displayMode="label"></w2:column>
+                    <w2:column width="70" inputType="text" style="" id="column3" value="name3" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody style="" id="gBody2">
+                <w2:row style="" id="row4">
+                    <w2:column width="70" inputType="text" style="" id="col1" value="" displayMode="label"></w2:column>
+                    <w2:column width="70" inputType="text" style="" id="col2" value="" displayMode="label"></w2:column>
+                    <w2:column width="70" inputType="custom" dataType="number" style="" id="col3" value="" displayMode="label"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>

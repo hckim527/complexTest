@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<label><![CDATA[1234567890]]></label>
+							<value><![CDATA[]]>
+							</value>
+						</w2:row>
+						<w2:row>
+							<label><![CDATA[1111111111]]></label>
+						</w2:row>
+						<w2:row>
+							<label><![CDATA[2222222222]]></label>
+						</w2:row>
+						<w2:row>
+							<label><![CDATA[3333333333]]></label>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<label><![CDATA[123]]></label>
+							<value><![CDATA[123]]></value>
+						</w2:row>
+						<w2:row>
+							<label><![CDATA[23]]></label>
+							<value><![CDATA[23]]></value>
+						</w2:row>
+						<w2:row>
+							<label><![CDATA[231]]></label>
+							<value><![CDATA[123]]></value>
+						</w2:row>
+						<w2:row>
+							<label><![CDATA[123]]></label>
+							<value><![CDATA[123]]></value>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<style>
+			.test{
+				text-overflow:ellipsis;
+			}
+
+			table {
+				table-layout:fixed;
+			}
+			table td {
+				width: 30px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		</style>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var img = WebSquare.wUnit.getDomById($p.id + id);
+    var img1 = img.getElementsByTagName("tr")[0];
+    var img2 = img1.getElementsByTagName("td")[1];
+    scwin.fireOver(img2);
+}
+scwin.checkValue = function(id, value) {
+    if (WebSquare.wUnit.getDomById($p.id + id).innerText == value) {
+        return true;
+    }
+    return false
+}
+scwin.checkNotDisplay = function(id) {
+    if (WebSquare.wUnit.getDomById($p.id + id) == null) {
+        return true;
+    }
+    return false
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. 샘플실행 후 tooltipDisplay=true 부분의 값에 마우스를 오버한다.
+    //1. After executing the sample, mouse over the value of the tooltipDisplay = true part.
+    //Verify step 1. The "1234567890" value is shown as a tooltip (normal)
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('checkbox4')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('checkbox4_tooltip', '1234567890')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. tooltipDisplay=true, tooltipItemLabel=tooltip 부분의 값에 마우스를 오버한다.
+    //2. Move the mouse over the value of tooltipDisplay = true, tooltipItemLabel = tooltip.
+    //Verify step 2. The 'tooltip' value is shown as a tooltip (normal)
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('checkbox5')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('checkbox5_tooltip', 'tooltip')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. elipsis 적용 안된경우 부분의 값에 마우스를 오버한다.
+    //3. If you do not apply elipsis, mouse over the value of the part.
+    //Verify step 3. Tooltip is not shown (normal)
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('checkbox6')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkNotDisplay('checkbox6_tooltip')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 23-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="" style="position:absolute;top:126px;left:58px;width:1018px;height:206px;"><xf:select id="checkbox4" cols="2" appearance="full" style="position: absolute;width:187px;height:197px;left:0px;top:9px; text-overflow:ellipsis;" tooltipDisplay="true" toolTip="" class="test" selectedindex="-1" rows="">
+			<xf:choices>
+				<xf:itemset nodeset="data:dataList1">
+					<xf:label ref="label"></xf:label>
+					<xf:value ref="value"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select><xf:select id="checkbox6" cols="2" appearance="full" style="position: absolute;width:187px;height:197px;left:831px;top:0px; text-overflow:ellipsis;" tooltipDisplay="true" toolTip="" selectedindex="-1" class="test" rows="">
+			<xf:choices>
+				<xf:itemset nodeset="data:dataList2">
+					<xf:label ref="label"></xf:label>
+					<xf:value ref="value"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select><xf:select id="checkbox5" cols="2" appearance="full" style="position: absolute;width:187px;height:197px;left:424px;top:4px; text-overflow:ellipsis;" tooltipDisplay="true" toolTip="" selectedindex="-1" class="test" tooltipItemLabel="tooltip" rows="">
+			<xf:choices>
+				<xf:itemset nodeset="data:dataList1">
+					<xf:label ref="label"></xf:label>
+					<xf:value ref="value"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select></xf:group><w2:textbox label='1. tooltipDisplay = "true" 설정한 경우' id=""
+			style="position: absolute;width:328px;height:38px;left:39px;top:79px;font-size:14pt;">
+		</w2:textbox>
+		<w2:textbox label="3. ellipsis 적용 안된 경우" id=""
+			style="position: absolute;width:353px;height:37px;left:870px;top:81px;font-size:14pt;">
+		</w2:textbox>
+		<w2:textbox id="" label='2. tooltipDisplay = "true"&lt;br/&gt;	tooltipItemLabel="tooltip"설정한 경우'
+			style="position: absolute;width:358px;height:52px;left:465px;top:72px;font-size:14pt;">
+		</w2:textbox>
+	</body>
+</html>
+ 

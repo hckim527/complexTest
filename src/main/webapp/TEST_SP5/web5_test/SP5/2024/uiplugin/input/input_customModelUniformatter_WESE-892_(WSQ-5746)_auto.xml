@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataMap baseNode="map" id="dma_dataMap1">
+            		<w2:keyInfo>
+            			<w2:key id="key1" name="name1" dataType="text"></w2:key>
+            		</w2:keyInfo>
+            		<w2:data use="true">
+            			<key1><![CDATA[1111]]></key1>
+            		</w2:data>
+            	</w2:dataMap>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+scwin.inputFormatter = function(val1, val2) {
+    console.log('inputFormatter1', arguments);
+    console.log('inputFormatter2', scwin.numberWithComma(val1));
+    
+    return val1.replaceAll(",", "");
+}
+scwin.inputUnformatter = function(val1, val2) {
+    console.log('inputUnformatter1', arguments);
+    console.log('inputUnformatter2', val1.replaceAll(",", ""));
+
+    return scwin.numberWithComma(val1);
+}
+scwin.numberWithComma = function(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('wq_uuid_8').value == '1,111';
+	}		
+	scwin.unitTest = function(){
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group class="sub_contents flex_gvw" id="" style="">
+            <xf:group class="msg_box info" id="" style="">
+                <w2:textbox class="txt_msg" id=""
+                    label="초기 페이지 로딩 시점에서 데이터 컬렉션의 값을 인풋박스로 가져올 때 customModelUnformatter 설정 함수를 통과하지 않아 원하는 값을 세팅할 수 없음.&lt;br/&gt;&lt;br/&gt;인풋박스에 포커스를 줬다가 블러 되는 순간 customModelUnformatter 설정함수가 동작함." style=""
+                    tagname="">
+                </w2:textbox>
+            </xf:group>
+            <xf:group id="" style="display: flex;">
+            	<w2:textbox id="" label='숫자를 입력하여 3자리마다 "," 표시' style="width: 220px;height: 23px;"></w2:textbox>
+            	<xf:input id="" style="width: 144px;height: 21px;" customModelFormatter="scwin.inputFormatter"
+            		customModelUnformatter="scwin.inputUnformatter" ref="data:dma_dataMap1.key1">
+            	</xf:input>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>

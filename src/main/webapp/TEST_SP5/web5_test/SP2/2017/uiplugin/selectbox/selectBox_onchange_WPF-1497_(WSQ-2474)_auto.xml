@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list"
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list"
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dm_search">
+					<w2:keyInfo>
+						<w2:key id="yearCode" name="해당년도" dataType="text">
+						</w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.selectbox1_onchange = function() {
+    //alert("onchange fired");
+    log = "onchange fired";
+};
+scwin.selectbox1_onviewchange = function(info) {
+    //alert("onviewchange!");		
+    log1 = "onviewchange!";
+};
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. Source 탭 또는 Property 탭에서 selectbox1 의 allOption 부분을 확인한다.
+    //1. In the Source tab or Property tab, check the allOption part of selectbox1.
+    // verify step 1. allOption='false'
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('selectbox1').getAttribute('allOption')", "false");
+    //Test step 2. ref 부분을 확인한다.i
+    //2. Check the ref section.
+    //Verify step 2. ref='data:dm_search.yearCode' 
+    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('selectbox1').getAttribute('ref')", "data:dm_search.yearCode");
+    //Test step 3. scwin.selectbox1_onchange 부분을 확인한다.
+    //3. Check the scwin.selectbox1_onchange section.
+    //Verify Step 3. alert('onchange fired');
+    //Test step 4. 브라우저에서 확인한다.
+    //4. Check in the browser
+    //Verify step 4. 페이지가 로딩되면서 'onchange fired' 팝업이 생성된다. (2017-02-10 엔진에서는 처음 페이지 로딩시 onchage 이벤트가 동작하지 않음)
+    //4. The page is loaded and an 'onchange fired' pop-up is generated. (The onchage event does not work on the first page loading in 2017-02-10 engine)
+    WebSquare.wUnit.addCommand("assert", "log == 'onchange fired'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "log = ''");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. selectBox 에서 '하나' 데이터를 '둘' 로 변경한다.
+    //5. Change the 'one' data in the selectBox to 'two'.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectbox1_label').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectbox1_itemTable_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#selectbox1_label').text() == '둘'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify step 5. 'onchange fired' 팝업이랑 'onviewchange'! 팝업이 생성된다.
+    //5. The 'onchange fired' popup and 'onviewchange'! A pop-up is generated.
+    WebSquare.wUnit.addCommand("assert", "log == 'onchange fired'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log1 == 'onviewchange!'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    setTimeout(function() {
+        dataList1.setJSON([{
+            "label": "하나",
+            "value": "1",
+            "rowStatus": "R"
+        }, {
+            "label": "둘",
+            "value": "2",
+            "rowStatus": "R"
+        }]);
+    }, 500);
+    window.log = "";
+    window.log1 = "";
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 31-Jan-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:select1 disabledClass="w2selectbox_disabled"
+			appearance="minimal" direction="auto" chooseOption="" id="selectbox1"
+			ref="data:dm_search.yearCode" style="width: 148px;height: 21px;"
+			displayMode="label" optionOrder="false" allOption="false" disabled="false"
+			submenuSize="auto" ev:onchange="scwin.selectbox1_onchange" ev:onviewchange="scwin.selectbox1_onviewchange">
+			<xf:choices>
+				<xf:itemset nodeset="data:dataList1">
+					<xf:label ref="label"></xf:label>
+					<xf:value ref="value"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select1>
+	</body>
+</html>
+ 

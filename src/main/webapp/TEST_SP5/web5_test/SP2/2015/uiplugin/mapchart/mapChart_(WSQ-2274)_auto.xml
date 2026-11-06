@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <style>
+        </style>        
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.mapchart1_onbeforemapchange = function(info) {
+    if (info.newMapCode.length >= 2) {
+        return false; // 지도 확장기능 사용하지 않음 
+    }
+}
+scwin.mapchart1_csvHandler = function(svg, data, projection) {
+    for (var i = 0; i < data.length; i++) {
+        var municipality = d3.select("#" + this.id + "_map").select(".municipality.c" + data[i].code);
+        patternData[i].background = scwin.colorScale1(data[i].value);
+        var patternID = mapchart1.addPattern(patternData[i]);
+        municipality.style("fill", "url(#" + patternID + ")");
+        //municipality.style("fill", scwin.colorScale1(data[i].value));
+    }
+}
+scwin.mapchart2_onbeforemapchange = function(info) {
+    if (info.newMapCode.length >= 2) {
+        return false; // 지도 확장기능 사용하지 않음 
+    }
+}
+scwin.mapchart2_csvHandler = function(svg, data, projection) {
+    for (var i = 0; i < data.length; i++) {
+        var municipality = d3.select("#" + this.id + "_map").select(".municipality.c" + data[i].code);
+        municipality.style("fill", scwin.colorScale2(data[i].value));
+    }
+}
+scwin.mapchart3_onbeforemapchange = function(info) {
+    if (info.newMapCode.length >= 2) {
+        return false; // 지도 확장기능 사용하지 않음 
+    }
+}
+scwin.mapchart3_csvHandler = function(svg, data, projection) {
+    for (var i = 0; i < data.length; i++) {
+        var municipality = d3.select("#" + this.id + "_map").select(".municipality.c" + data[i].code);
+        municipality.style("fill", scwin.colorScale3(data[i].value));
+    }
+}
+scwin.setTooltip = function(str1, str2) {
+    return "test";
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById('mapchart1_map').querySelectorAll('path').length == 17;
+}
+scwin.unitTest = function() {
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    window.patternData = [
+        //lines
+        {
+            "type": "line",
+            "size": 4,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        //background 색상도 지정 가능.
+        //{"type":"line", "size":4, "stroke":"#BDBDBD", "strokeWidth":1, "background":"black"},
+        {
+            "type": "line",
+            "orientation": ["vertical"],
+            "size": 4,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        {
+            "type": "line",
+            "orientation": ["7/8"],
+            "size": 8,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.7
+        },
+        {
+            "type": "line",
+            "orientation": ["vertical", "horizontal"],
+            "size": 4,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["2/8"],
+            "size": 8,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        {
+            "type": "line",
+            "orientation": ["1/8", "6/8"],
+            "size": 8,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["3/8", "7/8"],
+            "size": 8,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.6
+        },
+        {
+            "type": "line",
+            "orientation": ["3/8", "7/8"],
+            "size": 6,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["2/8", "6/8"],
+            "size": 6,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["2/8", "6/8"],
+            "size": 3,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["2/8"],
+            "size": 2,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["6/8"],
+            "size": 3,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["1/8", "5/8"],
+            "size": 5,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["3/8"],
+            "size": 4,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["1/8", "4/8", "6/8"],
+            "size": 8,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "line",
+            "orientation": ["1/8", "4/8", "6/8", "8/8"],
+            "size": 8,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        //circles
+        {
+            "type": "circle",
+            "size": 5,
+            "radius": 1.5,
+            "fill": "#BDBDBD"
+        },
+        {
+            "type": "circle",
+            "size": 2,
+            "radius": 0.5,
+            "fill": "#BDBDBD"
+        },
+        {
+            "type": "circle",
+            "size": 5,
+            "radius": 2,
+            "fill": "#BDBDBD"
+        },
+        {
+            "type": "circle",
+            "size": 8,
+            "radius": 2,
+            "fill": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "circle",
+            "size": 3,
+            "radius": 0.4,
+            "fill": "#BDBDBD"
+        },
+        {
+            "type": "circle",
+            "size": 10,
+            "radius": 2,
+            "fill": "#BDBDBD"
+        },
+        {
+            "type": "circle",
+            "size": 5,
+            "radius": 1.5,
+            "fill": "#BDBDBD"
+        },
+        {
+            "type": "circle",
+            "size": 10,
+            "radius": 4,
+            "fill": "#BDBDBD"
+        },
+        {
+            "type": "circle",
+            "size": 6,
+            "radius": 2,
+            "fill": "transparent",
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        {
+            "type": "circle",
+            "size": 8,
+            "radius": 4,
+            "fill": "transparent",
+            "stroke": "#BDBDBD",
+            "strokeWidth": 2
+        },
+        {
+            "type": "circle",
+            "size": 5,
+            "radius": 1.5,
+            "fill": "#EAEAEA",
+            "stroke": "#BDBDBD",
+            "strokeWidth": 2
+        },
+        //paths
+        {
+            "type": "path",
+            "d": "hexagons",
+            "size": 3.5,
+            "strokeWidth": 2,
+            "stroke": "#BDBDBD"
+        },
+        {
+            "type": "path",
+            "d": "crosses",
+            "size": 8,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        {
+            "type": "path",
+            "d": "caps",
+            "size": 7,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "path",
+            "d": "woven",
+            "size": 10,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        {
+            "type": "path",
+            "d": "waves",
+            "size": 5,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        {
+            "type": "path",
+            "d": "nylon",
+            "size": 10,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1
+        },
+        {
+            "type": "path",
+            "d": "squares",
+            "size": 5,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.7
+        },
+        {
+            "type": "path",
+            "d": "waves",
+            "size": 4,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "path",
+            "d": "caps",
+            "size": 4,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.3
+        },
+        {
+            "type": "path",
+            "d": "nylon",
+            "size": 7,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        },
+        {
+            "type": "path",
+            "d": "woven",
+            "size": 6,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 1.5
+        },
+        {
+            "type": "path",
+            "d": "squares",
+            "size": 2,
+            "stroke": "#BDBDBD",
+            "strokeWidth": 0.5
+        }
+    ];
+    scwin.colorScale1 = d3.scale.linear()
+        .range(["black", "white"])
+        .domain([0, 1]);
+    scwin.colorScale2 = d3.scale.linear()
+        .range(["red", "yellow", "green", "turquoise", "blue"])
+        .domain([0, 0.25, 0.5, 0.75, 1]);
+    scwin.colorScale3 = d3.scale.linear()
+        .range(["yellow", "lightblue", "blue", "darkblue", "black"])
+        .domain([0, 0.25, 0.5, 0.75, 1]);
+    mapchart1.createPattern(patternData); //한번 지도에 모든 패턴을 순차적으로 적용할 경우에 사용.
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:textbox label="1.heatmap : black and white" id="" style="position: relative;width:700px;height:41px;font-size:24pt;"></w2:textbox>
+        <w2:mapchart style="position: relative;width:800px;height:500px;background:blue;" id="mapchart1"
+        zoomMin="1" zoomMax="1" dataMapRatio_level0="simp01" csvFileName="mapChart_WSQ-340_(WSQ-2274)_1.csv" csvHandler="scwin.mapchart1_csvHandler" 
+        event_drillup="oncontextmenu" event_drilldown="ondblclick" event_select="onclick" event_deselect="onmouseout" event_tooltipon="onmouseover" event_tooltipoff="onmouseout" 
+        onbeforemapchange="scwin.mapchart2_onbeforemapchange" accessibility="true" setTooltipStrFunc="setTooltip">
+    	</w2:mapchart>
+        
+    </body>
+</html>
+ 

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1.advancedExcelDownload({
+        'type': '0',
+        'fileName': 'aaa.xlsx',
+        'useStyle': 'true'
+    });
+};
+scwin.imageFormatter = function(data, formattedData, row, col) {
+    var data1 = dataList1.getCellData(row, 0);
+    if (data1 == "100") {
+        gridView1.setCellColor(row, col, "blue");
+    } else {
+        gridView1.setCellColor(row, col, "red");
+    }
+    return data;
+}
+scwin.onpageload = function() {
+    dataList1.setData([
+        '100', 'blue',
+        '70', 'red',
+        '100', 'blue',
+        '100', 'blue',
+        '80', 'red',
+        '60', 'red',
+        '50', 'red'
+    ]);
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="gridView1" style="width:371px;height:291px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" sortable="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px" inputType="text" width="123" displayMode="label" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px" width="123" inputType="text" displayMode="label" value="name2"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="123" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" width="123" inputType="text" displayMode="label" imageHeight="20" imageWidth="50" customFormatter="imageFormatter"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[down]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

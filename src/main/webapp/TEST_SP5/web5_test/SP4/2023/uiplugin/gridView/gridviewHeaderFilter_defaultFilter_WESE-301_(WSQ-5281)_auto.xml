@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+/**************************************************************************************
+    그리드뷰 해더에 필터용 input 생성 및 필터 처리
+
+	※ 전제조건
+		- 그리드뷰 해더에 필터용 row 를 추가해야 한다. (기본 해더 컬럼 에 추가로 필터용 inputbox 생성을 위한 row )
+		
+
+
+	※ 기본 필터 기능 사용 방법 
+		- 그리드뷰에 체크콤보박스 형태의 기본 필터 기능이 존재함. (데이터 목록에서 보여줄 데이터 선택하는 형태) 
+		- 적용방법
+			1. 그리드뷰 속성 추가
+			    - useFilterList : true
+			2. 필터링 처리할 해더컬럼 속성 추가
+			    - useFilter : true
+			    - hideCustomFilter : true 
+			( 적용예시 : 해당 샘플소스의 name4 컬럼 )
+
+
+**************************************************************************************/
+
+
+scwin.onpageload = function() {
+	var data = [
+		{"col1":"1234", "col2":"4567", "col3":"ccc", "col4":"바바바바"},
+		{"col1":"A1234", "col2":"aA1245", "col3":"Aa5434", "col4":"가가가가"},
+		{"col1":"a4567", "col2":"Aa4534", "col3":"aA4512", "col4":"나나나나"},
+		{"col1":"B1234", "col2":"bB1247", "col3":"Bb7834", "col4":"다다다다"},
+		{"col1":"b4567", "col2":"Bb4523", "col3":"bB1267", "col4":"라라라라"},
+		{"col1":"c1342", "col2":"Cc1282", "col3":"cCc1234", "col4":"마마마마"}
+	];
+	dataList1.setJSON(data); 
+};
+
+scwin.customFormatter_col4 = function(data, formattedData, rowIndex, colIndex){
+
+
+	return "ABC_"+formattedData;
+};
+
+
+
+
+//해더 필터 셋팅 버튼 클릭 시
+scwin.btn_filterSet_onclick = function(e) {
+	//그리드뷰 필터용 해더 inputbox 생성 및 필터용 처리 ( 그리드뷰Obj, 필터해더컬럼ID array, 매칭되는 바디컬럼ID array )
+	var headerColumnIdArr	= ["column11", "column22", "column33"];
+	var bodyColumnIdArr		= ["col1", "col2", "col3"];
+	vgt.fn_setHeaderFileter( gridView1, headerColumnIdArr, bodyColumnIdArr ); 
+};
+
+
+//필터 초기화 버튼 클릭 시
+scwin.btn_filterInit_onclick = function(e) {
+	//그리드뷰에 필터 inputbox 을 모두 초기화  & 해당 그리뷰의 dataList 필터 해제
+	vgt.fn_clearHeaderFileter( gridView1 ); 
+};
+
+
+	scwin.checkVal = function() {
+		return document.getElementsByTagName('span')[2].innerText == 'ABC_가가가가';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_column44_filter').click()");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();	
+
+
+
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" class="sub_contents">
+			<xf:group style="" id="" class="sub_title_area">
+				<w2:textbox tagname="h4" dataType="" style="" id=""
+					label="그리드뷰의 특정 컬럼이 customFormatter를 사용하여 표시되는 데이터를 변경할 경우 &lt;br/&gt;해당 컬럼의 useFilterList 옵션으로 필터링 값을 목록으로 보여주는데, &lt;br/&gt;원 데이터가 아닌 포맷된 데이터로 목록을 보여줄수 있는지 확인 바랍니다.&lt;br/&gt;&lt;br/&gt; &amp;nbsp; &amp;nbsp;ex) col4 컬럼 필터에 값의 목록이 보이는데, 보여주는 데이터로 목록을 보여줄수 없는지...&lt;br/&gt;&lt;br/&gt;"
+					class="sub_title_h2" escape="false">
+				</w2:textbox>
+
+			</xf:group>
+			<xf:group style="margin-top: 10px;" id="" class="sub_title_area"></xf:group>
+			<w2:textbox id="" label='useFilterSearch="false" useFilterListFormat="false"' style="width:323px;height:23px;" escape="false"></w2:textbox>
+			<w2:gridView scrollByColumnAdaptive="false" summaryAuto="false" useShiftKey="true" scrollByColumn="false"
+				summaryOnlyAuto="false" fixedColumnWithHidden="true" dataList="dataList1" style="position: relative;width: 500px;height: 250px;"
+				ignoreCellClick="false" id="gridView1" autoFit="allColumn" ignoreToggleOnDisabled="false" useFilterList="true" sortedImagePosition="top"
+				showSortableUseFilter="true" showSortableImage="true" sortHeaderDiv="true">
+				<w2:caption style="" id="caption1" value="this is a grid caption."></w2:caption>
+				<w2:header style="" id="header1">
+					<w2:row style="" id="row1">
+						<w2:column width="120" style="height:30px;" inputType="text" id="column1" value="name1" blockSelect="false"
+							displayMode="label" sortable="true">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column2" value="name2" blockSelect="false"
+							displayMode="label" sortable="true">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column3" value="name3" blockSelect="false"
+							displayMode="label" sortable="true">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column4" value="name4" blockSelect="false"
+							displayMode="label" sortable="true">
+						</w2:column>
+					</w2:row>
+					<w2:row style="" id="row2">
+						<w2:column width="120" style="height:30px;" inputType="text" id="column11" value="" blockSelect="false"
+							displayMode="label">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column22" value="" blockSelect="false"
+							displayMode="label">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column33" value="" blockSelect="false"
+							displayMode="label">
+						</w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="column44" value="" blockSelect="false"
+							displayMode="label" useFilter="true" hideCustomFilter="true">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody style="" id="gBody1">
+					<w2:row style="" id="row2">
+						<w2:column width="120" style="height:30px;" inputType="text" id="col1" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="col2" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="col3" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" style="height:30px;" inputType="text" id="col4" blockSelect="false" displayMode="label"
+							customFormatter="scwin.customFormatter_col4">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<w2:textbox id="" label='useFilterSearch="false" useFilterListFormat="true"' style="width:323px;height:23px;" escape="false"></w2:textbox>
+			<w2:gridView autoFit="allColumn" dataList="dataList1" fixedColumnWithHidden="true" id="gridView2" ignoreCellClick="false"
+				ignoreToggleOnDisabled="false" scrollByColumn="false" scrollByColumnAdaptive="false" showSortableImage="true"
+				showSortableUseFilter="true" sortHeaderDiv="true" sortedImagePosition="top" style="position: relative;width: 500px;height: 250px;"
+				summaryAuto="false" summaryOnlyAuto="false" useFilterList="true" useFilterListFormat="true" useShiftKey="true">
+				<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+				<w2:header id="header1" style="">
+					<w2:row id="row1" style="">
+						<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" sortable="true"
+							style="height:30px;" value="name1" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column2" inputType="text" sortable="true"
+							style="height:30px;" value="name2" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" sortable="true"
+							style="height:30px;" value="name3" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column4" inputType="text" sortable="true"
+							style="height:30px;" value="name4" width="120">
+						</w2:column>
+					</w2:row>
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" displayMode="label" id="column11" inputType="text" style="height:30px;" value=""
+							width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column22" inputType="text" style="height:30px;" value=""
+							width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column33" inputType="text" style="height:30px;" value=""
+							width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" hideCustomFilter="true" id="column44" inputType="text"
+							style="height:30px;" useFilter="true" value="" width="120">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" customFormatter="scwin.customFormatter_col4" displayMode="label" id="col4"
+							inputType="text" style="height:30px;" width="120">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<w2:textbox id="" label='useFilterSearch="true" &amp;nbsp;useFilterListFormat="false"' style="width:323px;height:23px;" escape="false"></w2:textbox>
+			<w2:gridView autoFit="allColumn" dataList="dataList1" fixedColumnWithHidden="true" id="gridView4" ignoreCellClick="false"
+				ignoreToggleOnDisabled="false" scrollByColumn="false" scrollByColumnAdaptive="false" showSortableImage="true"
+				showSortableUseFilter="true" sortHeaderDiv="true" sortedImagePosition="top" style="position: relative;width: 500px;height: 250px;"
+				summaryAuto="false" summaryOnlyAuto="false" useFilterList="true" useShiftKey="true" useFilterSearch="true">
+				<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+				<w2:header id="header1" style="">
+					<w2:row id="row1" style="">
+						<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" sortable="true"
+							style="height:30px;" value="name1" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column2" inputType="text" sortable="true"
+							style="height:30px;" value="name2" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" sortable="true"
+							style="height:30px;" value="name3" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column4" inputType="text" sortable="true"
+							style="height:30px;" value="name4" width="120">
+						</w2:column>
+					</w2:row>
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" displayMode="label" id="column11" inputType="text" style="height:30px;" value=""
+							width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column22" inputType="text" style="height:30px;" value=""
+							width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column33" inputType="text" style="height:30px;" value=""
+							width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" hideCustomFilter="true" id="column44" inputType="text"
+							style="height:30px;" useFilter="true" value="" width="120">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" customFormatter="scwin.customFormatter_col4" displayMode="label" id="col4"
+							inputType="text" style="height:30px;" width="120">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<w2:textbox id="" label='useFilterSearch="true" &amp;nbsp;useFilterListFormat="true"' style="width:323px;height:23px;" escape="false"></w2:textbox><w2:gridView autoFit="allColumn" dataList="dataList1" fixedColumnWithHidden="true" id="gridView5" ignoreCellClick="false" ignoreToggleOnDisabled="false" scrollByColumn="false" scrollByColumnAdaptive="false" showSortableImage="true" showSortableUseFilter="true" sortHeaderDiv="true" sortedImagePosition="top" style="position: relative;width: 500px;height: 250px;" summaryAuto="false" summaryOnlyAuto="false" useFilterList="true" useFilterSearch="true" useShiftKey="true" useFilterListFormat="true">
+				<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+				<w2:header id="header1" style="">
+					<w2:row id="row1" style="">
+						<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" sortable="true" style="height:30px;" value="name1" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column2" inputType="text" sortable="true" style="height:30px;" value="name2" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" sortable="true" style="height:30px;" value="name3" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column4" inputType="text" sortable="true" style="height:30px;" value="name4" width="120">
+						</w2:column>
+					</w2:row>
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" displayMode="label" id="column11" inputType="text" style="height:30px;" value="" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column22" inputType="text" style="height:30px;" value="" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="column33" inputType="text" style="height:30px;" value="" width="120">
+						</w2:column>
+						<w2:column blockSelect="false" displayMode="label" hideCustomFilter="true" id="column44" inputType="text" style="height:30px;" useFilter="true" value="" width="120">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:30px;" width="120"></w2:column>
+						<w2:column blockSelect="false" customFormatter="scwin.customFormatter_col4" displayMode="label" id="col4" inputType="text" style="height:30px;" width="120">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView><xf:trigger ev:onclick="scwin.btn_filterSet_onclick" style="width: 120px;height: 23px;margin-left: 10px;" id="btn_filterSet"
+				type="button">
+				<xf:label><![CDATA[필터용 해더 셋팅]]></xf:label>
+			</xf:trigger>
+			<xf:trigger ev:onclick="scwin.btn_filterInit_onclick" style="width: 120px;height: 23px;margin-left: 10px;" id="btn_filterInit"
+				type="button">
+				<xf:label><![CDATA[필터용 해더 초기화]]></xf:label>
+			</xf:trigger>
+			
+			
+		</xf:group>
+	</body>
+</html>

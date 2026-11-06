@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+         <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageunload = function() {};
+scwin.trigger1_onclick = function(e) {
+    // 실제 전달할 데이터 정의
+    var rowJSON = {
+        "Personal Info": {
+            "Name": "Lee",
+            "Age": 50,
+            "Married": false
+        },
+        "Region": "Seoul",
+        "Carrier": true
+    };
+    // 새로 열릴 화면에 데이터를 전달 (dataObject를 통해 전달 가능)         
+    var obj = {
+        "dataObject": {
+            "type": "json",
+            "name": "wframeParamTest",
+            "data": rowJSON
+        }
+    };
+    wframe1.setSrc("gridView_customFormatter_scopeVariable_WESD-188_(WSQ-4362)_sub_auto.xml", obj);
+};
+scwin.checkVal = function() {
+	return localStorage.getItem('log') == 'testObj.customFormatter';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+scwin.onpageload = function() {
+    localStorage.removeItem("log");
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:wframe id="wframe1" style="border: 1px solid;position: absolute ;left: 165px;top: 41px;width: 480px;height: 285px;" scope="true"></w2:wframe>
+    	<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 37px;top: 64px;width: 88px;height: 41px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript"><![CDATA[ 	
+	scwin.onpageload = function() {
+		
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+
+	var i = 0;
+	scwin.fn_addTab = function(){
+		var tabOpt = { 
+				label : "임시화면" + i, 
+				closable : false // true 시 닫기 버튼 생성
+		}; 
+
+		var contOpt = { 
+			frameMode : "wframe" ,
+			src : "tc_alwaysShowCloseBtn_closable_WESD-1776_(WSQ-5922)_sub.xml"
+		};
+
+		tabControl1.addTab('tab0' + i, tabOpt, contOpt);
+		var idx = tabControl1.getTabCount();
+		tabControl1.setSelectedTabIndex(idx-1);
+		i++;
+	}
+	
+	// 버튼 클릭 시 tab 추가
+	scwin.trigger2_onclick = function(e) {
+		scwin.fn_addTab(); // 탭 생성
+	};
+	
+	scwin.checkVal1 = function() {
+		return WebSquare.wUnit.getDomById('tabControl1_tab_tabs1_close').style.display == 'block';
+	}
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+	
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}	
+	scwin.unitTest()
+	
+]]></script>
+    </head>
+    <body>
+    	 <w2:tabControl alwaysShowCloseBtn="true" confirmTrueAction="exist" spaInitCount="3" class="" useTabKeyOnly="true" tabScroll="true" id="tabControl1" 
+    	 closable="true" style="position: absolute ;left:37px;top:119px;width: 601px;height: 344px;" 
+    	 useConfirmMessage="false" confirmFalseAction="new" alwaysDraw="true" spa="false" windowMaxNum="10" ev:onbeforetabclose="scwin.tabControl1_onbeforetabclose">
+         
+    		<w2:tabs label="" id="tabs1" style="width:70px;height:30px;" disabled="false"></w2:tabs>
+    		<w2:content id="content1" style="height:314px" alwaysDraw="false" processMsgFrame="true" frameMode="wframe"></w2:content>
+    	</w2:tabControl>
+    	<xf:trigger type="button" id="trigger2" style="position: absolute ;left:56px;top:28px;width: 164px;height: 38px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[addTab(b.xml)]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>

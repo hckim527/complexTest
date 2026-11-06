@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" removeDummyRowStatus="true" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="number"></w2:column>
+						<w2:column id="col5" name="name5" dataType="number"></w2:column>
+						<w2:column id="col6" name="name6" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+
+/*
+ * ===========================================================================
+ * [재현 시나리오] gridView 푸터 다중 셀 복사 시 컬럼 이동 순서 미반영
+ * ---------------------------------------------------------------------------
+ * 1) 페이지 로드 후, gridView의 헤더를 드래그하여 컬럼 위치를 임의로 이동
+ *    (예: "name1" 컬럼을 "name3" 위치로 이동)
+ *    → 푸터도 화면상 함께 이동되는 것을 확인 (columnMoveWithFooter="true")
+ *
+ * 2) [정상 케이스] 본문(body) 영역에서 좌우로 연속된 셀 2개 이상을 드래그 선택
+ *    → Ctrl+C 후 메모장/엑셀에 Ctrl+V
+ *    → 화면에 보이는 이동된 컬럼 순서대로 정상 출력됨
+ *
+ * 3) [버그 케이스] 푸터(footer) 영역에서 좌우로 연속된 셀 2개 이상을 드래그 선택
+ *    → Ctrl+C 후 메모장/엑셀에 Ctrl+V
+ *    → 컬럼 이동 전(원본) 순서로 출력됨 (현상 발생)
+ *
+ * 4) [참고: 정상 케이스]
+ *    - 푸터 단일 셀 선택 후 복사 → 정상
+ *    - 푸터 셀 안 텍스트만 글자 드래그 후 복사 → 정상 (네이티브 oncopy 경로)
+ *
+ * [핵심 속성]
+ *  - columnMove="true"            : 컬럼 드래그앤드롭 이동 허용
+ *  - columnMoveWithFooter="true"  : 컬럼 이동 시 푸터도 함께 이동
+ *  - focusFooter="true"           : 푸터 셀 선택 가능 상태 활성화 (깡통 재현용)
+ * ===========================================================================
+ */
+
+scwin.onpageload = function () {
+
+	var tmpJSON = [
+		{ "col1": "행1-1", "col2": "행1-2", "col3": "행1-3", "col4": 11, "col5": 12, "col6": 13 },
+		{ "col1": "행2-1", "col2": "행2-2", "col3": "행2-3", "col4": 21, "col5": 22, "col6": 23 },
+		{ "col1": "행3-1", "col2": "행3-2", "col3": "행3-3", "col4": 31, "col5": 32, "col6": 33 },
+		{ "col1": "행4-1", "col2": "행4-2", "col3": "행4-3", "col4": 41, "col5": 42, "col6": 43 },
+		{ "col1": "행5-1", "col2": "행5-2", "col3": "행5-3", "col4": 51, "col5": 52, "col6": 53 }
+	];
+	dataList1.setJSON(tmpJSON);
+
+	// 푸터에 컬럼별로 다른 값을 세팅하여 복사 결과의 컬럼 순서를 명확히 식별 가능하게 함
+	gridView1.setFooterData("col1", "푸터-A");
+	gridView1.setFooterData("col2", "푸터-B");
+	gridView1.setFooterData("col3", "푸터-C");
+	gridView1.setFooterData("col4", "푸터-D");
+	gridView1.setFooterData("col5", "푸터-E");
+	gridView1.setFooterData("col6", "푸터-F");
+};
+
+scwin.onpageunload = function () {
+
+};
+
+// 컬럼 이동 후 현재 컬럼 순서 확인용 (디버깅 편의)
+scwin.trigger_checkOrder_onclick = function (e) {
+	var order = gridView1.getColumnOrder();
+	alert("현재 컬럼 순서: " + JSON.stringify(order));
+};
+
+// 프로그래밍 방식으로 컬럼 이동 (드래그앤드롭이 어려울 때 재현용)
+scwin.trigger_moveColumn_onclick = function (e) {
+	// col1 ↔ col3 위치 교환 시나리오
+	gridView1.setColumnOrder(["col3", "col2", "col1", "col4", "col5", "col6"]);
+};
+
+]]></script>
+		<style type="text/css"><![CDATA[
+
+]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+		<w2:gridView defaultCellHeight="20" id="gridView1"
+			style="position:absolute;top:80px;left:46px;width:705px;height:300px;"
+			dataList="data:dataList1"
+			columnMove="true"
+			columnMoveWithFooter="true"
+			focusFooter="true"
+			focusMode="cell"
+			useShiftKey="true">
+			<w2:caption style="" id="caption1" value="[재현 샘플] columnMove + columnMoveWithFooter + 푸터 다중 셀 복사"></w2:caption>
+			<w2:header style="" id="header1">
+				<w2:row style="" id="row1">
+					<w2:column width="110" inputType="text" style="height:20px" id="header_col1" value="name1" displayMode="label"></w2:column>
+					<w2:column width="110" inputType="text" style="height:20px" id="header_col2" value="name2" displayMode="label"></w2:column>
+					<w2:column width="110" inputType="text" style="height:20px" id="header_col3" value="name3" displayMode="label"></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="header_col4" value="name4" displayMode="label"></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="header_col5" value="name5" displayMode="label"></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="header_col6" value="name6" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody style="" id="gBody1">
+				<w2:row style="" id="row2">
+					<w2:column width="110" inputType="text" style="height:20px" id="col1" value="" displayMode="label"></w2:column>
+					<w2:column width="110" inputType="text" style="height:20px" id="col2" value="" displayMode="label"></w2:column>
+					<w2:column width="110" inputType="text" style="height:20px" id="col3" value="" displayMode="label"></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="col4" value="" displayMode="label"></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="col5" value="" displayMode="label"></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="col6" value="" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer style="" id="footer1">
+				<w2:row style="" id="row_footer1">
+					<w2:column width="110" inputType="text" style="height:20px" id="col1" value=""></w2:column>
+					<w2:column width="110" inputType="text" style="height:20px" id="col2" value=""></w2:column>
+					<w2:column width="110" inputType="text" style="height:20px" id="col3" value=""></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="col4" value=""></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="col5" value=""></w2:column>
+					<w2:column width="90"  inputType="text" style="height:20px" id="col6" value=""></w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+
+		<xf:trigger type="button" id="trigger_moveColumn"
+			style="position:absolute;top:30px;left:46px;width:220px;height:30px;"
+			ev:onclick="scwin.trigger_moveColumn_onclick">
+			<xf:label><![CDATA[컬럼 이동 (col1 ↔ col3)]]></xf:label>
+		</xf:trigger>
+
+		<xf:trigger type="button" id="trigger_checkOrder"
+			style="position:absolute;top:30px;left:280px;width:220px;height:30px;"
+			ev:onclick="scwin.trigger_checkOrder_onclick">
+			<xf:label><![CDATA[현재 컬럼 순서 확인]]></xf:label>
+		</xf:trigger>
+
+		<xf:textarea id="memo" style="position:absolute;top:400px;left:46px;width:705px;height:120px;">
+			<xf:label><![CDATA[재현 절차:
+1) [컬럼 이동] 버튼 클릭 → col1과 col3 위치 교환 (또는 헤더를 직접 드래그)
+2) 본문에서 좌우 셀 2개 이상 선택 → Ctrl+C → 외부 붙여넣기 (정상: 이동된 순서)
+3) 푸터에서 좌우 셀 2개 이상 선택 → Ctrl+C → 외부 붙여넣기 (버그: 원본 순서)
+   기대값: 푸터-C, 푸터-B, 푸터-A, 푸터-D, ...  (이동 반영)
+   실제값: 푸터-A, 푸터-B, 푸터-C, 푸터-D, ...  (이동 미반영)]]></xf:label>
+		</xf:textarea>
+	</body>
+</html>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map">
+    			<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="col1" name="name1" dataType="text" encYN="false"></w2:column>
+    					<w2:column id="col2" name="name2" dataType="text" encYN="false"></w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    		</w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+
+
+
+
+
+        //ckhbox.checkAll(true);
+
+        scwin.test = function(selectData,b){
+        //debugger;
+                        if((ckhbox.getItemCount()-1) == selectData.length){
+                                return "전체(" + selectData.length + ")";
+                        }else{
+                                var a = [];
+                                for(var i=0;i<selectData.length;i++){
+                                        //label값 : undefined, value값 사용
+                                        a.push(selectData[i].label);
+                                        //a.push(selectData[i].value);
+                                }
+                                return a.join(",");
+                        }
+                }
+
+
+        scwin.ckhbox_oncheckboxclick = function(index,isChecked,value) {
+                //debugger;
+                console.table(ckhbox.getInfoArray());
+        };
+		
+		scwin.checkVal = function() {
+			return WebSquare.wUnit.getDomById('ckhbox_label').innerText == '공백,설정예정';
+		}
+		scwin.unitTest = function() {
+			//Unit
+			WebSquare.wUnit.start();
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ckhbox_button').click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ckhbox_itemTable_1_checkbox').click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ckhbox_itemTable_3_checkbox').click()");
+			WebSquare.wUnit.addCommand("pause", "400");			
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+			WebSquare.wUnit.addCommand("pause", "500");
+			//Run test and stop
+			WebSquare.wUnit.run();
+			WebSquare.wUnit.stop();
+		}	
+		scwin.unitTest()		
+		
+		]]></script>
+    	<style type="text/css"><![CDATA[ 
+    	.select {
+		    padding: 15px 10px;
+		}
+		.select input[type=radio]{
+		    display: none;
+		}
+		.select input[type=radio]+label{
+		    display: inline-block;
+		    cursor: pointer;
+		    height: 24px;
+		    width: 90px;
+		    border: 1px solid #333;
+		    line-height: 24px;
+		    text-align: center;
+		    font-weight:bold;
+		    font-size:13px;
+		}
+		.select input[type=radio]+label{
+		    background-color: #fff;
+		    color: #333;
+		}
+		.select input[type=radio]:checked+label{
+		    background-color: #333;
+		    color: #fff;
+		}
+    	]]></style>
+    </head>
+    <body>
+    	<xf:group id="" style="position: relative;padding-top:40px;height:140px;width:700px;" class="">
+    		<xf:group id="" style="position: relative;height:50%;" class="">
+
+    			<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" chooseOption="" id=""
+    				style="position: relative;width: 148px;height: 21px;" displayMode="label" optionOrder="false" allOption="" disabled="false"
+    				submenuSize="auto">
+    				<xf:choices>
+    					<xf:itemset nodeset="data:dataList1">
+    						<xf:label ref="col1"></xf:label>
+    						<xf:value ref="col2"></xf:value>
+    					</xf:itemset>
+    				</xf:choices>
+    			</xf:select1>
+    			<w2:autoComplete visibleRowNum="5" chooseOption="" id="" style="position: relative;width: 148px;height: 21px;"
+    				search="start" interactionMode="" displayMode="label" useKeywordHighlight="false" submenuSize="auto" editType="select"
+    				allOption="">
+    				<w2:choices>
+    					<w2:itemset nodeset="data:dataList1">
+    						<w2:label ref="col1"></w2:label>
+    						<w2:value ref="col2"></w2:value>
+    					</w2:itemset>
+    				</w2:choices>
+    			</w2:autoComplete>
+    			<xf:checkcombobox appearance="minimal" direction="auto" id="ckhbox" style="position: relative;width: 148px;height: 21px;"
+    				displayMode="label" submenuSize="auto" disabled="false" chooseOptionLabel="전체" ref="" customLabelFormatter="scwin.test"
+    				chooseOption="true" allOption="true" ev:oncheckboxclick="scwin.ckhbox_oncheckboxclick" checkboxClickSync="true">
+    				<xf:choices>
+    					<xf:item>
+    						<xf:label><![CDATA[공백]]></xf:label>
+    						<xf:value><![CDATA[aaa]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[개발]]></xf:label>
+    						<xf:value><![CDATA[개발]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[설정예정]]></xf:label>
+    						<xf:value><![CDATA[설정예정]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[운용]]></xf:label>
+    						<xf:value><![CDATA[운용]]></xf:value>
+    					</xf:item>
+    				</xf:choices>
+    			</xf:checkcombobox>
+    			<xf:select1 appearance="full" id="" style="position: relative;width: 150px;height: 21px;" selectedIndex="-1" cols="" rows=""
+    				ref="" class="select" renderType="radiogroup">
+    				<xf:choices>
+    					<xf:item>
+    						<xf:label><![CDATA[전체]]></xf:label>
+    						<xf:value><![CDATA[a]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[복합(오피스)]]></xf:label>
+    						<xf:value><![CDATA[b]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[오피스]]></xf:label>
+    						<xf:value><![CDATA[c]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[주거]]></xf:label>
+    						<xf:value><![CDATA[d]]></xf:value>
+    					</xf:item>
+    					<xf:item>
+    						<xf:label><![CDATA[물류]]></xf:label>
+    						<xf:value><![CDATA[e]]></xf:value>
+    					</xf:item>
+    				</xf:choices>
+    			</xf:select1>
+    		</xf:group>
+    	</xf:group>
+    </body>
+</html>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkAttr = function() {
+    var attr = jQuery('#gridView1_customFilter_scrollView').attr('aria-hidden');
+    return attr == "true";
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 브라우저에서 name1 컬럼의 필터를 클릭하여 '빈값' 을 선택하여 체크해제한다.
+    //In the browser, click on the filter in the name1 column and select 'empty' to uncheck it.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column11_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2list_listRow.w2grid_customFilter_list_listRow')[2].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. '빈값' 데이터가 필터링 해제되면서 '빈값' 데이터를 제외한 나머지 데이터가 필터링되어 표시된다.
+    //The 'empty' data is filtered out and the remaining data except the 'empty' data is filtered and displayed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_3_0').innerText != ''", "true");
+    //Test step 2. 화면의 그리드뷰의 다른영역을 마우스로 클릭한다. 
+    //Click another area of the grid view of the screen with the mouse.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column11_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify2. focusout되어지고 필터링화면이 사라진다.
+    //Focused out and the filtering screen disappears.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_scrollView').style.display == 'none'", "true");
+    //Test step3. 다시 name1 컬럼의 '빈값' 을 필터로 선택한다.
+    //Select 'empty' in the name1 column again as a filter.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column11_filter').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2list_listRow.w2grid_customFilter_list_listRow')[2].click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. '빈값' 테이터를 포함한 전체 데이터가 표시된다.
+    //The entire data including the 'empty' data is displayed.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_3_0').innerText == ''", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.jsonData = [{
+        col1: "0001",
+        col2: "0001",
+        col3: "0001",
+        col4: "0001"
+    }, {
+        col1: "0002",
+        col2: "0002",
+        col3: "0002",
+        col4: "0002"
+    }, {
+        col1: "0003",
+        col2: "0003",
+        col3: "0003",
+        col4: "0003"
+    }, {
+        col1: "",
+        col2: "",
+        col3: "",
+        col4: ""
+    }, {
+        col1: "",
+        col2: "",
+        col3: "",
+        col4: ""
+    }, {
+        col1: "",
+        col2: "",
+        col3: "",
+        col4: ""
+    }, {
+        col1: "0007",
+        col2: "0007",
+        col3: "0007",
+        col4: "0007"
+    }];
+    dataList1.setJSON(jsonData);
+    //Function unitTest
+    //Create by Truong.Luu
+    //Create date 22-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" rowStatusVisible="true" style="position: relative ;left:5px;top:20px;width:461px;height:337px;" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true" sortable="true" useFilterList="true" visibleRowNum="all">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="text" width="100" displayMode="label" value="name1" useFilter="true"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="100" displayMode="label" value="name2" useFilter="true"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="100" displayMode="label" value="name3"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" width="100" inputType="text" displayMode="label" value="name4"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" width="96" inputType="text" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+
+    </body>
+</html>
+ 

@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+    xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:type>DEFAULT</w2:type>
+        <w2:buildDate />
+        <xf:model>
+            <xf:instance>
+                <data xmlns="" />
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+                <w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                        <w2:column id="col5" name="name5" dataType="number"></w2:column>
+                        <w2:column id="col6" name="name6" dataType="text"></w2:column>
+                        <w2:column id="col7" name="name7" dataType="text"></w2:column>
+                        <w2:column id="col8" name="name8" dataType="text"></w2:column>
+                        <w2:column id="col9" name="name9" dataType="text"></w2:column>
+                        <w2:column id="col10" name="name10" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+    var jsonData = [
+        { "col1": "1공장", "col2": "방산", "col3": "제품", "col4": "A제품", "col5": 123123123 }
+        , { "col1": "1공장", "col2": "방산", "col3": "제품", "col4": "B제품", "col5": 321323 }
+        , { "col1": "1공장", "col2": "방산", "col3": "제품", "col4": "D제품", "col5": 122323123 }
+        , { "col1": "1공장", "col2": "방산", "col3": "제품", "col4": "C제품", "col5": 112233 }
+        //                    ,{"col1":"1공장","col2":"산업","col3":"제품","col4":"A제품","col5":567567}
+        //                    ,{"col1":"1공장","col2":"산업","col3":"제품","col4":"B제품","col5":234987234}
+        , { "col1": "2공장", "col2": "방산", "col3": "제품", "col4": "C제품", "col5": 98712323 }
+        , { "col1": "2공장", "col2": "방산", "col3": "제품", "col4": "E제품", "col5": 1234323 }
+        , { "col1": "2공장", "col2": "방산", "col3": "제품", "col4": "F제품", "col5": 12353434 }
+        //                    ,{"col1":"2공장","col2":"산업","col3":"제품","col4":"G제품","col5":23524623}
+        //                    ,{"col1":"2공장","col2":"산업","col3":"제품","col4":"H제품","col5":2323145}
+        //                    ,{"col1":"2공장","col2":"산업","col3":"제품","col4":"Q제품","col5":75653453}
+        , { "col1": "3공장", "col2": "방산", "col3": "제품", "col4": "S제품", "col5": 23444342 }
+        , { "col1": "3공장", "col2": "방산", "col3": "제품", "col4": "D제품", "col5": 22333000 }
+        , { "col1": "3공장", "col2": "방산", "col3": "기타", "col4": "X제품", "col5": 23330000 }
+        , { "col1": "3공장", "col2": "민수", "col3": "제품", "col4": "V제품", "col5": 712000 }
+        , { "col1": "3공장", "col2": "민수", "col3": "제품", "col4": "Z제품", "col5": 220900 }
+        , { "col1": "3공장", "col2": "민수", "col3": "기타", "col4": "C제품", "col5": 123123123 }
+    ];
+    dataList1.setJSON(jsonData);
+};
+
+scwin.onpageunload = function () {
+
+};
+
+scwin.countFormatFunction = function (value) {
+    return value;
+};
+
+scwin.customFormatFunction = function (value, formattedValue, rowIndex, colIndex) {
+
+    return formattedValue;
+};
+
+scwin.userExp = function () {
+
+    return "공장 계";
+};
+
+scwin.userExp2 = function () {
+
+    return "소계";
+};
+
+scwin.trigger3_onclick = function (e) {
+    //gridView1.changeCurrency("col5", "euro", "#.###,00");
+    gridView1.changeCurrency({
+        colID: "col5",
+        type: "euro",
+        format: "#.###,00",
+        subtotalColID: "column28,column38",
+        footerColID: "column48"
+    });
+};
+
+scwin.trigger4_onclick = function (e) {
+    gridView1.changeCurrency({
+        colID: "col5",
+        type: "number",
+        format: "#,###",
+        subtotalColID: "column28,column38",
+        footerColID: "column48"
+    });
+};
+
+	scwin.checkVal1 = function(){
+		return document.getElementsByTagName('nobr')[51].innerText == '245.879.802,00';
+	}  
+	scwin.checkVal2 = function(){
+		return document.getElementsByTagName('nobr')[200].innerText == '193.163.365,00';
+	} 	
+	scwin.unitTest = function(){
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+		WebSquare.wUnit.addCommand("pause", "1000");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1"
+    		style="width:843px;height:546px;margin-top:25px;margin-left:10px;">
+    		<w2:caption id="caption2" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header2" style="">
+    			<w2:row id="row3" style="">
+    				<w2:column blockSelect="false" id="column21" removeBorderStyle="false" style="" inputType="text" width="70"
+    					value="name1" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column19" removeBorderStyle="false" style="" inputType="text" width="70"
+    					value="name2" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column53" style="" inputType="text" width="70" value="name1-1" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column17" removeBorderStyle="false" style="" inputType="text" width="70"
+    					value="name3" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column15" removeBorderStyle="false" style="" inputType="text" width="70"
+    					value="name4" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column13" removeBorderStyle="false" style="" inputType="text" width="141"
+    					value="name5" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column11" removeBorderStyle="false" style="" inputType="text" width="70"
+    					value="name6" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column9" removeBorderStyle="false" style="" inputType="text" width="70" value="name7"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column7" removeBorderStyle="false" style="" inputType="text" width="70" value="name8"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column5" removeBorderStyle="false" style="" inputType="text" width="70" value="name9"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3" removeBorderStyle="false" style="" width="70" inputType="text"
+    					value="name10" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody2" style="">
+    			<w2:row id="row4" style="">
+    				<w2:column blockSelect="false" id="col1" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label" colMerge="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label" colMerge="true" upperColumn="col1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column54" style="" inputType="expression" width="70" value="" displayMode="label"
+    					expression="display('col1') + display('col2')">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label" colMerge="true" upperColumn="col2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col5" removeBorderStyle="false" style="" inputType="text" width="141" value=""
+    					displayMode="label" displayFormat="#,##0" dataType="number">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col6" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col7" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col8" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col9" removeBorderStyle="false" style="" inputType="text" width="70" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col10" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    		<w2:subTotal id="subTotal1" style="" targetColumnID="column54">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" id="column32" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column31" removeBorderStyle="false" style="" width="70" inputType="expression"
+    					value="" displayMode="label" expression="scwin.userExp2()">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column55" style="" inputType="text" width="70" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column30" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column29" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column28" removeBorderStyle="false" style="" width="141" inputType="expression"
+    					value="" displayMode="label" expression="sum('col5')" displayFormat="#,###" dataType="number">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column27" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column26" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column25" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column24" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column23" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:subTotal>
+    		<w2:subTotal id="subTotal2" style="" targetColumnID="col1">
+    			<w2:row id="row6" style="">
+    				<w2:column blockSelect="false" id="column42" removeBorderStyle="false" style="" width="70" inputType="expression"
+    					value="" displayMode="label" expression="scwin.userExp()">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column41" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column56" style="" inputType="text" width="70" value="" displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column40" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column39" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column38" removeBorderStyle="false" style="" width="141" inputType="expression"
+    					value="" displayMode="label" expression="sum('col5')" displayFormat="#,###" dataType="number">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column37" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column36" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column35" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column34" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column33" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:subTotal>
+    		<w2:footer id="footer1" style="">
+    			<w2:row id="row7" style="">
+    				<w2:column blockSelect="false" id="column52" removeBorderStyle="false" style="" width="70" inputType="text" value="합계"
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column57" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column51" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column50" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column49" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column48" removeBorderStyle="false" style="" width="141" inputType="expression"
+    					value="" displayMode="label" expression="sum('col5')" displayFormat="#,##0" dataType="number">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column47" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column46" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column45" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column44" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column43" removeBorderStyle="false" style="" width="70" inputType="text" value=""
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:footer>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger3" style="width:165px;height:23px;" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[changeCurrency euro]]></xf:label>
+    	</xf:trigger>
+        <xf:trigger type="button" id="trigger4" style="width:165px;height:23px;" ev:onclick="scwin.trigger4_onclick">
+            <xf:label><![CDATA[changeCurrency number]]></xf:label>
+        </xf:trigger>
+    </body>
+</html>

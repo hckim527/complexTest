@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[4]]></col2>
+            				<col3><![CDATA[8]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[5]]></col2>
+            				<col3><![CDATA[7]]></col3>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            				<col2><![CDATA[6]]></col2>
+            				<col3><![CDATA[9]]></col3>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.dbClick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.isIE = function() {
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
+scwin.getElementsByClassName = function(name) {
+    if (scwin.isIE() == 8) {
+        return document.querySelectorAll("." + name);
+    } else {
+        return document.getElementsByClassName(name.replace(/\./g, " "));
+    }
+}
+scwin.__checkCheckBox = function() {
+    if (wq_uuid_3_header__column5_checkboxLabel__id.checked == true) {
+        // select all 
+        return (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_0').checked == true) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_1').checked == true) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_2').checked == true);
+    } else {
+        // un-select all
+        return (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_0').checked == false) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_1').checked == false) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_2').checked == false);
+    }
+}
+scwin.checktype = function() {
+    return typeof scwin.getElementsByClassName('w2grid_head_sort_asc')[0] === 'object';
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");	
+    WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column5')");
+    //Verify step 3. 선택한 컬럼이 Sort 된다.
+    //3. The selected column is sorted.
+    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.getElementsByClassName('w2checkbox_label').length == 4", "true");
+    //Test step 4. column5 의 Label 을 클릭한다.
+    //4. Click Label in column5
+    WebSquare.wUnit.addCommand("pause", "1000");
+    WebSquare.wUnit.addCommand("set", "scwin.getElementsByClassName('w2checkbox_label')[0].click()");
+    //Verify step 4. 체크박스가 전체체크 / 전체해제 된다.
+    //4. The check box is checked / unlocked as a whole.    
+    WebSquare.wUnit.addCommand("assert", "scwin.__checkCheckBox()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 26-Feb-2018
+    //end
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false"  defaultCellHeight="20" id="gridView1"
+    		style="width:746px;height:319px;" fixedColumnWithHidden="true" useShiftKey="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="checkbox" checkboxLabel="aa" width="70" value="name1" sortable="true"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="radio" width="70"  checkboxLabel="cc" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="checkbox" checkboxLabel="bb" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="radio"  checkboxLabel="cc"  width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

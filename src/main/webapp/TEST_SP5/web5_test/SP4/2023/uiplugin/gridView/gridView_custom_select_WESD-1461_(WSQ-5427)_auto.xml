@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head meta_vertical_guides="" meta_horizontal_guides="202">
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataList  baseNode="list" ev:ondataload="scwin.dataList1_ondataload" id="dataList1" repeatNode="map"
+        			saveRemovedData="true" style="">
+        			<w2:columnInfo>
+        				<w2:column dataType="text" id="col2" name="name2"></w2:column>
+        				<w2:column dataType="text" id="col3" name="name3"></w2:column>
+        			</w2:columnInfo>
+        			<w2:data use="false">
+        				<w2:row>
+
+        					<col2><![CDATA[1]]></col2>
+        					<col3><![CDATA[1]]></col3>
+        				</w2:row>
+        				<w2:row>
+
+        					<col2><![CDATA[1]]></col2>
+        					<col3><![CDATA[2]]></col3>
+        				</w2:row>
+        				<w2:row>
+
+        					<col3><![CDATA[3]]></col3>
+        					<col2><![CDATA[2]]></col2>
+        				</w2:row>
+        				<w2:row>
+
+        					<col3><![CDATA[4]]></col3>
+        					<col2><![CDATA[2]]></col2>
+        				</w2:row>
+        			</w2:data>
+        		</w2:dataList>
+
+        		<w2:dataList baseNode="list" id="sel_sample" repeatNode="map" saveRemovedData="true" style="">
+        			<w2:columnInfo>
+        				<w2:column dataType="text" id="LABEL" name="name1"></w2:column>
+        				<w2:column dataType="text" id="VALUE" name="name2"></w2:column>
+        			</w2:columnInfo>
+        			<w2:data use="true">
+        				<w2:row>
+        					<VALUE><![CDATA[1]]></VALUE>
+        					<LABEL><![CDATA[축구]]></LABEL>
+        				</w2:row>
+        				<w2:row>
+        					<VALUE><![CDATA[2]]></VALUE>
+        					<LABEL><![CDATA[농구]]></LABEL>
+        				</w2:row>
+        				<w2:row>
+        					<VALUE><![CDATA[3]]></VALUE>
+        					<LABEL><![CDATA[야구]]></LABEL>
+        				</w2:row>
+        				<w2:row>
+        					<VALUE><![CDATA[4]]></VALUE>
+        					<LABEL><![CDATA[배구]]></LABEL>
+        				</w2:row>
+        			</w2:data>
+        		</w2:dataList>
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+        	<xf:submission id="submission1" ref="data:json,dataList1" target="data:json,dataList1" action="gridView_custom_select_WESD-1461_(WSQ-5427).json" method="post" mediatype="application/json" encoding="UTF-8"
+        		instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submit="" ev:submitdone="scwin.submission1_submitdone"
+        		ev:submiterror="" abortTrigger="">
+        	</xf:submission>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        
+	scwin.onpageload = function() {
+		$p.executeSubmission( "submission1" );
+	/* 	jsonData=[
+		    {"col2":"1","col3":"1"}
+		    ,{"col2":"1","col3":"2"}
+			,{"col2":"2","col3":"3"}
+			,{"col2":"2","col3":"4"}
+			,{"col2":"3","col3":"5"}
+		];
+		dataList1.setJSON( jsonData );
+		scwin.fn_CreateDynamicInputType();
+
+	 */	
+	};
+	
+	scwin.onpageunload = function() {
+		
+	};
+	
+	//inputType 에 따라 미리 property 를 정의한다
+	scwin.fn_CreateDynamicInputType = function() {
+		
+		var info = {
+			inputType : "select",
+			options : {
+				selectedData : true,
+				viewType:"icon",
+				chooseOption : true,
+				chooseOptionLabel : "정상"
+			},
+			itemSet : {
+				nodeset:"data:sel_sample",
+                   label : "LABEL",
+                   value : "VALUE"
+			}
+
+		};
+		
+	/* 	 var returnInfo = {
+			 displayFormat : ""
+		 };
+		 returnInfo.options = {};
+		 returnInfo.inputType = "select";
+		 returnInfo.options.viewType = "icon";
+		 returnInfo.options.displayMode = "label";
+       
+            returnInfo.itemSet = {
+                   nodeset:"data:sel_sample",
+                   LABEL : "LABEL",
+                   VALUE : "VALUE"
+            
+            } */
+
+
+		var total = dataList1.getTotalRow();
+		
+		var a = total-4;
+		var b = total-3;
+		var c = total-2;
+		
+         grd.setCellInputType(a, "col2", info);
+		 grd.setCellInputType(b, "col2", info);
+		grd.setCellInputType(c, "col2", info);
+		
+		
+	};
+	
+   
+	scwin.trigger4_onclick = function(e) {
+		var row = dataList1.insertRow(1);
+		
+	};
+
+scwin.trigger5_onclick = function(e) {
+
+scwin.fn_CreateDynamicInputType();
+};
+
+scwin.submission1_submitdone = function(e) {
+
+scwin.fn_CreateDynamicInputType();
+};
+
+
+	scwin.checkFirstColumnValues = function() {	
+		var tbody = WebSquare.wUnit.getDomById("grd_body_tbody");
+		var firstColumnValues = [];
+		var rows = tbody.getElementsByTagName("tr");
+		for (var i = 0; i < rows.length; i++) {
+			var row = rows[i];
+			var firstCell = row.getElementsByTagName("td")[0];
+			if (firstCell) {
+				var input = firstCell.querySelector("input, select");
+				if (input) {
+					firstColumnValues.push(input.value);
+				}
+			}
+		}
+		var expectedValues = ["2", "농구", "야구", "야구", "3"];
+		var isMatch = firstColumnValues.length === expectedValues.length && firstColumnValues.every((value, index) => value === expectedValues[index]);
+		if (isMatch) {
+			console.log("첫 번째 컬럼의 값이 올바릅니다.");
+		} else {
+			console.log("첫 번째 컬럼의 값이 일치하지 않습니다.");
+		}
+	}
+	
+	scwin.checkFirstColumnValues = function() {	
+		var tbody = WebSquare.wUnit.getDomById("grd_body_tbody");
+		var rows = Array.from(tbody.getElementsByTagName("tr"));
+		var firstColumnValues = [];
+		let reVal = false;
+		rows.forEach(row => {
+			var firstCell = row.getElementsByTagName("td")[0];
+			if (firstCell) {
+				var input = firstCell.querySelector("input, select");
+				if (input) {
+					firstColumnValues.push(input.value); 
+				}
+			}
+		});
+
+		var expectedValues = ["2", "농구", "야구", "야구", "3"];
+		var isMatch = JSON.stringify(firstColumnValues) === JSON.stringify(expectedValues);
+
+		if (isMatch) {
+			console.log("첫 번째 컬럼의 값이 올바릅니다.");
+			reVal = true;
+		} else {
+			console.log("첫 번째 컬럼의 값이 일치하지 않습니다.");
+		}
+		return reVal;
+	}	
+
+	scwin.checkVal = function() {
+		return scwin.checkFirstColumnValues();
+	}	
+	scwin.unitTest = function() {
+		//Unit
+		WebSquare.wUnit.start();
+		WebSquare.wUnit.addCommand("pause", "500");
+		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd_scrollY_div').scrollTop = 200;");
+		WebSquare.wUnit.addCommand("pause", "500");				
+		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+		WebSquare.wUnit.addCommand("pause", "500");		
+		
+		//Run test and stop
+		WebSquare.wUnit.run();
+		WebSquare.wUnit.stop();
+	}
+	scwin.unitTest();
+	
+	
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView id="grd" senseReader="true" checkAllType="false" visibleRowNum="5" class="" dataList="data:dataList1"
+			evenRowBackgroundColor="#fff" readOnly="false" rowMouseOver="false" 
+			rowMouseOverColor="#fff" scrollByColumn="true" scrollByColumnAdaptive="false" style="height:55px;width:380px;" 
+			tooltipDisplay="true" autoFitMinWidth="1200" setCellInputTypeCustom="true">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" value="name2" width="100"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" value="name3" width="100"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="custom" width="100"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" width="100"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger4" ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[insertrow]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" style="position: absolute;width: 80px;height: 23px;" id="trigger5" ev:onclick="scwin.trigger5_onclick">
+    		<xf:label><![CDATA[custom]]></xf:label>
+    	</xf:trigger>
+
+    </body>
+</html>

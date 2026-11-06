@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    gridView1.setTopRowIndex(7);
+};
+scwin.trigger2_onclick = function(e) {
+    gridView1.setGridHeight(100);
+};
+scwin.trigger3_onclick = function(e) {
+    gridView1.setGridHeight(200);
+};
+scwin.gridView2_onscrollend = function(e) {
+    console.log("onscrollend");
+};
+scwin.checkVal = function() {
+    return gridView1.getTopRowIndex() == 3;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행하여 2번(setGridHeight(100))을 클릭한다.
+    //1. Run the sample file and click twice (setGridHeight (100)).
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 그리드의 높이가 100으로 적용되어 보여진다.
+    //1. The height of the grid is shown as 100.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1').style.height == '100px'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. 1번(setTopRowIndex(7))을 클릭한다.
+    //2. Click number 1 (setTopRowIndex (7)).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. rowindex가 7번인 8번row부터 보여진다.(21,22,23)
+    //2. The rowindex is displayed starting from row 8 (7, 21, 22, 23)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1').getTopRowIndex() == 7", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. 3번(setGridHeight(200))을 클릭한다.
+    //3. Click 3 (setGridHeight (200)).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3. 4번 row부터 정상적으로 보여진다.(이전에는 아래 공백이 보여짐)
+    //3. It will be displayed normally from row 4. (Previous space is shown.)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1').style.height == '200px'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.G = 9;
+    window.u = [];
+    for (var i = 0; i < G * 3; i++) {
+        u.push(i);
+    }
+    dataList1.setData(u);
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 27-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" fixedColumnWithHidden="true" id="gridView1" ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		rowNumVisible="true" scrollByColumn="false" style="position: relative;width:348px;height:200px;" useShiftKey="true" ev:onscrollend="scwin.gridView2_onscrollend" defaultCellHeight="27">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="column9" inputType="text" style="height:20px" value="name1"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column7" inputType="text" style="height:20px" value="name2"
+    					width="70">
+    				</w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" style="height:20px" value="name3"
+    					width="70">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody4" style="">
+    			<w2:row id="row5" style="">
+    				<w2:column blockSelect="false" displayMode="label" id="col1" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col2" inputType="text" style="height:20px" width="70"></w2:column>
+    				<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" style="height:20px" width="70"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+        <xf:group>
+            <xf:group>
+                
+                <xf:trigger type="button" id="trigger1" style="position: relative;width:200px;height:50px;margin-bottom:20px;" ev:onclick="scwin.trigger1_onclick">
+                    <xf:label><![CDATA[setTopRowIndex(7);]]></xf:label>
+                </xf:trigger>
+                <w2:span label=" 1 "/>
+            </xf:group>
+            <xf:group>               
+                <xf:trigger type="button" id="trigger2" style="position: relative;width:200px;height:50px;margin-bottom:20px;" ev:onclick="scwin.trigger2_onclick">
+                    <xf:label><![CDATA[setGridHeight(100)]]></xf:label>
+                </xf:trigger>
+                 <w2:span label=" 2 "/>
+            </xf:group>
+            <xf:group>               
+                <xf:trigger type="button" id="trigger3" style="position: relative;width:200px;height:50px;" ev:onclick="scwin.trigger3_onclick">
+                    <xf:label><![CDATA[setGridHeight(200)]]></xf:label>
+                </xf:trigger>
+                 <w2:span label=" 3  "/>
+            </xf:group>
+        </xf:group>
+    </body>
+</html>
+ 

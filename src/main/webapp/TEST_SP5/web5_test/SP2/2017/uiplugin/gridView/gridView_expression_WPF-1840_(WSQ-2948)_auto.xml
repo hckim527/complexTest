@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" style="" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_expressionValue = function(rowIdx, col1Value, col2Value) {
+    var returnValue = "";
+    returnValue = col2Value;
+    var rowData = dataList1.getRowData(rowIdx);
+    //계산식
+    if (col1Value == "sum") {
+        gridView1.setCellColor(rowIdx, "col3", "red");
+    } else {
+        gridView1.setCellColor(rowIdx, "col3", "blue");
+    }
+    returnValue = WebSquare.util.setNumber(returnValue);
+    console.log(col1Value + " : " + col2Value);
+    console.log("=====>" + returnValue);
+    return returnValue + "_test";
+}
+scwin.trigger1_onclick = function(e) {
+    var jsonData = [{
+            "col1": "sum",
+            "col2": "12345.00"
+        }, {
+            "col1": "avg",
+            "col2": "123456.894"
+        },
+        {
+            "col1": "sum",
+            "col2": "467890.00"
+        }, {
+            "col1": "avg",
+            "col2": "123456.7"
+        }
+    ];
+    dataList1.setJSON(jsonData);
+};
+scwin.trigger3_onclick = function(e) {
+    dataList1.removeAll();
+};
+scwin.trigger4_onclick = function(e) {
+    dataList1.insertRow();
+    //dataList1.insertJSON( 0 , [{"col1":"sum", "col2":"6789.00"}] );
+};
+scwin.trigger5_onclick = function(e) {
+    var jsonData = [{
+        "col1": "",
+        "col2": ""
+    }];
+    dataList1.setJSON(jsonData);
+};
+scwin.trigger7_onclick = function(e) {
+    dataList1.removeRow(3);
+};
+scwin.trigger8_onclick = function(e) {
+    dataList1.insertRow(2);
+};
+scwin.trigger9_onclick = function(e) {
+    dataList1.removeRows([2, 3]);
+};
+scwin.isShowData = function() {
+    var count = 0;
+    WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not(".w2grid_hidedRow").each(function(i, el) {
+        if (WebSquare.wUnit.getJq(this).text()) {
+            count++;
+        }
+    });
+    return count > 0;
+}
+scwin.setVal1 = function() {
+    return beforeValue1 = WebSquare.wUnit.getObjById('gridView1_cell_3_0').innerText;
+}
+scwin.setVal2 = function() {
+    return beforeValue2 = WebSquare.wUnit.getObjById('gridView1_cell_2_0').innerText;
+}
+scwin.checkVal1 = function() {
+    return WebSquare.wUnit.getObjById('gridView1_cell_3_0').innerText != beforeValue1;
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getObjById('gridView1_cell_2_0').innerText != beforeValue2;
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 set버튼을 클릭한다.
+    //1. Run the sample file and click the set button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    // verify step 1. data가 셋팅되어 보여진다.
+    //1. Data is set and displayed.
+    WebSquare.wUnit.addCommand("assert", "scwin.isShowData()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 2. insertRow(2)를 2번 클릭한다.
+    //2. Double-click insertRow (2).
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // verify step 2번째 row에 insertRow가 추가되어진다.
+    //2. InsertRow is added to the second row.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_2_0').innerText == 'undefined_test'", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_3_0').innerText == 'undefined_test'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 3. removeRow(3)을 클릭한다.
+    //3. Click removeRow (3).
+    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
+    // verify step 3. 3번째 row가 삭제되어진다.
+    //3. The third row is deleted.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 4. removeRow([2,3])을 클릭한다.
+    //4. Click removeRow ([2,3]).
+    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger9').click()");
+    // verify step 4. 2번째 row와 3번째 row가 삭제되어진다.
+    //4. The second row and the third row are deleted.
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_3_0').parentElement.style.display", "none");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test
+    WebSquare.wUnit.run();
+    //stop
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 22-Jan-2018
+    window.beforeValue1 = undefined;
+    window.beforeValue2 = undefined;
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" scrollByColumn="false" id="gridView1" expressionSort="true" ignoreEmptyStringOnSort="true"
+    		filterFocusMode="infocus" style="position: relative ;left:34px;top:69px;width:585px;height:233px;" fixedColumnWithHidden="true"
+    		useShiftKey="false" moveKeyEditMode="true" sortable="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column3" style="height:20px;" inputType="text" width="100"
+    					value="expression(col1,col2)">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column2" style="height:20px;" inputType="text" width="100" value=""></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="height:20px;" width="100" inputType="text" value="col1"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="height:20px;" inputType="text" width="100" displayMode="label"
+    					value="col2">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col3" style="height:20px" inputType="expression" width="100" dataType="expression"
+    					expression="scwin.fn_expressionValue(rowIndex(), display('col1'),display('col2'))" defaultValue="">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col4" style="height:20px" inputType="expression" width="100" dataType="expression"
+    					expression="SUM('col1','col2')">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col1" style="height:20px" width="100" inputType="text" expressionSort="true">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2" style="height:20px" inputType="text" width="100" displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative ;left:81px;top:-220px;width:109px;height:43px;"
+    		ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[set]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger3" style="position: relative ;left:125px;top:-220px;width:113px;height:43px;" type="button"
+    		ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[removeAll]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger id="trigger4" style="position: relative ;left:170px;top:-219px;width:113px;height:43px;margin-left:-15px;" type="button"
+    		ev:onclick="scwin.trigger4_onclick">
+    		<xf:label><![CDATA[insertRow]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger7_onclick" id="trigger7"
+    		style="position: relative ;left:213px;top:-219px;width:113px;height:43px;margin-left:-15px;" type="button">
+    		<xf:label><![CDATA[removeRow(3)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger8_onclick" id="trigger8"
+    		style="position: relative ;left:213px;top:-219px;width:113px;height:43px;margin-left:150px;" type="button">
+    		<xf:label><![CDATA[insertRow(2)]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger9_onclick" id="trigger9"
+    		style="position: relative ;left:213px;top:-219px;width:113px;height:43px;margin-left:-240px;margin-top:-5px;" type="button">
+    		<xf:label><![CDATA[removeRows([2,3])]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

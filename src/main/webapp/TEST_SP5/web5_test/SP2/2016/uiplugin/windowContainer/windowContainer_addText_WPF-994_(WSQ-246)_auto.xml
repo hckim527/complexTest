@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/websquare5/common/css/content.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.createWindow = function(title, winId) {
+    //var path = "components/container/" ;
+    var path = "";
+    var src = path + "windowContainer_addText_WPF-994_(WSQ-246)_openTest.xml&txt=" + title;
+    var windowCreated = windowContainer1.getWindowByWindowId(winId);
+    windowContainer1.createWindow(title, null, src, title + " PAGE", winId);
+    if (!windowCreated) {
+        var selectedIdx = windowContainer1.getSelectedIndex();
+        //하단 status 에 text 추가
+        //var statusDoc = WebSquare.wUnit.getDomById($p.id+"windowContainer1_subWindow1_status");
+        var statusDoc = WebSquare.wUnit.getDomById($p.id + "windowContainer1_subWindow" + selectedIdx + "_status");
+        //windowMaxNum 이 6개 이상 오픈시 처리
+        if (statusDoc.children.length > 1) {
+            return;
+        }
+        var tmpDoc = document.createElement("div");
+        //tmpDoc.setAttribute("id","windowContainer1_subWindow1_msg2");
+        tmpDoc.setAttribute("id", "windowContainer1_subWindow" + selectedIdx + "_msg2");
+        //tmpDoc.setAttribute("style","position:relative;right:0px;width:150px;height:20px;float:right;");
+        tmpDoc.setAttribute("style", "height:14px;float:right;padding-right:3px;");
+        var textnode = document.createTextNode("any text..[tab : " + selectedIdx + "]");
+        tmpDoc.appendChild(textnode);
+        statusDoc.appendChild(tmpDoc);
+    }
+}
+scwin.trigger9_onclick = function(e) {
+    windowContainer1.setWindowCustomMsg("test!!!!!!!");
+    windowContainer1.setWindowStatusMsg("111msg");
+};
+scwin.unitTest = function() {
+    // debugger;
+    // Init test
+    WebSquare.wUnit.start();
+    // Test step 1: 1. 추가된 속성 useCustomMsg="true" , customMsg="안녕하세요."입력하고 실행한 후 하단의 Add2버튼을 클릭한다.
+    // 1. Added attribute useCustomMsg = 'true'customMsg = 'Hello' Enter and run it, then click the Add2 button at the bottom.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('windowContainer1').getAttribute('useCustomMsg')", "true");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('windowContainer1').getAttribute('customMsg')", "안녕하세요.");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Verify 1: 1. 컨테이너 하단에 customMsg에서 설정한 '안녕하세요.'메시지가 보여진다.
+    // 1. The 'Hello' message is displayed at the bottom of the container, set by customMsg.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow0_custom_msg').innerHTML", "안녕하세요.");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Test step 2: 2. Add2, Add3, Add4등을 클릭하고 하단의 멀티창 이미지를 클릭한 후 멀티창 한개를 클릭한다
+    // 2. Click Add2, Add3, Add4, click the multi-window image at the bottom, and then click one of the multi-windows.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_sequential').click()");
+    // Verify 2: 2. It is divided into multi-window screen and it can be distinguished by division color for the selected window.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow0_header_title').innerHTML", "Add2 PAGE");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow1_header_title').innerHTML", "Add3 PAGE");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow2_header_title').innerHTML", "Add4 PAGE");
+    WebSquare.wUnit.addCommand("pause", "1000");
+    // Run test
+    WebSquare.wUnit.run();
+    // Stop test
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    // window 생성 함수.
+    // Function test
+    // Created by Sang.Do
+    // Created date 17-Jan-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[
+    		
+    		.w2trigger{
+				width: 67px;
+				height: 25px;
+				padding: 0;
+				margin: -12px 5px 0;
+				background: url(/websquare5/common/images/create/btn_bottom.gif) no-repeat;
+				}		
+		
+    	 ]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="group3" style="display:table;width:100%;height:100%;">
+			<xf:group id="group2" style="vertical-align:middle;text-align:center;display:table-cell;">
+				<xf:group id="group1" style="display:inline-block;padding:30px;">
+					<w2:textbox class="titlebox" id="textbox1" label="SPA 적용 WindowContainer" style=""></w2:textbox>
+					<w2:windowContainer id="windowContainer1" windowAutoResize="false"
+						style="position:relative;width:650px;height:300px;font-size:15px;text-align:left;" sequentialArrangeRowNum="2" tooltipDisplay="true"
+						windowTooltipDisplay="true" useControlIconTitle="false" useFixButton="" horizontalArrangeNum="2" verticalArrangeNum="2"
+						windowMaxNum="6" tooltipGroupClass="false" class="" spaInitCount="0" useStatusMsg="true" useCloseButton="false"
+						fixArrangeFullScreen="false" sequentialArrangeColNum="2" toolbarPosition="bottom" statusMsg="" useCustomMsg="true"
+						customMsg="안녕하세요.">
+						<w2:windowToolbar>
+							<w2:nameLayer></w2:nameLayer>
+							<w2:controlIconLayer>
+								<w2:controlIcon></w2:controlIcon>
+								<w2:controlIcon></w2:controlIcon>
+								<w2:controlIcon></w2:controlIcon>
+								<w2:controlIcon></w2:controlIcon>
+								<w2:controlIcon></w2:controlIcon>
+							</w2:controlIconLayer>
+							<w2:selectedNameLayer></w2:selectedNameLayer>
+						</w2:windowToolbar>
+					</w2:windowContainer>
+					<xf:group id="group4" style="position:relative;width:650px;margin-top:20px;">
+
+
+						<xf:trigger id="trigger4" style="" type="button">
+							<xf:label><![CDATA[Add2]]></xf:label>
+							<script ev:event="onclick" type="javascript"><![CDATA[
+							scwin.createWindow("Add2", "WIN2");
+    					 ]]></script>
+						</xf:trigger>
+						<xf:trigger id="trigger3" style="" type="button">
+							<xf:label><![CDATA[Add3]]></xf:label>
+							<script ev:event="onclick" type="javascript"><![CDATA[
+							scwin.createWindow("Add3", "WIN3");
+    					 ]]></script>
+						</xf:trigger>
+						<xf:trigger id="trigger8" style="" type="button">
+							<xf:label><![CDATA[Add4]]></xf:label>
+							<script ev:event="onclick" type="javascript"><![CDATA[
+							scwin.createWindow("Add4", "WIN4");
+    					 ]]></script>
+						</xf:trigger>
+						<xf:trigger id="trigger7" style="" tabIndex="" type="button">
+							<xf:label><![CDATA[Add5]]></xf:label>
+							<script ev:event="onclick" type="javascript"><![CDATA[
+							scwin.createWindow("Add5", "WIN5");
+    					 ]]></script>
+						</xf:trigger>
+						<xf:trigger id="trigger6" style="" type="button" rightOnImageClass="">
+							<xf:label><![CDATA[Add6]]></xf:label>
+							<script ev:event="onclick" type="javascript"><![CDATA[
+							scwin.createWindow("Add6", "WIN6");
+    					 ]]></script>
+						</xf:trigger>
+						<xf:trigger id="trigger5" style="" type="button">
+							<xf:label><![CDATA[Add7]]></xf:label>
+							<script ev:event="onclick" type="javascript"><![CDATA[
+							scwin.createWindow("Add7", "WIN7");
+    					 ]]></script>
+						</xf:trigger>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+		<xf:trigger type="button" id="trigger9" style="position: absolute;width: 80px;height: 23px;" ev:onclick="scwin.trigger9_onclick">
+			<xf:label><![CDATA[set]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="trigger2" style="left:0px;top:0px;" type="button">
+			<xf:label><![CDATA[Add1]]></xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+							scwin.createWindow("Add1", "WIN1");
+    					 ]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    widgetContainer.addWidgets([{
+            id: "widget1",
+            title: "위젯1",
+            src: "widgetContainer_Load_WP-3100_(WSQ-2542)_sub.xml",
+            scope: true,
+            x: 0,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget2",
+            title: "위젯2",
+            src: "widgetContainer_Load_WP-3100_(WSQ-2542)_sub.xml",
+            scope: true,
+            x: 1,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        },
+        {
+            id: "widget3",
+            title: "위젯3",
+            src: "widgetContainer_Load_WP-3100_(WSQ-2542)_sub.xml",
+            scope: true,
+            x: 2,
+            y: 0,
+            unitWidth: 1,
+            unitHeight: 1
+        }
+    ]);
+}
+scwin.onload = function() {
+    output.setValue(output.getValue() + '\n' + 'widgetContainer load complete');
+};
+scwin.onwidgetload = function(id) {
+    output.setValue(output.getValue() + '\n' + '[' + id + '] widget load complete');
+};
+scwin.checkValue = function() {
+    var str = WebSquare.wUnit.getObjById($p.id+'output').getValue().trim();
+    st = str.replace(/\r?\n/g, "");
+    return st;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일(widgetContainer_Load_WP-3100_(WSQ-2542).xml)을 실행 후 우측의 메시지를 확인한다.
+    //1. Run the sample file (widgetContainer_Load_WP-3100_ (WSQ-2542) .xml) and check the message on the right.
+    //Verify 1. 위젯1, 위젯2, 위젯3 각각 onwidgetload 이벤트가 발생하고 이후에 위젯컨테이너의 onload 이벤트가 발생되어진다.
+    //1. Widget 1, Widget 2, Widget 3 Each onwidgetload event is fired and then the widget container"s onload event is fired.
+    WebSquare.wUnit.addCommand("assert", "scwin.checkValue() == '['+$p.id+'widgetContainer_widget1] widget load complete['+$p.id+'widgetContainer_widget2] widget load complete['+$p.id+'widgetContainer_widget3] widget load completewidgetContainer load complete'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 31-Jan-2018
+    //End unitTest
+    scwin.init();
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:widgetContainer ev:onload="scwin.onload" ev:onwidgetload="scwin.onwidgetload" id="widgetContainer" widgetMove="true" minUnitWidth="1" cols="3" horizontalMargin="0"
+    		verticalMargin="0" params="false" widgetResize="true" maxUnitWidth="1" threshold="null" mode="pushpull"
+    		style="position: absolute;width:869px;height:495px;border: 1px solid #000000;" minUnitHeight="1" maxUnitHeight="1"
+    		unitHeightPixel="300">
+    	</w2:widgetContainer>
+    	<xf:textarea id="output" style="position: absolute;width:300px;height:398px;left:890px;top:-1px;"></xf:textarea>
+    </body>
+</html>
+ 

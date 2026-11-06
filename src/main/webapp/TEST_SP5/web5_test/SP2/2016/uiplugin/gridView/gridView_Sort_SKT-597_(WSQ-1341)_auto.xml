@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            			<w2:column id="col5" name="name5" dataType="text"></w2:column>
+            			<w2:column id="col6" name="name6" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.gridView1_onscrollend = function() {
+    eventIsActived = true;
+    ngmf.layerAlert("gridView1_onscrollend");
+}
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_13_1").innerText == '1' && eventIsActived == false;
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getJq('#gridView1_cell_13_1').is(':focus');
+}
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 w2:gridView 의 filterFocusMode 를 확인한다.
+    //1. In the Source tab, check the filterFocusMode of w2: gridView.
+    //Verify step 1. filterFocusMode="followfocus"
+    //1. filterFocusMode = "followfocus"
+    //Test step 2. 브라우저에서 col2 열의 첫번째 행 (1)에 포커스를 주고, 헤더를 더블클릭을 2번 한다.
+    //2. In the browser, give focus to the first row (1) of the col2 column, and double-click the header twice.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column9')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column9')");
+    //Verify step 2. 해당 열이 내림차순으로 정렬되면서 1이 맨아래로 이동된다. (전버전에서는 내림차순으로 정렬시 onscrollend 이벤트가 동작하였음.) 
+    //2. The column is moved in the descending order and 1 is moved to the bottom. (In previous versions, the onscrollend event worked when sorting in descending order.)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.eventIsActived = false;
+    window.data = [];
+    for (var i = 0; i < 20; i++) {
+        for (var j = 0; j < 6; j++) {
+            data.push(6 * i + j);
+        }
+    }
+    dataList1.setData(data);
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 27-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="position: relative;width:641px;height:316px;" fixedColumnWithHidden="true" useShiftKey="true" autoFit="allColumn"
+    		rowNumVisible="true" rowStatusVisible="true" rowStatusWidth="40" rowNumWidth="40" keepDefaultColumnWidth="true" ev:onscrollend="scwin.gridView1_onscrollend" filterFocusMode="followfocus">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column11" inputType="checkbox" width="40" value="col1" fixColumnWidth="true"></w2:column>
+    				<w2:column blockSelect="false" id="column9" inputType="text" width="60" value="col2" sortable="true"></w2:column>
+    				<w2:column blockSelect="false" id="column7" inputType="text" width="60" value="col3_fix" fixColumnWidth="true"></w2:column>
+    				<w2:column blockSelect="false" id="column5" inputType="text" width="80" value="col4" hidden="true"></w2:column>
+    				<w2:column blockSelect="false" id="column3" inputType="text" width="50" value="col5"></w2:column>
+    				<w2:column blockSelect="false" id="column1" width="100" inputType="text" value="col6"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" inputType="checkbox" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col4" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col5" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col6" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </body>
+</html>
+ 

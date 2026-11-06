@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<vector>
+                		<data>
+                			<a>a1</a>
+                			<b>b1</b>
+                			<c>c1</c>
+                		</data>
+                		<data>
+                			<a>a3</a>
+                			<b>b3</b>
+                			<c>c3</c>
+                		</data>
+                		<data>
+                			<a>a2</a>
+                			<b>b2</b>
+                			<c>c2</c>
+                		</data>
+                		<data>
+                			<a>a5</a>
+                			<b>b5</b>
+                			<c>c5</c>
+                		</data>
+                		<data>
+                			<a>a4</a>
+                			<b>b4</b>
+                			<c>c4</c>
+                		</data>
+                	</vector>
+                </data>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.imgClick = function(row, colID, data) {
+    //alert("row : " + row + ", colID : " + colID + ", data : " + data);
+}
+scwin.fireOver = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.mouseOverBehaviour = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireOver(el);
+}
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 function tooltipFunc 을 확인한다.
+    //1. In the Source tab, check the function tooltipFunc.
+    //Test step 2. tooltipFormatter 를 확인한다.
+    //2. Check tooltipFormatter.
+    //Verify step 2. tooltipFormatter = "tooltipFunc"
+    //Test step 3. 브라우저에서 임의의 row 에 마우스오버 한다. (임의의 row 를 몇 번 더 마우스오버 해본다.)
+    //3. Mouse over any row in the browser. (Mouse over any row a few more times.)
+    //Verify step 3. Information about rowindex becomes tooltip.
+    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'grid1_cell_0_0')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_tooltip').text() == 'label = a1, rowIndex = 0, colIndex = 0'", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.tooltipFunc = function(rowIndex, colIndex, label) {
+        //debugger;
+        return "label = " + label + ", rowIndex = " + rowIndex + ", colIndex = " + colIndex;
+    }
+    grid1.setXML(WebSquare.ModelUtil.findInstanceNode("vector"));
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 28-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid baseNode="vector" repeatNode="data" scrollByColumn="false" id="grid1"
+    		style="position: absolute ;left:25px;top:23px;width:471px;height:151px;" sortable="true" rowStatusVisible="" rowNumVisible="true" readOnlyBackgroundColor="#80FF80" tooltipDisplay="true" tooltipShowAlways="true" tooltipFormatter="scwin.tooltipFunc">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column id="column7" style="height:20px" inputType="text" width="70" value="test"></w2:column>
+    				<w2:column id="column5" style="height:20px" inputType="text" width="111"
+    					value="viewType='icon'">
+    				</w2:column>
+    				<w2:column id="column3" style="height:20px" inputType="text" width="112" value='dataType="own"'
+    					rowSpan="">
+    				</w2:column>
+    				<w2:column id="column1" style="height:20px" inputType="text" width="70" rowSpan="">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column id="a" style="height:20px" inputType="calendar" width="70"></w2:column>
+    				<w2:column id="b" style="height:20px" inputType="textImage" width="111"
+    					imageSrc="/images/Chrysanthemum.jpg" viewType="icon" imageClickFunction="imgClick" imageHeight="15" imageWidth="15">
+    				</w2:column>
+    				<w2:column id="c" imageSrc="/images/Chrysanthemum.jpg" dataType="own"
+    					imageClickFunction="imgClick" style="height:20px" inputType="textImage" width="112" imageHeight="15" imageWidth="15" viewType="default">
+    				</w2:column>
+    				<w2:column id="d" style="height:20px" width="70" 
+    				imageClickFunction="imgClick"
+    				imageSrc="/images/Chrysanthemum.jpg"  inputType="textImage"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    </body>
+</html>
+ 

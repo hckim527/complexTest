@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+    	<w2:buildDate />
+    	<xf:model>
+    		<xf:instance>
+    			<data xmlns="" />
+    		</xf:instance>
+    		<w2:dataCollection baseNode="map"></w2:dataCollection>
+    		<w2:workflowCollection></w2:workflowCollection>
+    	</xf:model>
+    	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.fireMouseHover = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('onmouseover');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('mouseover', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.onmouseover == 'function') {
+        node.onmouseover();
+    }
+}
+scwin.__triggerMouseOver = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireMouseHover(el);
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 샘플파일을 실행 후 pagelist 1번(밑줄포함)에 마우스를 오버한다.
+    //1. Run the sample file and mouse over pagelist # 1 (including the underscore).
+    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseOver('pageList1_page_1')");
+    WebSquare.wUnit.addCommand("pause", "100");
+    // verify step 1. title에 대한 툴팁 값('1 선택')이 보여진다.
+    //1. Tooltip value ('1 selection') for title is shown.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pageList1_page_1').attr('title')", "1 선택");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    pageList1.setCount(5);
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 12-Mar-2018
+    //end unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    	<style type="text/css"><![CDATA[
+    	.w2pageList_label_selected {text-decoration: underline;}
+    	]]></style>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:pageList displayFormat="#" id="pageList1"
+    		style="position: relative;width: 350px;height: 21px;"
+    		pageSize="10" displayButtonType="display" renderType="list">
+    	</w2:pageList>
+    </body>
+</html>
+ 

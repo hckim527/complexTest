@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2006/xforms">
+    <head>
+        <xf:model/>
+        <w2:msgLink>
+            <w2:linkage id="LK_TOP_1" type="in" sour="ext_scr" dest="ml_top">
+                <w2:send>
+                    <w2:field sfn="MA_global_cusno" dfn="MA_cusno" lock="0"/>
+                    <w2:field sfn="MA_global_name" dfn="MA_name" lock="1"/>
+                </w2:send>
+            </w2:linkage>
+        </w2:msgLink>
+        <script type="text/javascript" lazy="false"><![CDATA[
+        scwin.log = function (msg) {
+            var prev = txa_log.getValue() || "";
+            txa_log.setValue(prev + msg + "\n");
+        };
+
+        scwin.onpageload = function () {
+            scwin.log("=== ml_top.xml onpageload ===");
+        };
+
+        // 1) 현재 화면(최상위)의 msgLink 를 공개 API 로 읽기
+        scwin.btn_self_onclick = function () {
+            var list = $p.getMsgLinkList();
+            scwin.log("[자기 화면] getMsgLinkList() = " + JSON.stringify(list, null, 2));
+        };
+
+        // 2) includeFrame 자식 화면의 msgLink 를 부모에서 읽기
+        scwin.btn_inc_onclick = function () {
+            var list = inc1.getMsgLinkList();          // includeFrame 컴포넌트에 직접 호출
+            scwin.log("[inc1 자식] getMsgLinkList() = " + JSON.stringify(list, null, 2));
+        };
+
+        // 3) linkage id 로 하나만 콕 집어서, 특정 field 값 꺼내기
+        scwin.btn_pick_onclick = function () {
+            var lk = $p.getMsgLink("LK_TOP_1");        // id 로 단건 조회
+            scwin.log("[단건] getMsgLink('LK_TOP_1')");
+            scwin.log("  type       = " + lk.type);
+            scwin.log("  send[0].sfn = " + lk.send[0].sfn);
+            scwin.log("  send[1].dfn = " + lk.send[1].dfn);
+        };
+        ]]>
+        </script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+        <xf:group style="padding:10px;">
+            <w2:textbox label="WAEA-1023 msgLink 공개 API 검증" style="font-weight:bold;"></w2:textbox>
+            <xf:trigger id="btn_self" type="button" ev:onclick="scwin.btn_self_onclick">
+                <xf:label><![CDATA[1. 자기 화면 msgLink]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_inc" type="button" ev:onclick="scwin.btn_inc_onclick">
+                <xf:label><![CDATA[2. includeFrame 자식 msgLink]]></xf:label>
+            </xf:trigger>
+            <xf:trigger id="btn_pick" type="button" ev:onclick="scwin.btn_pick_onclick">
+                <xf:label><![CDATA[3. id 로 단건 조회]]></xf:label>
+            </xf:trigger>
+            <w2:textarea id="txa_log" style="width:820px; height:340px;"></w2:textarea>
+            <w2:includeFrame id="inc1" src="msgLink_getMsgLinkList_WAEA-1060_(WSQ-6420)_sub.xml" style="width:400px; height:44px; border:1px dotted green;"></w2:includeFrame>
+        </xf:group>
+    </body>
+</html>

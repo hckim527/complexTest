@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_dateValid = function(tmpVal, callerId) {
+    console.log("callerId#####" + callerId);
+    log = "callerId#####" + callerId;
+    //id 값으로 inputCalendar 객체 가져와서 API 적용 
+    var comp = WebSquare.wUnit.getObjById(callerId);
+    comp.disableAfterDate(tmpVal);
+    return tmpVal;
+};
+scwin.checkVal = function() {
+    return log == 'callerId#####'+$p.id+'inputCalendar1';
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 달력버튼을 클릭하여 날짜를 입력하고 포커스를 다른곳에 클릭한다.
+    //1. Import the callerId value into the notification window and console window normally.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_calendar_cell_2_2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_img').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 1. 알림창 및 콘솔창에 callerId 값을 정상적으로 가져온다.(이전에는 값을 가져오는 기능이 없었음)예)callerId#####inputCalendar1
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = "";
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 30-Jan-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <style>
+		.w2calendar_date_disable{
+		color:gray;
+		}
+	</style>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar1" renderDiv="true"
+    		style="position: absolute;width:181px;height:63px;left:49px;top:48px;" rightAlign="false" focusOnDateSelect="false" footerDiv="false"
+    		calendarValueType="yearMonthDate" validator="scwin.fn_dateValid">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar2" renderDiv="true"
+    		style="position: absolute;width:254px;height:83px;left:49px;top:161px;" rightAlign="false" focusOnDateSelect="false" footerDiv="false"
+    		calendarValueType="yearMonthDate" validator="scwin.fn_dateValid">
+    	</w2:inputCalendar>
+    	<w2:inputCalendar renderType="component" weekStartsOn="0" id="inputCalendar3" renderDiv="true"
+    		style="position: absolute;width:324px;height:111px;left:47px;top:301px;" rightAlign="false" focusOnDateSelect="false"
+    		footerDiv="false" calendarValueType="yearMonthDate" validator="scwin.fn_dateValid">
+    	</w2:inputCalendar>
+    </body>
+</html>
+ 

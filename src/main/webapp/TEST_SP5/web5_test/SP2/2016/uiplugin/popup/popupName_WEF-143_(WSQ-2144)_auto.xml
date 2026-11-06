@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.callPopupCloseByOpener = function() {
+    var rowJSON = {
+        "addr": "서울시",
+        "name": "손예진",
+        "rowStatus": "R"
+    };
+    var dataObject = {
+        type: "json", // 데이터 타입. "xml","string","json","array"
+        data: rowJSON, // 전달 데이터 객체.
+        name: "rowObj" // 변수명. popup에서 $w.getParameter( "rowObj" )로 깨내올 수 있다.
+    };
+    var node = WebSquare.ModelUtil.findInstanceNode("vector");
+    WebSquare.uiplugin.popup.openPopup("popupNameZipcode_WEF-143_(WSQ-2144).xml", { //get방식으로 파업의 아이디를 넘김니다.
+        id: "pop1",
+        type: "window",
+        /* type popup 객체의 type으로  window, browser 중 하나  browser type의 경우 useIFrame 속성과 상관없이 window.open으로 열립니다.*/
+        width: "400px",
+        height: "400px",
+        //top과 left는 useIframe이 true인 경우 브라우져를 기준 false인 경우 모니터를 기준으로 한다.
+        top: "200px",
+        left: "200px",
+        popupName: "pop2", //popupName popup 객체의 이름으로 popup 프레임의 표시줄에 나타납니다.
+        modal: false, //modal을 이용해서 뒤 쪽 배경을 동작하지 않도록 만들기 위한 인자 입니다. false이면 뒤쪽의 컴퍼넌트가 사용 가능합니다.
+        useIFrame: true,
+        /*
+        	window type의 경우
+        	true : IFrame 을 사용하는 WebSquare popup
+        	false: window.open 을 사용하는 popup
+        */
+        style: "", //popup의 스타일을 지정합니다. 값이 있으면 left top width height는 적용되지 않습니다.
+        // popup option window.open을 사용하는 경우(useIfrmae false인 경우) popup에 넘어가는 parameter
+        resizable: false,
+        status: false,
+        menubar: false,
+        scrollbars: false,
+        title: false,
+        xml: node, // popup에 넘길 xmlDocument의 string popup창에서 WebSquare.uiplugin.popup.getPopupParam() api를 사용하여 가져올수 있습니다.
+        srcData: "", //popup 객체의 type 이 window 일 때 Parent 에서 넘길 xpath
+        destData: "", //popup 객체의 type 이 window 일 때 popup 에 설정할 xpath
+        dataObject: dataObject,
+        useATagBtn: (isUseATagBtn) ? "true" : "false"
+    });
+    //i++;
+}
+scwin.__triggerClose = function() {
+    if (pop1_close.length) {
+        return pop1_close[0].click();
+    } else {
+        return pop1_close.click();
+    }
+}
+scwin.__isTag = function(id, tag) {
+    var nodeName = WebSquare.wUnit.getDomById(id).nodeName;
+    return nodeName == tag;
+}
+scwin.__setUseATagBtn = function(fLag) {
+    isUseATagBtn = fLag;
+console.log(isUseATagBtn)	
+}
+scwin.checkVal = function() {
+    return scwin.__setUseATagBtn(false);
+}
+scwin.unitTest = function() {
+    //Unit
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    // Test step 1. 설정된 샘플파일 실행 후 개발자모드(F12) > open popup 클릭 > 팝업화면의 닫기버튼을 개발자모드의 Elements 검사한다.
+    //1. After executing the set sample file, check the element mode of developer mode (F12)> Open popup click> Close button of popup screen.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "2000");
+
+    //Verify step 1. a태그로 보여진다.(이전에는 div태그로 보여짐)<a id='pop1_close' class='w2window_close' title='창닫기'></a>
+    //1. Displayed as an a tag (previously shown as a div tag)
+    WebSquare.wUnit.addCommand("assert", "scwin.__isTag('pop1_close', 'A')", "true");
+    //WebSquare.wUnit.addCommand("set", "scwin.__triggerClose()");
+	WebSquare.wUnit.addCommand("set", "$p.closePopup('pop1')");
+	
+    WebSquare.wUnit.addCommand("pause", "1000");
+
+    //Test step 2. useATagBtn : 'false'로 설정하고 팝업화면의 닫기버튼을 Elements 검사한다.
+    //2. useATagBtn: Set to 'false' and check the close button of the popup screen Elements.
+    WebSquare.wUnit.addCommand("set", "scwin.checkVal()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+
+    //Verify step 2. div태그로 보여진다.
+    //2. It is displayed as a div tag. 
+    WebSquare.wUnit.addCommand("assert", "scwin.__isTag('pop1_close', 'DIV')", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run test and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    imports("uiplugin.popup");
+    window.isUseATagBtn = true;
+    //Function unitTest
+    //Created By: Sang.do
+    //Created By: 06-Feb-2018
+    //end unitTest
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" style="position:absolute;word-wrap:break-word;left:60px;top:230px;width:160px;height:50px;" id="trigger1">
+			<xf:label>open popup</xf:label>
+			<script type="javascript" ev:event="onclick"><![CDATA[ 
+    			scwin.callPopupCloseByOpener();		
+    		]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

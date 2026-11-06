@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<!-- 본 그리드용 데이터 : 컬럼 id를 용도 그대로 명명해 Tab 순서 판독이 쉽도록 함 -->
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" removeDummyRowStatus="true" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="c_text1" name="일반text" dataType="text"></w2:column>
+						<w2:column id="c_ro1" name="readOnly1" dataType="text"></w2:column>
+						<w2:column id="c_ro2" name="readOnly2" dataType="text"></w2:column>
+						<w2:column id="c_dis" name="disabled" dataType="text"></w2:column>
+						<w2:column id="c_block" name="blockSelect" dataType="text"></w2:column>
+						<w2:column id="c_select" name="select" dataType="text"></w2:column>
+						<w2:column id="c_auto" name="autoComplete" dataType="text"></w2:column>
+						<w2:column id="c_check" name="checkbox" dataType="text"></w2:column>
+						<w2:column id="c_radio" name="radio" dataType="text"></w2:column>
+						<w2:column id="c_cal" name="calendar" dataType="text"></w2:column>
+						<w2:column id="c_link" name="link" dataType="text"></w2:column>
+						<w2:column id="c_text2" name="일반text2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataList>
+				<!-- select / autoComplete 공용 itemset -->
+				<w2:dataList baseNode="list" repeatNode="map" id="dsCombo">
+					<w2:columnInfo>
+						<w2:column id="label" name="label" dataType="text"></w2:column>
+						<w2:column id="value" name="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row><label><![CDATA[선택1]]></label><value><![CDATA[1]]></value></w2:row>
+						<w2:row><label><![CDATA[선택2]]></label><value><![CDATA[2]]></value></w2:row>
+						<w2:row><label><![CDATA[선택3]]></label><value><![CDATA[3]]></value></w2:row>
+						<w2:row><label><![CDATA[선택4]]></label><value><![CDATA[4]]></value></w2:row>
+						<w2:row><label><![CDATA[선택5]]></label><value><![CDATA[5]]></value></w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+
+scwin.onpageload = function () {
+
+	var rows = [];
+	for (var i = 1; i <= 6; i++) {
+		rows.push({
+			"c_text1"  : "T" + i,
+			"c_ro1"    : "RO-A" + i,
+			"c_ro2"    : "RO-B" + i,
+			"c_dis"    : "DIS" + i,
+			"c_block"  : "BLK" + i,
+			"c_select" : String((i % 5) + 1),
+			"c_auto"   : String((i % 5) + 1),
+			"c_check"  : (i % 2 === 0) ? "Y" : "N",
+			"c_radio"  : (i % 3 === 0) ? "Y" : "N",
+			"c_cal"    : "2026-08-0" + i,
+			// 빈값 link 셀은 <a> 미생성 대상이므로 5번째 행만 의도적으로 빈값
+			"c_link"   : (i === 5) ? "" : ("링크" + i),
+			"c_text2"  : "E" + i
+		});
+	}
+
+	dataList1.setJSON(rows);
+};
+
+// Tab 이동 중 DOM 포커스와 gridView 내부 focused row/col 이 일치하는지 확인용.
+// 이슈에 "DOM 포커스와 내부 상태 불일치" 증상이 명시되어 있어 판독용으로 넣음.
+scwin.btnFocus_onclick = function () {
+	var ae = document.activeElement;
+	var domInfo = ae ? (ae.tagName + " id=" + ae.id + " value=" + (ae.value !== undefined ? ae.value : ae.textContent)) : "none";
+
+	var gridInfo = "";
+	try {
+		gridInfo = "row=" + gridView1.getFocusedRowIndex() + ", col=" + gridView1.getFocusedColumnIndex();
+	} catch (e) {
+		gridInfo = "(메소드명 확인 필요: " + e.message + ")";
+	}
+
+	console.log("[DOM ] " + domInfo);
+	console.log("[GRID] " + gridInfo);
+	console.log("---");
+};
+
+scwin.onpageunload = function () {
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+.desc { display:block; margin:18px 0 4px 0; font-weight:bold; }
+.note { display:block; margin:0 0 6px 0; color:#666; }
+]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+
+		<w2:textbox id="" class="desc" style="width:900px;height:20px;"
+			label="[G1] 본 검증 : accessibility=true, senseReader=true, readOnlyTabIgnore=false, ignoreNonEditableCell=false"></w2:textbox>
+		<w2:textbox id="" class="note" style="width:900px;height:20px;"
+			label="기대 Tab 순서 → 일반 → RO1 → RO2 → (disabled 건너뜀) → (blockSelect 건너뜀) → select → auto → check → radio → cal → link → 일반2"></w2:textbox>
+
+		<w2:gridView defaultCellHeight="20" id="gridView1" style="width:880px;height:180px;" dataList="data:dataList1"
+			visibleRowNum="all" accessibility="true" senseReader="true"
+			readOnlyTabIgnore="false" ignoreNonEditableCell="false">
+			<w2:caption id="caption1" style="" value="G1 - readOnly 포함 후보"></w2:caption>
+			<w2:header id="header1" style="">
+				<w2:row id="row1" style="">
+					<w2:column width="70" inputType="text" style="height:20px" id="h1" value="일반" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="h2" value="RO1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="h3" value="RO2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="h4" value="disabled" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="h5" value="blockSel" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="h6" value="select" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="h7" value="auto" displayMode="label"></w2:column>
+					<w2:column width="60" inputType="text" style="height:20px" id="h8" value="check" displayMode="label"></w2:column>
+					<w2:column width="60" inputType="text" style="height:20px" id="h9" value="radio" displayMode="label"></w2:column>
+					<w2:column width="90" inputType="text" style="height:20px" id="h10" value="calendar" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h11" value="link" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="h12" value="일반2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1" style="">
+				<w2:row id="row2" style="">
+					<!-- 1) 일반 text : 포커스 대상 -->
+					<w2:column width="70" inputType="text" style="height:20px" id="c_text1" displayMode="label"></w2:column>
+					<!-- 2~3) readOnly text : 이번 이슈의 핵심. 포커스 대상이어야 함 -->
+					<w2:column width="70" inputType="text" style="height:20px" id="c_ro1" displayMode="label" readOnly="true"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="c_ro2" displayMode="label" readOnly="true"></w2:column>
+					<!-- 4) disabled : 건너뛰어야 함 -->
+					<w2:column width="70" inputType="text" style="height:20px" id="c_dis" displayMode="label" disabled="true"></w2:column>
+					<!-- 5) blockSelect : 기존 skip 계약 유지 확인 -->
+					<w2:column width="70" inputType="text" style="height:20px" id="c_block" displayMode="label" blockSelect="true"></w2:column>
+					<!-- 6) select -->
+					<w2:column width="70" inputType="select" style="height:20px" id="c_select" displayMode="label">
+						<w2:choices>
+							<w2:itemset nodeset="data:dsCombo">
+								<w2:label ref="label"></w2:label>
+								<w2:value ref="value"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<!-- 7) autoComplete -->
+					<w2:column width="70" inputType="autoComplete" style="height:20px" id="c_auto" displayMode="label" listModeOnFocus="showAll">
+						<w2:choices>
+							<w2:itemset nodeset="data:dsCombo">
+								<w2:label ref="label"></w2:label>
+								<w2:value ref="value"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<!-- 8) checkbox : 선택 행만 순서에 포함되어야 함 -->
+					<w2:column width="60" inputType="checkbox" style="height:20px" id="c_check" displayMode="label"
+						trueValue="Y" falseValue="N"></w2:column>
+					<!-- 9) radio : 선택 행만 순서에 포함되어야 함 -->
+					<w2:column width="60" inputType="radio" style="height:20px" id="c_radio" displayMode="label"
+						trueValue="Y" falseValue="N"></w2:column>
+					<!-- 10) calendar -->
+					<w2:column width="90" inputType="calendar" style="height:20px" id="c_cal" displayMode="label"></w2:column>
+					<!-- 11) link : 5행은 빈값이라 <a> 미생성 → 해당 셀만 포커스 제외 -->
+					<w2:column width="80" inputType="link" style="height:20px" id="c_link" displayMode="label"></w2:column>
+					<!-- 12) 일반 text : end 경계 확인용 -->
+					<w2:column width="70" inputType="text" style="height:20px" id="c_text2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+
+		<w2:textbox id="" class="desc" style="width:900px;height:20px;"
+			label="[G2] 대조군 : readOnlyTabIgnore=true → readOnly 셀을 건너뛰어야 함"></w2:textbox>
+		<w2:gridView defaultCellHeight="20" id="gridView2" style="width:360px;height:140px;" dataList="data:dataList1"
+			visibleRowNum="all" accessibility="true" senseReader="true"
+			readOnlyTabIgnore="true" ignoreNonEditableCell="false">
+			<w2:caption id="caption2" style="" value="G2 - readOnlyTabIgnore=true"></w2:caption>
+			<w2:header id="header2" style="">
+				<w2:row id="row3" style="">
+					<w2:column width="80" inputType="text" style="height:20px" id="h21" value="일반" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h22" value="RO1" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h23" value="RO2" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h24" value="일반2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2" style="">
+				<w2:row id="row4" style="">
+					<w2:column width="80" inputType="text" style="height:20px" id="c_text1" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_ro1" displayMode="label" readOnly="true"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_ro2" displayMode="label" readOnly="true"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_text2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+
+		<w2:textbox id="" class="desc" style="width:900px;height:20px;"
+			label="[G3] 대조군 : ignoreNonEditableCell=true → readOnly 셀을 건너뛰어야 함"></w2:textbox>
+		<w2:gridView defaultCellHeight="20" id="gridView3" style="width:360px;height:140px;" dataList="data:dataList1"
+			visibleRowNum="all" accessibility="true" senseReader="true"
+			readOnlyTabIgnore="false" ignoreNonEditableCell="true">
+			<w2:caption id="caption3" style="" value="G3 - ignoreNonEditableCell=true"></w2:caption>
+			<w2:header id="header3" style="">
+				<w2:row id="row5" style="">
+					<w2:column width="80" inputType="text" style="height:20px" id="h31" value="일반" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h32" value="RO1" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h33" value="RO2" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h34" value="일반2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody3" style="">
+				<w2:row id="row6" style="">
+					<w2:column width="80" inputType="text" style="height:20px" id="c_text1" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_ro1" displayMode="label" readOnly="true"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_ro2" displayMode="label" readOnly="true"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_text2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+
+		<w2:textbox id="" class="desc" style="width:900px;height:20px;"
+			label="[G4] focusMultiRow=true 조합 (재현 조건에 명시된 항목)"></w2:textbox>
+		<w2:gridView defaultCellHeight="20" id="gridView4" style="width:360px;height:140px;" dataList="data:dataList1"
+			visibleRowNum="all" accessibility="true" senseReader="true"
+			readOnlyTabIgnore="false" ignoreNonEditableCell="false" focusMultiRow="true">
+			<w2:caption id="caption4" style="" value="G4 - focusMultiRow=true"></w2:caption>
+			<w2:header id="header4" style="">
+				<w2:row id="row7" style="">
+					<w2:column width="80" inputType="text" style="height:20px" id="h41" value="일반" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h42" value="RO1" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h43" value="RO2" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="h44" value="일반2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4" style="">
+				<w2:row id="row8" style="">
+					<w2:column width="80" inputType="text" style="height:20px" id="c_text1" displayMode="label"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_ro1" displayMode="label" readOnly="true"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_ro2" displayMode="label" readOnly="true"></w2:column>
+					<w2:column width="80" inputType="text" style="height:20px" id="c_text2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+
+		<w2:textbox id="" class="desc" style="width:900px;height:20px;"
+			label="경계 확인용 : 그리드 앞뒤로 Tab 이 빠져나가는지 볼 외부 요소"></w2:textbox>
+		<xf:input id="inpBefore" style="width:200px;height:21px;" placeholder="그리드 앞/뒤 경계 확인용 input"></xf:input>
+		<xf:trigger type="button" id="btnFocus" style="width:200px;height:28px;" ev:onclick="scwin.btnFocus_onclick">
+			<xf:label><![CDATA[포커스 상태 확인(콘솔)]]></xf:label>
+		</xf:trigger>
+
+	</body>
+</html>

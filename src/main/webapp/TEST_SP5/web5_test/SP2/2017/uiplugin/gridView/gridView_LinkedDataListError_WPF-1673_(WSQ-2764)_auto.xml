@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/common/css/admin_css/all.css" type="text/css"?>
+<?xml-stylesheet href="/common/css/admin_css/content.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>        
+        	<xf:instance>
+        		<data xmlns="" />
+        	</xf:instance>
+        	<w2:dataCollection baseNode="map">
+        		<w2:dataMap baseNode="map" id="dc_param"
+        			ev:onmodelchange="">
+        			<w2:keyInfo>
+        				<w2:key id="resType" name="조회구분"
+        					dataType="text">
+        				</w2:key>
+        				<w2:key id="syear" name="시작년" dataType="text">
+        				</w2:key>
+        				<w2:key id="smonth" name="시작월"
+        					dataType="text">
+        				</w2:key>
+        				<w2:key id="eyear" name="종료년" dataType="text">
+        				</w2:key>
+        				<w2:key id="emonth" name="종료월"
+        					dataType="text">
+        				</w2:key>
+        				<w2:key id="sdate" name="시작일자"
+        					dataType="text">
+        				</w2:key>
+        				<w2:key id="edate" name="종료일자"
+        					dataType="text">
+        				</w2:key>
+        				<w2:key id="seaArea" name="해역별"
+        					dataType="text">
+        				</w2:key>
+        				<w2:key id="fishCode" name="대상품종"
+        					dataType="text">
+        				</w2:key>
+        			</w2:keyInfo>
+        		</w2:dataMap>
+        		<w2:dataMap baseNode="map" id="dm_result">
+    				<w2:keyInfo>
+    					<w2:key id="svrCode" name="처리코드"
+    						dataType="text">
+    					</w2:key>
+    					<w2:key id="svrMsg" name="처리메세지"
+    						dataType="text">
+    					</w2:key>
+    					<w2:key id="maxYear" name="name3"
+    						dataType="text">
+    					</w2:key>
+    					<w2:key id="minYear" name="name4"
+    						dataType="text">
+    					</w2:key>
+    					<w2:key id="maxMonth" name="name5"
+    						dataType="text">
+    					</w2:key>
+    				</w2:keyInfo>
+    			</w2:dataMap>        		
+        		<w2:dataList id="resultList" baseNode="list"
+        			saveRemovedData="true" repeatNode="map">
+        			<w2:columnInfo>
+        				<w2:column id="resYear" name="연도/어업"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="wonQty" name="생산량"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="wonAmt" name="생산금액"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="div1" name="구분1"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="div2" name="구분2"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="large" name="합계"
+        					dataType="text">
+        				</w2:column>
+        				<w2:column id="small" name="소계"
+        					dataType="text">
+        				</w2:column>
+        			</w2:columnInfo>
+        		</w2:dataList>
+    			<w2:linkedDataList id="link_list" bind="resultList">
+    				<w2:condition type="filter"><![CDATA[]]></w2:condition>
+    				<w2:condition type="sort"><![CDATA[]]></w2:condition>
+    			</w2:linkedDataList>        		
+        		<w2:dataList id="dl_fishCode" baseNode="list"
+    				saveRemovedData="true" repeatNode="map">
+    				<w2:columnInfo>
+    					<w2:column id="codeId" name="name3"
+    						dataType="text">
+    					</w2:column>
+    					<w2:column id="code" name="name1"
+    						dataType="text">
+    					</w2:column>
+    					<w2:column id="codeNm" name="name2"
+    						dataType="text">
+    					</w2:column>
+    				</w2:columnInfo>
+    			</w2:dataList>
+    			<w2:linkedDataList id="link_fishCode"
+    				bind="dl_fishCode">
+    				<w2:condition type="filter"><![CDATA[]]></w2:condition>
+    				<w2:condition type="sort"><![CDATA[]]></w2:condition>
+    			</w2:linkedDataList>        		
+        		
+        	</w2:dataCollection>
+        	<w2:workflowCollection></w2:workflowCollection>
+    		<xf:submission id="sub_selectStatsDate" ref=""
+    			target='data:json,{"id":"dm_result","key":"searchParam"}'
+    			action="/fs/fps/selectStatsDate.do" method="post"
+    			mediatype="application/json" encoding="UTF-8" instance=""
+    			replace="" errorHandler="" customHandler="" mode="asynchronous"
+    			processMsg="" ev:submit="" ev:submitdone="scwin.callback"
+    			ev:submiterror="">
+    		</xf:submission>      
+    		<xf:submission id="sub_selectFishCodeList" ref='data:json,{"id":"dm_search","key":"searchParam"}' 
+    			target='data:json,{"id":"dl_fishCode","key":"codeList"}'
+    			action="/fs/fps/selectFishCodeList.do" method="post" mediatype="application/json"
+    			encoding="UTF-8" instance="" replace="" errorHandler=""
+    			customHandler="" mode="asynchronous" processMsg="" ev:submit=""
+    			ev:submitdone="scwin.callback" ev:submiterror="">
+    		</xf:submission>    		  	
+        	<xf:submission id="sub_search"
+        		ref='data:json,{"id":"dc_param","key":"searchParam"}'
+        		target='data:json,{"id":"resultList","key":"selectSpciesSttus"}'
+        		action="/fs/fips/selectSpciesSttus.do" method="post"
+        		mediatype="application/json" encoding="UTF-8" instance=""
+        		replace="" errorHandler="" customHandler=""
+        		mode="asynchronous" processMsg="조회중입니다." ev:submit=""
+        		ev:submitdone="scwin.sub_search_submitdone"
+        		ev:submiterror="scwin.sub_search_submiterror">
+        	</xf:submission>
+        </xf:model>
+
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    var fvCon = "div1 == '" + link_list.getCellData(0, "div1") + "' && div2 == '" + link_list.getCellData(0, "div2") + "' && small == '" + link_list.getCellData(0, "small") + "'";
+    //var fvCon = "div1 == '0 0'";
+    link_list.setFilterCondition(fvCon);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    //Test step 1. Script 탭 또는 Source 탭에서 scwin.trigger1_onclick 부분을 확인한다.
+    //1. In the Script tab or the Source tab, check the scwin.trigger1_onclick section.
+    //Verify step 1. 코멘트참고
+    //1. Comment Reference
+    //Test step 2. 브라우저에서 execute 버튼을 클릭한다.
+    //2. Click the execute button in your browser.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    //Verify step 2. 정상적으로 필터링이 된다. (데이터1건이 조회되면 정상 / 그전버전에는 그림1처럼 나옴)
+    //2. It is normally filtered. (If one data is retrieved, the normal / previous version is shown in Figure 1)
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd_temp_body_tbody').find('.grid_body_row').not('.w2grid_hidedRow').length > 0", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.data = [{
+            "resYear": "201601",
+            "wonQty": "29,626,000",
+            "wonAmt": "67,761,097,000",
+            "div1": " 0",
+            "div2": " 0",
+            "large": " 합계",
+            "small": " 합계",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "28,619,000",
+            "wonAmt": "65,510,838,000",
+            "div1": "310",
+            "div2": " 소계",
+            "large": "어    류",
+            "small": " 소계",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "682,000",
+            "wonAmt": "2,037,816,000",
+            "div1": "310",
+            "div2": "310010",
+            "large": "어    류",
+            "small": "가오리류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "8,000",
+            "wonAmt": "9,600,000",
+            "div1": "310",
+            "div2": "310030",
+            "large": "어    류",
+            "small": "갈치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "18,000",
+            "wonAmt": "11,594,000",
+            "div1": "310",
+            "div2": "310040",
+            "large": "어    류",
+            "small": "고등어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "0",
+            "wonAmt": "0",
+            "div1": "310",
+            "div2": "310050",
+            "large": "어    류",
+            "small": "꽁치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "17,456,000",
+            "wonAmt": "18,912,518,000",
+            "div1": "310",
+            "div2": "310090",
+            "large": "어    류",
+            "small": "가다랑어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "101,000",
+            "wonAmt": "181,026,000",
+            "div1": "310",
+            "div2": "310100",
+            "large": "어    류",
+            "small": "날개다랑어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "1,754,000",
+            "wonAmt": "14,405,493,000",
+            "div1": "310",
+            "div2": "310120",
+            "large": "어    류",
+            "small": "눈다랑어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "5,236,000",
+            "wonAmt": "11,986,303,000",
+            "div1": "310",
+            "div2": "310140",
+            "large": "어    류",
+            "small": "황다랑어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "77,000",
+            "wonAmt": "176,044,000",
+            "div1": "310",
+            "div2": "310150",
+            "large": "어    류",
+            "small": "기타다랑어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "12,000",
+            "wonAmt": "14,988,000",
+            "div1": "310",
+            "div2": "310180",
+            "large": "어    류",
+            "small": "민대구",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "26,000",
+            "wonAmt": "40,132,000",
+            "div1": "310",
+            "div2": "310190",
+            "large": "어    류",
+            "small": "붉은대구",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "138,000",
+            "wonAmt": "232,668,000",
+            "div1": "310",
+            "div2": "310210",
+            "large": "어    류",
+            "small": "기타대구",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "15,000",
+            "wonAmt": "49,125,000",
+            "div1": "310",
+            "div2": "310260",
+            "large": "어    류",
+            "small": "통돔",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "6,000",
+            "wonAmt": "10,050,000",
+            "div1": "310",
+            "div2": "310270",
+            "large": "어    류",
+            "small": "하스돔",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "113,000",
+            "wonAmt": "298,094,000",
+            "div1": "310",
+            "div2": "310280",
+            "large": "어    류",
+            "small": "기타돔",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "504,000",
+            "wonAmt": "12,116,160,000",
+            "div1": "310",
+            "div2": "310295",
+            "large": "어    류",
+            "small": "메로(이빨고기)",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "36,000",
+            "wonAmt": "398,232,000",
+            "div1": "310",
+            "div2": "310310",
+            "large": "어    류",
+            "small": "민어류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "236,000",
+            "wonAmt": "434,520,000",
+            "div1": "310",
+            "div2": "310330",
+            "large": "어    류",
+            "small": "새꼬리민태",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "288,000",
+            "wonAmt": "712,674,000",
+            "div1": "310",
+            "div2": "310340",
+            "large": "어    류",
+            "small": "붉은메기",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "1,000",
+            "wonAmt": "1,250,000",
+            "div1": "310",
+            "div2": "310359",
+            "large": "어    류",
+            "small": "복어류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "28,000",
+            "wonAmt": "19,208,000",
+            "div1": "310",
+            "div2": "310370",
+            "large": "어    류",
+            "small": "붕장어류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "107,000",
+            "wonAmt": "154,294,000",
+            "div1": "310",
+            "div2": "310380",
+            "large": "어    류",
+            "small": "삼치류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "33,000",
+            "wonAmt": "29,924,000",
+            "div1": "310",
+            "div2": "310420",
+            "large": "어    류",
+            "small": "상어류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "229,000",
+            "wonAmt": "506,662,000",
+            "div1": "310",
+            "div2": "310430",
+            "large": "어    류",
+            "small": "녹새치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "3,000",
+            "wonAmt": "12,900,000",
+            "div1": "310",
+            "div2": "310450",
+            "large": "어    류",
+            "small": "백새치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "1,000",
+            "wonAmt": "3,700,000",
+            "div1": "310",
+            "div2": "310460",
+            "large": "어    류",
+            "small": "청새치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "211,000",
+            "wonAmt": "1,055,940,000",
+            "div1": "310",
+            "div2": "310470",
+            "large": "어    류",
+            "small": "황새치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "3,000",
+            "wonAmt": "7,707,000",
+            "div1": "310",
+            "div2": "310480",
+            "large": "어    류",
+            "small": "흑새치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "24,000",
+            "wonAmt": "24,044,000",
+            "div1": "310",
+            "div2": "310490",
+            "large": "어    류",
+            "small": "기타새치",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "7,000",
+            "wonAmt": "55,027,000",
+            "div1": "310",
+            "div2": "310500",
+            "large": "어    류",
+            "small": "서대류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "0",
+            "wonAmt": "0",
+            "div1": "310",
+            "div2": "310530",
+            "large": "어    류",
+            "small": "적어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "664,000",
+            "wonAmt": "408,360,000",
+            "div1": "310",
+            "div2": "310540",
+            "large": "어    류",
+            "small": "정어리",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "65,000",
+            "wonAmt": "101,989,000",
+            "div1": "310",
+            "div2": "310541",
+            "large": "어    류",
+            "small": "전갱이류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "1,000",
+            "wonAmt": "900,000",
+            "div1": "310",
+            "div2": "310560",
+            "large": "어    류",
+            "small": "청어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "152,000",
+            "wonAmt": "400,520,000",
+            "div1": "310",
+            "div2": "310580",
+            "large": "어    류",
+            "small": "홍어",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "384,000",
+            "wonAmt": "701,376,000",
+            "div1": "310",
+            "div2": "310990",
+            "large": "어    류",
+            "small": "기타어류",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "1,007,000",
+            "wonAmt": "2,250,259,000",
+            "div1": "340",
+            "div2": " 소계",
+            "large": "연체동물",
+            "small": " 소계",
+            "rowStatus": "R"
+        },
+        {
+            "resYear": "201601",
+            "wonQty": "1,007,000",
+            "wonAmt": "2,250,259,000",
+            "div1": "340",
+            "div2": "340030",
+            "large": "연체동물",
+            "small": "오징어류",
+            "rowStatus": "R"
+        }
+    ];
+    resultList.setJSON(data);
+    //Function 
+    //Created by: Quan.Nguyen
+    //Created date: 07-Feb-2018
+    //end
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+    	<w2:gridView class="cm_grid" dataList="link_list" fixedColumnWithHidden="true" id="grd_temp" ignoreCellClick="false"
+    		ignoreToggleOnDisabled="false" readOnly="true" scrollByColumn="false" scrollByColumnAdaptive="false"
+    		style="position: relative;height: 500px;width:500px" summaryAuto="false" useShiftKey="true" noResultMessage="조회된 정보가 없습니다.">
+    		<w2:caption id="caption1" style="" value="this is a grid caption."></w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column13" style="" inputType="text" width="70" value="연도/어업" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column11" style="" inputType="text" width="70" value="생산량" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column9" style="" inputType="text" width="70" value="생산금액" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column7" style="" inputType="text" width="70" value="구분1" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="구분2" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="합계" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="소계" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="resYear" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="wonQty" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="wonAmt" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="div1" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="div2" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="large" style="" inputType="text" width="70" value="" displayMode="label"></w2:column>
+    				<w2:column blockSelect="false" id="small" style="" width="70" inputType="text" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[execute ]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

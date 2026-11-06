@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text"></w2:column>
+						<w2:column id="name" name="FileName" dataType="text"></w2:column>
+						<w2:column id="displaySize" name="Size" dataType="text"></w2:column>
+						<w2:column id="size" name="Size2" dataType="text"></w2:column>
+						<w2:column id="Status" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<chk><![CDATA[0]]></chk>
+							<name><![CDATA[native.html]]></name>
+							<size><![CDATA[353]]></size>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.selectCallback = function(fileArr) {
+    if (fileArr.length === 0) {
+        return;
+    }
+    var uploadFiles = [];
+    var dataList_name = "";
+    var dataList_size = "";
+    if (dataList1.getRowCount() + fileArr.length > h5_trans.options.maxcount) {
+        alert("[selectCallback] 업로드건수가 " + h5_trans.options.maxcount + "건으로 제한되어 있습니다.");
+        for (var i = 0, len = fileArr.length; i < len; i++) {
+            h5_trans.removeFile(fileArr[i].name);
+        }
+        return;
+    };
+    for (var i = 0; i < fileArr.length; i++) {
+        var isAdded = false;
+        var isExist = false;
+        var file_name = fileArr[i].name;
+        var file_size = fileArr[i].size;
+        for (var j = 0; j < dataList1.getRowCount(); j++) {
+            dataList_name = dataList1.getCellData(j, "name");
+            dataList_size = dataList1.getCellData(j, "size");
+            if (dataList_name == file_name && dataList_size == file_size) {
+                isExist = true;
+                break;
+            }
+        }
+        if (isExist) {
+            alert("[HTML5 selectCallback] 파일이 이미 있습니다. (" + file_name + ")");
+            h5_trans.removeFile(file_name);
+        } else {
+            var obj = {
+                name: file_name,
+                size: file_size
+            };
+            uploadFiles.push(obj);
+        }
+    }
+    dataList1.insertJSON(dataList1.getRowCount(), uploadFiles);
+};
+scwin.flashSelectCallback = function(fileArr) {
+    debugger;
+    if (fileArr.length === 0) {
+        return;
+    }
+    var uploadFiles = [];
+    var dataList_name = "";
+    var dataList_size = "";
+    if (dataList1.getRowCount() + fileArr.length > flash_trans.options.maxcount) {
+        alert("[selectCallback] 업로드건수가 " + flash_trans.options.maxcount + "건으로 제한되어 있습니다.");
+        for (var i = 0, len = fileArr.length; i < len; i++) {
+            flash_trans.removeFile(fileArr[i].name);
+        }
+        return;
+    };
+    for (var i = 0; i < fileArr.length; i++) {
+        var isAdded = false;
+        var isExist = false;
+        var file_name = fileArr[i].name;
+        var file_size = fileArr[i].size;
+        for (var j = 0; j < dataList1.getRowCount(); j++) {
+            dataList_name = dataList1.getCellData(j, "name");
+            dataList_size = dataList1.getCellData(j, "size");
+            if (dataList_name == file_name && dataList_size == file_size) {
+                isExist = true;
+                break;
+            }
+        }
+        if (isExist) {
+            alert("[flash selectCallback] 파일이 이미 있습니다. (" + file_name + ")");
+            flash_trans.removeFile(file_name);
+        } else {
+            var obj = {
+                name: file_name,
+                size: file_size
+            };
+            uploadFiles.push(obj);
+        }
+    }
+    dataList1.insertJSON(dataList1.getRowCount(), uploadFiles);
+};
+scwin.multi1_onComplete = function() {
+    console.log("onComplete10");
+};
+scwin.multiupload10_ondone = function(data) {
+    console.log("multiupload10_ondone");
+    console.log(data);
+    var cnt = dataList1.getRowCount();
+    for (var i = 0; i < cnt; i++) {
+        dataList1.setCellData(i, 3, "Complete!!!!");
+    }
+    setTimeout(scwin.clearUpload, "1000");
+};
+scwin.clearUpload = function() {
+    dataList1.removeAll();
+};
+scwin.textbox4_onclick = function(e) {
+    var idxArr = gridView1.getCheckedJSON("chk");
+    var idxArr1 = gridView1.getCheckedIndex("chk");
+    for (var i = 0; i < idxArr.length; i++) {
+        var fileName = idxArr[i].name;
+        h5_trans.removeFile(fileName);
+        dataList1.removeRow(idxArr1[i]);
+    }
+};
+scwin.textbox5_onclick = function(e) {
+    h5_trans.startUpload();
+    var cnt = dataList1.getRowCount();
+    for (var i = 0; i < cnt; i++) {
+        dataList1.setCellData(i, 3, "Uploading...");
+    }
+};
+scwin.flash_trans_onerror = function(err) {
+    console.log(err);
+};
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+		<style type="text/css"><![CDATA[ 
+			* {font-family: tahoma}
+		
+			.w2multiupload_uploader {
+				background-color:red;
+			}
+			
+			.delete_ing {
+				background-color:blue;
+			}
+			
+			.start {
+				background-color:skyblue;
+			}
+		]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+		<xf:group id="group2" style="padding:10px;">
+			<w2:textbox id="textbox1" style="position: relative;" label="HTML5 MultiUpload Sample" tagname="h1"></w2:textbox>
+			<w2:gridView ignoreCellClick="false" id="gridView1" dataList="dataList1" style="position: relative;height: 200px;"
+				useShiftKey="true" scrollByColumn="false" fixedColumnWithHidden="true" autoFit="allColumn">
+				<w2:header id="header1" style="">
+					<w2:row id="row2" style="">
+						<w2:column blockSelect="false" id="column11" style="height:20px;" inputType="checkbox" width="27" value="chk"></w2:column>
+						<w2:column blockSelect="false" id="column9" style="height:20px;" inputType="text" width="422" value="FileName"></w2:column>
+						<w2:column blockSelect="false" id="column7" style="height:20px;" inputType="text" width="133" value="Size"></w2:column>
+						<w2:column blockSelect="false" id="column3" style="height:20px;" width="197" inputType="text" value="Status"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody4" style="">
+					<w2:row id="row5" style="">
+						<w2:column blockSelect="false" id="chk" style="height:20px;" inputType="checkbox" width="27"></w2:column>
+						<w2:column blockSelect="false" id="name" style="height:20px;" inputType="text" width="422" textAlign="left"></w2:column>
+						<w2:column blockSelect="false" id="size" style="height:20px;" inputType="text" width="133"></w2:column>
+						<w2:column blockSelect="false" id="Status" style="height:20px;" width="197" inputType="text" value="Ready.."></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<xf:group id="group1" style="overflow:hidden;margin-top:5px;">
+				<w2:multiupload maxcount="5" maxsize="100000" id="h5_trans" ev:ondone="scwin.multiupload10_ondone"
+					style="position:relative;height:34px;width:111px;float:left;" ev:onComplete="scwin.multi1_onComplete" action="" uploadButton=""
+					wmode="false" filter="" mode="html5_transparent" selectCallback="scwin.selectCallback">
+				</w2:multiupload>
+				
+				<w2:multiupload action="" fireEventOnError="true" ev:onComplete="scwin.multi1_onComplete" ev:onerror="scwin.flash_trans_onerror" filter="" id="flash_trans" displaySizeUnit="MB" sizeUnit="Byte" maxcount="10" maxsize="1000000" mode="transparent" selectCallback="" style="position:relative;height:34px;width:111px;float:left;margin-left:10px;background: green;" uploadButton="" wmode="false">
+				</w2:multiupload>
+				
+				<w2:textbox label="Delete" id="textbox4" style="position: relative;height:34px;width:124px;float:left;margin-left:5px;color:#FFFFFF;font-size:14pt;padding-top:0px;padding-bottom:0px;text-align:center;"
+					class="delete_ing" ev:onclick="scwin.textbox4_onclick">
+				</w2:textbox>
+				<w2:textbox id="textbox5" label="upload" style="position: relative;height:34px;width: 121px;float:left;margin-left:5px;text-align:center;padding-top:0px;font-size:14pt;padding-bottom:0px;"
+					class="start" ev:onclick="scwin.textbox5_onclick">
+				</w2:textbox>
+				
+			</xf:group>
+		</xf:group>
+	</body>
+</html> 

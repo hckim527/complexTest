@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.mainClose = function(title) {
+    var result = confirm("close?");
+    if (result) {
+        return true;
+    } else {
+        return false;
+    }
+};
+scwin.createWindowTest = function(title) {
+    wc1.createWindow(title, "", "", "windowTitle", title, "newWindow", scwin.mainClose, null, null);
+    //wc1.createWindow( title , iconUrl , src , windowTitle , windowId , openAction , closeAction , windowTooltip, null)
+};
+scwin.wc1_onbeforecloseall = function() {
+    debugger;
+};
+scwin.fireDbClick = function(node) {
+    if (document.createEventObject) {
+        node.fireEvent('ondblclick');
+    } else if (document.createEvent) {
+        var evt = document.createEvent('MouseEvents');
+        evt.initEvent('dblclick', true, false);
+        node.dispatchEvent(evt);
+    } else if (typeof node.ondblclick == 'function') {
+        node.ondblclick();
+    }
+}
+scwin.Dbclick = function(id) {
+    var el = WebSquare.wUnit.getDomById($p.id + id);
+    scwin.fireDbClick(el);
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wc1_vertical').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wc1_horizontal').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wc1_cascade').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('wc1_subWindow0_header')");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wc1_subWindow0').height() > 250", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.unitTest();
+
+scwin.onpageload = function() {
+    scwin.createWindowTest("main");
+    //scwin.createWindowTest("aa");
+    //scwin.createWindowTest("bb");
+    //scwin.createWindowTest("cc");
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    	<w2:windowContainer sequentialArrangeRowNum="2" useNameContainer="false" useControlIconTitle="false" useFixButton="false"
+    		horizontalArrangeNum="2" tooltipGroupClass="false" controlIconPosition="left" class="" hideTitleOnMaximize="false" useStatusMsg="true" dragResizableLeft="true"
+    		windowMaximizeAll="false" id="wc1" windowAutoResize="true" useCustomMsg="false"
+    		style="border-top:1px solid black; position: absolute ;left: 10px;top: 24px;width:600px;height:300px;" tooltipDisplay="true" stopMinimizeOnNameLayer="true" restoreWinSize="true"
+    		stopToggleOnLast="false" windowTooltipDisplay="true" verticalArrangeNum="2" windowMaxNum="5" spaAuto="true" useCloseButton="false"
+    		fixArrangeFullScreen="false" sequentialArrangeColNum="2" toolbarPosition="bottom" ev:onbeforecloseall="scwin.wc1_onbeforecloseall" frameMode="wframe">
+    		<w2:windowToolbar>
+    			<w2:nameLayer></w2:nameLayer>
+    			<w2:controlIconLayer>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    				<w2:controlIcon></w2:controlIcon>
+    			</w2:controlIconLayer>
+    			<w2:selectedNameLayer></w2:selectedNameLayer>
+    		</w2:windowToolbar>
+    	</w2:windowContainer>
+    </body>
+</html>
+ 

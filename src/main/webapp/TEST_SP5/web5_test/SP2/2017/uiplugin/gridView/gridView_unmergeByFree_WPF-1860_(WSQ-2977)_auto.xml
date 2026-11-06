@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                	<vector>
+                		<data>
+                			<col1>111111</col1>
+                			<col2>111111</col2>
+                			<col3>111111</col3>
+                		</data>
+                		<data>
+                			<col1>222222</col1>
+                			<col2>222222</col2>
+                			<col3>222222</col3>
+                		</data>
+                	</vector>
+                </data>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    //같은 row 내에서 같은 데이터가 연속적으로 나타나는경우 이들을 모두 병합한다. (가로병합)
+    grid1.mergeByRow();
+};
+scwin.trigger2_onclick = function(e) {
+    grid1.unmergeByFree(0, 0);
+};
+scwin.trigger3_onclick = function(e) {
+    //alert(grid1.getMerged(0,0));
+    log = grid1.getMerged(0, 0);
+};
+scwin.unitTest = function() {
+    //init
+    WebSquare.wUnit.start();
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "log == false", "true");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = undefined;
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 26-Feb-2018
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:grid dataList="" summaryAuto="false"
+    		useFilterList="false" scrollByColumn="false"
+    		showSortableUseFilter="false" scrollByColumnAdaptive="false"
+    		id="grid1"
+    		style="position: relative;width: 500px;height: 150px;"
+    		ignoreCellClick="false" ignoreToggleOnDisabled="false"
+    		summaryOnlyAuto="false" fixedColumnWithHidden="true"
+    		useShiftKey="true" ref="vector" baseNode="vector" repeatNode="data">
+    		<w2:caption id="caption1" style=""
+    			value="this is a grid caption.">
+    		</w2:caption>
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name1">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column3"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" value="name2">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="column1"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label" value="name3">
+    				</w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" rowSpan="" colMerge="">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col2"
+    					style="height:20px" inputType="text" width="70"
+    					displayMode="label" rowSpan="">
+    				</w2:column>
+    				<w2:column blockSelect="false" id="col3"
+    					style="height:20px" width="70" inputType="text"
+    					displayMode="label">
+    				</w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:grid>
+    	<xf:trigger type="button" id="trigger1"
+    		style="position: relative;width: 100px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[mergeRow]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger2"
+    		style="position: relative;width: 100px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+    		<xf:label><![CDATA[unmergeByFree]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger type="button" id="trigger3"
+    		style="position: relative;width: 100px;height: 23px;" ev:onclick="scwin.trigger3_onclick">
+    		<xf:label><![CDATA[getMerged]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
+ 

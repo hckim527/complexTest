@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            			<w2:column id="col4" name="name4" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+                <w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map" getMatchedFromAllData="false">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                        <w2:column id="col4" name="name4" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    var data = [];
+    for (var i = 0; i < 50; i++) {
+        for (var j = 0; j < 4; j++) {
+            data.push(String((i % 5) * (j + 1)));
+        }
+    }
+    dataList1.setData(data);
+    dataList1.setColumnFilter("col1", "1", "and");
+    dataList2.setData(data);
+    dataList2.setColumnFilter("col1", "1", "and");
+}
+scwin.trigger1_onclick = function(e) {
+    input1.setValue("[" + dataList1.getMatchedIndex("col1", "2") + "]");
+};
+scwin.trigger2_onclick = function(e) {
+    input2.setValue("[" + dataList2.getMatchedIndex("col1", "2") + "]");
+};
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. Source 탭에서 dataList2 에 getMatchedFromAllData 부분을 확인한다.
+    //1. In the Source tab, check the getMatchedFromAllData part of dataList2.
+    //Verify 1. getMatchedFromAllData="true"
+    //Test step 2. 브라우저에서 dataList1.getAllMatchedIndex('col1', '2') 버튼을 클릭한다.
+    //2. In your browser, click the dataList1.getAllMatchedIndex ('col1', '2') button.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 2. inputBox 에 [] 라고 표시된다.
+    //2. The inputBox displays [].
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input1').getValue() == '[]'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 3. dataList2.getAllMatchedIndex('col1', '2') 버튼을 클릭한다. (코멘트확인)
+    //3.Click the dataList2.getAllMatchedIndex ('col1', '2') button. (Comment confirmation)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Verify 3.  위와 똑같이 inputBox 에 [] 라고 표시된다.
+    //3. [] is displayed in the inputBox as above.
+    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input2').getValue() == '[]'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 07-Feb-2018
+    //End unitTest
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+        <xf:group id="" style="height:392px;">
+        	<w2:textbox label='getMatchedAllData=""' id="" style="position: relative;width: 300px;height: 50px;font-size:18pt;"></w2:textbox>
+        	<w2:gridView id="gridView1" dataList="dataList1" autoFit="allColumn" applyAllColumnStyle="false"
+        		style="position: relative;width:501px;height:250px;" useShiftKey="true" scrollByColumn="false" defaultCellHeight="20"
+        		rowNumVisible="true">
+        		<w2:header id="header1" style="">
+        			<w2:row id="row1" style="">
+        				<w2:column id="column7" blockSelect="false" style="" useFilter="true" width="70" inputType="text" value="name1"></w2:column>
+        				<w2:column id="column5" blockSelect="false" style="" useFilter="true" width="70" inputType="text" value="name2"></w2:column>
+        				<w2:column id="column3" blockSelect="false" style="" width="70" inputType="text" value="name3"></w2:column>
+        				<w2:column id="column1" blockSelect="false" style="" inputType="text" width="70" value="name4"></w2:column>
+        			</w2:row>
+        		</w2:header>
+        		<w2:gBody id="gBody1" style="">
+        			<w2:row id="row2" style="">
+        				<w2:column id="col1" blockSelect="false" style="" width="70" inputType="text"></w2:column>
+        				<w2:column id="col2" blockSelect="false" style="" width="70" inputType="text"></w2:column>
+        				<w2:column id="col3" blockSelect="false" style="" width="70" inputType="text"></w2:column>
+        				<w2:column id="col4" blockSelect="false" style="" inputType="text" width="70"></w2:column>
+        			</w2:row>
+        		</w2:gBody>
+        	</w2:gridView>
+        	<xf:trigger type="button" id="trigger1" style="position: relative;height:40px;width:300px;" ev:onclick="scwin.trigger1_onclick">
+        		<xf:label><![CDATA[dataList1.getAllMatchedIndex("col1", "2")]]></xf:label>
+        	</xf:trigger>
+        	<xf:input id="input1" style="position: relative;height:40px;width:300px;" adjustMaxLength="false" readOnly="true"></xf:input>
+        </xf:group>
+        <xf:group id="" style="height:392px;">
+            <w2:textbox id="" label='getMatchedAllData="false"' style="position: relative;width: 300px;height: 50px;font-size:18pt;"></w2:textbox>
+            <w2:gridView id="gridView2" dataList="dataList2" autoFit="allColumn" applyAllColumnStyle="false" style="position: relative;width:501px;height:250px;" useShiftKey="true" scrollByColumn="false" defaultCellHeight="20" rowNumVisible="true">
+                <w2:header id="header1" style="">
+                    <w2:row id="row1" style="">
+                        <w2:column id="column7" blockSelect="false" style="" useFilter="true" width="70" inputType="text" value="name1"></w2:column>
+                        <w2:column id="column5" blockSelect="false" style="" useFilter="true" width="70" inputType="text" value="name2"></w2:column>
+                        <w2:column id="column3" blockSelect="false" style="" width="70" inputType="text" value="name3"></w2:column>
+                        <w2:column id="column1" blockSelect="false" style="" inputType="text" width="70" value="name4"></w2:column>
+                    </w2:row>
+                </w2:header>
+                <w2:gBody id="gBody1" style="">
+                    <w2:row id="row2" style="">
+                        <w2:column id="col1" blockSelect="false" style="" width="70" inputType="text"></w2:column>
+                        <w2:column id="col2" blockSelect="false" style="" width="70" inputType="text"></w2:column>
+                        <w2:column id="col3" blockSelect="false" style="" width="70" inputType="text"></w2:column>
+                        <w2:column id="col4" blockSelect="false" style="" inputType="text" width="70"></w2:column>
+                    </w2:row>
+                </w2:gBody>
+            </w2:gridView>
+            <xf:trigger id="trigger2" style="position: relative;width:299px;height:38px;" type="button" ev:onclick="scwin.trigger2_onclick">
+                <xf:label><![CDATA[dataList2.getAllMatchedIndex("col1", "2")]]></xf:label>
+        	</xf:trigger>
+            <xf:input adjustMaxLength="false" id="input2" style="position: relative;height:40px;width:300px;" readOnly="true"></xf:input>
+        </xf:group>
+    </body>
+</html>
+ 

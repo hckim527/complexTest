@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list"
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text">
+						</w2:column>
+						<w2:column id="col2" name="name2" dataType="text">
+						</w2:column>
+						<w2:column id="col3" name="name3" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list"
+					saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="email" name="email" dataType="text">
+						</w2:column>
+						<w2:column id="value" name="value" dataType="text">
+						</w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<email><![CDATA[qong1243@nate.com]]></email>
+							<value><![CDATA[qong1243@nate.com]]></value>
+						</w2:row>
+						<w2:row>
+							<email><![CDATA[qong1243@sss.com]]></email>
+							<value><![CDATA[qong1243@sss.com]]></value>
+						</w2:row>
+						<w2:row>
+							<email><![CDATA[qong1243@gmail.com]]></email>
+							<value><![CDATA[qong1243@gmail.com]]></value>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+    //alert(JSON.stringify(gridView1.getDataListInfo()));
+    console.log(JSON.stringify(gridView1.getDataListInfo()));
+    window.log = gridView1.getDataListInfo();
+};
+scwin.trigger2_onclick = function(e) {
+    var column1 = gridView1.cellInfoHash[gridView1.getColumnID(0)];
+    //alert(JSON.stringify(column1.getColumnDataListInfo()));
+    window.log1 = column1.getColumnDataListInfo();
+};
+scwin.trigger3_onclick = function(e) {
+    //alert(JSON.stringify(input1.getDataListInfo()));
+    window.log2 = input1.getDataListInfo();
+};
+scwin.unitTest = function() {
+    //init
+    // WebSquare.wUnit.start();
+    //Test step 1. Script 탭에서 trigger1 부분을 확인한다.
+    //1. In the Script tab, check the trigger1 section.
+    //Verify step 1. alert (JSON.stringify (gridView1.getDataListInfo ()));
+    //Test step 2. trigger2 부분을 확인한다.
+    //2. Check the trigger2 section.
+    //Verify step 2. alert (JSON.stringify (column1.getColumnDataListInfo ()));
+    //Test step 3. trigger3 부분을 확인한다.
+    //3. Check the trigger3 section.
+    //Verify step 3. alert (JSON.stringify (input1.getDataListInfo ()));
+    //Test step 4. 브라우저에서 getDataListInfo(GridView) 버튼을 클릭한다.
+    //4. In your browser, click the getDataListInfo (GridView) button.
+    //Verify step 4. The "id": "dataList1" popup is created.
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("assert", "window.log.id == 'dataList1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 5. getColumnDataListInfo(col1) 버튼을 클릭한다. 
+    //5. Click the getColumnDataListInfo (col1) button.
+    //Verify step 5. 'nodest': 'data: dataList2', 'id': 'dataList2', 'value': 'value', 'label'
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    //WebSquare.wUnit.addCommand("assert", "window.log1.nodeset == 'data:dataList2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "window.log1.id == 'dataList2'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "window.log1.value == 'value'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "window.log1.label == 'email'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 6. getDataListInfo버튼을 클릭한다.
+    //6. Click the getDataListInfo button.
+    //Verify step 6. 'id': 'dataList1', 'ref': 'data: dataList1'
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
+    WebSquare.wUnit.addCommand("assert", "window.log2.id == $p.id+'dataList1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "window.log2.ref == 'data:dataList1'", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run  and stop
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    window.log = undefined; 
+	window.log1 = undefined; 
+	window.log2 = undefined;
+    //Function 
+    //Created by: Thuyet.Pham
+    //Created date: 01-Mar-2018		
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+
+		<w2:gridView dataList="dataList1" scrollByColumn="false"
+			id="gridView1" style="position: relative;width: 500px;height: 150px;"
+			ignoreCellClick="false" ignoreToggleOnDisabled="false"
+			fixedColumnWithHidden="true" useShiftKey="true">
+			<w2:header id="header1" style="">
+				<w2:row id="row2" style="">
+					<w2:column blockSelect="false" id="column9"
+						style="height:20px" inputType="text" width="70"
+						displayMode="label" value="name1">
+					</w2:column>
+					<w2:column blockSelect="false" id="column7"
+						style="height:20px" inputType="text" width="70"
+						displayMode="label" value="name2">
+					</w2:column>
+					<w2:column blockSelect="false" id="column3"
+						style="height:20px" width="70" inputType="text"
+						displayMode="label" value="name3">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4" style="">
+				<w2:row id="row5" style="">
+					<w2:column blockSelect="false" id="col1"
+						style="height:20px" inputType="select" width="70"
+						displayMode="label" allOption="" chooseOption="">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="email"></w2:label>
+								<w2:value ref="value"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column blockSelect="false" id="col2"
+						style="height:20px" inputType="autoComplete" width="70"
+						displayMode="label" allOption="" chooseOption="">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="email"></w2:label>
+								<w2:value ref="value"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column blockSelect="false" id="col3"
+						style="height:20px" width="70" inputType="checkcombobox"
+						displayMode="label" allOption="" chooseOption="">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="email"></w2:label>
+								<w2:value ref="value"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:group id="group1" style="height:23px;padding:10px;">
+			<xf:trigger id="trigger1"
+				style="position: relative;width:200px;height:23px;margin:10px;"
+				ev:onclick="scwin.trigger1_onclick" type="button">
+				<xf:label><![CDATA[getDataListInfo(GridView)]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="trigger2"
+				style="position: relative;width:207px;height:24px;margin:10px;"
+				ev:onclick="scwin.trigger2_onclick" type="button">
+				<xf:label><![CDATA[getColumnDataListInfo(col1)]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group id="group2" style="height:23px;padding:10px;">
+			<xf:input id="input1" ref="data:dataList1"
+				style="position: relative;width: 144px;height: 21px;">
+			</xf:input>
+			<xf:trigger ev:onclick="scwin.trigger3_onclick"
+				id="trigger3"
+				style="position: relative;width: 120px;height: 23px;margin:10px;"
+				type="button">
+				<xf:label><![CDATA[getDataListInfo]]></xf:label>
+			</xf:trigger>
+		</xf:group></body>
+</html>
+ 

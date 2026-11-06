@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
+        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>			
+        <w2:type>COMPONENT</w2:type>
+        <w2:buildDate/>
+        <w2:MSA/>
+        <xf:model>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row></w2:row>
+            			<w2:row></w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection/>
+        </xf:model>
+        <w2:layoutInfo/>
+        <w2:publicInfo method=""/>
+        <script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	
+};
+
+scwin.grd1_onviewchange = function(info) {
+    if(info.colIndex == 0){
+        dataList1.setCellData(info.rowIndex, "col2", "aaaaa");
+    }
+    
+};
+
+		scwin.simulateWrapper = function(target, type, options) {
+			WebSquare.wUnit.getJq(target).simulate(type, options);
+		}
+		scwin.setSimulate = function() {
+			WebSquare.wUnit.getJq('#G_mf_grd1__col1').simulate('key-sequence', {
+				sequence: 'a'
+			});
+		}
+
+		scwin.checkVal = function() {
+			return WebSquare.wUnit.getDomById('G_'+$p.id+'grd1__col1').style.display == 'block';
+		}
+		scwin.unitTest = function() {
+			//Unit
+			WebSquare.wUnit.start();
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_cell_0_0').click()");
+			WebSquare.wUnit.addCommand("pause", "400");
+			WebSquare.wUnit.addCommand("set", "scwin.setSimulate()");
+			WebSquare.wUnit.addCommand("pause", "500");
+			WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd1_cell_1_0').click()");
+			WebSquare.wUnit.addCommand("pause", "400");			
+			
+			WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+			WebSquare.wUnit.addCommand("pause", "500");
+		
+			//Run test and stop
+			WebSquare.wUnit.run();
+			WebSquare.wUnit.stop();
+		}	
+		scwin.unitTest()
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload">
+    <xf:group id="" style="padding: 10px">
+    	<w2:textbox tagname="h2" style="" id=""
+    		label="1. 아래 그리드뷰는 editModeEvent='onclick' 으로 적용되어 있습니다.&lt;br/&gt;2. 아래 그리드뷰에서 첫 행의 첫번째 컬럼을 선택합니다.&lt;br/&gt;3. editModeEvent='onclick' 이므로 셀 선택시 바로 수정모드로 적용됩니다.&lt;br/&gt;4. 첫 행의 첫번째 컬럼 값을 수정합니다.&lt;br/&gt; &amp;nbsp; (이 그리드뷰는 onviewChange 에서 첫번째 컬럼을 수정하면 2번째 컬럼 값을 setCellData를 통해 넣어 줍니다.)&lt;br/&gt;5. 첫 행의 첫번째 컬럼 값을 수정 후 곧바로 &amp;nbsp;2번째 행의 첫번째 컬럼을 선택합니다.&lt;br/&gt;6. editModeEvent='onclick' 으로 적용되어 있기에 당연히 수정모드로 진입해야 하나&lt;br/&gt; &amp;nbsp; onviewChange에서 setCellData를 수행하면 바로 수정 모드로 진입되지 않습니다.&lt;br/&gt; &amp;nbsp; 해당 셀에 포커스만 적용되고 다시 한번 클릭해야 수정 모드로 진입됩니다.&lt;br/&gt;7. onviewChange에서 setCellData를 수행하더라도 editModeEvent='onclick' &amp;nbsp;이면 &lt;br/&gt; &amp;nbsp; 그리드뷰 셀 선택시 바로 수정모드로 진입해야 합니다."
+    		escape="false">
+    	</w2:textbox>
+    	<w2:gridView checkAllType="false" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="grd1"
+    		style="height: 150px;" dataList="data:dataList1" ev:onviewchange="scwin.grd1_onviewchange" editModeEvent="onclick" keyMoveEditMode="true" keepEditMode="true">
+    		<w2:caption style="" id="caption2" value="this is a grid caption."></w2:caption>
+    		<w2:header style="" id="header2">
+    			<w2:row style="" id="row3">
+    				<w2:column width="200" inputType="text" style="" id="column4" value="첫번째" displayMode="label"></w2:column>
+    				<w2:column width="200" inputType="text" style="" id="column3" value="두번째" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody style="" id="gBody2">
+    			<w2:row style="" id="row4">
+    				<w2:column width="200" inputType="text" style="" id="col1" value="" displayMode="label"></w2:column>
+    				<w2:column width="200" inputType="text" style="" id="col2" value="" displayMode="label"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    </xf:group></body>
+</html>

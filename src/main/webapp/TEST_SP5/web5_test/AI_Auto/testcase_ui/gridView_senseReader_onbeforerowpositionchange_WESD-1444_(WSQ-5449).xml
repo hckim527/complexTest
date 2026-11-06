@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    <w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+
+                <w2:dataList id="dataList1" baseNode="list" style="" repeatNode="map" keyNode="infoList" attributeMap="value" idAttribute="value" ev:onbeforerowpositionchange="scwin.dataList1_onbeforerowpositionchange" ev:onrowpositionchange="scwin.dataList1_onrowpositionchange">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                        <w2:column id="col3" name="name3" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[
+
+    scwin.onpageload = function() {
+        var jsonData = [{col1:"a"},{col1:"c"},{col1:"d"},{col1:"b"}];
+        dataList1.setJSON(jsonData);
+        gridView1.setFocusedCell(2,0,false);
+    };
+   
+    scwin.onpageunload = function() {
+       
+    };
+
+
+    scwin.cnt = 0;
+    scwin.dataList1_onrowpositionchange = function(info){
+        console.log(scwin.cnt + " onrowpositionchange :::: oldRowIndex : " + info.oldRowIndex + " , newRowIndex : " + info.newRowIndex);
+        scwin.cnt++;
+
+    };
+
+    scwin.dataList1_onbeforerowpositionchange = function(info){
+
+        console.log(scwin.cnt + " onbeforerowpositionchange :::: oldRowIndex : " + info.oldRowIndex + " , newRowIndex : " + info.newRowIndex);
+        scwin.cnt++;
+        var data = dataList1.getCellData(info.oldRowIndex, 0);
+        //debugger;
+        if(data == "a"){
+            console.log("aaa");
+
+            requires("uiplugin.popup");
+
+            var options = {
+                id : "popup2_"+scwin.cnt,
+                type : "wframePopup",    //browserPopup//wframePopup
+                width: 300 + "px",
+                height: 300 + "px",
+
+                top: 100 + "px",
+                left: 100 + "px",
+             
+               
+                modal : true,
+                useModalStack: true,
+
+                className : "",
+               
+                style : "",
+             
+                resizable : true,
+                status : false,
+                menubar : false,
+                scrollbars : false,
+                title : false,
+                useMaximize : true
+            };
+            $p.openPopup("",  options );
+
+            return false;
+        }
+    };
+
+    scwin.gridView1_onsort = function(info){
+        console.log(scwin.cnt + " onsort :::: ");
+        scwin.cnt++;
+    }
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+
+        <w2:gridView id="gridView1" ignoreToggleOnDisabled="false" useShiftKey="true"
+                    style="left:0px;top:0px;width:400px;height:200px;" useFilterList="true" scrollByColumn="false" scrollByColumnAdaptive="false" sortable="true"
+                    summaryAuto="false" fixedColumnWithHidden="true" summaryOnlyAuto="false" dataList="dataList1" ignoreCellClick="false" visibleRowNum="20" rowNumVisible="true"
+                    autoFit="lastColumn" readOnly="false" focusMode="row" class="" overflowY="scroll"
+                    editModeEvent="onclick"
+
+
+senseReader="true" keyMoveEditMode="true" captionTitle="그리드 제목" captionAuto="true" autoResizeEmbeddedInput="true" sortHeaderDiv="true"
+scrollFocus="true" titleAuto="true" useStartEndDiv="true"
+
+
+                    >
+
+
+            <w2:header id="header1" style="">
+                <w2:row id="row2" style="">
+                    <w2:column blockSelect="false" id="column1" inputType="text" style="" value="name1" width="70"></w2:column>
+                    <w2:column blockSelect="false" id="column2" inputType="text" style="" useFilter="true" value="name2"
+                        width="70">
+                    </w2:column>
+                    <w2:column blockSelect="false" id="column3" inputType="text" style="" useFilter="true" value="name3"
+                        width="70">
+                    </w2:column>
+                </w2:row>
+            </w2:header>
+            <w2:gBody id="gBody4" style="">
+                <w2:row id="row5" style="">
+                    <w2:column blockSelect="false" id="col1" inputType="text" style="" width="70"
+                        textAlign=""></w2:column>
+                    <w2:column blockSelect="false" id="col2" inputType="text" style="" width="70"></w2:column>
+                    <w2:column blockSelect="false" id="col3" inputType="text" style="" width="70"></w2:column>
+                </w2:row>
+            </w2:gBody>
+        </w2:gridView>
+    </body>
+</html>

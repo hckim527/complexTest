@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            	</w2:dataList>
+                <w2:dataList id="dataList3" baseNode="list" saveRemovedData="true" repeatNode="map">
+                    <w2:columnInfo>
+                        <w2:column id="col1" name="name1" dataType="text"></w2:column>
+                        <w2:column id="col2" name="name2" dataType="text"></w2:column>
+                    </w2:columnInfo>
+                </w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+    dataList2.setData(["L1", "V1", "L2", "V2", "L3", "V3"]);
+    dataList3.setData(["X1", "A1", "X2", "A2", "X3", "A3"]);
+    dataList1.setData(["V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3"]);
+    scwin.trigger2_onclick();
+}
+scwin.gridView1_getType = function(info) {
+    var returnInfo = {};
+    if ((info.colIndex % 3) === (info.rowIndex % 3)) {
+        returnInfo["inputType"] = "select";
+        returnInfo["options"] = {
+            "viewType": "icon",
+            "selectedData": "false"
+        };
+        if (scwin.Z) {
+            returnInfo["itemSet"] = {
+                "nodeset": "data:dataList2",
+                "label": "col1",
+                "value": "col2"
+            };
+        } else {
+            returnInfo["itemSet"] = {
+                "nodeset": "data:dataList3",
+                "label": "col1",
+                "value": "col2"
+            };
+        }
+    } else {
+        returnInfo["inputType"] = "textarea";
+    }
+    returnInfo["id"] = "gridView1_" + returnInfo["inputType"] + "_" + info.rowIndex + "_" + info.colIndex;
+    return returnInfo;
+}
+scwin.trigger1_onclick = function(e) {
+    scwin.Z = true;
+    dataList1.setData(["V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3", "V1", "V2", "V3", "V2", "V4", "V1", "V2", "V1", "V3"]);
+};
+scwin.trigger2_onclick = function(e) {
+    scwin.Z = false;
+    dataList1.setData(["A1", "A2", "A3", "A2", "A4", "A1", "A2", "A1", "A3", "A1", "A2", "A3", "A2", "A4", "A1", "A2", "A1", "A3", "A1", "A2", "A3", "A2", "A4", "A1", "A2", "A1", "A3", "A1", "A2", "A3", "A2", "A4", "A1", "A2", "A1", "A3", "A1", "A2", "A3", "A2", "A4", "A1", "A2", "A1", "A3", "A1", "A2", "A3", "A2", "A4", "A1", "A2", "A1", "A3"]);
+    // gridView1.drawData(0);    
+};
+scwin.checkVal = function() {
+    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_0").textContent == 'L1';
+}
+scwin.checkVal2 = function() {
+    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_0").textContent == 'X1';
+}
+scwin.checkVal3 = function() {
+    return dataList3.getColData('col1')[0] == WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_0").textContent;
+}
+scwin.unitTest = function() {
+    //Unit test
+    WebSquare.wUnit.start();
+    //Test step 1. 샘플파일을 실행 후 "set L(V)"버튼을 클릭 후 "set X(A)"버튼을 클릭한다.
+    //1. After running the sample file, click the "set L (V)" button and then click the "set X (A)" button.
+    //Verify 1. 그리드뷰의 첫번째 row의 값이 "L1"으로 변경되고 다시 "X1"으로 보여진다.
+    //1. The value of the first row in the grid view is changed to "L1" and again shown as "X1".
+    //set L (V)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //set X (A)
+    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
+    WebSquare.wUnit.addCommand("pause", "500");
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Test step 2. Ctrl+마우스우클릭 > dataCollection보기 > DataList3선택 후 조회 한다.
+    //2. Ctrl + right-click> dataCollection view> select DataList3 and then inquire.
+    //Verify 2. dataCollection에서 col1의 Label값이 'X1'이고 그리드뷰의 첫번째 row의 값도 'X1'으로 동일하게 보여진다. (X1, X2, X3로 콤보박스값과 datacollection값이 동일) (이전에는 A1으로 보여지고 그리드뷰 콤보박스리스트 클릭 시 L1, L2, L3로 보여짐)
+    //2. In the dataCollection, the Label value of col1 is 'X1' and the value of the first row in the grid view is also the same as 'X1'. (Combo box value and datacollection value are same as X1, X2, X3) (Previously shown as A1 and shown as L1, L2, L3 when clicking the grid view combo box list)
+    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
+    WebSquare.wUnit.addCommand("pause", "500");
+    //Run and Stop test
+    WebSquare.wUnit.run();
+    WebSquare.wUnit.stop();
+}
+scwin.onpageload2 = function() {
+    if (typeof scwin.onpageload === "function") {
+        scwin.onpageload();
+    }
+    scwin.Z = true;
+    //Function unitTest
+    //Create buy Truong.Luu
+    //Create date 26-Feb-2018
+    //End unitTest
+	scwin.init()
+    if (typeof scwin.unitTest === "function") {
+        scwin.unitTest();
+    }
+}
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" defaultCellHeight="20" id="gridView1"
+    		style="position: relative;width:507px;height:200px;" useShiftKey="true" autoFit="allColumn" rowNumVisible="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="custom" typeGetter="scwin.gridView1_getType" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="custom" typeGetter="scwin.gridView1_getType" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="custom" typeGetter="scwin.gridView1_getType"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger type="button" id="trigger1" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+    		<xf:label><![CDATA[set L(V)]]></xf:label>
+    	</xf:trigger>
+        <xf:trigger type="button" id="trigger2" style="position: relative;width: 80px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+            <xf:label><![CDATA[set X(A)]]></xf:label>
+        </xf:trigger>
+    </body>
+</html>
+ 

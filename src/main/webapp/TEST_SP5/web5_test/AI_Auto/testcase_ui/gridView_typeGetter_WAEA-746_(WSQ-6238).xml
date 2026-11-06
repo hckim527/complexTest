@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ev="http://www.w3.org/2001/xml-events"
+    xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+    <head>
+    	<w2:type>DEFAULT</w2:type>
+        <w2:buildDate/>
+        <xf:model>
+            <xf:instance>
+                <data xmlns=""/>
+            </xf:instance>
+            <w2:dataCollection baseNode="map">
+            	<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            			<w2:column id="col3" name="name3" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[0]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[0]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            				<col2><![CDATA[0]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[4]]></col1>
+            				<col2><![CDATA[1]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[5]]></col1>
+            				<col2><![CDATA[1]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[6]]></col1>
+            				<col2><![CDATA[2]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[7]]></col1>
+            				<col2><![CDATA[2]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            	<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+            		<w2:columnInfo>
+            			<w2:column id="col1" name="name1" dataType="text"></w2:column>
+            			<w2:column id="col2" name="name2" dataType="text"></w2:column>
+            		</w2:columnInfo>
+            		<w2:data use="true">
+            			<w2:row>
+            				<col1><![CDATA[1]]></col1>
+            				<col2><![CDATA[aaa]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[2]]></col1>
+            				<col2><![CDATA[bbb]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[3]]></col1>
+            				<col2><![CDATA[ccc]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[4]]></col1>
+            				<col2><![CDATA[ddd]]></col2>
+            			</w2:row>
+            			<w2:row>
+            				<col1><![CDATA[5]]></col1>
+            				<col2><![CDATA[eee]]></col2>
+            			</w2:row>
+            		</w2:data>
+            	</w2:dataList>
+            </w2:dataCollection>
+            <w2:workflowCollection>
+            </w2:workflowCollection>
+        </xf:model>
+        <script type="javascript" lazy="false"><![CDATA[
+
+
+
+scwin.onpageload = function () {
+
+};
+
+scwin.onpageunload = function () {
+
+};
+
+scwin.getType = function (info) {
+
+    var rowIndex = info.rowIndex;
+    var colIndex = info.colIndex;
+    var returnInfo;
+
+
+    if (dataList1.getCellData(rowIndex, "col2") == 1) {
+        returnInfo = {
+            id: "dynamic_select_" + rowIndex + "_" + colIndex,
+            inputType: "select",
+            options: {
+                viewType: "icon"
+            },
+            itemSet: {
+                nodeset: "data:dataList2",
+                label: "col1",
+                value: "col2"
+            }
+        };
+
+    } else if (dataList1.getCellData(rowIndex, "col2") == 0) {
+        returnInfo = {
+            id: "dynamic_select_" + rowIndex + "_" + colIndex,
+            inputType: "autoComplete",
+            itemSet: {
+                nodeset: "data:dataList2",
+                label: "col1",
+                value: "col2"
+            }
+        };
+    } else {
+        returnInfo = {
+            id: "dynamic_text_" + rowIndex + "_" + colIndex,
+            inputType: "text",
+            options: {
+            }
+        };
+
+    }
+
+    if (returnInfo) {
+        console.log("[typeGetter] (" + rowIndex + ", " + colIndex + ") : " + returnInfo.inputType);
+    }
+
+    return returnInfo;
+};
+
+// 행삭제 버튼 onclick
+scwin.trigger2_onclick = function (e) {
+    dataList1.removeRow(0);
+    console.log("dataList1.removeRow(0)");
+};
+
+// 함수실행 버튼 onclick
+scwin.trigger3_onclick = function (e) {
+    /* 하기 함수 실행 후 행삭제 버튼으로 적용된 row의 윗 row를 삭제할 경우 적용내용이 롤백됨 */
+    grd.setCellAllowChar(2, 1, "a-zA-Z");
+    grd.setCellDisableEdit(2, 1, true);
+    grd.setCellCustomFormatter(5, 1, "scwin.customFormatter");
+    grd.setCellDataType(6, 1, "number");
+    // grd.setCellDisplayFormat(6, 1, "#,###.00");
+    grd.setCellDisplayFormatter(6, 1, "scwin.displayFormatterTest");
+    grd.setCellMaxLength(6, 1, 5);
+};
+
+scwin.customFormatter = function (data, formattedData, rowIndex, colIndex) {
+    console.log("data : " + data);
+    console.log("formattedData : " + formattedData);
+    formattedData = "custom-" + data;
+
+    return formattedData;
+}
+
+scwin.displayFormatterTest = function (value) {
+    return "displayFormatterTest-" + value;
+};
+
+]]></script>
+    </head>
+    <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
+    	<w2:gridView dataList="dataList1" applyAllColumnStyle="false" scrollByColumn="false" id="grd" setEmptyStringSortableOnSort="true"
+    		style="position:absolute;width:500px;height:600px;left:2px;top:35px;" fixedColumnWithHidden="true" useShiftKey="true"
+    		sortable="true">
+    		<w2:header id="header1" style="">
+    			<w2:row id="row1" style="">
+    				<w2:column blockSelect="false" id="column5" style="" inputType="text" width="70" value="name1"></w2:column>
+    				<w2:column blockSelect="false" id="column3" style="" inputType="text" width="70" value="name2"></w2:column>
+    				<w2:column blockSelect="false" id="column1" style="" width="70" inputType="text" value="name3"></w2:column>
+    			</w2:row>
+    		</w2:header>
+    		<w2:gBody id="gBody1" style="">
+    			<w2:row id="row2" style="">
+    				<w2:column blockSelect="false" id="col1" style="" inputType="text" width="70"></w2:column>
+    				<w2:column blockSelect="false" id="col2" style="" inputType="custom" width="70" typeGetter="scwin.getType" editModeEvent="onclick"></w2:column>
+    				<w2:column blockSelect="false" id="col3" style="" width="70" inputType="text"></w2:column>
+    			</w2:row>
+    		</w2:gBody>
+    	</w2:gridView>
+    	<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3" style="width: 80px;height: 23px;" type="button">
+    		<xf:label><![CDATA[함수실행]]></xf:label>
+    	</xf:trigger>
+    	<xf:trigger ev:onclick="scwin.trigger2_onclick" id="trigger2" style="width: 80px;height: 23px;" type="button">
+    		<xf:label><![CDATA[행삭제]]></xf:label>
+    	</xf:trigger>
+    </body>
+</html>
