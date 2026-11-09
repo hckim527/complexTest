@@ -15,7 +15,7 @@
 | 결함 제목 / 상태 / `[QA]` 여부 | `getJiraIssue(키)` 로 조회. `[QA]` 프리픽스면 대상 외 → 메인에 보고 후 중단 |
 | 첨부 id / 첨부 XML | `getJiraIssue(키, fields:["attachment"])` → API 토큰 basic-auth 다운로드 (`reference_jira_attachment_api_token`) |
 | 컴포넌트/폴더명 | 결함 제목·첨부 구성에서 도출 (예: 제목이 "gridView ..." → `gridView`) |
-| 출력 경로 | `complexTest/src/main/webapp/sample/{컴포넌트}/` |
+| 출력 경로 | `complexTest/src/main/webapp/jira/{컴포넌트}/` |
 | 구조 레퍼런스 | `unitTest/src/main/webapp/sample/gridView/gridView_M_setColumnIoFormat_1.xml` (구조만 참고) |
 
 ---
