@@ -14,8 +14,8 @@
 |------|----------|
 | 결함 제목 / 상태 / `[QA]` 여부 | `getJiraIssue(키)` 로 조회. `[QA]` 프리픽스면 대상 외 → 메인에 보고 후 중단 |
 | 첨부 id / 첨부 XML | `getJiraIssue(키, fields:["attachment"])` → API 토큰 basic-auth 다운로드 (`reference_jira_attachment_api_token`) |
-| 컴포넌트/폴더명 | 결함 제목·첨부 구성에서 도출 (예: 제목이 "gridView ..." → `gridView`) |
-| 출력 경로 | `complexTest/src/main/webapp/jira/{컴포넌트}/` |
+| 컴포넌트명(파일명용) | 결함 제목·첨부 구성에서 도출 (예: 제목이 "gridView ..." → `gridView`) |
+| 출력 경로 | `complexTest/src/main/webapp/jira/<YYYYMM>/` |
 | 구조 레퍼런스 | `unitTest/src/main/webapp/sample/gridView/gridView_M_setColumnIoFormat_1.xml` (구조만 참고) |
 
 ---
@@ -125,7 +125,7 @@ scwin.btn_{기능}_onclick = function (e) {
 - **1 에이전트 = 1 샘플**: 여러 샘플을 하나의 에이전트에 묶지 않는다.
 - 배치 생성 시 **최대 3개 에이전트를 병렬**로 실행하고, 완료되면 다음 3개를 진행하는 라운드 방식으로 운영한다.
 - 각 에이전트는 독립적으로 생성 → 검증 → 보강을 완료한다.
-- 에이전트 프롬프트에 반드시 포함: **Jira 이슈 키**(예: `WAEA-946`) 와 "작업 시작 시 `CT_01`/`CT_02`/`CT_03`/`CT_04` 와 본 가이드를 읽고 규칙을 따를 것" 지시. 제목·첨부·컴포넌트/폴더명·출력 경로는 에이전트가 키로 직접 조회·도출한다(§1).
+- 에이전트 프롬프트에 반드시 포함: **Jira 이슈 키**(예: `WAEA-946`) 와 "작업 시작 시 `CT_01`/`CT_02`/`CT_03`/`CT_04` 와 본 가이드를 읽고 규칙을 따를 것" 지시. 제목·첨부·컴포넌트명·출력 경로는 에이전트가 키로 직접 조회·도출한다(§1).
 
 ---
 
