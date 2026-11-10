@@ -1,4 +1,4 @@
-<%@ page contentType="application/json; charset=utf-8" language="java" errorPage="" import="websquare.util.*,org.w3c.dom.*,java.util.*,java.net.*,java.io.BufferedReader,java.io.*,org.json.simple.*"
+<%@ page contentType="application/json; charset=utf-8" language="java" errorPage="" import="websquare.util.*,java.util.*,java.net.*,java.io.BufferedReader,java.io.*,org.json.simple.*"
 %><%
 		try{
 			Thread.sleep(5000);
