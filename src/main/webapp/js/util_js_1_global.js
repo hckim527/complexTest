@@ -1,1 +1,0 @@
-window.__globalScopeTest2 = "loaded";
