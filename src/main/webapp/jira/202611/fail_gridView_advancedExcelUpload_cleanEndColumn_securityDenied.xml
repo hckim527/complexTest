@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] GridView advancedExcelUpload clean 전처리 + endColumnIndex 지정 시 범위 밖 셀이 많은 xlsx 가 보안 위협으로 거부" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성" meta_date="20261110" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_upload" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="c0" name="c0" dataType="text"></w2:column>
+						<w2:column id="c1" name="c1" dataType="text"></w2:column>
+						<w2:column id="c2" name="c2" dataType="text"></w2:column>
+						<w2:column id="c3" name="c3" dataType="text"></w2:column>
+						<w2:column id="c4" name="c4" dataType="text"></w2:column>
+						<w2:column id="c5" name="c5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.mode = "";
+
+scwin.onpageload = function () {
+};
+
+// A~F 열(endColumnIndex: 5)만 읽도록 업로드
+scwin.upload = function (mode) {
+    scwin.mode = mode;
+    dlt_upload.removeAll();
+    var opt = { header: 0, startRowIndex: 0, startColumnIndex: 0, endColumnIndex: 5, loadingMode: "POI" };
+    if (mode == "XHR") opt.useXHR = "true";
+    gridView1.advancedExcelUpload(opt);
+};
+
+scwin.btn_poi_onclick = function (e) {
+    scwin.upload("POI");
+};
+
+scwin.btn_xhr_onclick = function (e) {
+    scwin.upload("XHR");
+};
+
+scwin.gridView1_onfilereadend = function (value) {
+    scwin.setReturnValue("[" + scwin.mode + "] " + value + " → " + dlt_upload.getRowCount() + "행");
+};
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" style="padding:10px;">
+			<w2:textbox escape="false" id="" label="■ &lt;b&gt;[FAIL] GridView 의 advancedExcelUpload 에서 clean 전처리를 켜고 endColumnIndex 를 지정해도, 읽기 범위 밖 셀이 많은 xlsx 파일이 '보안 위협' 으로 거부되어 업로드되지 않음&lt;/b&gt;&lt;br/&gt;[전제] websquare.xml 에 &amp;lt;excel&amp;gt;&amp;lt;upload&amp;gt;&amp;lt;clean enable=&quot;true&quot; size=&quot;1048576&quot; tempDir=&quot;(임시 폴더)&quot;/&amp;gt;&amp;lt;/upload&amp;gt;&amp;lt;/excel&amp;gt; 설정 후 WAS 재기동&lt;br/&gt;[확인 방법] POI 업로드 / XHR 업로드 버튼으로 WAEA_1509_control.xlsx, WAEA_1509_wide_extra_cells.xlsx 를 각각 업로드&lt;br/&gt;[기대] 두 파일 모두 281행·6열(KDB-0001 ~ KDB-0281) 표시&lt;br/&gt;[실제] control.xlsx 는 281행 표시, wide_extra_cells.xlsx 는 '엑셀 업로드 보안 위협이 감지되었습니다.' 메시지 후 0행" style="font-size:14px;margin-bottom:16px;"></w2:textbox>
+			<xf:group style="margin-bottom:8px;">
+				<w2:button id="btn_poi" label="POI 업로드" ev:onclick="scwin.btn_poi_onclick"
+					style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;margin-right:6px;"></w2:button>
+				<w2:button id="btn_xhr" label="XHR 업로드" ev:onclick="scwin.btn_xhr_onclick"
+					style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+			</xf:group>
+			<w2:gridView id="gridView1" dataList="data:dlt_upload" style="width:680px;height:300px;" autoFit="lastColumn" scrollByColumn="false"
+				ev:onfilereadend="scwin.gridView1_onfilereadend">
+				<w2:header id="header1" style="">
+					<w2:row id="row1" style="">
+						<w2:column width="110" inputType="text" id="h0" value="A" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="h1" value="B" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="h2" value="C" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="h3" value="D" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="h4" value="E" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="h5" value="F" blockSelect="false" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1" style="">
+					<w2:row id="row2" style="">
+						<w2:column width="110" inputType="text" id="c0" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="c1" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="c2" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="c3" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="c4" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="110" inputType="text" id="c5" blockSelect="false" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<xf:group id="grp_bottom" style="">
+				<w2:textbox escape="false" id="" label="■ 리턴 값 확인" style="font-size:16px;font-weight:bold;margin-top:16px;margin-bottom:16px;"></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid #C4CDD5;border-radius: 8px;width: 100%;height: 120px;" id="tbx_return"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

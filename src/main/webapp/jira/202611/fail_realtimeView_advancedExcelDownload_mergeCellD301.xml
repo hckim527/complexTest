@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] realtimeView 병합 Cell 상태에서 advancedExcelDownload mergeCell=&quot;true&quot; 설정 시 엑셀 다운로드 실패" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성" meta_date="20261109" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_rv" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="time" name="시간" dataType="text"></w2:column>
+						<w2:column id="price" name="체결가" dataType="text"></w2:column>
+						<w2:column id="exchange" name="거래소" dataType="text"></w2:column>
+						<w2:column id="qty" name="수량" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dlt_gv" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="time" name="시간" dataType="text"></w2:column>
+						<w2:column id="price" name="체결가" dataType="text"></w2:column>
+						<w2:column id="exchange" name="거래소" dataType="text"></w2:column>
+						<w2:column id="qty" name="수량" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.data = [
+    { time: "09:00:01", price: "10,000", exchange: "KRX", qty: "100" },
+    { time: "09:00:02", price: "10,050", exchange: "KRX", qty: "200" },
+    { time: "09:00:03", price: "10,100", exchange: "NXT", qty: "300" }
+];
+
+scwin.onpageload = function () {
+    dlt_rv.setJSON(scwin.data);
+    dlt_gv.setJSON(scwin.data);
+    realtimeView1.redraw();
+    // 두 컴포넌트 모두 거래소 열 1~2행 병합
+    realtimeView1.mergeCell({ rowIndex: 0, colIndex: 2, rowSpan: 2, colSpan: 1 });
+    gridView1.mergeCell({ rowIndex: 0, colIndex: 2, rowSpan: 2, colSpan: 1 });
+};
+
+// ① realtimeView - mergeCell 미설정 (병합 해제된 상태로 다운로드)
+scwin.btn_rvNormal_onclick = function (e) {
+    scwin.setReturnValue("① realtimeView mergeCell 미설정 다운로드 요청");
+    realtimeView1.advancedExcelDownload({ fileName: "rv_normal.xlsx" });
+};
+
+// ② realtimeView - mergeCell="true"
+scwin.btn_rvMerge_onclick = function (e) {
+    scwin.setReturnValue("② realtimeView mergeCell=\"true\" 다운로드 요청");
+    realtimeView1.advancedExcelDownload({ fileName: "rv_mergeCell.xlsx", mergeCell: "true" });
+};
+
+// ③ gridView(비교) - 같은 데이터·같은 병합·같은 옵션
+scwin.btn_gvMerge_onclick = function (e) {
+    scwin.setReturnValue("③ gridView mergeCell=\"true\" 다운로드 요청 (비교)");
+    gridView1.advancedExcelDownload({ fileName: "gv_mergeCell.xlsx", mergeCell: "true" });
+};
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" style="padding:10px;">
+			<w2:textbox escape="false" id="" label="■ &lt;b&gt;[FAIL] realtimeView 의 거래소 열 1~2행이 병합된 상태에서 advancedExcelDownload 에 mergeCell=&quot;true&quot; 를 설정하면 엑셀 파일이 다운로드되지 않음&lt;/b&gt;&lt;br/&gt;[확인 방법] ①~③ 버튼을 차례로 클릭하여 엑셀 파일이 다운로드되는지 확인&lt;br/&gt;[기대] ①~③ 모두 엑셀 파일이 다운로드됨 (②·③은 거래소 열 1~2행이 병합된 상태로 다운로드)&lt;br/&gt;[실제] ①·③은 다운로드되지만 ②는 다운로드되지 않음" style="font-size:14px;margin-bottom:16px;"></w2:textbox>
+			<w2:textbox id="" label="realtimeView" style="background-color:#EAEEF1;font-size:16px;font-weight:bold;padding-left:5px;margin-bottom:6px;"></w2:textbox>
+			<xf:group style="position:relative;width:520px;height:140px;">
+				<w2:realtimeView id="realtimeView1" style="width:100%;height:100%;" dataList="dlt_rv" defaultHeaderCellHeight="26"
+					defaultCellHeight="26" visibleRowNum="4" autoFit="lastColumn">
+					<w2:header id="header1">
+						<w2:row id="hrow1">
+							<w2:column width="100" id="hc_time" value="시간"></w2:column>
+							<w2:column width="120" id="hc_price" value="체결가"></w2:column>
+							<w2:column width="100" id="hc_exchange" value="거래소"></w2:column>
+							<w2:column width="100" id="hc_qty" value="수량"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1">
+						<w2:row id="brow1">
+							<w2:column width="100" id="time" value="" dataType="text"></w2:column>
+							<w2:column width="120" id="price" value="" dataType="text"></w2:column>
+							<w2:column width="100" id="exchange" value="" dataType="text"></w2:column>
+							<w2:column width="100" id="qty" value="" dataType="text"></w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:realtimeView>
+			</xf:group>
+			<xf:group style="margin-top:8px;margin-bottom:16px;">
+				<w2:button id="btn_rvNormal" label="① mergeCell 미설정" ev:onclick="scwin.btn_rvNormal_onclick"
+					style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;margin-right:6px;"></w2:button>
+				<w2:button id="btn_rvMerge" label="② mergeCell=&quot;true&quot;" ev:onclick="scwin.btn_rvMerge_onclick"
+					style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+			</xf:group>
+			<w2:textbox id="" label="gridView (비교)" style="background-color:#EAEEF1;font-size:16px;font-weight:bold;padding-left:5px;margin-bottom:6px;"></w2:textbox>
+			<w2:gridView id="gridView1" dataList="data:dlt_gv" style="width:520px;height:120px;" autoFit="lastColumn" scrollByColumn="false">
+				<w2:header id="header2" style="">
+					<w2:row id="row1" style="">
+						<w2:column width="100" inputType="text" id="h_time" value="시간" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" inputType="text" id="h_price" value="체결가" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="100" inputType="text" id="h_exchange" value="거래소" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="100" inputType="text" id="h_qty" value="수량" blockSelect="false" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody2" style="">
+					<w2:row id="row2" style="">
+						<w2:column width="100" inputType="text" id="time" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="120" inputType="text" id="price" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="100" inputType="text" id="exchange" blockSelect="false" displayMode="label"></w2:column>
+						<w2:column width="100" inputType="text" id="qty" blockSelect="false" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+			<xf:group style="margin-top:8px;">
+				<w2:button id="btn_gvMerge" label="③ gridView mergeCell=&quot;true&quot;" ev:onclick="scwin.btn_gvMerge_onclick"
+					style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+			</xf:group>
+			<xf:group id="grp_bottom" style="">
+				<w2:textbox escape="false" id="" label="■ 리턴 값 확인" style="font-size:16px;font-weight:bold;margin-top:16px;margin-bottom:16px;"></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid #C4CDD5;border-radius: 8px;width: 100%;height: 120px;" id="tbx_return"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
