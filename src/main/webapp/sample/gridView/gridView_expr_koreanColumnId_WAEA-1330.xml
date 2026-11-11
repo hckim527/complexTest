@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head meta_screenName="gridView expr 한글 컬럼 ID 재평가 (WAEA-1330)">
+	<!--
+		WAEA-1330 [gridView] 셀 레벨 expr 속성이 한글 컬럼 ID를 참조하면 setCellData 후 재평가되지 않는 오류
+		요건 확인 버전: 11월정기 1694R (6.0_0.1694R.20261106.105848) - PASS 확인 후 영향도 케이스로 편입
+		확인 내용
+		 - 한글 컬럼 ID 를 참조하는 expr / exprColor / exprBackground 셀이 참조 컬럼 값 변경(setCellData, 셀 편집) 후 다시 계산된다.
+		 - 한글+영문 혼합 ID(금액A) 를 참조하는 expr 도 다시 계산된다.
+		 - 같은 구성을 영문 컬럼 ID 로 만든 대조 그리드도 같은 결과(회귀 없음).
+		결과 확인: [결과 조회] 버튼 또는 scwin.getResult() 반환 문자열
+	-->
+	<w2:type>DEFAULT</w2:type>
+	<w2:buildDate />
+	<xf:model>
+		<w2:dataCollection baseNode="map">
+			<w2:dataList baseNode="list" repeatNode="map" id="dlt_order" saveRemovedData="true">
+				<w2:columnInfo>
+					<w2:column id="상품명" name="상품명" dataType="text"></w2:column>
+					<w2:column id="단가" name="단가" dataType="number"></w2:column>
+					<w2:column id="수량" name="수량" dataType="number"></w2:column>
+					<w2:column id="금액A" name="금액A" dataType="number"></w2:column>
+				</w2:columnInfo>
+				<w2:data use="true">
+					<w2:row>
+						<상품명><![CDATA[노트북]]></상품명>
+						<단가><![CDATA[1500]]></단가>
+						<수량><![CDATA[2]]></수량>
+						<금액A><![CDATA[10]]></금액A>
+					</w2:row>
+					<w2:row>
+						<상품명><![CDATA[마우스]]></상품명>
+						<단가><![CDATA[30]]></단가>
+						<수량><![CDATA[5]]></수량>
+						<금액A><![CDATA[20]]></금액A>
+					</w2:row>
+				</w2:data>
+			</w2:dataList>
+			<w2:dataList baseNode="list" repeatNode="map" id="dlt_control" saveRemovedData="true">
+				<w2:columnInfo>
+					<w2:column id="product" name="product" dataType="text"></w2:column>
+					<w2:column id="price" name="price" dataType="number"></w2:column>
+					<w2:column id="qty" name="qty" dataType="number"></w2:column>
+					<w2:column id="amtA" name="amtA" dataType="number"></w2:column>
+				</w2:columnInfo>
+				<w2:data use="true">
+					<w2:row>
+						<product><![CDATA[노트북]]></product>
+						<price><![CDATA[1500]]></price>
+						<qty><![CDATA[2]]></qty>
+						<amtA><![CDATA[10]]></amtA>
+					</w2:row>
+					<w2:row>
+						<product><![CDATA[마우스]]></product>
+						<price><![CDATA[30]]></price>
+						<qty><![CDATA[5]]></qty>
+						<amtA><![CDATA[20]]></amtA>
+					</w2:row>
+				</w2:data>
+			</w2:dataList>
+		</w2:dataCollection>
+		<w2:workflowCollection></w2:workflowCollection>
+	</xf:model>
+	<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function () {
+};
+
+// 그리드 표시 셀(td) 찾기: 행 번호 + Body 컬럼 순번
+scwin.getTd = function (grd, row, colIdx) {
+    var td = document.getElementById(grd.id + "_cell_" + row + "_" + colIdx);
+    return td;
+};
+
+// 셀 표시 정보: 텍스트 / 글자색 / 배경색
+scwin.cellView = function (grd, row, colIdx) {
+    var td = scwin.getTd(grd, row, colIdx);
+    if (!td) {
+        return "none";
+    }
+    var text = (td.innerText || td.textContent || "").replace(/\s+/g, "");
+    return text + "|" + (td.style.color || "-") + "|" + (td.style.backgroundColor || "-");
+};
+
+// 결과 문자열 (한글 그리드 / 영문 대조 그리드)
+// 형식: 상품명 배경 / 수량 글자색 / 금액 / 합계A  (1행, 2행)
+scwin.gridResult = function (grd) {
+    var arr = [];
+    for (var r = 0; r < 2; r++) {
+        arr.push("R" + r + "[" + scwin.cellView(grd, r, 0) + "," + scwin.cellView(grd, r, 2) + "," + scwin.cellView(grd, r, 3) + "," + scwin.cellView(grd, r, 4) + "]");
+    }
+    return arr.join(" ");
+};
+
+scwin.getResult = function () {
+    var res = "KO " + scwin.gridResult(grd_order) + "\nEN " + scwin.gridResult(grd_control);
+    txa_result.setValue(res);
+    return res;
+};
+
+// 셀 편집 확인용: 편집 후 포커스/선택 배경이 섞이므로 텍스트|글자색만 비교 (수량 / 금액, 1행·2행)
+scwin.textResult = function (grd) {
+    var arr = [];
+    for (var r = 0; r < 2; r++) {
+        var q = scwin.cellView(grd, r, 2).split("|");
+        var a = scwin.cellView(grd, r, 3).split("|");
+        arr.push("R" + r + "[" + q[0] + "|" + q[1] + "," + a[0] + "]");
+    }
+    return arr.join(" ");
+};
+
+scwin.getTextResult = function () {
+    var res = "KO " + scwin.textResult(grd_order) + "\nEN " + scwin.textResult(grd_control);
+    txa_result.setValue(res);
+    return res;
+};
+
+// 케이스 1: 1행 수량 2 -> 4 (expr 금액 / exprColor 수량)
+scwin.btn_qty_onclick = function () {
+    dlt_order.setCellData(0, "수량", 4);
+    dlt_control.setCellData(0, "qty", 4);
+    scwin.getResult();
+};
+
+// 케이스 2: 1행 단가 1500 -> 2000 (expr 금액 / exprBackground 상품명)
+scwin.btn_price_onclick = function () {
+    dlt_order.setCellData(0, "단가", 2000);
+    dlt_control.setCellData(0, "price", 2000);
+    scwin.getResult();
+};
+
+// 케이스 3: 1행 혼합 ID 금액A 10 -> 100 (expr 합계A = 금액A * 2)
+scwin.btn_mixed_onclick = function () {
+    dlt_order.setCellData(0, "금액A", 100);
+    dlt_control.setCellData(0, "amtA", 100);
+    scwin.getResult();
+};
+
+scwin.btn_result_onclick = function () {
+    scwin.getResult();
+};
+]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+	<xf:group style="padding:10px;width:700px;">
+		<w2:textbox id="tbx_title" label="WAEA-1330 gridView 셀 expr 한글 컬럼 ID 재평가 (11월정기 1694R 확인)" style="font-weight:bold;height:24px;"></w2:textbox>
+		<w2:textbox id="tbx_ko" label="한글 ID: 상품명 exprBackground=iif(단가 &gt;= 2000) / 수량 exprColor=iif(수량 &gt; 3) / 금액 expr=단가 * 수량 / 합계A expr=금액A * 2" style="height:20px;margin-top:6px;"></w2:textbox>
+		<w2:gridView id="grd_order" dataList="data:dlt_order" style="width:620px;height:90px;" defaultCellHeight="20" autoFit="allColumn">
+			<w2:header>
+				<w2:row>
+					<w2:column id="h_name" width="100" inputType="text" displayMode="label" value="상품명"></w2:column>
+					<w2:column id="h_price" width="80" inputType="text" displayMode="label" value="단가"></w2:column>
+					<w2:column id="h_qty" width="60" inputType="text" displayMode="label" value="수량"></w2:column>
+					<w2:column id="h_amount" width="100" inputType="text" displayMode="label" value="금액(expr)"></w2:column>
+					<w2:column id="h_sumA" width="100" inputType="text" displayMode="label" value="합계A(expr)"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody>
+				<w2:row>
+					<w2:column id="상품명" width="100" inputType="text" exprBackground="iif(단가 &gt;= 2000, 'rgb(255, 255, 0)', '')"></w2:column>
+					<w2:column id="단가" width="80" inputType="text" dataType="number" textAlign="right"></w2:column>
+					<w2:column id="수량" width="60" inputType="text" dataType="number" textAlign="right" exprColor="iif(수량 &gt; 3, 'red', 'blue')"></w2:column>
+					<w2:column id="금액" width="100" inputType="text" dataType="number" textAlign="right" readOnly="true" expr="단가 * 수량"></w2:column>
+					<w2:column id="합계A" width="100" inputType="text" dataType="number" textAlign="right" readOnly="true" expr="금액A * 2"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:textbox id="tbx_en" label="영문 대조: product exprBackground / qty exprColor / amount expr=price * qty / sumA expr=amtA * 2" style="height:20px;margin-top:8px;"></w2:textbox>
+		<w2:gridView id="grd_control" dataList="data:dlt_control" style="width:620px;height:90px;" defaultCellHeight="20" autoFit="allColumn">
+			<w2:header>
+				<w2:row>
+					<w2:column id="h2_product" width="100" inputType="text" displayMode="label" value="product"></w2:column>
+					<w2:column id="h2_price" width="80" inputType="text" displayMode="label" value="price"></w2:column>
+					<w2:column id="h2_qty" width="60" inputType="text" displayMode="label" value="qty"></w2:column>
+					<w2:column id="h2_amount" width="100" inputType="text" displayMode="label" value="amount(expr)"></w2:column>
+					<w2:column id="h2_sumA" width="100" inputType="text" displayMode="label" value="sumA(expr)"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody>
+				<w2:row>
+					<w2:column id="product" width="100" inputType="text" exprBackground="iif(price &gt;= 2000, 'rgb(255, 255, 0)', '')"></w2:column>
+					<w2:column id="price" width="80" inputType="text" dataType="number" textAlign="right"></w2:column>
+					<w2:column id="qty" width="60" inputType="text" dataType="number" textAlign="right" exprColor="iif(qty &gt; 3, 'red', 'blue')"></w2:column>
+					<w2:column id="amount" width="100" inputType="text" dataType="number" textAlign="right" readOnly="true" expr="price * qty"></w2:column>
+					<w2:column id="sumA" width="100" inputType="text" dataType="number" textAlign="right" readOnly="true" expr="amtA * 2"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:group style="margin-top:8px;">
+			<xf:trigger type="button" id="btn_qty" ev:onclick="scwin.btn_qty_onclick" style="width:150px;height:24px;margin-right:4px;">
+				<xf:label><![CDATA[1행 수량을 4로 변경]]></xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btn_price" ev:onclick="scwin.btn_price_onclick" style="width:150px;height:24px;margin-right:4px;">
+				<xf:label><![CDATA[1행 단가를 2000으로 변경]]></xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btn_mixed" ev:onclick="scwin.btn_mixed_onclick" style="width:150px;height:24px;margin-right:4px;">
+				<xf:label><![CDATA[1행 금액A를 100으로 변경]]></xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btn_result" ev:onclick="scwin.btn_result_onclick" style="width:100px;height:24px;">
+				<xf:label><![CDATA[결과 조회]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<w2:textarea id="txa_result" style="width:620px;height:60px;margin-top:8px;"></w2:textarea>
+	</xf:group>
+</body>
+</html>

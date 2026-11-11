@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="WAEA-1454 pageFrame.setSrc() 성공 true / 실패 false 반환 (11월정기 1694R 확인)" meta_author="InswaveSystems">
+		<w2:type>COMPONENT</w2:type>
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+/*
+ * WAEA-1454 pageFrame.setSrc() 페이지 로딩 성공 true / 실패 false 반환 (11월정기 1694R 에서 확인)
+ * - 완료 조건: 정상 로딩 true, 화면 파일 없음(404) false(이전 화면 유지), 빈 src false,
+ *   연속 호출 시 모든 호출이 마지막 호출 결과를 반환, msaLoad 도 같은 규칙,
+ *   반환 시점에 새 화면 공개 함수 매핑 완료, onpageframeload 동작 회귀 없음.
+ * - [실행] 버튼을 누르면 case 별 실제값을 tbx_result 에 한 줄씩 출력한다(자동화 스크립트가 전체 값을 비교).
+ * - scwin.getResult() 로 같은 결과 배열을 얻을 수 있다.
+ * - 404 판정은 서버 설정에 오류 화면(errorHandler)이 없는 환경 기준이다(설정 시 오류 화면이 로딩되어 true).
+ */
+scwin.B = "/sample/pageFrame/pageFrame_setSrc_returnValue_WAEA-1454_";
+scwin.SUB1 = scwin.B + "sub1.xml";
+scwin.SUB2 = scwin.B + "sub2.xml";
+scwin.NONE = scwin.B + "not_exist.xml";
+scwin.res = [];
+scwin.evCnt = 0;
+
+scwin.onpageload = function () {};
+
+scwin.pfm_a_onpageframeload = function () {
+    scwin.evCnt++;
+};
+
+scwin.wait = function (ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
+};
+
+// 조건이 참이 될 때까지 최대 timeout(ms) 대기
+scwin.waitUntil = async function (fn, timeout) {
+    var t = 0;
+    while (!fn() && t < timeout) {
+        await scwin.wait(50);
+        t += 50;
+    }
+};
+
+scwin.fnName = function (comp, name) {
+    return typeof comp[name] === "function" ? comp[name]() : typeof comp[name];
+};
+
+scwin.add = function (no, name, act) {
+    var line = "[case" + no + "] " + name + " : " + JSON.stringify(act);
+    scwin.res.push(line);
+    tbx_result.setValue(scwin.res.join("\n"));
+};
+
+scwin.btn_run_onclick = async function () {
+    scwin.res = [];
+    tbx_result.setValue("");
+    tbx_status.setValue("실행중");
+    try {
+        await scwin.run();
+        tbx_status.setValue("완료");
+    } catch (e) {
+        scwin.add("E", "예외", String(e && e.message ? e.message : e));
+        tbx_status.setValue("오류");
+    }
+};
+
+scwin.run = async function () {
+    var r, r1, r2, res;
+
+    // case1: 정상 화면 - Promise 반환, true, 반환 직후 공개 함수 호출 가능
+    var p = pfm_a.setSrc(scwin.SUB1);
+    var isP = (p instanceof Promise);
+    r = await p;
+    scwin.add(1, "정상 화면 로딩", { promise: isP, r: r, fn: scwin.fnName(pfm_a, "getName1") });
+
+    // case2: 다른 화면 전환 - true, 이전 화면 함수 해제, 새 화면 함수 매핑
+    r = await pfm_a.setSrc(scwin.SUB2);
+    scwin.add(2, "다른 화면 전환", { r: r, old: typeof pfm_a.getName1, fn: scwin.fnName(pfm_a, "getName2") });
+
+    // case3: 화면 파일 없음(404) - false, 이전 화면(SUB2) 유지
+    r = await pfm_a.setSrc(scwin.NONE);
+    scwin.add(3, "404 화면", { r: r, keep: scwin.fnName(pfm_a, "getName2"), txt: pfm_a.render.innerText.trim() });
+
+    // case4: 빈 src - false, 이전 화면 유지
+    r = await pfm_a.setSrc("");
+    scwin.add(4, "빈 src", { r: r, keep: scwin.fnName(pfm_a, "getName2") });
+
+    // case5: 연속 호출(정상 → 404) - 두 호출 모두 마지막 결과(false)
+    res = await Promise.all([pfm_a.setSrc(scwin.SUB1), pfm_a.setSrc(scwin.NONE)]);
+    scwin.add(5, "연속 호출(정상,404)", res);
+
+    // case6: 연속 호출(404 → 정상) - 두 호출 모두 마지막 결과(true), 마지막 화면 매핑
+    res = await Promise.all([pfm_a.setSrc(scwin.NONE), pfm_a.setSrc(scwin.SUB1)]);
+    scwin.add(6, "연속 호출(404,정상)", { res: res, fn: scwin.fnName(pfm_a, "getName1") });
+
+    // case7: 3연속 호출(정상,정상,404) - 모두 마지막 결과(false)
+    res = await Promise.all([pfm_a.setSrc(scwin.SUB1), pfm_a.setSrc(scwin.SUB2), pfm_a.setSrc(scwin.NONE)]);
+    scwin.add(7, "3연속 호출(정상,정상,404)", res);
+
+    // case8: 같은 src 2회 - true,true, 화면 재로딩(onpageframeload 2회, 하위 onpageload 2회)
+    await pfm_a.setSrc(scwin.SUB2);
+    await scwin.wait(300);
+    scwin.evCnt = 0;
+    window.__pf1454 = 0;
+    r1 = await pfm_a.setSrc(scwin.SUB1);
+    r2 = await pfm_a.setSrc(scwin.SUB1);
+    await scwin.waitUntil(function () { return scwin.evCnt >= 2 && window.__pf1454 >= 2; }, 3000);
+    await scwin.wait(200);
+    scwin.add(8, "같은 src 2회", { r1: r1, r2: r2, onpageframeload: scwin.evCnt, onpageload: window.__pf1454 });
+
+    // case9: options.dataObject 전달 - true, 하위 화면에서 파라미터 수신
+    await pfm_a.setSrc(scwin.SUB2);
+    r = await pfm_a.setSrc(scwin.SUB1, { dataObject: { type: "json", name: "pfParam", data: { a: 1, b: "가" } } });
+    await scwin.waitUntil(function () { return typeof pfm_a.getParam === "function" && pfm_a.getParam() != null; }, 3000);
+    scwin.add(9, "options.dataObject 전달", { r: r, prm: typeof pfm_a.getParam === "function" ? pfm_a.getParam() : null });
+
+    // case10: msaLoad(msaName 생략) - 정상 true / 404 false
+    r1 = await pfm_a.msaLoad(scwin.SUB2);
+    r2 = await pfm_a.msaLoad(scwin.NONE);
+    scwin.add(10, "msaLoad 정상/404", { ok: r1, notFound: r2, keep: scwin.fnName(pfm_a, "getName2") });
+
+    // case11: dynamicCreate 로 만든 pageFrame - 정상 true / 404 false / 빈 src false
+    // 다시 실행할 때는 이미 만든 pageFrame 을 그대로 사용한다.
+    var pd = $p.getComponentById("pfm_dyn");
+    if (!pd) {
+        await $p.dynamicCreate("pfm_dyn", "pageFrame", { style: "width:200px;height:40px;" }, grp_dyn);
+        pd = $p.getComponentById("pfm_dyn");
+    }
+    r = await pd.setSrc(scwin.SUB1);
+    r1 = await pd.setSrc(scwin.NONE);
+    r2 = await pd.setSrc("");
+    scwin.add(11, "dynamicCreate pageFrame", { ok: r, notFound: r1, empty: r2, fn: scwin.fnName(pd, "getName1") });
+
+    // case12: (비교) wframe.setSrc - 정상 true / 404 false
+    r1 = await wfm_c.setSrc(scwin.SUB1);
+    r2 = await wfm_c.setSrc(scwin.NONE);
+    scwin.add(12, "wframe.setSrc 비교", { ok: r1, notFound: r2 });
+
+    return scwin.res;
+};
+
+scwin.getResult = function () {
+    return scwin.res;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:textbox id="lbl_title" label="WAEA-1454 pageFrame.setSrc() 반환값 확인 (11월정기 1694R) : 정상 true / 404·빈 src false / 연속 호출은 마지막 호출 결과 / msaLoad 동일" style="width:900px;height:24px;font-size:14px;margin:8px;"></w2:textbox>
+		<xf:trigger id="btn_run" type="button" style="width:120px;height:30px;margin:8px;" ev:onclick="scwin.btn_run_onclick">
+			<xf:label><![CDATA[실행]]></xf:label>
+		</xf:trigger>
+		<xf:input id="tbx_status" style="width:120px;height:24px;margin:8px;"></xf:input>
+		<w2:pageFrame id="pfm_a" style="width:400px;height:40px;border:1px solid #cccccc;margin:8px;" ev:onpageframeload="scwin.pfm_a_onpageframeload"></w2:pageFrame>
+		<xf:group id="grp_dyn" style="width:400px;height:50px;margin:8px;"></xf:group>
+		<w2:wframe id="wfm_c" style="width:400px;height:40px;border:1px solid #cccccc;margin:8px;"></w2:wframe>
+		<xf:textarea id="tbx_result" style="width:900px;height:300px;margin:8px;"></xf:textarea>
+	</body>
+</html>

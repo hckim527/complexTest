@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+/*
+ * WAEA-1429 spinner setProperty("readOnly") 시 readOnly 옵션·내부 입력창 동기화 확인 샘플
+ * 요건 확인 버전: 11월정기 1694R (6.0_0.1694R.20261106.105848) PASS 확인 후 자동화 편입
+ * - spn_a : readOnly 미지정 → setProperty("readOnly", true/false) 반복
+ * - spn_b : inputReadOnly="true" → setProperty true → false (해제 후에도 입력창은 읽기 전용 유지, 버튼은 동작)
+ * - spn_c : readOnly="true" 로 생성 → setProperty false 해제 → true 재잠금
+ * 결과 노출: 화면 tbx_st_a/b/c, scwin.getState("spn_a") 반환 문자열
+ *   형식 "value=<값>|readOnly=<getReadOnly()>|input=<입력창 readOnly>|change=<onviewchange 횟수>"
+ */
+scwin.changeCnt = { spn_a: 0, spn_b: 0, spn_c: 0 };
+
+scwin.onpageload = function () {
+    scwin.refreshAll();
+};
+
+scwin.getState = function (id) {
+    var c = $p.getComponentById(id);
+    var inp = document.getElementById(c.id + "___input");
+    return "value=" + c.getValue()
+        + "|readOnly=" + c.getReadOnly()
+        + "|input=" + (inp ? inp.readOnly : "-")
+        + "|change=" + scwin.changeCnt[id];
+};
+
+scwin.refresh = function (id) {
+    var key = id.substring(id.length - 1);
+    $p.getComponentById("tbx_st_" + key).setValue(scwin.getState(id));
+};
+
+scwin.refreshAll = function () {
+    scwin.refresh("spn_a");
+    scwin.refresh("spn_b");
+    scwin.refresh("spn_c");
+};
+
+scwin.sp = function (id, v) {
+    $p.getComponentById(id).setProperty("readOnly", v);
+    scwin.refresh(id);
+};
+
+scwin.onchange = function (id) {
+    scwin.changeCnt[id]++;
+    scwin.refresh(id);
+};
+
+scwin.btn_a_t_onclick = function () { scwin.sp("spn_a", true); };
+scwin.btn_a_f_onclick = function () { scwin.sp("spn_a", false); };
+scwin.btn_b_t_onclick = function () { scwin.sp("spn_b", true); };
+scwin.btn_b_f_onclick = function () { scwin.sp("spn_b", false); };
+scwin.btn_c_t_onclick = function () { scwin.sp("spn_c", true); };
+scwin.btn_c_f_onclick = function () { scwin.sp("spn_c", false); };
+scwin.btn_refresh_onclick = function () { scwin.refreshAll(); };
+
+scwin.spn_a_onviewchange = function (info) { scwin.onchange("spn_a"); };
+scwin.spn_b_onviewchange = function (info) { scwin.onchange("spn_b"); };
+scwin.spn_c_onviewchange = function (info) { scwin.onchange("spn_c"); };
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="grp_main" style="padding:10px;">
+			<w2:textbox id="lbl_title" style="font-size:15px;font-weight:bold;height:24px;" label="WAEA-1429 spinner setProperty(&quot;readOnly&quot;) 시 readOnly 옵션·내부 입력창 동기화 (11월정기 1694R 확인)"></w2:textbox>
+			<w2:textbox id="lbl_desc" style="font-size:12px;height:40px;" label="setProperty(&quot;readOnly&quot;, true) 후 getReadOnly()·입력창 readOnly 가 true 이고 키 입력·증감 버튼으로 값이 바뀌지 않아야 한다. false 로 해제하면 다시 편집된다(inputReadOnly=&quot;true&quot; 이면 입력창은 계속 읽기 전용, 버튼만 동작)."></w2:textbox>
+
+			<w2:textbox id="lbl_a" style="font-size:13px;font-weight:bold;height:22px;margin-top:6px;" label="A) spn_a : readOnly 미지정"></w2:textbox>
+			<xf:group id="grp_a" style="position:relative;height:36px;">
+				<w2:spinner id="spn_a" initValue="10" style="position:relative;width:150px;height:28px;" ev:onviewchange="scwin.spn_a_onviewchange"></w2:spinner>
+				<w2:button id="btn_a_t" label="A setProperty true" style="width:140px;height:28px;margin-left:6px;" ev:onclick="scwin.btn_a_t_onclick"></w2:button>
+				<w2:button id="btn_a_f" label="A setProperty false" style="width:140px;height:28px;margin-left:4px;" ev:onclick="scwin.btn_a_f_onclick"></w2:button>
+			</xf:group>
+			<w2:textbox id="tbx_st_a" style="font-size:13px;height:22px;color:#0050b3;" label=""></w2:textbox>
+
+			<w2:textbox id="lbl_b" style="font-size:13px;font-weight:bold;height:22px;margin-top:6px;" label="B) spn_b : inputReadOnly=&quot;true&quot;"></w2:textbox>
+			<xf:group id="grp_b" style="position:relative;height:36px;">
+				<w2:spinner id="spn_b" initValue="10" inputReadOnly="true" style="position:relative;width:150px;height:28px;" ev:onviewchange="scwin.spn_b_onviewchange"></w2:spinner>
+				<w2:button id="btn_b_t" label="B setProperty true" style="width:140px;height:28px;margin-left:6px;" ev:onclick="scwin.btn_b_t_onclick"></w2:button>
+				<w2:button id="btn_b_f" label="B setProperty false" style="width:140px;height:28px;margin-left:4px;" ev:onclick="scwin.btn_b_f_onclick"></w2:button>
+			</xf:group>
+			<w2:textbox id="tbx_st_b" style="font-size:13px;height:22px;color:#0050b3;" label=""></w2:textbox>
+
+			<w2:textbox id="lbl_c" style="font-size:13px;font-weight:bold;height:22px;margin-top:6px;" label="C) spn_c : readOnly=&quot;true&quot; 로 생성"></w2:textbox>
+			<xf:group id="grp_c" style="position:relative;height:36px;">
+				<w2:spinner id="spn_c" initValue="10" readOnly="true" style="position:relative;width:150px;height:28px;" ev:onviewchange="scwin.spn_c_onviewchange"></w2:spinner>
+				<w2:button id="btn_c_f" label="C setProperty false" style="width:140px;height:28px;margin-left:6px;" ev:onclick="scwin.btn_c_f_onclick"></w2:button>
+				<w2:button id="btn_c_t" label="C setProperty true" style="width:140px;height:28px;margin-left:4px;" ev:onclick="scwin.btn_c_t_onclick"></w2:button>
+			</xf:group>
+			<w2:textbox id="tbx_st_c" style="font-size:13px;height:22px;color:#0050b3;" label=""></w2:textbox>
+
+			<w2:button id="btn_refresh" label="상태 다시 읽기" style="width:120px;height:28px;margin-top:8px;" ev:onclick="scwin.btn_refresh_onclick"></w2:button>
+		</xf:group>
+	</body>
+</html>
