@@ -24,6 +24,14 @@ scwin.btnShow_onclick = function() {
     icToggle.setCalendarButtonHide(false);
 };
 ]]></script>
+        <style type="text/css"><![CDATA[
+/* base.css(.w2inputCalendar_div_input/.w2inputCalendar_divInput{width:100% !important;padding-right:30px}) 적용 시
+   달력 버튼(absolute)이 입력칸 위에 겹쳐 setCalendarButtonHide 의 입력영역 폭 변화가 사라짐 → 토글 대상에만 한정해
+   버튼 표시 상태: 버튼 칸(30px)을 뺀 폭 / 버튼 숨김 상태(엔진이 _div_img 에 w2inputCalendar_div_img_hide 추가): 전체 폭 */
+.ic_btnhide_toggle .w2inputCalendar_div_input {width:calc(100% - 30px) !important}
+.ic_btnhide_toggle .w2inputCalendar_divInput {padding-right:8px}
+.ic_btnhide_toggle:has(> .w2inputCalendar_div_img_hide) .w2inputCalendar_div_input {width:100% !important}
+]]></style>
     </head>
     <body ev:onpageload="scwin.onpageload">
         <xf:group class="sub_contents" meta_componentContainer="true" style="">
@@ -49,7 +57,7 @@ scwin.btnShow_onclick = function() {
                 calendarValueType="yearMonthDate" calendarButtonHide="true" useEditFormat="true" validateOnInput="true"/>
 
             <w2:textbox label="dynamic toggle target (setCalendarButtonHide)" style="display:block;width:420px;height:23px;margin:8px;"/>
-            <w2:inputCalendar id="icToggle" style="width:220px;height:23px;margin:8px;"
+            <w2:inputCalendar id="icToggle" class="ic_btnhide_toggle" style="width:220px;height:23px;margin:8px;"
                 calendarValueType="yearMonthDate"/>
             <xf:trigger id="btnHide" type="button" style="width:120px;height:25px;margin:8px;" ev:onclick="scwin.btnHide_onclick">
                 <xf:label>hide button</xf:label>

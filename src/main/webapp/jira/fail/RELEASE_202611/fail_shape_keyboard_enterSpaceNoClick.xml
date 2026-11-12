@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] Shape 에 포커스 후 Enter·Space 키로 onclick 이 발생하지 않음" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성(결함 재현)" meta_date="20261112" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.shp_shape_onclick = function (e) {
+    scwin.setReturnValue("onclick 발생 (" + e.type + ")");
+};
+
+scwin.shp_shape_onkeydown = function (e) {
+    scwin.setReturnValue("keydown : " + (e.key === " " ? "Space" : e.key));
+};
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group id="grp_root" style="padding:16px;">
+			<w2:textbox escape="false" id="lbl_title" style="font-size:16px;margin-top:16px;margin-bottom:16px;"
+				label="■ &lt;b&gt;[FAIL] Shape 에 tabIndex 를 설정하여 포커스한 뒤 Enter·Space 키를 눌러도 onclick 이 발생하지 않음&lt;/b&gt;&lt;br/&gt;[확인 방법] 입력창 클릭 → Tab 키로 도형에 포커스 → Enter 키 → Space 키&lt;br/&gt;[기대] 마우스 클릭과 같이 Enter·Space 키로 onclick 발생&lt;br/&gt;[실제] keydown 은 발생하나 onclick 미발생 (마우스 클릭 시에만 발생)"></w2:textbox>
+
+			<xf:group id="" style="display:flex;align-items:center;gap:16px;">
+				<xf:input id="ibx_start" style="width:150px;height:30px;" tabIndex="1"></xf:input>
+				<w2:shape id="shp_shape" type="rectangle" tabIndex="2" stroke="#2563eb" strokeWidth="2" fill="#dbeafe" label="승인" style="width:120px;height:60px;"
+					ev:onclick="scwin.shp_shape_onclick" ev:onkeydown="scwin.shp_shape_onkeydown"></w2:shape>
+			</xf:group>
+
+			<xf:group id="grp_bottom" style="">
+				<w2:textbox escape="false" id="" label="■ 리턴 값 확인" style="font-size:16px;font-weight:bold;margin-top:16px;margin-bottom:16px;"></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid #C4CDD5;border-radius: 8px;width: 100%;height: 120px;" id="tbx_return"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

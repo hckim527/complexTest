@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] ContextMenu setDisabledItem·setVisibleItem 으로 바꾼 항목 상태가 메뉴를 다시 열면 원래대로 돌아감" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성(결함 재현)" meta_date="20261111" meta_user="InswaveSystems"></w2:history>
+			<w2:history meta_no="02" meta_desc="대조군·자동 실행·초기화 버튼 삭제" meta_date="20261112" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_menu">
+					<w2:columnInfo>
+						<w2:column id="id" name="id" dataType="text"></w2:column>
+						<w2:column id="label" name="label" dataType="text"></w2:column>
+						<w2:column id="depth" name="depth" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row><id><![CDATA[m_new]]></id><label><![CDATA[New]]></label><depth><![CDATA[1]]></depth></w2:row>
+						<w2:row><id><![CDATA[m_open]]></id><label><![CDATA[Open]]></label><depth><![CDATA[1]]></depth></w2:row>
+						<w2:row><id><![CDATA[m_save]]></id><label><![CDATA[Save]]></label><depth><![CDATA[1]]></depth></w2:row>
+						<w2:row><id><![CDATA[m_close]]></id><label><![CDATA[Close]]></label><depth><![CDATA[1]]></depth></w2:row>
+						<w2:row><id><![CDATA[m_exit]]></id><label><![CDATA[Exit]]></label><depth><![CDATA[1]]></depth></w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 메뉴 표시 위치(버튼 영역 오른쪽)
+scwin.MENU_X = 360;
+scwin.MENU_Y = 150;
+
+// 화면에 표시된 Save·Close 항목 상태
+scwin.getScreenState = function () {
+    let portal = document.getElementById(cm_menu.id + "_portal");
+    let save = portal ? portal.querySelector("li[data-item-id='m_save']") : null;
+    let close = portal ? portal.querySelector("li[data-item-id='m_close']") : null;
+    let saveText = save ? (save.className.indexOf("w2contextMenu_disabled") > -1 ? "비활성" : "활성") : "없음";
+    let closeText = close && close.offsetParent !== null ? "표시" : "숨김";
+    return "Save : " + saveText + " / Close : " + closeText;
+};
+
+scwin.cm_menu_onopen = function (info) {
+    scwin.setReturnValue("메뉴 열림 → " + scwin.getScreenState());
+};
+
+scwin.cm_menu_onitemclick = function (info) {
+    scwin.setReturnValue("항목 클릭 : " + info.label);
+};
+
+// 닫힌 상태에서 설정
+scwin.btn_setClosed_onclick = function (e) {
+    cm_menu.close();
+    cm_menu.setDisabledItem("m_save", true);
+    cm_menu.setVisibleItem("m_close", false);
+    scwin.setReturnValue("닫힌 상태에서 설정 : Save 비활성, Close 숨김");
+};
+
+// 메뉴 열기
+scwin.btn_open_onclick = function (e) {
+    cm_menu.open(scwin.MENU_X, scwin.MENU_Y);
+};
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group id="grp_root" style="padding:16px;">
+			<w2:textbox escape="false" id="lbl_title" style="font-size:16px;margin-top:16px;margin-bottom:16px;"
+				label="■ &lt;b&gt;[FAIL] ContextMenu 의 setDisabledItem·setVisibleItem 으로 바꾼 항목 상태가 메뉴를 다시 열면 원래대로 돌아감&lt;/b&gt;&lt;br/&gt;[확인 방법] ① 닫힌 상태에서 설정 → ② 메뉴 열기&lt;br/&gt;[기대] 메뉴를 열면 Save 비활성, Close 숨김 유지&lt;br/&gt;[실제] Save 활성, Close 표시로 돌아감 (Save 클릭 시 항목 클릭 이벤트 발생)"></w2:textbox>
+
+			<w2:textbox id="" label="메뉴 항목 : New, Open, Save, Close, Exit (DataList ItemSet) — 설정 대상 : setDisabledItem(&quot;m_save&quot;, true), setVisibleItem(&quot;m_close&quot;, false)" style="font-size:13px;margin-bottom:8px;"></w2:textbox>
+
+			<xf:group id="" style="display:flex;flex-direction:column;gap:8px;width:300px;">
+				<w2:button ev:onclick="scwin.btn_setClosed_onclick" id="btn_setClosed" label="① 닫힌 상태에서 설정" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				<w2:button ev:onclick="scwin.btn_open_onclick" id="btn_open" label="② 메뉴 열기" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+			</xf:group>
+
+			<w2:contextMenu id="cm_menu" width="160" ev:onopen="scwin.cm_menu_onopen" ev:onitemclick="scwin.cm_menu_onitemclick">
+				<w2:itemset nodeset="data:dlt_menu">
+					<w2:id ref="id"></w2:id>
+					<w2:label ref="label"></w2:label>
+					<w2:depth ref="depth"></w2:depth>
+				</w2:itemset>
+			</w2:contextMenu>
+
+			<xf:group id="grp_bottom" style="">
+				<w2:textbox escape="false" id="" label="■ 리턴 값 확인" style="font-size:16px;font-weight:bold;margin-top:16px;margin-bottom:16px;"></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid #C4CDD5;border-radius: 8px;width: 100%;height: 160px;" id="tbx_return"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

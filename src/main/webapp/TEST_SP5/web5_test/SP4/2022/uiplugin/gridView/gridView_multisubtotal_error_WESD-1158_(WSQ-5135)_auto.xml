@@ -94,7 +94,11 @@
             };
 			
 			scwin.checkVal = function() {
-				return WebSquare.wUnit.getJq('#gridView1_body_table').height() > 130;
+				// 행 높이(CSS) 무관 판정: 확장된 데이터 영역을 렌더 행이 채우는지(빈 공간 < 1행)
+				var bodyH = WebSquare.wUnit.getJq('#gridView1_body_table').height();
+				var layerH = WebSquare.wUnit.getJq('#gridView1_dataLayer').height();
+				var rowH = WebSquare.wUnit.getJq('#gridView1_body_table td.gridBodyDefault').first().outerHeight();
+				return layerH > 130 && bodyH > layerH - rowH;
 			}
 			scwin.unitTest = function() {
 				//Unit
@@ -120,7 +124,7 @@
         ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">
-	    <xf:group class="sub_contents flex" id="" style="">
+	    <xf:group class="sub_contents" id="" style="">
             <xf:group class="dfbox" id="" style="">
                 <xf:group class="" id="" style="float:right">
                     <w2:anchor outerDiv="false" ev:onclick="scwin.expandGrid" style="border: 1px solid red; padding: 5px;">

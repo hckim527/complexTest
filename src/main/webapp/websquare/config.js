@@ -97,7 +97,7 @@ export default {
       "@value": "false"
     },
     "stylesheet": {
-      "@earlyImportList": "",
+      "@earlyImportList": "/cm/css/base.css",
       "@enable": "true",
       "@import": "link",
       "@value": "stylesheet_ext.css"

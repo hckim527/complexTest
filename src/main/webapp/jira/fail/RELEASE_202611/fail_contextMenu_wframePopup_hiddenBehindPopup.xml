@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] wframePopup 안 ContextMenu 를 열면 메뉴가 팝업 뒤에 가려짐" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성(결함 재현)" meta_date="20261111" meta_user="InswaveSystems"></w2:history>
+			<w2:history meta_no="02" meta_desc="본 화면 대조 메뉴 삭제" meta_date="20261112" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_pop_onclick = function (e) {
+    $p.openPopup("/jira/fail/RELEASE_202611/fail_contextMenu_wframePopup_hiddenBehindPopup_popup.xml", {
+        id : "pop_cm", type : "wframePopup", popupName : "wframePopup", modal : false,
+        width : "400px", height : "250px", left : "460px", top : "140px"
+    });
+};
+
+// 메뉴 첫 항목(Alpha) 위치에 메뉴가 맨 위로 그려져 눈에 보이는지 확인
+scwin.checkVisible = function (cm, title) {
+    setTimeout(function () {
+        let visible = false;
+        let layer = document.getElementById(cm.id + "_portal");
+        let panel = layer ? layer.firstElementChild : null;
+        let first = panel ? panel.firstElementChild : null;
+        if (first) {
+            let r = first.getBoundingClientRect();
+            let top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+            visible = first.contains(top);
+        }
+        scwin.setReturnValue(title + " → isOpen()=" + cm.isOpen() + ", 첫 항목(Alpha) 보임=" + visible);
+    }, 100);
+};
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group id="grp_root" style="padding:16px;">
+			<w2:textbox escape="false" id="lbl_title" style="font-size:16px;margin-top:16px;margin-bottom:16px;"
+				label="■ &lt;b&gt;[FAIL] wframePopup 안의 ContextMenu 를 열면 메뉴가 팝업 뒤에 가려져 보이지 않음&lt;/b&gt;&lt;br/&gt;[확인 방법] wframePopup 열기 버튼 클릭 → 팝업 안 팝업 메뉴 열기 버튼 클릭&lt;br/&gt;[기대] 팝업 안 버튼 아래에 메뉴(Alpha~Delta) 전체가 팝업보다 앞에 표시됨&lt;br/&gt;[실제] 메뉴가 팝업 뒤에 가려져 팝업 안쪽 Alpha, Beta 는 보이지 않고, 팝업 밖으로 나온 Gamma, Delta 만 보임"></w2:textbox>
+
+			<xf:group id="" style="width:400px;">
+				<w2:textbox id="" label="wframePopup 안 ContextMenu (openEvent=onclick)" style="background-color:#EAEEF1;font-size:16px;font-weight:bold;padding-left:5px;"></w2:textbox>
+				<xf:group id="" style="margin-top:8px;margin-bottom:24px;">
+					<w2:button ev:onclick="scwin.btn_pop_onclick" id="btn_pop" label="wframePopup 열기" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				</xf:group>
+			</xf:group>
+
+			<xf:group id="grp_bottom" style="width:400px;">
+				<w2:textbox escape="false" id="" label="■ 리턴 값 확인" style="font-size:16px;font-weight:bold;margin-top:16px;margin-bottom:16px;"></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid #C4CDD5;border-radius: 8px;width: 100%;height: 120px;" id="tbx_return"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

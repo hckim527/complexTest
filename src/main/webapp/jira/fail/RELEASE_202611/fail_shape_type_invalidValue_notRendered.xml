@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[FAIL] Shape type 에 옵션 외 값 설정 시 도형이 생성되지 않음" meta_author="InswaveSystems" meta_type="메인">
+		<w2:historyInfo>
+			<w2:history meta_no="01" meta_desc="최초작성(결함 재현)" meta_date="20261112" meta_user="InswaveSystems"></w2:history>
+		</w2:historyInfo>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script type="text/javascript" lazy="false"><![CDATA[
+// getSVGElement 결과 확인
+scwin.btn_check_onclick = function (e) {
+    let svg = shp_shape.getSVGElement();
+    scwin.setReturnValue("getSVGElement() : " + (svg ? svg.tagName : svg));
+};
+
+// 리턴 값 초기화
+scwin.btn_clear_onclick = function (e) {
+    tbx_return.setValue("");
+};
+
+// 리턴 값 설정
+scwin.setReturnValue = function (strValue) {
+    tbx_return.setValue(tbx_return.getValue() + strValue);
+    tbx_return.setValue(tbx_return.getValue() + "\n");
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group id="grp_root" style="padding:16px;">
+			<w2:textbox escape="false" id="lbl_title" style="font-size:16px;margin-top:16px;margin-bottom:16px;"
+				label="■ &lt;b&gt;[FAIL] Shape 의 type 에 옵션 외 값(RECTANGLE) 설정 시 도형이 생성되지 않음&lt;/b&gt;&lt;br/&gt;[확인 방법] 화면 로딩 후 점선 영역 확인 → getSVGElement 확인 버튼 클릭&lt;br/&gt;[기대] 기본값 rectangle 로 사각형(파란 면, '확인' 문구) 표시, getSVGElement() 가 svg 반환&lt;br/&gt;[실제] 점선 영역에 아무것도 표시되지 않고, getSVGElement() 가 undefined 반환 (console 에 'shape: unsupported type RECTANGLE' 오류)"></w2:textbox>
+
+			<w2:textbox id="" label="type=&quot;RECTANGLE&quot; (대문자) — 점선은 shape 영역 표시용" style="font-size:13px;font-weight:bold;margin-bottom:8px;"></w2:textbox>
+			<xf:group id="grp_area" style="width:184px;height:104px;border:1px dashed #999999;">
+				<w2:shape id="shp_shape" type="RECTANGLE" stroke="#2563eb" strokeWidth="2" fill="#dbeafe" label="확인" style="width:180px;height:100px;margin:2px;"></w2:shape>
+			</xf:group>
+
+			<xf:group id="" style="margin-top:16px;">
+				<w2:button ev:onclick="scwin.btn_check_onclick" id="btn_check" label="getSVGElement 확인" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+			</xf:group>
+
+			<xf:group id="grp_bottom" style="">
+				<w2:textbox escape="false" id="" label="■ 리턴 값 확인" style="font-size:16px;font-weight:bold;margin-top:16px;margin-bottom:16px;"></w2:textbox>
+				<xf:group id="" style="display: flex;justify-content: flex-end">
+					<w2:button ev:onclick="scwin.btn_clear_onclick" id="btn_clear" label="clear" style="background-color:#005AB5;color:#FFFFFF;border-radius:4px;padding:5px;height:35px;"></w2:button>
+				</xf:group>
+				<xf:textarea style="border: 1px solid #C4CDD5;border-radius: 8px;width: 100%;height: 120px;" id="tbx_return"></xf:textarea>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>
