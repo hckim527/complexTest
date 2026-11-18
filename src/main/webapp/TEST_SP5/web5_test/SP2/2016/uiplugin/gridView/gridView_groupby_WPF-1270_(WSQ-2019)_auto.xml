@@ -2,12 +2,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
 	xmlns:xf="http://www.w3.org/2002/xforms">
 	<head>
-        <script type="text/javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
-        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
-        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
-        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
-        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
-        <script type="text/javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>	
 
 		<w2:type>DEFAULT</w2:type>
 		<w2:buildDate />
@@ -108,25 +102,10 @@ scwin.gridView2_ongroupby = function(options) {
     var eDate = new Date();
     txt2.setValue("2. options.closeGroup = true;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;duration[" + (eDate - sDate) + "ms]");
 };
-scwin.simulateWrapper = function(target, type, options) {
-    WebSquare.wUnit.getJq(target).simulate(type, options);
-}
 scwin.getTime = function() {
     var time = WebSquare.wUnit.getJq(".w2textbox")[2].innerText;
     time = time.slice(time.indexOf("[") + 1, time.indexOf("ms]"));
     return parseInt(time, 10) < 500 ? true : false;
-}
-scwin.setSimulate1 = function() {
-    scwin.simulateWrapper('#gridView1_column9', 'drag-n-drop', {
-        dx: 0,
-        dy: -60
-    });
-}
-scwin.setSimulate2 = function() {
-    scwin.simulateWrapper('#gridView2_column9', 'drag-n-drop', {
-        dx: 0,
-        dy: -60
-    });
 }
 scwin.unitTest = function() {
     //init
@@ -135,11 +114,9 @@ scwin.unitTest = function() {
     //1. Run the sample file and drag it to the top grid (if options.closeGroup = false;) and the bottom grid (if options.closeGroup = true;
     //Verify step 1. The upper grid and the lower grid are grouped by the agency name and the time (duration 370 ms) is shown.
     WebSquare.wUnit.addCommand("pause", "800");
-    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
     WebSquare.wUnit.addCommand("pause", "500");
     WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').length == 1", "true");
     WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value').text() == '대리점'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
     WebSquare.wUnit.addCommand("pause", "500");
     WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column:last').length == 1", "true");
     WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value:last').text() == '대리점'", "true");

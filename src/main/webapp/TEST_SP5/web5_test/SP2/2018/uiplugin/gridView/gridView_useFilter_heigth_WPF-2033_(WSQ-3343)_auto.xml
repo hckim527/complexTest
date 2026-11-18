@@ -3,16 +3,6 @@
 	xmlns:ev="http://www.w3.org/2001/xml-events"
 	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
 	<head>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.min.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery-ui.custom.min.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/raphael-min.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/raphael.sketchpad.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/bililiteRange.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.ext.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.drag-n-drop.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-sequence.js"></script>
-		<script type="javascript" src="/ROBOT_AUTO_LIB/jquery.simulate.key-combo.js"></script>
 		<w2:buildDate/>
 		<xf:model>
 			<xf:instance>
@@ -154,22 +144,6 @@ scwin.formatter = function(data) {
     console.log(data);
 };
 scwin.trigger2_onclick = function(e) {};
-scwin.simulateWrapper = function(target, type, options) {
-    WebSquare.wUnit.getJq(target).simulate(type, options);
-}
-scwin.setSimulate1 = function() {
-    scwin.simulateWrapper('#grid1_header4', 'drag-n-drop', {
-        dx: -10,
-        dy: -50
-    });
-}
-scwin.moveScroll = function() {
-    for (var i = 0; i < 30; i++) {
-        scwin.simulateWrapper("#grid1_groupbyZone_list", "key-combo", {
-            combo: "down-arrow"
-        });
-    }
-}
 scwin.checkVal = function() {
     return parseInt(WebSquare.wUnit.getJq('#grid1_customFilter_scrollView').css('height')) < 35;
 }
@@ -191,11 +165,9 @@ scwin.unitTest = function() {
     //Test step 2. '금액'항목을 groupby시키고 필터리스트를 클릭하고 마우스 스크롤로 이동하여 맨아래까지 값이 보여지는지 확인한다.
     //2. Group the 'Amount' item, click on the filter list, and scroll to the bottom of the list to see the value.
     //Verify step 2. The scroll is moved to the bottom and works normally (Previously, the scroll was not moved to the bottom, so the value could not be seen)
-    WebSquare.wUnit.addCommand("set", "scwin.setSimulate1()");
     WebSquare.wUnit.addCommand("pause", "500");
     WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').click()");
     WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.moveScroll()");
     WebSquare.wUnit.addCommand("pause", "100");
     WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
     WebSquare.wUnit.addCommand("pause", "500");
