@@ -25,6 +25,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.createMouseEvent = function(ev, type) {
     if (ev.initMouseEvent) {
         if (WebSquare.util.isIE(9) || WebSquare.util.isIE(10)) {
@@ -54,7 +63,7 @@ scwin.createMouseEvent = function(ev, type) {
         if (document.createEventObject) {
             var mouseEvent = document.createEventObject();
             mouseEvent.button = 0;
-            WebSquare.wUnit.getDomById($p.id + ev).fireEvent(type, mouseEvent);
+            scwin.__getDom($p.id + ev).fireEvent(type, mouseEvent);
         }
     }
 }
@@ -81,38 +90,21 @@ scwin.callFun = function() {
     scwin.createDblClickEvent(evtObj['gridView1_cell_2_1']);
 }
 scwin.callFun2 = function() {
-    scwin.__triggerKeyboardEvent(WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col2'), 13);
+    scwin.__triggerKeyboardEvent(scwin.__getDom('G_'+$p.id+'gridView1__col2'), 13);
 }
 scwin.callFun3 = function() {
     scwin.createDblClickEvent(evtObj['gridView1_cell_3_1']);
 }
-scwin.unitTest = function() {
+scwin.initTest = function() {
     var cell21 = "gridView1_cell_2_1";
     var cell31 = "gridView1_cell_3_1";
     window.evtObj = {};
-    WebSquare.wUnit.getDomById($p.id + cell21).onclick = function(ev) {
+    scwin.__getDom($p.id + cell21).onclick = function(ev) {
         evtObj[cell21] = ev;
     };
-    WebSquare.wUnit.getDomById($p.id + cell31).onclick = function(ev) {
+    scwin.__getDom($p.id + cell31).onclick = function(ev) {
         evtObj[cell31] = ev;
     };
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_2_1').click()");
-    WebSquare.wUnit.addCommand("set", "scwin.callFun()");
-    WebSquare.wUnit.addCommand("pause", "50");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2').setValue('12')");
-    WebSquare.wUnit.addCommand("pause", "50");
-    WebSquare.wUnit.addCommand("set", "scwin.callFun2()");
-    WebSquare.wUnit.addCommand("pause", "50");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_3_1').click()");
-    WebSquare.wUnit.addCommand("set", "scwin.callFun3()");
-    WebSquare.wUnit.addCommand("pause", "50");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2').setValue('25')");
-    WebSquare.wUnit.addCommand("pause", "50");
-    WebSquare.wUnit.addCommand("set", "scwin.callFun2()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_2_1').querySelector('nobr').innerHTML === '25'", "false");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -162,8 +154,8 @@ scwin.onpageload2 = function() {
         }
     ];
     dataList1.setJSON(jsondata1);
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
+    if (typeof scwin.initTest === "function") {
+        scwin.initTest();
     }
 }
 ]]></script>

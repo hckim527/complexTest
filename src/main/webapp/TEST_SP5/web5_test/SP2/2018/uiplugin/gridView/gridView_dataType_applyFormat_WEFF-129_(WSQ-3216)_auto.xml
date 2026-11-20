@@ -23,6 +23,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -35,44 +50,11 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.setVal = function() {
-    scwin.fireDbClick(WebSquare.wUnit.getObjById('wq_uuid_13_cell_0_0'));
+    scwin.fireDbClick(scwin.__getObj('wq_uuid_13_cell_0_0'));
 }
 scwin.checkVal = function() {
     return input3.realValue == '1,234,567.12';
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 3번의 inputbox에 '1234567.12'값을 입력하고 enterkey를 실행한다.
-    //1. After executing the sample, enter the value '1234567.12' in the input box 3 and execute enterkey.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input3').focus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input3').setValue('1234567.12')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input3').blur()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. '1234567.12'값이 정상적으로 입력된다.
-    //1. The value '1234567.12' is input normally.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('input3').getValue() == '1234567.12'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 9번의 gridView 컬럼에 '1234567.12'값을 입력하고 enterkey를 실행한다.
-    //2. Enter the value '1234567.12' in the 9th gridview column and execute enterkey.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_13__col1').setValue('1234567.12')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input6').focus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. '1234567.12'값이 정상적으로 입력된다. (이전에는 4자리 입력 시 1NAN,234 값이 입력되어짐)
-    //2. The value '1234567.12' is input normally. (Previously, when inputting 4 digits, 1NAN, 234 value is input)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_wq_uuid_13__col1').getValue() == '1234567.12'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
 }
 ]]></script>

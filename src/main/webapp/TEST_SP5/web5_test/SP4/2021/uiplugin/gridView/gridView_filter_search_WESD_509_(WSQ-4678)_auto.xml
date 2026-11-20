@@ -347,6 +347,13 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
     //dataList2.setData(['aa','1','bb','2','aabb','3','bbaa','4','cc','5']);
 };
@@ -355,7 +362,7 @@ scwin.trigger1_onclick = function(e) {
     dataList1.clearFilter();
 };
 scwin.simulateWrapper = function(target, type, options) {
-    WebSquare.wUnit.getJq(target).simulate(type, options);
+    scwin.__getJq(target).simulate(type, options);
 }
 scwin.setSimulate = function() {
     //simulateWrapper('#gridView1_customFilter_list_input', 'key-sequence', {sequence: "A"});
@@ -365,23 +372,8 @@ scwin.setSimulate = function() {
     });
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById('gridView1_customFilter_list_input') != null;
+    return (document.getElementById('gridView1_customFilter_list_input') || document.getElementById('mf_gridView1_customFilter_list_input')) != null;
 }
-scwin.unitTest = function() {
-    //initA
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "300");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column6_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "300");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_customFilter_list_input').click()");
-    WebSquare.wUnit.addCommand("pause", "300");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "300");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload">

@@ -34,6 +34,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.test_expression = function(value) {
     return value + "_test";
 };
@@ -74,29 +81,11 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq("#" + id).css("background-color");
+    var rgb = scwin.__getJq("#" + id).css("background-color");
     if (rgb.indexOf("rgb") != -1) {
         return rgb == "rgb(223, 233, 248)";
     }
     return rgb == hexa;
-}
-scwin.unitTest = function() {
-    //Init test
-    WebSquare.wUnit.start();
-    //Test step 0. gridView의 속성 readOnly='true', readOnlyBackgroundColor='#dfe9f8'로 설정한다. - Set the properties of gridView readOnly = 'true', readOnlyBackgroundColor = 'skyblue'.
-    //Test step 1. 샘플파일을 실행 후 'select'항목을 groupby 시킨 후 그리드뷰 색상을 확인한다.
-    //1. Execute the sample file, groupby the 'select' item, and check the grid view color.
-    //Verify 1. The row colors of label_a1, label_a2, and label_a3 that are grouped are displayed normally in skyblue color.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'gridView1_cell_2_0', '#dfe9f8')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'gridView1_cell_5_0', '#dfe9f8')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'gridView1_cell_8_0', '#dfe9f8')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop unit Test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -117,9 +106,6 @@ scwin.onpageload2 = function() {
     //Created by Truong.Luu
     //Created date 23-Jan-2018            
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

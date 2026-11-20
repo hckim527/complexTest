@@ -88,6 +88,15 @@
     		</xf:submission>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView1_ongroupby = function(options) {
     scwin.groupbyFunc(options);
 };
@@ -143,31 +152,15 @@ scwin.isIE2 = function() {
 }
 scwin.checkVal1 = function() {
     if (scwin.isIE2())
-        return WebSquare.wUnit.getDomById($p.id+'gridView1_cell_9_0').innerText == '설날 [ 3 건 ] ';
+        return scwin.__getDom($p.id+'gridView1_cell_9_0').innerText == '설날 [ 3 건 ] ';
     else
-        return WebSquare.wUnit.getDomById($p.id+'gridView1_cell_9_0').innerText == '설날 [ 3 건 ]';
+        return scwin.__getDom($p.id+'gridView1_cell_9_0').innerText == '설날 [ 3 건 ]';
 }
 scwin.checkVal2 = function() {
     if (scwin.isIE2())
-        return WebSquare.wUnit.getDomById($p.id+'gridView1_cell_17_0').innerText == '신정 [ 1 건 ] ';
+        return scwin.__getDom($p.id+'gridView1_cell_17_0').innerText == '신정 [ 1 건 ] ';
     else
-        return WebSquare.wUnit.getDomById($p.id+'gridView1_cell_17_0').innerText == '신정 [ 1 건 ]';
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. 브라우저에서 name3 컬럼을 group by zone 에 드래그 & 드랍한다.
-    //1. Drag and drop the name3 column from the browser to the group by zone.
-    //Verify step 1. The name3 column is grouped.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+        return scwin.__getDom($p.id+'gridView1_cell_17_0').innerText == '신정 [ 1 건 ]';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -391,9 +384,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 24-Apr-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

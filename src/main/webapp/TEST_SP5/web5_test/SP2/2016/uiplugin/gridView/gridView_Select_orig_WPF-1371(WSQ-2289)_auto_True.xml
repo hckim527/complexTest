@@ -142,6 +142,15 @@
             </w2:dataCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -154,41 +163,14 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).innerText == value) {
+    if (scwin.__getDom($p.id + id).innerText == value) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 그리드뷰 컬럼의 속성값을 inputType=select, sortLabel=true로 설정하고 샘플파일(default = true)의 col1항목 헤더를 더블클릭하여 오름차순으로 sorting한다.
-    //1. Set the attribute values of the grid view column to inputType = select, sortLabel = true, and double-click the col1 item header of the sample file (default = true) to sort in ascending order.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').setAttribute('sortlabel', 'true')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').setAttribute('inputtype', 'select')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_1_1').setAttribute('sortlabel', 'true')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_1_1').setAttribute('inputtype', 'select')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_2_1').setAttribute('sortlabel', 'true')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_2_1').setAttribute('inputtype', 'select')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_3_1').setAttribute('sortlabel', 'true')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_3_1').setAttribute('inputtype', 'select')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column15')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. The sorting result of col1 is shown as 01, 02, 03, 04.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_0_1', '01')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_1_1', '02')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_2_1', '03')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_3_1', '04')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -211,9 +193,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 21-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

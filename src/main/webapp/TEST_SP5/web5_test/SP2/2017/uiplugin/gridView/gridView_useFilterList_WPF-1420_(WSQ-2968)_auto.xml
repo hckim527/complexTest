@@ -30,25 +30,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column8_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. 아이템 리스트가 정상적으로 보여진다.a_name, b_name(이전에는 아이템 리스트가 보여지지 않음)
-    // 1. The item list is displayed normally.a_name, b_name(Previously, the item list is not shown)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_customFilter_scrollView').style.display == 'block'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_customFilter_list').childNodes.length == 4", "true");
-    WebSquare.wUnit.addCommand("assert", "document.querySelectorAll('.w2list_listRow.w2grid_customFilter_list_listRow')[2].innerText == 'a_name'", "true");
-    WebSquare.wUnit.addCommand("assert", "document.querySelectorAll('.w2list_listRow.w2grid_customFilter_list_listRow')[3].innerText == 'b_name'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {
     window.j2 = [{
         "col1": "aa",
@@ -68,7 +64,7 @@ scwin.onpageload = function() {
         "id3": "bb"
     }];
     dataList1.setJSON(j1);
-    WebSquare.wUnit.getObjById('gridView1').setColumnNodeSet("id3", "data:dataList2", "col2", "col1");
+    scwin.__getObj('gridView1').setColumnNodeSet("id3", "data:dataList2", "col2", "col1");
 }
 ]]></script>
     </head>

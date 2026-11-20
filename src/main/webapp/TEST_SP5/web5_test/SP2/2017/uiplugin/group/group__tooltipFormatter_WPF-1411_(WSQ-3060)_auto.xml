@@ -15,6 +15,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.tooltipFormatter = function(compId) {
     return "[[[[ " + compId + " ]]]]";
 };
@@ -30,51 +46,20 @@ scwin.fireMouseHover = function(node) {
     }
 }
 scwin.__triggerMouseover = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireMouseHover(el);
 }
 scwin.__isShowTooltip = function() {
-    var tooltip = WebSquare.wUnit.getJq("#wq_uuid_0_balloonTip");
+    var tooltip = ((j) => j.length ? j : $('#mf_wq_uuid_0_balloonTip'))($('#wq_uuid_0_balloonTip'));
     return tooltip.length > 0 && scwin.__isRegMess(tooltip);
 }
 scwin.__isRegMess = function(tooltip) {
     var reg = /[\[\]{4}]/;
-    return reg.test(WebSquare.wUnit.getJq(tooltip).find("#wq_uuid_0_balloonTip_label").text());
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플 실행 후 anchor, textbox, group에 tooltip기능을 확인한다.
-    //1. After running the sample, check the tooltip function for anchor, textbox, and group.
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover('anchor')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_0_balloonTip_label').text() == '[[[[ '+$p.id+'anchor ]]]]'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover('textbox')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_0_balloonTip_label').text() == '[[[[ '+$p.id+'textbox ]]]]'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover('grp')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_0_balloonTip_label').text() == '[[[[ '+$p.id+'grp ]]]]'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. anchor, textbox, group에 tooltip기능이 확인된다.(true값이 보여짐)
-    //1. The tooltip function is confirmed in anchor, textbox, group (true value is shown)
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return reg.test(scwin.__getJq(tooltip).find("#wq_uuid_0_balloonTip_label").text());
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 12-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

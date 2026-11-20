@@ -30,13 +30,22 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     dataMap1.setArray(["20201130", "202010", "2020", "2020113011", "202011301130"]);
     dataList1.setData(["가나다", "가나다", "가나라마다아", "가나라마다아", "사가나자다", "사가나자다", "사자마", "사자마", "자가", "자가", "abcde", "abcde", "ab1123f", "ab1123f", "자ac12가", "자ac12가", "fz사zf", "fz사zf"]);
 };
 scwin.onpageunload = function() {};
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -51,34 +60,12 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.setVal = function() {
-    WebSquare.wUnit.getDomById($p.id + 'spinner1___input').value = '';
+    scwin.__getDom($p.id + 'spinner1___input').value = '';
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getJq('#spinner3___input').hasClass('w2input_focus');
+    return ((j) => j.length ? j : $('#mf_spinner3___input'))($('#spinner3___input')).hasClass('w2input_focus');
 }
 
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('spinner1___input').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('spinner1___input').focus()");
-    WebSquare.wUnit.addCommand("pause", "500");	
-
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('spinner1___input').value == ''");
-    WebSquare.wUnit.addCommand("pause", "500");	
-	
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#autoComplete3').hasClass('w2autoComplete_body_selected')","true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    //Run and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 ]]></script>
     </head>

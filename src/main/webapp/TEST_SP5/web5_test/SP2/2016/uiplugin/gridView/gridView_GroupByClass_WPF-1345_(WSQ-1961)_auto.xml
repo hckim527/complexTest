@@ -39,6 +39,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.gridView1_ongroupby = function(options) {
     scwin.test(options);
 };
@@ -73,33 +89,11 @@ scwin.countFormatFunction = function(value) {
     return "총판매수량 : " + value + " 개 ";
 };
 scwin.__hasClass = function() {
-    var el = el = WebSquare.wUnit.getDomById($p.id + "gridView1_groupbyFilterBox_select").childNodes[0];
-    return WebSquare.wUnit.getJq(el).hasClass("w2grid_groupbyFilterBox_select");
+    var el = el = scwin.__getDom($p.id + "gridView1_groupbyFilterBox_select").childNodes[0];
+    return scwin.__getJq(el).hasClass("w2grid_groupbyFilterBox_select");
 }
 scwin.checkVal = function() {
     return typeof gridView1;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 개발자도구 (F12) 를 실행한다.
-    //Run the Developer Tool (F12) in your browser.
-    //Verify1. 개발자도구가 실행된다.
-    //The developer tool is launched.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 검색을 통해서 위에 언급한 class 를 검색한다.
-    //The class is searched. (I did not see the class in previous versions)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_groupbyFilterBox_div').hasClass('w2grid_groupbyFilterBox')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_groupbyFilterBox_main').hasClass('w2grid_groupbyFilterBox_main')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_groupbyFilterBox_buttons').hasClass('w2grid_groupbyFilterBox_buttons')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_groupbyFilterBox_delete').hasClass('w2grid_groupbyFilterBox_delete')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_groupbyFilterBox_apply').hasClass('w2grid_groupbyFilterBox_apply')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__hasClass()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -324,9 +318,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 25-Jan-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

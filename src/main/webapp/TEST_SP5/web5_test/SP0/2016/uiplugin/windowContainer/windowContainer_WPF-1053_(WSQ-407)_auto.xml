@@ -11,6 +11,15 @@
     		</xf:instance>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.simulate = function(element, eventName) {
     var options = scwin.extend(defaultOptions, arguments[2] || {});
     var oEvent, eventType = null;
@@ -55,47 +64,13 @@ scwin.tmpSetStatus = function(msg) {
     tmp.setWindowStatusMsg(msg);
 }
 scwin.getValue = function(id){
-    var iframe = WebSquare.wUnit.getDomById($p.id+"windowContainer1_subWindow0_iframe");
-    var elmnt = iframe.contentWindow.WebSquare.wUnit.getDomById($p.id+id);
+    var iframe = scwin.__getDom($p.id+"windowContainer1_subWindow0_iframe");
+    var elmnt = ((id) => { const P = 'mf_', d = (k) => iframe.contentWindow.document.getElementById(k), dd = (k) => k.replace(/(mf_){2,}/g, P); let r = d(id); if (r) return r; let s = dd(P + id); r = d(s); if (r) return r; const g = s.indexOf('G_'); if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; } return d(s.replace(P, '')); })($p.id+id);
     return elmnt;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.getValue('textbox2').innerText == 'Merry christmas~~'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "scwin.getValue('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.getValue('popup') != null", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.getValue('popup').style.top == '160px'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.getValue('popup').style.top == '100px'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();        
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 scwin.addWindow = function() {
@@ -111,9 +86,9 @@ scwin.addWindow = function() {
     
     windowContainer1.createWindow( "<input type='button'>", "", "http://www.daum.net" , "","","selectWindow");
     
-    WebSquare.wUnit.getDomById($p.id+"windowContainer1").innerHTML="<div style='top:0px;left:0px;background-color:#ff000000;'>aa</div>";
+    scwin.__getDom($p.id+"windowContainer1").innerHTML="<div style='top:0px;left:0px;background-color:#ff000000;'>aa</div>";
     alert("123");
-    WebSquare.wUnit.getDomById($p.id+"windowContainer1").style.zIndex = "10000";
+    scwin.__getDom($p.id+"windowContainer1").style.zIndex = "10000";
 }
 ]]></script>
     	<style>

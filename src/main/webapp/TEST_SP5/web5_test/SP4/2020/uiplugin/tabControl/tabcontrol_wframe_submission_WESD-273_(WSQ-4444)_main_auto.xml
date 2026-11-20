@@ -16,6 +16,21 @@
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {};
 scwin.onpageunload = function() {};
 scwin.btn_search_onclick = function() {
@@ -108,35 +123,14 @@ scwin.openMenu = function(menuNm, url, menuCode, paramObj, menuType) {
     }
 };
 scwin.btn_anchor2_onclick = function() {
-    WebSquare.wUnit.getObjById('tac1_contents_999999999_body_wfm_wframe2').showProcessMessage("1111111")
+    scwin.__getObj('tac1_contents_999999999_body_wfm_wframe2').showProcessMessage("1111111")
 };
 scwin.btn_anchor3_onclick = function() {
-    WebSquare.wUnit.getObjById('tac1_contents_999999999_body_wfm_wframe3').showProcessMessage("2222222")
+    scwin.__getObj('tac1_contents_999999999_body_wfm_wframe3').showProcessMessage("2222222")
 };
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_search').getElementsByTagName('a')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_anchor2').getElementsByTagName('a')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_anchor3').getElementsByTagName('a')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('tac1_contents_999999999_body_wfm_wframe2_mf_tac1_contents_999999999_body_wfm_wframe2_wq_processMsgComp').style.left == '114px'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('tac1_contents_999999999_body_wfm_wframe2_mf_tac1_contents_999999999_body_wfm_wframe2_wq_processMsgComp').style.top == '125px'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

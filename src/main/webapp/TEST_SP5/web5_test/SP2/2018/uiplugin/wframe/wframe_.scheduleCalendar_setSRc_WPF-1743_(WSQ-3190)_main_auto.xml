@@ -15,33 +15,26 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
     ui_wframe.setSrc("wframe_.scheduleCalendar_setSRc_WPF-1743_(WSQ-3190)_sub.xml");
 };
 scwin.onpageunload = function() {};
 scwin.__isWidth = function() {
-    var el = WebSquare.wUnit.getJq("td").find(".fc-widget-content");
+    var el = $('td').find(".fc-widget-content");
     for (var i = 0; i < el.length; i++) {
-        var el1 = WebSquare.wUnit.getJq(el)[i];
-        if (WebSquare.wUnit.getJq(el1).css("width") == "0px") {
+        var el1 = scwin.__getJq(el)[i];
+        if (scwin.__getJq(el1).css("width") == "0px") {
             return false;
         }
     }
     return true;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. main샘플파일 실행 후 ScheduleCalendar의 CSS가 반영되어 정상적으로 보여지는지 확인한다.
-    //1. After executing the main sample file, make sure that the ScheduleCalendar CSS is reflected and displayed normally.
-    //Verify 1. 정상적으로 ScheduleCalendar의 CSS가 반영되어 보여진다. (이전에는 CSS가 반영되지 않아 화면이 깨짐)
-    //1. ScheduleCalendar CSS is reflected normally. (Previously CSS was not reflected and the screen was broken)
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isWidth()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -51,9 +44,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 20-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

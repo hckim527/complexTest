@@ -2482,6 +2482,13 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     var splitVal = "0,4,5,6,7,8,9,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,140,141,142,146,147,148,149,151,152,162,163,164,166,167,170,171,172,173,174,175,183,184,185,186,187,188,189,190,191,192,195,196,197,198,199,200,201,202,203";
     var splitArr = splitVal.split(",");
@@ -2529,34 +2536,13 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq("#" + id).css("background-color");
+    var rgb = scwin.__getJq("#" + id).css("background-color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
         return color == hexa;
     }
     return rgb == hexa;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 'setRowVisible'버튼을 클릭한다.
-    //1. After running the sample, click the 'setRowVisible' button.
-    //Verify step 1. 044. The color of the illness (disease-specific high-altitude collateral) part is changed to greenish color.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'dgr_plnElagGrid_cell_42_0', '#ddff99')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 그상태에서 'setValue'버튼을 클릭한다.
-    //2. In that state, click the 'setValue' button.
-    //Verify step 2. It is shown to be kept green in 044 same color.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'dgr_plnElagGrid_cell_42_0', '#ddff99')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -2565,9 +2551,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 06-Mar-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

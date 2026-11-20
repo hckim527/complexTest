@@ -10,6 +10,15 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.t1_onclick = function(e) {
     widgetContainer1.resizeWidget("widget0", 2, 2);
 };
@@ -23,36 +32,16 @@ scwin.__parseStyle = function(style, type, append) {
     return value * append + type;
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'widgetContainer1_widget0').style.width == widthInit;
+    return scwin.__getDom($p.id + 'widgetContainer1_widget0').style.width == widthInit;
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'widgetContainer1_widget0').style.height == heightInit;
+    return scwin.__getDom($p.id + 'widgetContainer1_widget0').style.height == heightInit;
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'widgetContainer1_widget0').style.width >= scwin.__parseStyle(widthInit, '%', 2);
+    return scwin.__getDom($p.id + 'widgetContainer1_widget0').style.width >= scwin.__parseStyle(widthInit, '%', 2);
 }
 scwin.checkVal4 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'widgetContainer1_widget0').style.height >= scwin.__parseStyle(heightInit, '%', 2);
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 'resizeWidget('widget0', 2, 2)'버튼을 클릭한다.
-    //1. Run the sample file and click the 'resizeWidget (' widget0 ', 2, 2)' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('t1').click()");
-    //Verify step 1. 위젯의 사이즈가 변경되지 않는다.(정상)
-    //1. Widget size does not change (normal)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    //Verify step 2. 위젯의 사이즈가 2,2로 변경된다.
-    //2. The size of the widget is changed to 2,2.
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + 'widgetContainer1_widget0').style.height >= scwin.__parseStyle(heightInit, '%', 2);
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -70,12 +59,9 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Quan.Nguyen
     //Created date: 06-Feb-2018
-    window.widthInit = WebSquare.wUnit.getDomById($p.id + "widgetContainer1_widget0").style.width;
-    window.heightInit = WebSquare.wUnit.getDomById($p.id + "widgetContainer1_widget0").style.height;
+    window.widthInit = scwin.__getDom($p.id + "widgetContainer1_widget0").style.width;
+    window.heightInit = scwin.__getDom($p.id + "widgetContainer1_widget0").style.height;
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

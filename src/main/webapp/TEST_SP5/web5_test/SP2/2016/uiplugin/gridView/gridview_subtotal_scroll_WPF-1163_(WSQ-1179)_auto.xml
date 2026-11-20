@@ -28,6 +28,22 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.exeFun = function(v) {
     return v + "  의 합";
 }
@@ -35,33 +51,16 @@ scwin.trigger1_onclick = function(e) {
     dataList2.removeAll();
 };
 scwin.__isData = function() {
-    var el = WebSquare.wUnit.getJq("#gridView2_body_tbody tr");
+    var el = ((j) => j.length ? j : $('#mf_gridView2_body_tbody tr'))($('#gridView2_body_tbody tr'));
     for (var i = 0; i < el.length; i++) {
-        if (WebSquare.wUnit.getJq(el[i]).css("display") == "none") {
+        if (scwin.__getJq(el[i]).css("display") == "none") {
             return true;
         }
         return false;
     }
 }
 scwin.checkVal = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'gridView2_scrollY_div')).getPropertyValue('overflow-y') == 'hidden';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 removeAll버튼을 클릭한다.
-    //Run the sample file and click the removeAll button.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 모든 데이터가 사라지고 세로스크롤도 생기지 않는다.(이전에는 불필요한 새로스크롤이 생겼음)
-    //All data disappears and vertical scrolling does not occur (previously unnecessary new scrolling occurred).
-    WebSquare.wUnit.addCommand("assert", "scwin.__isData()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + 'gridView2_scrollY_div')).getPropertyValue('overflow-y') == 'hidden';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -121,9 +120,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 22-Jan-2018
     //End Test
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

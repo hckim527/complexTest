@@ -15,9 +15,6 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>
@@ -171,7 +168,14 @@ scwin.onpageload2 = function() {
 							//플래시 지원 브라우저에서 화면 로딩이 끝날 경우,호출된다.
 						 	]]></script>
 							<script ev:event="ondone(data)" type="text/javascript"><![CDATA[
-								var colId = "progress";
+								// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+var colId = "progress";
 								if(!udc_obj.SUPPORT_HTML5) colId = "flashProgress";
 								
 								// 서버 설정(websquare.xml)에 따라 업로드 성공 여부가 달라진다. 
@@ -204,9 +208,9 @@ scwin.onpageload2 = function() {
 						       				var colIdx = udc_grd.getColumnIndex("progress");
 											var grdId = udc_grd.getID();
 											console.log( grdId + "_cell_" + rowIdx + "_" + colIdx);
-											WebSquare.wUnit.getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr ").css("border", "0px").css("background", "transparent");;
-											WebSquare.wUnit.getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").css("background", "transparent");
-											WebSquare.wUnit.getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").html(statusStr);
+											scwin.__getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr ").css("border", "0px").css("background", "transparent");;
+											scwin.__getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").css("background", "transparent");
+											scwin.__getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").html(statusStr);
 						       			}
 						       		} else {
 						       			if(!udc_obj.SUPPORT_HTML5){
@@ -325,7 +329,23 @@ scwin.onpageload2 = function() {
 				</w2:gridView>
 			</xf:group>
 			<script ev:event="oncreated(options)" type="text/javascript"><![CDATA[
-				/**
+				// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+/**
 				 * //property handling
 				 * $w.log("id:" + options.id);
 				 * $w.log("accept:" + options.accept);
@@ -514,7 +534,7 @@ scwin.onpageload2 = function() {
 					this.SUPPORT_HTML5 = this.isSupportHTML5Upload();				
 					if (this.SUPPORT_HTML5){
 						// input type=file 인 경우, accept 속성으로 (file_extension, media_type) 을 지정한다.  
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_mpd_Attach_file_input").attr("accept" , options.accept);
+						scwin.__getJq("#"+options.id+"_udc_mpd_Attach_file_input").attr("accept" , options.accept);
 						udc_grd.setColumnVisible( "progress" , true );
 					} else {
 						if(options.accept == "*/*" ){
@@ -555,25 +575,25 @@ scwin.onpageload2 = function() {
 					options.buttonPosition = options.buttonPosition.trim();
 					
 					if ( options.buttonPosition == "TopRight"){
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button").after(WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button"));
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "right");
+						scwin.__getJq("#"+options.id+"_udc_grp_Button").after(scwin.__getJq("#"+options.id+"_udc_grp_Button"));
+						scwin.__getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "right");
 					}
 					else if ( options.buttonPosition == "BottomLeft"){
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_DropBox").after(WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button"));
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "left");
+						scwin.__getJq("#"+options.id+"_udc_grp_DropBox").after(scwin.__getJq("#"+options.id+"_udc_grp_Button"));
+						scwin.__getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "left");
 					}
 					else if ( options.buttonPosition == "BottomRight"){
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_DropBox").after(WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button"));
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "right");
+						scwin.__getJq("#"+options.id+"_udc_grp_DropBox").after(scwin.__getJq("#"+options.id+"_udc_grp_Button"));
+						scwin.__getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "right");
 					}
 					else {
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button").after(WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button"));
-						WebSquare.wUnit.getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "left");
+						scwin.__getJq("#"+options.id+"_udc_grp_Button").after(scwin.__getJq("#"+options.id+"_udc_grp_Button"));
+						scwin.__getJq("#"+options.id+"_udc_grp_Button .w5udc_btn").css("float", "left");
 					}
 					
 					// 3. 드래그드랍 핸들러.
 					if (WebSquare.util.getBoolean(options.dragDropUseYn)){
-						var dropbox = WebSquare.wUnit.getDomById($p.id+options.id+"_udc_grp_DropBox");
+						var dropbox = scwin.__getDom($p.id+options.id+"_udc_grp_DropBox");
 						WebSquare.event.addListener( dropbox , "ondragenter" , function(e){WebSquare.event.stopEvent(e);}, false);
 		        		WebSquare.event.addListener( dropbox , "ondragend" , function(e){WebSquare.event.stopEvent(e);}, false);
 		        		WebSquare.event.addListener( dropbox , "ondragover" , function(e){WebSquare.event.stopEvent(e);}, false);

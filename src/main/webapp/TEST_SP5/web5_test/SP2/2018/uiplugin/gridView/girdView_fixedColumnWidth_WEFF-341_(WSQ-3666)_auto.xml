@@ -30,35 +30,29 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {};
 scwin.onpageunload = function() {};
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("assert", "setSimulate1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "setSimulate2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     window.setSimulate1 = function() {
-        return WebSquare.wUnit.getDomById($p.id + "wq_uuid_9_cell_0_2").offsetWidth == WebSquare.wUnit.getDomById($p.id + "wq_uuid_12_cell_0_2").offsetWidth;
+        return scwin.__getDom($p.id + "wq_uuid_9_cell_0_2").offsetWidth == scwin.__getDom($p.id + "wq_uuid_12_cell_0_2").offsetWidth;
     }
     window.setSimulate2 = function() {
-        return WebSquare.wUnit.getDomById($p.id + "wq_uuid_9_cell_0_2").offsetWidth == WebSquare.wUnit.getDomById($p.id + "wq_uuid_15_cell_0_2").offsetWidth;
+        return scwin.__getDom($p.id + "wq_uuid_9_cell_0_2").offsetWidth == scwin.__getDom($p.id + "wq_uuid_15_cell_0_2").offsetWidth;
     }
     //Created By: Sangwook
     //Created By: 2020.12.03
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

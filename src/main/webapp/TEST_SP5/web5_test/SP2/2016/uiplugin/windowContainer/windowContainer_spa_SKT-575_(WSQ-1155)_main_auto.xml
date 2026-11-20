@@ -22,6 +22,15 @@
             }
         </style>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.createWindow = function() {
     var ws_s = "<input class=\"sp11\" value=\"";
     var ws_m = "subTitle";
@@ -85,29 +94,13 @@ scwin.trigger2_onclick = function() {
     windowContainer1.doCloseAll();
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'windowContainer1_subWindow1').style.display == 'none';
+    return scwin.__getDom($p.id + 'windowContainer1_subWindow1').style.display == 'none';
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'windowContainer1_subWindow1').style.display == 'block';
+    return scwin.__getDom($p.id + 'windowContainer1_subWindow1').style.display == 'block';
 }
 scwin.checkVal2 = function() {
     return document.getElementsByClassName('sp11')[0].value == 'subTitle1';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step  1. 샘플파일을 실행한 후 'closeWindow'클릭 후 'createWindows'를 클릭한다.-   After running the sample file, click 'closeWindow' and then 'createWindows'. 	
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    //Verify  1. windowContainer창이 닫히고 다시 열린다. 이때 windowContainer창의 Header영역이 정상적으로 보여진다.(이전에는 보여지지 않음)-The windowContainer window is closed and reopened. At this time, the header area of the windowContainer window is displayed normally (not shown previously).
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -118,9 +111,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 18-Jan-2018
     //End uniTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

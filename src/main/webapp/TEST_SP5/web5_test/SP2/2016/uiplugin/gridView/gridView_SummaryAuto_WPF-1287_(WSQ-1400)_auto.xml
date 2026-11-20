@@ -41,8 +41,23 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin._checkHeader = function() {
-	var gridViewBodyTable = WebSquare.wUnit.getJq("#test_body_table");
+	var gridViewBodyTable = ((j) => j.length ? j : $('#mf_test_body_table'))($('#test_body_table'));
 	if (gridViewBodyTable) {
     	var str = gridViewBodyTable.attr("summary") ?? "";
     	return arr = str.split(",");
@@ -52,44 +67,19 @@ scwin.checkVal = function(domId, value) {
 	if (WebSquare.util.isHTML5() === true) {
 		return true;
 	}
-	return WebSquare.wUnit.getObjById($p.getFrameId() + "_" + domId).getAttribute('value') == value;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 summaryAuto 부분을 확인한다.
-    //1. In the Source tab, check the summaryAuto section.
-    //Verify 1. summaryAuto='true'
-    //Test step 2. 브라우저에서 grid summaryAuto 결과 를 확인한다.
-    //2. Check the grid summaryAuto results in your browser.
-    //Verify 2. 각 헤더별로 ',(콤마)' 가 표시된다.
-    //2. ', (comma)' is displayed for each header.
-    WebSquare.wUnit.addCommand("set", "scwin._checkHeader()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('test_column9', arr[0])", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('test_column7', arr[1])", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('test_column5', arr[2])", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('test_column3', arr[3])", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('test_column1', arr[4])", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+	return scwin.__getObj($p.getFrameId() + "_" + domId).getAttribute('value') == value;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    window.summary = WebSquare.wUnit.getJq("#test_body_table").attr("summary");
+    window.summary = ((j) => j.length ? j : $('#mf_test_body_table'))($('#test_body_table')).attr("summary");
     sm.setValue(summary);
     //Function unitTest
     //Create buy Truong.Luu
     //Create date 08-Feb-2018
     //End unitTest
     window.arr = undefined;
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

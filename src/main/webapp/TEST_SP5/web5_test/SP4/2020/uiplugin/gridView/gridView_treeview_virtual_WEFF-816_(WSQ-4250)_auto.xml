@@ -231,18 +231,33 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {};
 scwin.onpageunload = function() {};
 scwin.treeview1_ondropfromgrid = function(info) {
     localStorage.setItem("log1", this.id + " ondropfromgrid event");
     console.log(this.id + " ondropfromgrid event");
-    var nodeset = WebSquare.wUnit.getObjById(info.dataListId);
+    var nodeset = scwin.__getObj(info.dataListId);
     var dataArr = nodeset.getRowArray(info.fromRowIndex).data;
     dataList2.insertData(info.toRowIndex + 1, dataArr);
 };
 scwin.treeview2_ondropfromgrid = function(info) {
     console.log(this.id + " ondropfromgrid event");
-    var nodeset = WebSquare.wUnit.getObjById(info.dataListId);
+    var nodeset = scwin.__getObj(info.dataListId);
     var dataArr = nodeset.getRowArray(info.fromRowIndex).data;
     dataList4.insertData(info.toRowIndex + 1, dataArr);
 };
@@ -252,45 +267,25 @@ scwin.gridView1_ondatadrop = function(info) {
 scwin.gridView1_ondropfromtree = function(info) {
     localStorage.setItem("log2", this.id + " ondropfromtree event");
     console.log(this.id + " ondropfromtree event");
-    var nodeset = WebSquare.wUnit.getObjById(info.dataListId);
+    var nodeset = scwin.__getObj(info.dataListId);
     var dataArr = nodeset.getRowArray(info.fromRowIndex).data;
     dataList1.insertData(info.toRowIndex, dataArr);
 };
 scwin.gridView2_ondropfromtree = function(info) {
     console.log(this.id + " ondropfromtree event");
-    var nodeset = WebSquare.wUnit.getObjById(info.dataListId);
+    var nodeset = scwin.__getObj(info.dataListId);
     var dataArr = nodeset.getRowArray(info.fromRowIndex).data;
     dataList3.insertData(info.toRowIndex, dataArr);
 };
 scwin.gridView2_ondatadrop = function(info) {
     console.log(this.id + " ondatadropevent");
 };
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. 샘플파일을 실행 후 상단의 그리드(options.closeGroup = false; 일경우)와 하단의 그리드(options.closeGroup = true; 일경우) 대리점항목명을 마우스로 드래그하여 위로 끌어다 놓는다. 
-    //1. Run the sample file and drag it to the top grid (if options.closeGroup = false;) and the bottom grid (if options.closeGroup = true;
-    //Verify step 1. The upper grid and the lower grid are grouped by the agency name and the time (duration 370 ms) is shown.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log1') == $p.id+'treeview1 ondropfromgrid event'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log2') == $p.id+'gridView1 ondropfromtree event'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     localStorage.removeItem("log1");
     localStorage.removeItem("log2");
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

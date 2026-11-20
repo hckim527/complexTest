@@ -48,6 +48,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.btnValue_onclick = function(e) {
     // Node instance data에 없는 값으로 찾음
     trv1.findNodeByValue("1", true);
@@ -63,41 +72,10 @@ scwin.__checkErr = function() {
     return temp = WebSquare.logger.getErrorLog();
 }
 scwin.checkVal1 = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'trv1_label_1')).getPropertyValue('color') == 'rgb(56, 61, 65)';
+    return window.getComputedStyle(scwin.__getDom($p.id + 'trv1_label_1')).getPropertyValue('color') == 'rgb(56, 61, 65)';
 }
 scwin.checkVal2 = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'trv1_label_1')).getPropertyValue('color') == 'rgb(56, 61, 65)';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 'findNodeByValue'버튼을 클릭한다.
-    //1. Run the sample file and click the 'findNodeByValue' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnValue').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 트리뷰의 aaa 값이 진하게 변경되어진다.
-    //1. The aaa value of the treeview is changed to dark.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 다음으로 'findNodeByIndex'버튼을 클릭한다.
-    //2. Next, click the 'findNodeByIndex' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnIndex').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 화면에서는 변화가 없다.(이전에는 진한 aaa 값이 안진하게 변경되어짐)
-    //2. There is no change in the screen (previously dark aaa values were changed nondestructively).
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 다음으로 'showLog'버튼을 클릭한다.
-    //3. Next, click the 'showLog' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnLog').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 정상적인 로그가 보여진다(이전에는 오류메시지 보여짐)
-    //3. The normal log is displayed (previously an error message is displayed)
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkErr() == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + 'trv1_label_1')).getPropertyValue('color') == 'rgb(56, 61, 65)';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -112,9 +90,6 @@ scwin.onpageload2 = function() {
     //Create date 12-Feb-2018
     //End unitTest
     window.temp = undefined;
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

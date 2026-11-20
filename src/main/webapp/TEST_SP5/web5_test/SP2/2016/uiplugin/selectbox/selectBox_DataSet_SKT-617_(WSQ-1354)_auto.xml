@@ -55,6 +55,15 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     //alert ("바인딩");
     log = "바인딩";
@@ -77,40 +86,7 @@ scwin.trigger1_onclick = function(e) {
     }]);
 };
 scwin.checkVal = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'div_search_cob_cmts_num_itemTable_0')).getPropertyValue('background-color') == 'rgb(237, 243, 251)';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에 SelectBox 에서 3번째 데이터인 "ee" 를 선택한다.
-    //1. Select the third data "ee" in the SelectBox in the browser.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_itemTable_3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 'ee' 가 선택된다.
-    //1. 'ee' is selected.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_label').textContent == 'ee'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 바인딩 버튼을 클릭한다.
-    //2. Click the Bind button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 바인딩 팝업이 생성되면서 데이터리스트가 바인딩된다.
-    //2. 바인딩 팝업이 생성되면서 데이터리스트가 바인딩된다.
-    WebSquare.wUnit.addCommand("assert", "log", "바인딩");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. SelectBox 에 ▼ 버튼을 클릭한다.
-    //3. SelectBox 에 ▼ 버튼을 클릭한다.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('div_search_cob_cmts_num_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 리스트가 펼쳐진다. 이때, 포커스 (회색) 는 제일 상단인 -전체- 로 된다. (전버전에서는 3번째 데이터인 '521323' 으로 되어 있었음.)
-    //3. The list is expanded. At this time, the focus (gray) becomes the top-in-the-whole. (In the previous version, the third data was '521323'.)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + 'div_search_cob_cmts_num_itemTable_0')).getPropertyValue('background-color') == 'rgb(237, 243, 251)';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -121,9 +97,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 02-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

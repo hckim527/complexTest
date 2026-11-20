@@ -10,6 +10,21 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onclickcustombtn = function() {
     console.log(arguments);
 }
@@ -23,33 +38,13 @@ scwin.alert = function() {
     alert("scwin.alert() is called!!!!");
 };
 scwin.__hasClass = function(className) {
-    if (WebSquare.wUnit.getJq("#widgetContainer1_widget0").hasClass(className)) {
+    if (((j) => j.length ? j : $('#mf_widgetContainer1_widget0'))($('#widgetContainer1_widget0')).hasClass(className)) {
         return true;
     }
     return false;
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getObjById('widgetContainer1_widget0_title_text').innerText == 'widget0';
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 widget0의 오른쪽 상단에 최대화, 최소화버튼을 클릭한다.
-    //1. After running the sample file, click the Maximize and Minimize buttons at the top right of widget0.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('widgetContainer1_widget0_title_btnMinimize').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.__hasClass('w2widget_minimized')", "true");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('widgetContainer1_widget0_title_btnMaximize').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.__hasClass('w2widget_maximized')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 11. 타이틀이 widget0의 위젯이 최대화, 최소화 되어진다.(이전에는 최대화, 최소화 기능이 없었음) 
-    //1. Title Widget widget0 widget is maximized and minimized (Previously, it was not maximized, minimized)
-    //Run and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj('widgetContainer1_widget0_title_text').innerText == 'widget0';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -124,13 +119,6 @@ scwin.onpageload2 = function() {
 
     
      */
-    //Function unitTest
-    //Created by: Sang.Do
-    //Created date: 13-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

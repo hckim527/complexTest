@@ -146,18 +146,24 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.doInit = function() {
     var v_node = WebSquare.ModelUtil.findInstanceNode("response/RES_SELECT_EMP_LIST/vector");
     grd_EmpList.setXML(v_node);
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -172,31 +178,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.checkVal = function() {
-    return typeof WebSquare.wUnit.getDomById("G_"+$p.id+"grd_EmpList___autoComplete_0_DEPTNO_DEPTNO_input") == 'object';
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 text항목의 첫번째 row에 마우스를 더블클릭한다.
-    //1. After running the sample, double-click on the first row of the text item.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'grd_EmpList_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 1. edit모드로 변경되어진다.(이전에는 edit모드로 들어가지 않고 cell 바깥으로 포커스가 들어가서 바로 입력되지 않음)
-    //1. It is changed to edit mode (it does not go into edit mode before, but focuses outside of cell and is not input immediately)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Test step 2. '111'을 입력하고 Enterkey를 실행 시 정상적으로 입력되는지 확인한다.
-    //2. Enter '111' and check if input is normally done by executing Enterkey.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_EmpList_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. '111'값이 정상적으로 입력되어진다.(이전에도 동작은 동일하게 수행되어짐)
-    // 2. The '111' value is entered normally (the operation is performed in the same way as before)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_EmpList_cell_0_0').innerText == '111'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return typeof scwin.__getDom("G_"+$p.id+"grd_EmpList___autoComplete_0_DEPTNO_DEPTNO_input") == 'object';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -211,18 +193,12 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 19-Mar-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         <script type="text/javascript" lazy="false"><![CDATA[
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

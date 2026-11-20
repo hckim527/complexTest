@@ -37,6 +37,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView1_oneditkeyup = function(info) {
     var logStr = "rowIndex=" + info.rowIndex + ", colIndex=" + info.colIndex + ", colID=" + info.colID + ", inputType=" + info.inputType;
     logStr += ", oldValue=" + info.oldValue + ", newValue=" + info.newValue + ", keyCode=" + info.keyCode;
@@ -45,7 +54,7 @@ scwin.gridView1_oneditkeyup = function(info) {
     log = logStr;
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -61,39 +70,6 @@ scwin.fireDbClick = function(node) {
 }
 scwin.__isCheck = function() {
     return log == "rowIndex=0, colIndex=0, colID=col1, inputType=text, oldValue=t=0, newValue=t=0, keyCode=39" || log == "rowIndex=0, colIndex=4, colID=col5, inputType=textarea, oldValue=t=4, newValue=t=4, keyCode=39" || log == "rowIndex=0, colIndex=7, colID=col8, inputType=calendar, oldValue=t=7, newValue=t=7, keyCode=39" || log == "rowIndex=0, colIndex=8, colID=col9, inputType=secret, oldValue=t=8, newValue=t=8, keyCode=39" || log == "rowIndex=0, colIndex=9, colID=col10, inputType=textImage, oldValue=t=9, newValue=t=9, keyCode=39";
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 콘솔(F12)실행하여 그리드 영역의 inputType이 text, textarea, calendar, secret, textImage인 항목에 대해 마우스로 더블클릭하여 입력모드에서 키보드 오른쪽방향키를 입력한다.
-    //1. Run the sample file and run the console (F12). Then double-click on the input field of the grid area with text, textarea, calendar, secret and textImage.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_4')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_7')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_8')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_9')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
-    //Verify step 1. 5개의 inputType에 대해 콘솔창에 값이 보여진다.예로 첫번째 text타입의 콘솔창의 값은 아래와 같다.rowIndex=0, colIndex=0, colID=col1, inputType=text, oldValue=t=0, newValue=t=0, keyCode=39
-    //1. The values ​​are displayed in the console window for the five inputType values, for example the values ​​of the console window of the first text type are as follows: redIndex = 0, colIndex = 0, colID = col1, inputType = text, oldValue = t = 0, newValue = t = 0, keyCode = 39
-    //has maked testcase on above
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -115,9 +91,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 27-Mar-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

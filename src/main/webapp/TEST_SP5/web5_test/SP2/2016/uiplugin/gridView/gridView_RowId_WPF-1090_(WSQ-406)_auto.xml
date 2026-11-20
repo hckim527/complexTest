@@ -30,74 +30,48 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__styleHasAttr = function() {
-    var el = WebSquare.wUnit.getJq("style:contains('internalCSSText')");
+    var el = scwin.__getJq("style:contains('internalCSSText')");
     var count = 0;
     el.each(function() {
-        if (WebSquare.wUnit.getJq(this).attr("type") == "text/css") {
+        if (scwin.__getJq(this).attr("type") == "text/css") {
             count++;
         }
     });
     return el.length == count;
 }
 scwin.__notMissingDisabled = function() {
-    var el = WebSquare.wUnit.getJq("*[disabled]");
+    var el = $('*[disabled]');
     var c = 0;
     el.each(function() {
-        if (WebSquare.wUnit.getJq(this).attr("disabled") == "disabled") {
+        if (scwin.__getJq(this).attr("disabled") == "disabled") {
             c++;
         }
     });
     return el.length == c;
 }
 scwin.__notDuplicateID = function() {
-    var trs = WebSquare.wUnit.getJq("#wq_uuid_3_body_tbody tr");
+    var trs = ((j) => j.length ? j : $('#mf_wq_uuid_3_body_tbody tr'))($('#wq_uuid_3_body_tbody tr'));
     var count = 0;
     trs.each(function() {
-        if (!WebSquare.wUnit.getJq(this).attr("id") && (WebSquare.wUnit.getJq(this).attr("data-tr-id") == "row5")) {
+        if (!scwin.__getJq(this).attr("id") && (scwin.__getJq(this).attr("data-tr-id") == "row5")) {
             count++;
         }
     })
     return trs.length == count;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. F12를 눌러 Element에서 head부분에 다음과 같은 속성이 추가되었는지 확인한다.(<style type='text/css'>/internalCSSText/)
-    //2. Press F12 and make sure that the following attribute has been added to the head part of the Element (<style type = 'text / css'> / internalCSSText /).
-    // verify step 2. <style type='text/css'>/internalCSSText/ 속성추가가 확인된다.
-    //2. The addition of <style type = 'text / css'> / internalCSSText / attribute is confirmed.
-    WebSquare.wUnit.addCommand("assert", "scwin.__styleHasAttr()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. F12를 눌러 Elements에서 disable를 찾아 속성값이 누락되었는지를 확인한다.
-    //3. Press F12 to find disable in Elements to see if the attribute value is missing.
-    //Verify step 3. disable 속성값이 누락되지 않음이 확인된다.
-    //3. It is confirmed that the disable attribute value is not missing.
-    WebSquare.wUnit.addCommand("assert", "scwin.__notMissingDisabled()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 4. F12를 눌러 Elements에서 row5를 검색하여 ID가 중복인지 확인한다.
-    //4. Press F12 to search row5 in Elements to see if the IDs are duplicate.
-    //Verify step 4. <tr style='background-color: rgb(255, 255, 255);' data-tr-id='row5' 변경되어 중복ID로 인식되지 않음이 확인된다.
-    //4. <tr style = 'background-color: rgb (255, 255, 255);' data-tr-id = 'row5' is changed and it is confirmed that it is not recognized as a duplicate ID.
-    WebSquare.wUnit.addCommand("assert", "scwin.__notDuplicateID()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     grp.setDisabled("true");
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 09-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[

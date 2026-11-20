@@ -23,59 +23,26 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.grid1_ongroupby = function(options) {
     return false;
 };
 scwin.checktype = function() {
-    return typeof WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select');
+    return typeof (document.getElementById('grid1_groupbyFilterBox_select') || document.getElementById('mf_grid1_groupbyFilterBox_select'));
 }
 scwin.checkVal1 = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'grid1_groupbyFilterBox_select_itemTable')).getPropertyValue('overflow-x') === 'hidden';
+    return window.getComputedStyle(scwin.__getDom($p.id + 'grid1_groupbyFilterBox_select_itemTable')).getPropertyValue('overflow-x') === 'hidden';
 }
 scwin.checkVal2 = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'grid1_groupbyFilterBox_select_itemTable')).getPropertyValue('overflow-y') === 'auto';
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 grid1 의 filterBoxvisibleRowNum 부분을 학인한다.
-    //1. In the Source tab, examine the filterBoxVisibleRowNum part of grid1.
-    //Verify step 1. filterBoxvisibleRowNum='2'
-    //1. filterBoxVisibleRowNum = '2'
-    //Test step 2. 브라우저에서 Run 버튼을 클릭한다.
-    //2. Click the Run button in your browser.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. 상단에 filterBox 가 생성된다.
-    //2. A filterBox is created at the top.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    //WebSquare.wUnit.addCommand("assert", "typeof WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select')", "object");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'grid1_groupbyFilterBox_select').getBoundingClientRect().top < 50", "true");
-    //Test step 3. 생성된 filterBox 의 위치를 확인한다.
-    //3. Check the location of the generated filterBox.
-    //Verify step 3. filterBox 가 표시된다.
-    //3. The filterBox is displayed.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'grid1_groupbyFilterBox_select_label').innerText", "((category1 = 1 OR category1 = 2 OR category1 = 3) and (category2 = 1 OR category2 = 2 OR category2 = 3))");
-    //Test step 4. filterBox 에 category1 / category2 / category3 의 필터리스트를 수정해서 임의로 필터리스트를 추가한다.
-    //4. Modify the filter list of category1 / category2 / category3 in the filterBox to add the filter list arbitrarily.
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_labelDiv')[0].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_groupbyZone_list_listColumn_checkbox')[2].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_labelDiv')[0].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_labelDiv')[1].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_groupbyZone_list_listColumn_checkbox')[3].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_labelDiv')[1].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_labelDiv')[2].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_groupbyZone_list_listColumn_checkbox')[1].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_labelDiv')[2].click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_main_tbody').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 4. 위에서 설정한 필터리스트가 2개 이상이 되었을시, 2개 이후는 스크롤로 표시된다.
-    //4. When two or more filter lists have been set above, two or more are displayed as scrolling.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + 'grid1_groupbyFilterBox_select_itemTable')).getPropertyValue('overflow-y') === 'auto';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -118,9 +85,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 21-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

@@ -33,7 +33,6 @@
         <w2:publicInfo method=""/>
         <script lazy="false" type="text/javascript"><![CDATA[scwin.disabled = false;
 scwin.onpageload = function() {
-	scwin.unitTest();
 };
 
 scwin.input1_onchange = function (info) {
@@ -54,7 +53,7 @@ scwin.trigger1_onclick = function (e) {
 // };
 // 커서를 맨 앞으로 이동
 scwin.setSimulate2 = function () {
-    const inputElement = WebSquare.wUnit.getDomById('input1');
+    const inputElement = (document.getElementById('input1') || document.getElementById('mf_input1'));
     if (inputElement) {
         inputElement.setSelectionRange(0, 0); // 커서를 맨 앞으로 이동
     } else {
@@ -65,7 +64,7 @@ scwin.setSimulate2 = function () {
 // Delete 시뮬레이션 및 커서 위치 확인
 scwin.setSimulate3 = function () {
     var retVal;
-    const inputElement = WebSquare.wUnit.getDomById('input1');
+    const inputElement = (document.getElementById('input1') || document.getElementById('mf_input1'));
     if (inputElement) {
         // 현재 커서 위치를 가져옴
         const initialCursorPosition = inputElement.selectionStart;
@@ -106,21 +105,6 @@ scwin.setSimulate3 = function () {
     }
 };
 
-scwin.unitTest = function() {
-	//Unit 
-	WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // 12345678901 입력
-    WebSquare.wUnit.addCommand("pause", "500");
-    // 커서를 맨 앞으로 이동
-    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // 맨 앞 문자 삭제 및 커서 위치 확인
-    WebSquare.wUnit.addCommand("assert", "scwin.setSimulate3()", "true");
-	//Run test and stop
-	WebSquare.wUnit.run();
-	WebSquare.wUnit.stop();
-};
 ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload">

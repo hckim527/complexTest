@@ -22,6 +22,15 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     var data = [];
     var row = 5;
@@ -68,13 +77,13 @@ scwin.trigger7_onclick = function(e) {
     inputCalendar1.setIoFormat("ddMMyyyy", "dd/MM/yyyy")
 };
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).textContent == value) {
+    if (scwin.__getDom($p.id + id).textContent == value) {
         return true;
     }
     return false
 }
 scwin.checkInput = function(id, value) {
-    if (WebSquare.wUnit.getDomById(id).value == value) {
+    if (scwin.__getDom(id).value == value) {
         return true;
     }
     return false
@@ -91,7 +100,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkVal1 = function() {
@@ -100,77 +109,6 @@ scwin.checkVal1 = function() {
 scwin.checkVal2 = function() {
     return scwin.checkInput('G_'+$p.id+'gridView1__col3_input', '20180202');
 }
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 trigger8 버튼을 클릭한다.
-    //1. After running the sample, click the trigger8 button.
-    //Verify step 1. The value of col1 is changed to 2018/02/00.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger8').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_0_0', '2018/02/00')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. trigger10 버튼을 클릭한다.
-    //2. Click the trigger10 button.
-    //Verify step 2. The col2 value is changed to 01.02.2018.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger10').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_0_1', '01.02.2018')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. col3 값을 더블클릭하여 값을 확인 하고 trigger11 버튼을 클릭 후 값을 더블클릭하여 값을 확인한다.
-    //3. Double-click the col3 value to check the value, click the trigger11 button, and double-click the value to confirm the value.
-    //Verify step 3. In edit mode, the value is identified as 02022018, and after clicking the trigger11 button, the value is confirmed as 20180202.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#gridView1_cell_1_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger11').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 4. trigger1 버튼을 클릭한다.
-    //4. Click the trigger1 button.
-    //Verify step 4. Changed to 4,000,000.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkInput('input1', '4,000,000')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 5. trigger2 버튼을 클릭한다.
-    //5. Click the trigger2 button.
-    //Verify step 5. Changed to 01/02/2018.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkInput('input2', '01/02/2018')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 6. trigger3 버튼을 클릭한다.
-    //6. Click the trigger3 button.
-    //Verify step 6. Changed to 2018/02/01.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkInput('input2', '2018/02/01')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 7. trigger4 버튼을 클릭한다.
-    //7. Click the trigger4 button.
-    //Verify step 7. Changed to 2018_02_01.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkInput('input2', '2018_02_01')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 8. trigger7 버튼을 클릭한다.
-    //8. Click the trigger7 button.
-    //Verify step 8. Changed to 01/02/2018.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#trigger7').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkInput('inputCalendar1_input', '01/02/2018')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -178,9 +116,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

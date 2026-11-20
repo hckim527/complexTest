@@ -35,6 +35,21 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {
     var data1 = [];
     var data2 = [];
@@ -48,21 +63,6 @@ scwin.onpageload = function() {
     dataList1.setData(data1);
 };
 scwin.onpageunload = function() {};
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. calendar필드에 날짜가 입력되고 마우스커서가 깜빡거린다.
-    //1. The date is entered in the calendar field and the mouse cursor blinks.
-    WebSquare.wUnit.addCommand("assert", "document.activeElement.getAttribute('id') == $p.id+'selectbox2'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -80,7 +80,7 @@ scwin.onpageload2 = function() {
     }
     common.findNextFocusedComp = function(compId) {
         window.dest = "";
-        window.source = WebSquare.wUnit.getObjById(compId);
+        window.source = scwin.__getObj(compId);
         window.idPrefix = source.scope_id == null ? "" : source.scope_id + "_"
         switch (source.getOriginalID()) {
             case "input1":
@@ -94,9 +94,6 @@ scwin.onpageload2 = function() {
                 break;
         }
         return WebSquare.util.getComponentById(dest, source.scope_id);
-    }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

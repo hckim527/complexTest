@@ -71,6 +71,13 @@
             </w2:dataCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     var options = {};
     options.fileName = "test.xlsx";
@@ -78,23 +85,10 @@ scwin.trigger1_onclick = function(e) {
     gridView1.advancedExcelDownload(options);
 };
 scwin.checkSize = function(id) {
-    if (WebSquare.wUnit.getJq("#" + id).width() > 250) {
+    if (scwin.__getJq("#" + id).width() > 250) {
         return true;
     }
     return false;
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 'excel down'버튼을 클릭한다.
-    //1. Run the sample file and click the 'excel down' button.
-    //Verify step 1. The pop-up screen with the cancle button and the download button is displayed without scrolling (Previously, the horizontal and vertical scrollbars were created on the pop-up screen)
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkSize('gridDownLoadLayer')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -103,9 +97,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 08-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

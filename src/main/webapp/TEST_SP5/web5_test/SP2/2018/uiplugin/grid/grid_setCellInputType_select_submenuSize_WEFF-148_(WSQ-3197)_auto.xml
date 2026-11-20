@@ -327,12 +327,16 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.doInit = function() {
     //var v_node = WebSquare.ModelUtil.findInstanceNode("response/RES_SELECT_EMP_LIST/vector");
     //debugger;
@@ -357,38 +361,12 @@ scwin.doInit = function() {
 
 scwin.checkVal = function(idx) {
     if (document.getElementById('G_'+$p.id+'grid1___selectbox_0_DEPTNO_dynamic_select_0_0_itemTable_'+idx).getBoundingClientRect().height % 1 == 0) {//디스플레이 배율 100%일때 체크
-        return WebSquare.wUnit.getJq('#G_grid1___selectbox_0_DEPTNO_dynamic_select_0_0_itemTable_'+idx).width() == '190';
+        return scwin.__getJq('#G_grid1___selectbox_0_DEPTNO_dynamic_select_0_0_itemTable_'+idx).width() == '190';
     } else {
         return true;
     }
 }
 
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 'change to Select'버튼을 클릭한다.
-    //1. After running the sample, click the 'change to Select' button.
-    //Verify step 1. Change to selectbox.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_0_0').textContent == 'OPERATIONSSDFADFADFADADFADFADFADFADFADF'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'set submenuSize fixed'버튼을 클릭하여 selectbox size 만큼만 보여지는지 확인한다.
-    //2. Click the 'set submenuSize fixed' button to make sure that only the selectbox size is visible.
-    //Verify step 2. SubmenuSize, which is a submenu of selectbox, is displayed as fixed.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('0')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('1')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('2')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('3')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal('4')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -397,9 +375,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 23-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         <style>

@@ -14,8 +14,17 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.getStyle = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     return window.getComputedStyle(el).getPropertyValue('left').replace('px', '');
 }
 scwin.checkVal1 = function() {
@@ -36,56 +45,9 @@ scwin.checkVal5 = function() {
 scwin.checkVal6 = function() {
     return scwin.getStyle('Calendar7_selectbox_year') - scwin.getStyle('Calendar7_selectbox_month') < 0;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. Source 탭에서 Calendar1 ~ Calendar4 의 useMonthYearFormat 부분을 확인한다.
-    //1. In the Source tab, check the useMonthYearFormat part of Calendar1 ~ Calendar4.
-    // Verify step 1. useMonthYearFormat = 'true'
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar1').getAttribute('useMonthYearFormat')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar2').getAttribute('useMonthYearFormat')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar3').getAttribute('useMonthYearFormat')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar4').getAttribute('useMonthYearFormat')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. Calendar5 ~ Calendar8 의 useMonthYearFormat 부분을 확인한다.
-    //2. Check the useMonthYearFormat part of Calendar5 ~ Calendar8.
-    // Verify step 2. useMonthYearFormat = 'false'
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar5').getAttribute('useMonthYearFormat')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar6').getAttribute('useMonthYearFormat')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar7').getAttribute('useMonthYearFormat')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('Calendar8').getAttribute('useMonthYearFormat')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. 브라우저에서 useMonthYearFormat = 'true' 의 Calendar 를 확인한다.
-    //3. In your browser, check the calendar for useMonthYearFormat = 'true'.
-    // Verify step 3. '월' 이 먼저 나오고 그 다음으로 '연도' 가 표시된다.
-    //3. 'Month' appears first, followed by 'Year'.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 4. 브라우저에서 useMonthYearFormat = 'false' 의 Calendar 를 확인한다.
-    //4. Check the calendar in the browser for useMonthYearFormat = 'false'.
-    // Verify step 4. '연도' 가 먼저 나오고 그 다음으로 '월' 이 표시된다.
-    //4. 'Year' appears first, followed by 'Month'.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal5()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal6()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 25-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

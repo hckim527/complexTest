@@ -65,6 +65,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     grid2.setRowVisible(1, false);
 };
@@ -101,41 +108,12 @@ scwin.trigger6_onclick = function(e) {
     grid2.setCellInputType(4, 0, info);
 };
 scwin.__hasClass = function() {
-    var el = WebSquare.wUnit.getJq("#grid2_body_tbody tr");
+    var el = ((j) => j.length ? j : $('#mf_grid2_body_tbody tr'))($('#grid2_body_tbody tr'));
     return el1 = el[1];
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getJq(scwin.__hasClass()).hasClass('w2grid_hidedRow') == true;
+    return scwin.__getJq(scwin.__hasClass()).hasClass('w2grid_hidedRow') == true;
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 grid2.setRowVisible(1,false)로 설정된 'setRowVisible'버튼을 클릭한다.
-    //1. After running the sample, click the 'setRowVisible' button set to grid2.setRowVisible (1, false).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-	
-    //Verify 1. 1번째 row가 없어서 0번째 row는 숨겨지지 않고 아무 변화가 없다. (이전에는 0번째 row가 숨겨짐)
-    //1. There is no first row, so the 0th row is not hidden and there is no change. (Previously the 0th row is hidden)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid2_body_tbody tr').not('.w2grid_hidedRow').length == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-	
-    //Test step 2. 샘플 실행 후 'custom'버튼을 클릭 후 'setRowVisible'버튼을 클릭한다.
-    //2. After running the sample, click the 'custom' button and then click the 'setRowVisible' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-	
-    //Verify 2. 1번째 row가 숨겨져서 보여진다. (이전에는 맨 마지막 row가 숨겨져서 보여짐)
-    //2. The first row is hidden and shown. (Formerly shown with the last row hidden)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function unitTest

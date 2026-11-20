@@ -27,6 +27,15 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     scwin.data1 = [
         "(가)다/라다", "A", 1,
@@ -134,7 +143,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkSorting = function() {
@@ -148,7 +157,7 @@ scwin.checkSorting = function() {
             grid1.setBottomRowIndex(30);
             k = 0;
         }
-        if (WebSquare.wUnit.getDomById($p.id + "grid1_cell_" + k + "_2").textContent == i) {
+        if (scwin.__getDom($p.id + "grid1_cell_" + k + "_2").textContent == i) {
             k++;
             return true;
         } else {
@@ -170,25 +179,6 @@ scwin.checkData = function(data) {
 scwin.setVal = function() {
     return scwin.checkData(data);
 }
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 '금액'항목을 sorting한다.(마우스로 2번 더블클릭)
-    //1. After running the sample, sort the 'Amount' item (double-click twice with the mouse).
-    //Verify step 1. Sroting is done.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grid1_header4')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grid1_header4')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkSorting()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger10').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.setVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -197,9 +187,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

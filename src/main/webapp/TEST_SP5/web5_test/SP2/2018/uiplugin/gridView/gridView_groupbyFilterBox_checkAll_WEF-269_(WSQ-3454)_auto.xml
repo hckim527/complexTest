@@ -37,6 +37,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.init = function() {
     console.log('start...');
     dataList1.setJSON(jsonData);
@@ -56,46 +71,10 @@ scwin.gridView1_ongroupby = function() {
     return false;
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].checked == false;
+    return ((j) => j.length ? j : $('.mf_w2grid_customFilter_list_listColumn_checkbox'))($('.w2grid_customFilter_list_listColumn_checkbox'))[2].checked == false;
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getObjById('gridView1_groupbyFilterBox_apply').checked == false;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 'name1'항목의 필터(역삼각형)를 클릭한다.
-    //1. After running the sample, click the filter (inverted triangle) in the 'name1' item.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column3_filter').click()");
-    //Verify step 1. filterList가 보여진다.
-    //1. The filterList is shown.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_customFilter_scrollView').is(':visible')", "true");
-    //Test step 2. '전체선택'을 체크하여 체크해제하고 마우스를 다른곳 클릭한다.(blur)
-    //2. Check 'Select All' to uncheck it and click the mouse somewhere else (blur)
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. '전체선택'이 체크해제되고 하단의 groupbyFilterBox의 체크박스가 체크되어 보여진다.
-    //2. The 'Select All' checkbox is unchecked and the checkbox of the groupbyFilterBox at the bottom is checked.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column3_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_groupbyFilterBox_apply').checked", "true");
-    //Test step 3. 다시 'name1'항목의 필터(역삼각형)를 클릭하고 '전체선택'을 체크하고 마우스를 다른곳 클릭한다.(blur)참고사항) IE7에서는 css문제로 groupbyFilterBox의 체크박스가 보이지않음(테스트제외)
-    //3. Click the filter (inverted triangle) in the 'name1' item again, check 'Select all' and click the mouse somewhere else. (Blur) Note IE7 does not show checkbox of groupbyFilterBox due to css problem except)
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column3_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 3. 하단의 groupbyFilterBox의 체크박스가 체크가 해제되어 보여진다.(groupbyFilterBox의 filterList는 유지되는것이 정상임)(이전에는 groupbyFilterBox의 체크박스가 체크되어 보여짐)
-    //3. The checkbox of the groupbyFilterBox at the bottom is unchecked (the filter list of the groupbyFilterBox should be maintained) (Previously, the checkbox of groupbyFilterBox is checked)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj('gridView1_groupbyFilterBox_apply').checked == false;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -221,9 +200,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 14-Jun-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

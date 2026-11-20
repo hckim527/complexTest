@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -27,56 +36,20 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).textContent == value) {
+    if (scwin.__getDom($p.id + id).textContent == value) {
         return true;
     }
     return false
 }
 scwin.checkInput = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).value == value) {
+    if (scwin.__getDom($p.id + id).value == value) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 'custom test0' 컬럼에 값('1234567.12')을 입력하고 enterkey를 실행한다.
-    //1. After running the sample, enter the value ('1234567.12') in the 'custom test0' column and execute enterkey.
-    //Verify step 1. The value '1234567.12' is entered and displayed.(Previously shown as '1234567.00.12' value)
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grid2_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grid2__column2').setValue('1234567.12')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid2_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'grid2_cell_0_0', '1,234,567.12')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. test1 영역의 inputbox에 값('1234567')을 입력하고 enterkey를 실행한다.
-    //2. Enter the value ('1234567') in the input box of the test1 area and execute enterkey.
-    //Verify step 2. A value of '1234567.00' is entered and displayed.(Previously shown as '1234567.00.00' value)
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input1').setValue('1234567')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkInput($p.id+'input1', '1,234,567.00')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. test2 영역의 inputbox에 값('1234567')을 입력하고 enterkey를 실행한다.
-    //3. Enter the value ('1234567') in the input box of the test2 area and execute enterkey.
-    //Verify step 3. A value of '1234567.00' is entered and displayed.(Previously shown as '1234567.00.00' value)
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input2').setValue('1234567')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkInput($p.id+'input2', '1,234,567.00')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -109,9 +82,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 23-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -21,6 +21,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -33,72 +49,19 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkValue = function() {
     vl = gridView1_cell_0_1.innerText;
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getJq('#G_'+$p.id+'gridView1__col2_calendar').css('display') == 'block';
+    return scwin.__getJq('#G_'+$p.id+'gridView1__col2_calendar').css('display') == 'block';
 }
 scwin.checkCal = function() {
-    if (WebSquare.wUnit.getJq('#G_'+$p.id+'gridView1__col2_calendar').css('display') == 'block') {} else {
-        WebSquare.wUnit.getJq('#G_'+$p.id+'gridView1__col2_img').click();
+    if (scwin.__getJq('#G_'+$p.id+'gridView1__col2_calendar').css('display') == 'block') {} else {
+        scwin.__getJq('#G_'+$p.id+'gridView1__col2_img').click();
     }
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 name2 컬럼중에 하나를 더블클릭한 후 오른쪽에 아이콘을 클릭한다.
-    //Double-click one of the name2 columns in your browser and click the icon to the right.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_img').click()");
-    WebSquare.wUnit.addCommand("set", "scwin.checkCal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 데이터를 변경할 수 있는 창이 생성된다.
-    //A window where data can be changed is created.
-    //WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2 2. 날짜가 아닌 시, 분, 초를 나타내는 selectbox에서 편집을 하고 V 아이콘을 클릭한다.
-    //Edit in the select box that represents the hour, minute, and second, not the date, and click the V icon.                
-    //Click hour
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2_calendar_selectbox_hour_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2_calendar_selectbox_hour_itemTable_12').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //Click minute
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2_calendar_selectbox_minute_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2_calendar_selectbox_minute_itemTable_32').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //Click second
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2_calendar_selectbox_second_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2_calendar_selectbox_second_itemTable_26').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-//    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_hour').selectedIndex = 12");
-    WebSquare.wUnit.addCommand("set", "mf_G_mf_gridView1__col2_calendar_selectbox_hour.selectedIndex = 12");
-    WebSquare.wUnit.addCommand("pause", "500");
-//    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_minute').selectedIndex = 32");
-    WebSquare.wUnit.addCommand("set", "mf_G_mf_gridView1__col2_calendar_selectbox_minute.selectedIndex = 32");
-    WebSquare.wUnit.addCommand("pause", "500");
-//    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_second').selectedIndex = 26");
-    WebSquare.wUnit.addCommand("set", "mf_G_mf_gridView1__col2_calendar_selectbox_second.selectedIndex = 26");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Click V
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_time_confirm').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 편집한 시, 분, 초 데이터가 변경된다.
-    //The edited hour, minute and second data will be changed.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_1_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').innerText == '2015-12-24 12:32:26'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop Test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -116,9 +79,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 26-Jan-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

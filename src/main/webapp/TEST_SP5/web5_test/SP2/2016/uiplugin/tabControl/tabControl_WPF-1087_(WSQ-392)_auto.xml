@@ -10,25 +10,18 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.__theSamePosition = function() {
-    var cal2 = WebSquare.wUnit.getDomById($p.id + "inputCalendar2");
+    var cal2 = scwin.__getDom($p.id + "inputCalendar2");
     return (cal1.offsetTop == cal2.offsetTop) && (cal1.offsetLeft == cal2.offsetLeft);
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. tabControl 안에서 inputCalendar 달력아이콘이 있는 샘플파일을 실행 후 2번째 탭을 클릭한다.
-    //1. In the tabControl, run the sample file with the inputCalendar calendar icon and click the second tab.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tabs2').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. 2번째 탭에서도 inputCalendar 달력아이콘의 위치가 동일하게 유지됨이 확인된다.
-    //1. The second tab also confirms that the position of the inputCalendar calendar icon remains the same.
-    WebSquare.wUnit.addCommand("assert", "scwin.__theSamePosition()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -37,11 +30,8 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Created By: Sang.do
     //Created By: 09-Feb-2018
-    window.cal1 = WebSquare.wUnit.getDomById($p.id + "inputCalendar1");
+    window.cal1 = scwin.__getDom($p.id + "inputCalendar1");
     //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

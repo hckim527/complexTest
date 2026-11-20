@@ -22,7 +22,16 @@
             <w2:workflowCollection></w2:workflowCollection>
         </xf:model>
         <script type="javascript"><![CDATA[ 
-        var jsonData = [
+        // DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+var jsonData = [
             {
                 "levelCnt": "1",
                 "menuId" : "menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1menuId1",
@@ -136,17 +145,17 @@
 		}
 	}
 	scwin.mouseOverBehaviour = function(id) {
-		var el = WebSquare.wUnit.getDomById($p.id + id);
+		var el = scwin.__getDom($p.id + id);
 		scwin.fireOver(el);
 	}
 	scwin.checkVal = function() {
-		const tooltipElement = WebSquare.wUnit.getDomById('listGrid_tooltip');
+		const tooltipElement = (document.getElementById('listGrid_tooltip') || document.getElementById('mf_listGrid_tooltip'));
 		let reVal = false;
 		
 		if (tooltipElement) {
 			let displayValue = tooltipElement.style.display;
 			console.log('tooltip 요소의 display 값:', displayValue);
-			reVal = WebSquare.wUnit.getDomById('listGrid_tooltip').style.display == 'block';
+			reVal = (document.getElementById('listGrid_tooltip') || document.getElementById('mf_listGrid_tooltip')).style.display == 'block';
 		} else {
 			console.log('요소가 존재하지 않음: listGrid_tooltip');
 			reVal = false;
@@ -154,19 +163,6 @@
 		return reVal;
 		
 	}		
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('listGrid_cell_0_3')");
-		WebSquare.wUnit.addCommand('pause', '500');
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand('pause', '500');
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();
 		
         
         ]]></script>

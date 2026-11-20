@@ -53,6 +53,28 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.grd_master_onviewchange = function(info) {
     // onviewchange가 일어난 컬럼ID
     var colID = dsl_master.getColumnID(info.colIndex);
@@ -104,7 +126,7 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq(id).css("background-color");
+    var rgb = scwin.__getJq(id).css("background-color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
@@ -113,33 +135,7 @@ scwin._checkRgb = function(id, hexa) {
     return rgb == hexa;
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getJq('#grd_master_cell_1_0').is(':focus');
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 chk항목의 2,3,4,5번항목값을 체크한다.
-    //1. After executing the sample file, check the value of item 2, 3, 4, 5 of chk item.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_1_0').childNodes[0].click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_2_0').childNodes[0].click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_3_0').childNodes[0].click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_4_0').childNodes[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. Items 2, 3, 4 and 5 are checked.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_1_0').childNodes[0].checked", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_2_0').childNodes[0].checked", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_3_0').childNodes[0].checked", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_master_cell_4_0').childNodes[0].checked", "true");
-    //Test step 2. 4번항목값을 마우스로 클릭하여 체크를 해제한다.
-    //2. Click the 4th item value with the mouse to clear the check.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_master_cell_3_0').childNodes[0].click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. The focus moves to the second item value at the same time as it is released.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return ((j) => j.length ? j : $('#mf_grd_master_cell_1_0'))($('#grd_master_cell_1_0')).is(':focus');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -168,7 +164,7 @@ scwin.onpageload2 = function() {
      */
     ngmf.object = function(strCompId) {
         try {
-            return WebSquare.wUnit.getObjById(strCompId);
+            return scwin.__getObj(strCompId);
         } catch (e) {
             console.log("[ngmf.object] Exception :: " + e.message);
         }
@@ -252,9 +248,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 27-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -44,20 +44,44 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger1_onclick = function(e) {
-    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col1", "euro");
-    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col2", "number");
-    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col3", "rupee");
-    WebSquare.wUnit.getObjById('gridView1').changeCurrency("col4", "tenge");
+    scwin.__getObj('gridView1').changeCurrency("col1", "euro");
+    scwin.__getObj('gridView1').changeCurrency("col2", "number");
+    scwin.__getObj('gridView1').changeCurrency("col3", "rupee");
+    scwin.__getObj('gridView1').changeCurrency("col4", "tenge");
 };
 scwin.trigger2_onclick = function(e) {
-    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col1", "euro", "#.###,00");
-    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col2", "number", "#,###.00");
-    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col3", "rupee", "##,##,###.00");
-    WebSquare.wUnit.getObjById('gridView2').changeCurrency("col4", "tenge", "# ###-00");
+    scwin.__getObj('gridView2').changeCurrency("col1", "euro", "#.###,00");
+    scwin.__getObj('gridView2').changeCurrency("col2", "number", "#,###.00");
+    scwin.__getObj('gridView2').changeCurrency("col3", "rupee", "##,##,###.00");
+    scwin.__getObj('gridView2').changeCurrency("col4", "tenge", "# ###-00");
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById(id);
+    var el = scwin.__getDom(id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -70,41 +94,6 @@ scwin.fireDbClick = function(node) {
     } else if (typeof node.ondblclick == 'function') {
         node.ondblclick();
     }
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플 실행 후 'changeCurrency1'와 'changeCurrency2 API'를 클릭한다.
-    //1. After running the sample, click 'changeCurrency1' and 'changeCurrency2 API'.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. 상단 gridView의 formatter 설정된 값과 하단 gridView의 API를 적용한 Formatter 설정된 값으로 동일하게 변경되어진다.
-    //1. It is changed to the set value of the formatter of the upper gridView and the set value of the formatter applying the API of the lower gridView.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText == '111.111.111,00'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').innerText == '222,222,222.00'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').innerText == '33,33,33,333.00'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_3').innerText == '444 444 444-00'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').innerText == '111.111.111,00'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText == '222,222,222.00'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_2').innerText == '33,33,33,333.00'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_3').innerText == '444 444 444-00'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'changeCurrency2 API'를 클릭한 grdiView에서(하단) edit모두로 값을 변경한다.
-    //2. Change the value from grdiView by clicking on 'changeCurrency2 API' to (bottom) edit all.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView2__col2').value = '12312312'");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 2. 변경된 값의 동일한 formatter로 적용되어 보여진다.
-    //2. The changed values ​​are applied to the same formatter.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText == '12,312,312.00'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -120,9 +109,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 12-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        //scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

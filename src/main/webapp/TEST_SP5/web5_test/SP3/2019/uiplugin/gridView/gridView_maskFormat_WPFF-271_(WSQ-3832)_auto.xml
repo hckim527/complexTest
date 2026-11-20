@@ -63,6 +63,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -75,114 +84,14 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //원래있던 0 지우기
-    WebSquare.wUnit.addCommand("pause", "500");
-    //더블클릭 후
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //1234 입력
-    WebSquare.wUnit.addCommand("pause", "500");
-    //엔터
-    WebSquare.wUnit.addCommand("pause", "500");
-    //123-4 확인
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_0').children[0].innerText == '123-4'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //다시 클릭 후
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //지우기
-    WebSquare.wUnit.addCommand("pause", "500");
-    //더블클릭 후
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //1234567 입력
-    WebSquare.wUnit.addCommand("pause", "500");
-    //엔터
-    WebSquare.wUnit.addCommand("pause", "500");
-    //123-456-7 확인
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_0').children[0].innerText == '123-456-7'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //다시 클릭 후
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //지우기
-    WebSquare.wUnit.addCommand("pause", "500");
-    //더블클릭 후
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //1234567890 입력
-    WebSquare.wUnit.addCommand("pause", "500");
-    //엔터
-    WebSquare.wUnit.addCommand("pause", "500");
-    //123-456-7890 확인
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_0').children[0].innerText == '123-456-7890'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //gridView2
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //원래있던 0 지우기
-    WebSquare.wUnit.addCommand("pause", "500");
-    //더블클릭 후
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView2_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //12345 입력
-    WebSquare.wUnit.addCommand("pause", "500");
-    //엔터
-    WebSquare.wUnit.addCommand("pause", "500");
-    //1-2345 확인
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView2_cell_0_0').children[0].innerText == '1-2345'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //다시 클릭 후
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //지우기
-    WebSquare.wUnit.addCommand("pause", "500");
-    //더블클릭 후
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView2_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //12345678 입력
-    WebSquare.wUnit.addCommand("pause", "500");
-    //엔터
-    WebSquare.wUnit.addCommand("pause", "500");
-    //123-456-7 확인
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView2_cell_0_0').children[0].innerText == '1-234-5678'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //다시 클릭 후
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //지우기
-    WebSquare.wUnit.addCommand("pause", "500");
-    //더블클릭 후
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView2_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //1234567890 입력
-    WebSquare.wUnit.addCommand("pause", "500");
-    //엔터
-    WebSquare.wUnit.addCommand("pause", "500");
-    //123-456-7890 확인
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView2_cell_0_0').children[0].innerText == '123-456-7890'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     //createdby SangWook
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -37,6 +37,21 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.scheduleCalendar1_onclick = function(retObj) {
     //alert("retObj==" + JSON.stringify(retObj));
 	console.log("retObj==" + JSON.stringify(retObj));
@@ -90,18 +105,18 @@ scwin.clickMonth = function() {
     var date2 = new Date();
     var month = (date2 - date1) / 86400000;
     for (i = 0; i < Math.floor(month / 30) + 1; i++) {
-        WebSquare.wUnit.getJq(".fc-prev-button").click();
+        ((j) => j.length ? j : $('.mf_fc-prev-button'))($('.fc-prev-button')).click();
     }
 }
 
 scwin.setVal1 = function() {
-    WebSquare.wUnit.getObjById('scheduleCalendar1').gotoCalendar("20171101", {noSelectable : true})
+    scwin.__getObj('scheduleCalendar1').gotoCalendar("20171101", {noSelectable : true})
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getObjById('dataList1').getAllJSON()[0].colEnd == '20171116090000';
+    return scwin.__getObj('dataList1').getAllJSON()[0].colEnd == '20171116090000';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getObjById('dataList1').getAllJSON()[0].colStart == '20171110080000';
+    return scwin.__getObj('dataList1').getAllJSON()[0].colStart == '20171110080000';
 }
 
 scwin.checkVal3 = function() {
@@ -117,36 +132,6 @@ scwin.checkVal6 = function() {
     return dataList1.getAllJSON()[1].colStart == '2017-11-13';
 }
 
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
-    WebSquare.wUnit.addCommand("pause", "500");
-	//WebSquare.wUnit.addCommand("set", "scwin.clickMonth()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal5()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal6()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function 

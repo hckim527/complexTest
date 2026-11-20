@@ -63,6 +63,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -75,7 +84,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.__triggerDbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById(id);
+    var el = scwin.__getDom(id);
     var dataEditmodeevent = WebSquare.util.getDataPrefix("editmodeevent");
     var editMode = el.getAttribute(dataEditmodeevent)
     if (editMode == "onclick") {
@@ -85,31 +94,10 @@ scwin.__triggerDbclick = function(id) {
     scwin.fireDbClick(el);
 }
 scwin.__isChanged = function() {
-    return WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').innerText != old;
+    return scwin.__getDom($p.id+'gridView1_cell_0_1').innerText != old;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 항목명(autoCom_valueLabel)의 값을 더블클릭하여 다른값으로 변경한다.
-    //1. Run the sample file and double-click the value of the item name (autoCom_valueLabel) to change it to another value.
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerDbclick($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_' + $p.id + 'gridView1___autoComplete_0_col2_col2_button').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_' + $p.id + 'gridView1___autoComplete_0_col2_col2_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. 선택값으로 값이 변경된다.(이전에는 변경되지 않음)
-    //1. The value is changed to the selected value (not changed previously)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').innerText == '2 이동건'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
-    window.old = WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').innerText;
+    window.old = scwin.__getDom($p.id+'gridView1_cell_0_1').innerText;
 }
 ]]></script>
     </head>

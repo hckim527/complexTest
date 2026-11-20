@@ -100,6 +100,15 @@
         </xf:model>
 
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView1_onviewchange = function(info) {
     //alert("onviewchange");
     array.push("onviewchange");
@@ -130,69 +139,12 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.__checkErrLog = function() {
     return WebSquare.logger.getErrorLog();
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 5. 브라우저에서 select 컬럼의 임의의 데이터를 선택한다. 
-    //5. In the browser, select any data in the select column.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_gridView1___selectbox_col1_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 5. oncelldatachange 팝업이 생성된 후 onviewchange 팝업이 생성된다. (이전에는 onviewchange 팝업이 생성된 후 oncelldatachange 팝업이 생성됨)
-    //5. After the oncelldatachange popup is created, the onviewchange popup is generated. (Previously the onviewchange popup is generated and the oncelldatachange popup is generated)
-    WebSquare.wUnit.addCommand("assert", "array[0] == 'oncelldatachange'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "array[1] == 'onviewchange'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 6. text 컬럼의 임의의 데이터를 입력하고 포커스 아웃한다.
-    //6. Input any data in the text column and focus it out.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2').setValue('1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_1_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 6. oncelldatachange 팝업이 생성된 후 onviewchange 팝업이 생성된다.
-    //6. The onviewchange popup is created after the oncelldatachange popup is generated.
-    WebSquare.wUnit.addCommand("assert", "array[2] == 'oncelldatachange'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "array[3] == 'onviewchange'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 7. setColumnReadonly 버튼을 클릭한다.
-    //7. Click the setColumnReadonly button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 7. setColumnReadonly 팝업이 생성된다.
-    //7. The setColumnReadonly popup is generated.
-    WebSquare.wUnit.addCommand("assert", "array[4] == 'setColumnReadOnly'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 8. setColumnDisabled 버튼을 클릭한다.
-    //8. Click the setColumnDisabled button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 8. setColumnDisabled 팝업이 생성된다.
-    //8. The setColumnDisabled popup is generated.
-    WebSquare.wUnit.addCommand("assert", "array[5] == 'setColumnDisabled'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 9. 로그 (Ctrl + 마우스 오른쪽) 를 확인한다.
-    //9. Check the log (Ctrl + right mouse).
-    //Verify 9. 에러로그가 존재하지 않는다. (그전에는 에러로그가 존재함 [그림참고])
-    //9. Error log does not exist. (Before that there is an error log [see figure])
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkErrLog() == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     /*

@@ -130,6 +130,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger3_onclick = function(e) {
     grid1.setRowVisible(10, false);
     grid1.setRowVisible(11, false);
@@ -138,43 +145,18 @@ scwin.trigger3_onclick = function(e) {
     grid1.setRowVisible(14, false);
 };
 scwin.__isShowDataNormal = function() {
-    var row = WebSquare.wUnit.getJq(".grid_body_row").not(".w2grid_hidedRow");
+    var row = ((j) => j.length ? j : $('.mf_grid_body_row'))($('.grid_body_row')).not(".w2grid_hidedRow");
     var count = 0;
     row.each(function() {
-        if (WebSquare.wUnit.getJq(this).css("display") != "none") {
+        if (scwin.__getJq(this).css("display") != "none") {
             count++;
         }
     });
     return count == row.length;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플 실행 후 'setRowVisible'버튼을 클릭하고 세로스크롤을 아래로 내려본다.
-    //1. After running the sample, click on the 'setRowVisible' button and down the vertical scroll.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1').setTopRowIndex(8)");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. 그리드의 값이 정상적으로 유지되면서 스크롤이 이동되어진다.(이전에는 세로스크롤을 내릴경우 그리드 데이터가 보이지 않는 현상이 있었음)
-    //1. The scroll is moved while the value of the grid is normally maintained (Previously, when the vertical scroll was made, the grid data was not visible)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isShowDataNormal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 19-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

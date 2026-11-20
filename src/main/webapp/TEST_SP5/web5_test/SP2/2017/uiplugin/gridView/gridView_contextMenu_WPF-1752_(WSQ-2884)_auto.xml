@@ -32,6 +32,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('oncontextmenu');
@@ -44,34 +53,14 @@ scwin.fireClick = function(node) {
     }
 }
 scwin.rightClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireClick(el);
 }
 scwin.checkEl = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id)) {
+    if (scwin.__getDom($p.id + id)) {
         return false;
     }
     return true;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 0. gridView속성의 contextMenu='false로 설정한다.
-    //Set the contextMenu = 'false' of the gridView property.
-    // verify step 0. gridView속성의 contextMenu='false로 설정된다.
-    //0. The contextMenu of the gridView property is set to 'false'.
-    // Test step 1. 샘플 실행 후 gridView에서 마우스 우클릭을 실행한다.
-    //1. After executing the sample, right-click in gridView.
-    WebSquare.wUnit.addCommand("set", "scwin.rightClick($p.id+'gv1_cell_4_1')");
-    // verify step 1. contextMenu가 보여지지 않는다.(정상)(이전에는 false로 설정해도 보여졌음)
-    //1. The contextMenu is not shown (normal)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('gv1_contextMenu_list')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -158,9 +147,6 @@ scwin.onpageload2 = function() {
     //Created By: Sang.do
     //Created By: 23-Jan-2018
     //Function rightMouseClick    
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

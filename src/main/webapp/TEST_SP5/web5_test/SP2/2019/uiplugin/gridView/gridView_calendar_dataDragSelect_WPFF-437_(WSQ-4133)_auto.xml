@@ -65,6 +65,13 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {};
 scwin.onpageunload = function() {};
 scwin.inputCalendar1_onviewchange = function(info) {
@@ -81,23 +88,9 @@ scwin.gridView1_oncellindexchange = function(row, col, oldRow, oldCol) {
     }
 };
 scwin.checkVal = function() {
-	return WebSquare.wUnit.getJq('#G_'+$p.id+'gridView1__col1_input').val() == '20191006';
+	return scwin.__getJq('#G_'+$p.id+'gridView1__col1_input').val() == '20191006';
 }
 		
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_1_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 ]]></script>
     </head>

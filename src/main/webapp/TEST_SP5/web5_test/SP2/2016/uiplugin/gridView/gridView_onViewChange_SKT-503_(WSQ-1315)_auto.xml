@@ -58,6 +58,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView2_oneditkeydown = function(info) {
     console.log("gridView2_oneditkeydown");
     console.log("info.rowIndex : " + info.rowIndex);
@@ -70,7 +79,7 @@ scwin.div_Search_btn_Search_onclick = function(e) {
     gridView2.setFocusedCell(0, 0, true);
 };
 scwin.keyboardBehaviour = function(id) {
-    var img = WebSquare.wUnit.getDomById(id);
+    var img = scwin.__getDom(id);
     var keyboardEvent = document.createEvent("KeyboardEvent");
     var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
     keyboardEvent[initMethod](
@@ -87,24 +96,6 @@ scwin.keyboardBehaviour = function(id) {
     );
     img.dispatchEvent(keyboardEvent);
 }
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 버튼을 클릭한다.
-    //1. Run the sample file and click the button.
-    //Verify step 1. The grid row is added and changed to edit mode.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('div_Search_btn_Search').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView2__chk_col').css('display') == 'block'", "true");
-    //Test step 2. 개발자모드 실행(F12)후 버튼을 클릭하여 컬럼을 클릭하고 키보드의 방향키를 좌우위아래로 수행한다.(oneditkeydown 이벤트 수행)
-    //2. After executing developer mode (F12), click the button and click on the column and execute the direction key of the keyboard upside down (perform oneditkeydown event).
-    //Verify step 2. You can see the value that shows colID (info.colID: chk_col) (previously shown as undefined because the engine has no function)
-    WebSquare.wUnit.addCommand("set", "scwin.keyboardBehaviour('G_'+$p.id+'gridView2__chk_col')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log == 'chk_col'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -113,9 +104,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 26-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

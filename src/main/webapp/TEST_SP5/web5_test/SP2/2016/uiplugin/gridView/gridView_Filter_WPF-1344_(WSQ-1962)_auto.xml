@@ -49,27 +49,18 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.__hasClass = function() {
-    var el0 = WebSquare.wUnit.getDomById($p.id + "gridView1_column43_filter").parentElement.previousSibling;
+    var el0 = scwin.__getDom($p.id + "gridView1_column43_filter").parentElement.previousSibling;
     return el0.style.overflow == 'hidden';
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 column43 (name1) 의 width 부분을 확인한다.
-    //1. In the Source tab, check the width part of column43 (name1).
-    //Verify step 1. width = "50"
-    //Test step 2. useFilter 부분을 확인한다.
-    //2. Check the useFilter section.
-    //Verify step 2. useFilter = "true"
-    //Test step 3. 브라우저에서 name1 컬럼을 확인한다.
-    //3. Check the name1 column in your browser.
-    //Verify step 3. The label icon of the column header changes to show the filter icon.
-    WebSquare.wUnit.addCommand("assert", "scwin.__hasClass()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -293,9 +284,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 08-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

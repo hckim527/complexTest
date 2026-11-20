@@ -49,12 +49,27 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
-    WebSquare.wUnit.getJq(document).keydown(function(e) {
+    scwin.__getJq(document).keydown(function(e) {
         if (e.keyCode == 113) {
             var rowIdx = grd_sample1.getFocusedRowIndex();
             //				var chkCellRow = "mf_" + "grd_sample1" + "_cell_" + rowIdx + "_" + 0;
-            //				WebSquare.wUnit.getJq("#"+chkCellRow).attr("rowspan", "2"); 
             grd_sample1.setCellVisible(rowIdx, "extChkRow", true);
             grd_sample1.setCellVisible(rowIdx, "extRow1", true);
             grd_sample1.setCellVisible(rowIdx, "extRow2", true);
@@ -1172,29 +1187,8 @@ scwin.trigger3_onclick = function(e) {
     scwin.setMultiRowValue(grd_sample1, idx, "테스트 값2", "extRow1", chkColumnStr);
 };
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'grd_sample1_cell_2_22').children[0].innerText == "테스트 값1";
+    return scwin.__getDom($p.id + 'grd_sample1_cell_2_22').children[0].innerText == "테스트 값1";
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_sample1_scrollY_div').scrollTop = 100");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_sample1_scrollY_div').scrollTop = 200");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_sample1_scrollY_div').scrollTop = 100");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_sample1_scrollY_div').scrollTop = 0");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 
 ]]></script>

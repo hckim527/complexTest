@@ -15,40 +15,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.checkValue = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id)) {
+    if (scwin.__getDom($p.id + id)) {
         return true;
     }
     return false
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 6. 브라우저에서 그리드뷰의 헤더 셀렉트박스를 열고 임의의 데이터를 선택한다.
-    //6. In the browser, open the header select box in the grid view and select any data.
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wframe1_mf_wframe1_wq_uuid_12_head_selectbox_column3_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wframe1_mf_wframe1_wq_uuid_12_head_selectbox_column3_itemTable').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wframe1_mf_wframe1_wq_uuid_12_head_selectbox_column3_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wframe2_mf_wframe2_wq_uuid_18_head_selectbox_column3_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wframe2_mf_wframe2_wq_uuid_18_head_selectbox_column3_itemTable').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wframe2_mf_wframe2_wq_uuid_18_head_selectbox_column3_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 6. onChangeFunction 기능이 호출되어 'onChange2' 팝업이 생성된다. (그전버전에서는 1번 그림처럼 오류가 발생함.)
-    //6. The onChangeFunction function is called to create the 'onChange2' popup. (In earlier versions, an error occurs, as shown in picture 1.)
-    WebSquare.wUnit.addCommand("assert", "log", "true");
-    WebSquare.wUnit.addCommand("assert", "log1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function unitTest

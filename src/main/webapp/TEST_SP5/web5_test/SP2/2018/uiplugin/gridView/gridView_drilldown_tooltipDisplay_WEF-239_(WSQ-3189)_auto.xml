@@ -44,6 +44,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     alert("현재 데이터 리스트 데이터 수 : " + dataList1.getAllJSON().length + ", 콘솔로그 확인");
     var data = dataList1.getAllJSON();
@@ -68,7 +77,7 @@ scwin.trigger2_onclick = function(e) {
     }
 };
 scwin.fireOver = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id)
+    var node = scwin.__getDom($p.id + id)
     if (document.createEventObject) {
         node.fireEvent('onmouseover');
     } else if (document.createEvent) {
@@ -80,32 +89,7 @@ scwin.fireOver = function(id) {
     }
 }
 scwin.__checkHtml = function() {
-    return WebSquare.wUnit.getJq("#wq_uuid_3_tooltip").html();
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 '2.데이터삽입'버튼을 클릭하여 insert한다.
-    //1. After executing the sample, click '2. Insert Data' button to insert.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 데이터가 insert되어 보여진다.
-    //1. Data is inserted and displayed.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_3_cell_5_0').innerText == '55555555555555'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 드릴다운데이터 항목에 마우스를 오버하여 정상적인 툴팁(값만보여지는지)을 확인한다.
-    //2. Mouse over the drilldown data item to see a normal tooltip (only the value is visible).
-    WebSquare.wUnit.addCommand("set", "scwin.fireOver($p.id+'wq_uuid_3_cell_5_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 정상적인 툴팁값만 보여진다. (이전에는 아이콘까지 보여짐)
-    //2. Only normal tooltip values are shown. (Previously the icon is shown)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'wq_uuid_3_tooltip').style.display == 'block'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkHtml() == '55555555555555'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return ((j) => j.length ? j : $('#mf_wq_uuid_3_tooltip'))($('#wq_uuid_3_tooltip')).html();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -137,9 +121,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 22-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

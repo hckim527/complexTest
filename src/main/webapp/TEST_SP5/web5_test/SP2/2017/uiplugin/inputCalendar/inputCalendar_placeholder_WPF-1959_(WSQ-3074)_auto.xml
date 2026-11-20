@@ -33,6 +33,30 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger1_onclick = function(e) {
     inputCalendar1.setDisabled(true);
 };
@@ -90,7 +114,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkValue = function(el) {
@@ -101,94 +125,16 @@ scwin.checkValue = function(el) {
     }
 }
 scwin.checkVal = function() {
-    return scwin.checkValue(WebSquare.wUnit.getObjById('inputCalendar1_input').getAttribute('disabled'));
+    return scwin.checkValue(scwin.__getObj('inputCalendar1_input').getAttribute('disabled'));
 }
 scwin.checkVal2 = function() {
-    return scwin.checkValue(WebSquare.wUnit.getObjById('inputCalendar1_input').getAttribute('readOnly'));
+    return scwin.checkValue(scwin.__getObj('inputCalendar1_input').getAttribute('readOnly'));
 }
 scwin.checkVal3 = function() {
-    return scwin.checkValue(WebSquare.wUnit.getObjById('inputCalendar2_input').getAttribute('disabled'));
+    return scwin.checkValue(scwin.__getObj('inputCalendar2_input').getAttribute('disabled'));
 }
 scwin.checkVal4 = function() {
-    return scwin.checkValue(WebSquare.wUnit.getObjById('inputCalendar2_input').getAttribute('readOnly'));
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step  1. 샘플실행 후 1번을 클릭한다.
-    //1. After running the sample, click 1.
-    //Verify 1. It becomes disabled and the placeholder value disappears.
-    //click 1
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_input').getAttribute('disabled')", "disabled");
-    //Test step  2. 다시 2번을 클릭한다.
-    //2. Click twice again.
-    //Verify 2. It is activated and the placeholder value is shown.
-    //click 2
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_input').getAttribute('placeholder')", "inputCalendar1 placeholder");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 3번을 클릭한다.
-    //Click 3
-    //Verify 3. The state is readOnly and the placeholder value disappears.
-    //click 3
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_input').getAttribute('readOnly') == 'readonly'", "true");
-    //Test step 4. 다시 4번을 클릭한다.
-    //4. Click 4
-    //Verify 4. It is activated and the placeholder value is shown.
-    //click 4
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_input').getAttribute('placeholder')", "inputCalendar1 placeholder");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 5. 5번을 클릭한다.
-    //5. Click 5 times.
-    //Verify 5. It becomes disabled and the placeholder value disappears.
-    //Click 5
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar2_input').getAttribute('disabled')", "disabled");
-    //Test step 6. 다시 6번을 클릭한다.
-    //6. Click 6
-    //verify 6. Activated and the placeholder value is shown.
-    //Click 6
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar2_input').getAttribute('placeholder')", "inputCalendar2 placeholder");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 7. 7번을 클릭한다.
-    //Click 7
-    //Verify 7. The state is readOnly and the placeholder value is maintained.
-    //click 7
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger9').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar2_input').getAttribute('readOnly')", "readonly");
-    //Test step 8. 다시 8번을 클릭한다.
-    //8. Click 8 again.
-    //Verify 8. It is activated and the placeholder value is shown.
-    //click 8
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger10').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar2_input').getAttribute('placeholder')", "inputCalendar2 placeholder");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 9. config.xml의 inputCalendar속성에 <placeholder value='bbb'/>를 설정한다.(샘플파일에 config.xml적용되어 있음)
-    //9. In the inputCalendar property of config.xml, set <placeholder value = 'bbb' /> (config.xml is applied to the sample file)
-    //Verify 9. <placeholder value = 'bbb' />
-    //Test step 10. name1항목의 값을 더블클릭 후 포커스를 다른곳으로 아웃시킨다.
-    //10. Double-click the value of the name1 item and put the focus out.
-    //Verify 10. When you double-click, the placeholder value 'abc' on the left is kept (previously 'bbb' value is displayed intermittently).
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'wq_uuid_19_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_19_dataLayer').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar3_input').getAttribute('placeholder')", "abc");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.checkValue(scwin.__getObj('inputCalendar2_input').getAttribute('readOnly'));
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -198,9 +144,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 27-Jan-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -118,8 +118,32 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.fireDbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         el.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -132,76 +156,11 @@ scwin.fireDbClick = function(id) {
 }
 scwin.__isEl = function() {
     var dataColId = WebSquare.util.getDataPrefix("col_id");
-    return el = WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not(".w2grid_hidedRow").find('td['+dataColId+'="NAME"]');
+    return el = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr'))($('#gridView1_body_tbody tr')).not(".w2grid_hidedRow").find('td['+dataColId+'="NAME"]');
 }
 scwin.checkVal = function() {
-    return typeof WebSquare.wUnit.getObjById('gridView1_btnReset_column29') === 'object';
+    return typeof scwin.__getObj('gridView1_btnReset_column29') === 'object';
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 이름항목에서 첫번째 컬럼과 두번째 컬럼에 '김유정'과'이건'을 선택한다.
-    //1. After executing the sample file, select 'Kim Yu-jung' and 'It"s' in the first column and the second column in the Name column.
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick('gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1___selectbox_NAME_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick('gridView1_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1___selectbox_NAME_itemTable_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 그리드뷰에 '김유정'과'이건'이 선택되어진다.
-    //1. 'Kim Yu-jung' and 'It' are selected in the grid view.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').innerText == '김유정'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_1').innerText == '이건'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 이름항목의 필터를 클릭하여 사용자필터를 선택하고 찾을조건에 '=' , '김유정'을 선택하고 확인버튼을 클릭한다.
-    //2. Click on the filter of the name field to select the user filter, select '=', 'Yoo Jung Jeong' in the search condition and click the OK button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column29_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_list').childNodes[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_item_0_selectbox_column29_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_item_0_selectbox_column29_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_item_0_autocomplete_column29_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_item_0_autocomplete_column29_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_btnConform_column29').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. '김유정'으로 필터링되어 보여진다.
-    //2. It is filtered and displayed as 'Kim Yoo Jung'.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isEl().text() == '김유정'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 다시 사용자필터를 선택하여 찾을조건에 기존 필터값은 유지하고 'or', '=', '이건'을 선택한 후 '초기화'버튼을 클릭한다.
-    //3. Select the user filter again to keep the existing filter value in the search condition, select 'or', '=', 'This' and click the 'Reset' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_column29_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_list').childNodes[0].childNodes[1].click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_item_1_selectbox_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_item_1_selectbox_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_item_1_autocomplete_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_item_1_autocomplete_itemTable_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_btnReset_column29').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 사용자지정필터에서 이전에 필터링 되어진 값('=', '김유정')으로 초기화되어 보여진다.(이전에는 초기화 기능이 없었음. 초기화기능은 마지막에 필터링한 값으로 되돌리는 기능임)
-    //3. It is initialized to the value ('=', 'Kim Yu-jung') that was previously filtered in the custom filter. (Previously there was no initialization function, the initialization function is the function to return to the last filtered value)              
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_item_1_selectbox_label').innerText == '-선택-'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_item_1_autocomplete_label').innerText == '빈 값'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function unitTest

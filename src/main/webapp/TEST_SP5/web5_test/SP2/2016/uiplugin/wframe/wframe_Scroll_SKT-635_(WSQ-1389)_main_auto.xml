@@ -64,6 +64,15 @@
 			<w2:workflowCollection></w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.btn_expDown_onclick = function(e) {
     ngmf.setOverLayer(this, "grd_gridView1", "", 295);
 };
@@ -80,33 +89,7 @@ scwin.btn_expAll_onclick = function(e) {
     ngmf.setOverLayer(this, "grd_gridView6", 1420, 475);
 };
 scwin.checkVal = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'wframe1_grd_gridView2_scrollY_div')).getPropertyValue('overflow-y') == 'hidden';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 스크롤을 맨아래로 내린다.
-    //1. In the browser, scroll down to the bottom.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wframe1_grd_gridView2_scrollY_div').scrollTop = 100");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 스크롤이 맨아래로 내려간다.
-    //1. Scroll down to the bottom.
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wframe1_grd_gridView2').getTopRowIndex()", "1");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 하단에 늘리기 버튼을 클릭한다.
-    //2. Click the Increase button at the bottom.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('wframe1_trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 높이가 늘어나, 스크롤이 사라진다. (그전버전에서 스크롤이 계속 남아있었음 / 그림참고)
-    //2. The height increases and the scroll disappears. (Scrolling remained in previous versions / see figure)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'wframe1_grd_gridView2').style.height == '259px'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'wframe1_grd_gridView2_scrollY_div').style.width == '0px'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + 'wframe1_grd_gridView2_scrollY_div')).getPropertyValue('overflow-y') == 'hidden';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -141,9 +124,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 02-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script><!-- 
 			<title>over_layer</title> -->

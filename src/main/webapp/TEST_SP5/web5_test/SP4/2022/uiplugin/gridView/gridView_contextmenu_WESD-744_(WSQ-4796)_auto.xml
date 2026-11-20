@@ -22,6 +22,15 @@
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
 
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageunload = function() {};
 scwin.trigger1_onclick = function(e) {
     var json = [{
@@ -86,7 +95,7 @@ scwin.onpageload = function() {
 
 
 	scwin.__triggerMouse = function(id){ 
-	   var node = WebSquare.wUnit.getDomById(id);           
+	   var node = scwin.__getDom(id);           
 	   if( document.createEventObject ) {
 		   node.fireEvent('oncontextmenu') ;  
 	   } else if( document.createEvent ) {
@@ -105,24 +114,6 @@ scwin.onpageload = function() {
 		var err = WebSquare.logger.getErrorLog();
 		return (err != "") ? true : false;
 	}
-	
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.__triggerMouse('gridView1_dataLayer')");
-		WebSquare.wUnit.addCommand("pause", "400");
-
-		WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_contextMenu_list').style.display == 'block'", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}	
-	scwin.unitTest()	
-	
 	
 ]]></script>
     	<style><![CDATA[ 

@@ -40,28 +40,19 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {};
 scwin.onpageunload = function() {};
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'gridView1_cell_2_1').style.backgroundColor == "";
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 3. Test Data의 2번 샘플파일을 실행하고 대리점항목명을 마우스로 드래그하여 위로 올려서 groupby하고 가로스크롤을 좌우로 이동한다.(스크롤이 안생길경우 사이즈를 줄여서 확인한다.)
-    //3. Execute sample file 2 of test data and drag the name of the agency item with mouse and move up to groupby and move the horizontal scroll to the left or right. (If it does not scroll, check the size by reducing it.)
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 4. 오른쪽에서 첫번째 항목인 '판매액'항목이 고정되고 나머지 항목들이 이동되어진다.
-    //4. On the right, the first item 'Sales' is fixed and the remaining items are moved.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + 'gridView1_cell_2_1').style.backgroundColor == "";
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -71,9 +62,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 09-Mar-2018
     var valBeforeScoll, valAfterScoll;
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

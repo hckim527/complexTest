@@ -15,6 +15,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.tabs2_onclick = function() {
     //debugger;
 };
@@ -57,43 +64,9 @@ scwin.trigger4_onclick = function(e) {
     tabIndex++;
 };
 scwin.__isAddTab = function(p) {
-    var li = WebSquare.wUnit.getJq("#tabControl1_tabhost li");
-    var header = WebSquare.wUnit.getJq(li[p]).find("a").text();
+    var li = ((j) => j.length ? j : $('#mf_tabControl1_tabhost li'))($('#tabControl1_tabhost li'));
+    var header = scwin.__getJq(li[p]).find("a").text();
     return header == ("New Add Tab " + (tabIndex - 1));
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 브라우저에서 신규 Add Tab 함수에 생성할 Tab 위치를 Select 로 선택하고, Add Tab 버튼을 클릭한다.
-    //2. In the browser, select the tab location to be created in the new Add Tab function, and click the Add Tab button.
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControlSample_selectbox_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "1000");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControlSample_selectbox_itemTable_0').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControlSample_selectbox').setValue(0)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 2. Select 에서 선택한 위치에 New Add Tab 1 탭이 생성된다.
-    //2. The New Add Tab 1 tab is created at the location you selected in Select.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isAddTab(0)", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. 임의로 몇번 더 생성할 Tab 위치를 Select 로 선택하고, Add Tab 버튼을 클릭한다.
-    //3. Select the Tab location you want to create several times, and click the Add Tab button.
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControlSample_selectbox_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "1000");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControlSample_selectbox_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControlSample_selectbox').setValue(1)");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //3. 현재 생성된 위치를 기준으로 Select 에서 선택한 위치에 New Add Tab 탭이 생성된다.
-    //3. Based on the currently created location, the New Add Tab tab is created at the location selected by Select.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isAddTab(1)", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -101,13 +74,6 @@ scwin.onpageload2 = function() {
     }
     window.tabIndex = 1;
     window.orgTabIndex = 1;
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 31-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

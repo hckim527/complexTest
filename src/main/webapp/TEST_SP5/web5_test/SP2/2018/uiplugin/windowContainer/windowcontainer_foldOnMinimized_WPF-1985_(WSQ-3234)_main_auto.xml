@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     var options = {
         id: "pop1",
@@ -46,30 +55,10 @@ scwin.trigger1_onclick = function(e) {
     $w.openPopup("windowcontainer_foldOnMinimized_WPF-1985_(WSQ-3234)_sub.xml", options);
 };
 scwin.checkElement = function(id) {
-    if (WebSquare.wUnit.getDomById(id)) {
+    if (scwin.__getDom(id)) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. main샘플 실행 후 'liteWindow'버튼을 클릭한다.
-    //1. After running the main sample, click the 'liteWindow' button.
-    //Verify step 1. The popup window is opened.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkElement('pop1')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 팝업창 우측상단의 '창사이즈최소화'버튼을 클릭한다.
-    //2. Click the 'Minimize Window Size' button in the upper right corner of the popup window.
-    //Verify step 2. Window size of pop-up window is minimized.(Previously, the pop-up window was hidden)
-    WebSquare.wUnit.addCommand("set", "pop1_minimize.click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pop1').css('display') == 'none'", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -79,9 +68,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

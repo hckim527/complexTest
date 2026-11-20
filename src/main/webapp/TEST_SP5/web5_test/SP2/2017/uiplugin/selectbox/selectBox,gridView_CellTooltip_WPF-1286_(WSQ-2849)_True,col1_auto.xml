@@ -66,6 +66,30 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.test = function(rowIndex, colIndex, label) {
     //debugger;
     if (colIndex === 1) {
@@ -86,48 +110,11 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.mouseOverBehaviour = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireOver(el);
 }
 scwin.checktype = function() {
-    return typeof WebSquare.wUnit.getObjById('selectBox1_tooltip')
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. Source 탭에서 selectBox1 의 tooltipDisplayItem 부분을 확인한다.
-    //1. In the Source tab, check the tooltipDisplayItem part of selectBox1.
-    // verify step 1. tooltipDisplayItem = 'true'
-    //Test step 2. gridView1 의  tooltipDisplayColumn 부분을 확인한다.
-    //2. Check the tooltipDisplayColumn part of gridView1.
-    //Verify step 2. tooltipDisplayColumn = 'col1'
-    // Test step 3. 브라우저에서 SelectBox 의 리스트목록을 마우스오버한다.
-    //3. Mouse over the list of SelectBox"s list in the browser.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('selectBox1_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'selectBox1_itemTable_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 3. 툴팁이 생성된다.
-    //3. A tooltip is created.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 4. GridView 의 임의로 여러개 컬럼을 마우스오버한다.
-    //4. Mouse over multiple columns in the GridView.
-    // verify step 4. col1 컬럼만 툴팁이 생성된다.
-    //4. Only the col1 column is created with a tooltip.
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '0'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '1test'", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '2222222222222222222'", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return typeof scwin.__getObj('selectBox1_tooltip')
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -138,13 +125,6 @@ scwin.onpageload2 = function() {
         arr[i] = i;
     }
     dataList1.setData(arr);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 25-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

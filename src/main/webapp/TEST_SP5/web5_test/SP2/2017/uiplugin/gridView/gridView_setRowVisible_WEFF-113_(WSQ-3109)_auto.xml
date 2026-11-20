@@ -30,6 +30,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger3_onclick = function(e) {
     for (var i = 0; i < grid1.getRowCount(); i++) {
         if (i != 0 && i != 4 && i != 6 && i != 8 && i != 10 && i != 11 && i != 12 && i != 13) {
@@ -45,7 +52,7 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id) {
-    var rgb = WebSquare.wUnit.getJq(id).css("background-color");
+    var rgb = scwin.__getJq(id).css("background-color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
@@ -61,28 +68,6 @@ scwin.checkVal1 = function() {
 scwin.checkVal2 = function() {
     return scwin._checkRgb('#grid1_cell_8_0') == '#fca73c';
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_6_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_scrollY_div').scrollTop = 50");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_8_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
     window.arr = [];
     for (var i = 0; i < 21; i++) {

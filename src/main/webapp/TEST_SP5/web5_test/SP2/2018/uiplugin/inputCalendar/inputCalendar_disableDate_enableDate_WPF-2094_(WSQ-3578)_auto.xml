@@ -41,6 +41,13 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {};
 scwin.onpageunload = function() {};
 scwin.trigger1_onclick = function(e) {
@@ -75,7 +82,7 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq("#" + id).css("color");
+    var rgb = scwin.__getJq("#" + id).css("color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
@@ -83,41 +90,6 @@ scwin._checkRgb = function(id, hexa) {
     }
     return rgb == hexa;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //pc
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_year_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_year_itemTable_40').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");     
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_month_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c_selectbox_month_itemTable_7').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");     
-    //mobile
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c').gotoYear(2018)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('c').gotoMonth(8)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('c_cell_2_0', '#000000')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('c_cell_2_0', '#d02121')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('c_cell_2_0', '#000000')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 
 ]]></script>

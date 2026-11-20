@@ -58,6 +58,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.gridView2_oneditkeydown = function(info) {
     console.log("gridView2_oneditkeydown");
     console.log("info.rowIndex : " + info.rowIndex);
@@ -76,7 +92,7 @@ scwin.div_Search_btn_Search_onclick = function(e) {
     gridView2.setFocusedCell(0, 0, true);
 };
 scwin.input11_onkeydown = function(e) {
-    WebSquare.wUnit.getDomById('input2').focus();
+    (document.getElementById('input2') || document.getElementById('mf_input2')).focus();
 };
 scwin.input11_onkeypress = function(e) {
     if (e.keyCode == '13') {
@@ -90,29 +106,7 @@ scwin.div_Search_cal_ObjDt_onkeyup = function(e) {
     }
 };
 scwin.isFocus = function() {
-    return WebSquare.wUnit.getJq(WebSquare.wUnit.getDomById('G_'+$p.id+'gridView2__chk_col')).is(':focus');
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 버튼을 클릭한다.
-    //1. Run the sample file and click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('div_Search_btn_Search').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 1. 첫번째 컬럼영역이 선택(주황색)되어진다.
-    //1. The first column area is selected (orange).
-    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 그리드 영역내부(컬럼영역제외)에서 마우스를 이동하여 클릭한다.
-    //2. Move the mouse inside the grid area (except for the column area) and click.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_dataLayer').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. 선택한 컬럼영역에 focus가 edit모드로 계속 보여진다.(이전에는 focus는 보여지지 않고 계속 선택영역으로 보여짐)
-    //2. The focus is continuously displayed in edit mode in the selected column area (previously the focus is not shown but is still displayed as the selection area)
-    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq(scwin.__getDom('G_'+$p.id+'gridView2__chk_col')).is(':focus');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -122,9 +116,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 28-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

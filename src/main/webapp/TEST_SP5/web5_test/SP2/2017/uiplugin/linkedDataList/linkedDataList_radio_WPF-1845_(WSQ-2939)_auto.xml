@@ -37,39 +37,23 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.getTextCol = function(id) {
-    return WebSquare.wUnit.getDomById($p.id + id).innerText;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 우측 상단의 radio버튼(2)을 클릭한다
-    //1. Run the sample file and click the radio button (2) in the upper right corner.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('radio1_input_1').click()");
-    // verify step 1. gridView에 a1, a2, a3값을 정상적으로 가져온다.
-    //1. Import a1, a2, and a3 values into gridView as normal.
-    WebSquare.wUnit.addCommand("assert", "scwin.getTextCol($p.id+'gridView5_cell_0_0')", "a1");
-    WebSquare.wUnit.addCommand("assert", "scwin.getTextCol($p.id+'gridView5_cell_0_1')", "a2");
-    WebSquare.wUnit.addCommand("assert", "scwin.getTextCol($p.id+'gridView5_cell_0_2')", "a3");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + id).innerText;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     dataList1.setData(['a1', 'a2', 'a3', 'a1', 'a5', 'a6', 'a1', 'a12', 'a13', 'a1', 'a15', 'a16']);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 22-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

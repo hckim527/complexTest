@@ -15,6 +15,30 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.inputCalendar1_onviewchange = function(info) {
     console.log(info.oldValue + " " + info.newValue);
 };
@@ -60,74 +84,29 @@ scwin.getDateCurrent = function(type) {
     return today;
 }
 scwin.__ispreviousElement = function() {
-    var id = WebSquare.wUnit.getJq("td.w2calendar_selected").last().attr("id");
-    var el = WebSquare.wUnit.getDomById($p.id + id).previousSibling;
+    var id = $('td.w2calendar_selected').last().attr("id");
+    var el = scwin.__getDom($p.id + id).previousSibling;
     return el;
 }
 scwin.__isnextElement = function() {
-    var id = WebSquare.wUnit.getJq("td.w2calendar_selected").last().attr("id");
-    var el = WebSquare.wUnit.getDomById($p.id + id).nextSibling;
+    var id = $('td.w2calendar_selected').last().attr("id");
+    var el = scwin.__getDom($p.id + id).nextSibling;
     return el;
 }
 scwin.checkVal0 = function() {
-    return WebSquare.wUnit.getObjById('inputCalendar1_calendar_currentDate').innerText == scwin.getDateCurrent(0);
+    return scwin.__getObj('inputCalendar1_calendar_currentDate').innerText == scwin.getDateCurrent(0);
 }
 scwin.checkVal1 = function() {
-    return scwin.getDateCurrent(0) === WebSquare.wUnit.getObjById('inputCalendar1_calendar_currentDate').innerText;
+    return scwin.getDateCurrent(0) === scwin.__getObj('inputCalendar1_calendar_currentDate').innerText;
 }
 scwin.checkVal2 = function() {
-    return scwin.getDateCurrent(1) === WebSquare.wUnit.getObjById('inputCalendar1_calendar_currentDate').innerText;
+    return scwin.getDateCurrent(1) === scwin.__getObj('inputCalendar1_calendar_currentDate').innerText;
 }
 scwin.checkVal3 = function() {
-    return scwin.getDateCurrent(0) === WebSquare.wUnit.getObjById('inputCalendar2_calendar_currentDate').innerText;
+    return scwin.getDateCurrent(0) === scwin.__getObj('inputCalendar2_calendar_currentDate').innerText;
 }
 scwin.checkVal4 = function() {
-    return scwin.getDateCurrent(2) === WebSquare.wUnit.getObjById('inputCalendar2_calendar_currentDate').innerText;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 5. 브라우저에서 첫번째 calenadr1 를 선택 후 이전 날짜를 선택한다.
-    //5. In the browser, select the first calenadr1 and select the previous date.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__ispreviousElement().click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 5. 현재일자 기준으로 이전 날짜가 선택이 불가능하다.
-    //5. The previous date can not be selected on the current date.
-    //WebSquare.wUnit.addCommand("assert", "scwin.checkVal0()","true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 6. 첫번째 inputcalenadr1 를 선택 후 이후 날짜를 선택한다.
-    //6. Select the first inputcalenadr1 and then the date.
-    WebSquare.wUnit.addCommand("set", "scwin.__isnextElement().click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 6. 현재일자 기준으로 이후 날짜가 선택이 가능하다.
-    //6. You can select future dates based on the current date.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 7. 두번째 calenadr2 를 선택 후 이후 날짜를 선택한다.
-    //7. Select the second calenadr2 and then select the date.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar2_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__isnextElement().click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 7. 현재일자 기준으로 이후 날짜가 선택이 불가능하다.
-    //7. The date can not be selected on the current date.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 8. 두번째 inputcalenadr2 를 선택 후 이전 날짜를 선택한다.
-    //8. Select the second inputcalenadr2 and select the previous date.
-    WebSquare.wUnit.addCommand("set", "scwin.__ispreviousElement().click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 8. 현재일자 기준으로 이전 날짜가 선택이 가능하다.
-    //8. You can select the previous date based on the current date.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.getDateCurrent(2) === scwin.__getObj('inputCalendar2_calendar_currentDate').innerText;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -137,9 +116,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 13-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

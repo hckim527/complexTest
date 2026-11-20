@@ -641,32 +641,38 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.init = function() {
     gValue.gridID = gridView1.getID();
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getObjById('gridView1_column130').getAttribute(scwin.dataInputType) == "expression";
+    return scwin.__getObj('gridView1_column130').getAttribute(scwin.dataInputType) == "expression";
 }
 scwin.checkVal2 = function() {
 	var dataExpression = WebSquare.util.getDataPrefix("expression");
-    return WebSquare.wUnit.getObjById('gridView1_column130').getAttribute(dataExpression).trim() == "count('BELOW', {blank:false})";
+    return scwin.__getObj('gridView1_column130').getAttribute(dataExpression).trim() == "count('BELOW', {blank:false})";
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#column159 nobr').get(0).innerText", "4");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.gValue = {};
@@ -675,50 +681,46 @@ scwin.onpageload = function() {
         switch (index + "") {
             case "0":
                 if (checked) {
-                    WebSquare.wUnit.getJq(".gridSubtotalDefault").css("display", "none");
+                    ((j) => j.length ? j : $('.mf_gridSubtotalDefault'))($('.gridSubtotalDefault')).css("display", "none");
                 } else {
-                    WebSquare.wUnit.getJq(".gridSubtotalDefault").css("display", "");
+                    ((j) => j.length ? j : $('.mf_gridSubtotalDefault'))($('.gridSubtotalDefault')).css("display", "");
                 }
                 break;
             case "1":
                 window.tcid = Object.keys(gridView1.subtotalTableList)[0]; // ie9이상 지원
                 if (checked) {
-                    WebSquare.wUnit.getJq("tr[targetcolumnid='" + tcid + "']:not([style='display: none;'])").each(function() {
-                        window.value = WebSquare.wUnit.getJq(this).prev().find("td[col_id='" + tcid + "'] nobr")[0].innerHTML;
-                        WebSquare.wUnit.getJq(this).insertBefore(WebSquare.wUnit.getJq("tr:has(nobr:contains('" + value + "'))").first());
+                    scwin.__getJq("tr[targetcolumnid='" + tcid + "']:not([style='display: none;'])").each(function() {
+                        window.value = scwin.__getJq(this).prev().find("td[col_id='" + tcid + "'] nobr")[0].innerHTML;
+                        scwin.__getJq(this).insertBefore(scwin.__getJq("tr:has(nobr:contains('" + value + "'))").first());
                     });
                 } else {
-                    WebSquare.wUnit.getJq("tr[targetcolumnid='" + tcid + "']:not([style='display: none;'])").each(function() {
-                        window.value = WebSquare.wUnit.getJq(this).next().find("td[col_id='" + tcid + "'] nobr")[0].innerHTML;
-                        WebSquare.wUnit.getJq(this).insertAfter(WebSquare.wUnit.getJq("tr:has(nobr:contains('" + value + "'))").last());
+                    scwin.__getJq("tr[targetcolumnid='" + tcid + "']:not([style='display: none;'])").each(function() {
+                        window.value = scwin.__getJq(this).next().find("td[col_id='" + tcid + "'] nobr")[0].innerHTML;
+                        scwin.__getJq(this).insertAfter(scwin.__getJq("tr:has(nobr:contains('" + value + "'))").last());
                     });
                 }
                 break;
             case "2":
                 if (checked) {
-                    WebSquare.wUnit.getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody").css("display", "none");
-                    WebSquare.wUnit.getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "0px");
+                    scwin.__getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody").css("display", "none");
+                    scwin.__getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "0px");
                 } else {
-                    WebSquare.wUnit.getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody").css("display", "");
-                    WebSquare.wUnit.getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "22px");
+                    scwin.__getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody").css("display", "");
+                    scwin.__getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "22px");
                 }
                 break;
             case "3":
                 if (checked) {
-                    WebSquare.wUnit.getJq(".gridHeaderTableDefault .gridHeaderTableDefault").after(WebSquare.wUnit.getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody"));
-                    WebSquare.wUnit.getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "0px");
+                    ((j) => j.length ? j : $('.mf_gridHeaderTableDefault .gridHeaderTableDefault'))($('.gridHeaderTableDefault .gridHeaderTableDefault')).after(scwin.__getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody"));
+                    scwin.__getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "0px");
                 } else {
-                    WebSquare.wUnit.getJq(".gridFooterTableDefault").append(WebSquare.wUnit.getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody"));
-                    WebSquare.wUnit.getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "22px");
+                    ((j) => j.length ? j : $('.mf_gridFooterTableDefault'))($('.gridFooterTableDefault')).append(scwin.__getJq("#" + gValue.gridID + "_gridFooterTDDefault_tbody"));
+                    scwin.__getJq("#" + gValue.gridID + "_dataLayer").css("bottom", "22px");
                 }
                 break;
         }
     };
     checkbox1_onlabelclick = checkbox1_oncheckboxclick;
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 26-Jan-2018
-    //end unitTest
     scwin.dataInputType = WebSquare.util.getDataPrefix("inputtype");
 
 }

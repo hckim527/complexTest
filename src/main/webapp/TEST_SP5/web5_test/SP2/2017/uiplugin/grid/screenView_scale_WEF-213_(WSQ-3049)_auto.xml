@@ -10,42 +10,31 @@
 		</xf:model>
 		<!-- 공통 필드 정합성 검사 필요시사용 !!!불필요시 삭제 -->
 		<script type='text/javascript' lazy='false'><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.convertStringInt = function(str) {
     var res = str.replace('px', '');
     return parseInt(res);
 }
 scwin.checkVal1 = function() {
-    return scwin.convertStringInt(WebSquare.wUnit.getJq('#selectbox3_itemTable').css('left')) < 96;
+    return scwin.convertStringInt(((j) => j.length ? j : $('#mf_selectbox3_itemTable'))($('#selectbox3_itemTable')).css('left')) < 96;
 }
 scwin.checkVal2 = function() {
-    return scwin.convertStringInt(WebSquare.wUnit.getJq('#inputCalendar1_calendar').css('left')) < 96;
+    return scwin.convertStringInt(((j) => j.length ? j : $('#mf_inputCalendar1_calendar'))($('#inputCalendar1_calendar')).css('left')) < 96;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectbox3_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
-    WebSquare.wUnit.getJq(window).resize(function() {
-        window.contentWidth = WebSquare.wUnit.getJq("html").width();
-        window.bodyWidth = WebSquare.wUnit.getJq("body").width();
+    scwin.__getJq(window).resize(function() {
+        window.contentWidth = $('html').width();
+        window.bodyWidth = $('body').width();
         window.scalePoint = contentWidth / bodyWidth;
         window.scale = "scale(" + scalePoint + ")";
-        //WebSquare.wUnit.getJq("body").css({"min-width":"1024px","-ms-transform":scale,"transform":scale,"transform-origin":"top left"});
-        WebSquare.wUnit.getJq("body").css({
+        $('body').css({
             "min-width": "1024px",
             "top": "0",
             "width": "1280px",

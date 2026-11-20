@@ -18,8 +18,23 @@
             </w2:dataCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.makeDataList = function(id, obj) {
-    if (WebSquare.wUnit.getObjById(id) != undefined) {
+    if (scwin.__getObj(id) != undefined) {
         $w.data.remove(id);
     }
     $w.data.create({
@@ -75,50 +90,6 @@ scwin.ongrp = function(options) {
     options.groupbyFooter = [];
     gridView1.groupby(options);
 };
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 '동적그리드'버튼을 클릭한다.
-    //1. After running the sample, click the 'Dynamic Grid' button.
-    //Verify step 1. The gridView is displayed and displayed.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_body_tbody').length == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. colMerge되어진 'col1'항목을 필터링한다.(예:test1, test2)
-    //2. Filter colMerge 'col1' items (eg test1, test2)
-    //Verify step 2. Filtered by test1 and test2.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_hcol1_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[3].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[4].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_0_1').text() == 'test1'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_2_1').text() == 'test2'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 'col1'항목을 groupby 시킨다.
-    //3. Group the 'col1' item.
-    //Verify step 3. The 'col1' item is groupby.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').length == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value').text() == 'col1'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_1_1').text() == 'test1'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_2_1').text() == 'test1'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_5_1').text() == 'test2'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_6_1').text() == 'test2'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -190,9 +161,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 30-Mar-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

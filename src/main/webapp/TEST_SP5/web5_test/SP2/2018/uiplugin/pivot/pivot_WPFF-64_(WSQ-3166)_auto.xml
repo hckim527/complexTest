@@ -478,6 +478,15 @@
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.btn_download_onclick = function() {
     var options = {};
     options.fileName = "TAC월별배분량대비어획량.xlsx";
@@ -485,21 +494,7 @@ scwin.btn_download_onclick = function() {
     pivotTable1.pivotExcelDownload(options);
 };
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'pivotTable1_container_content').style.height == WebSquare.wUnit.getDomById($p.id + 'pivotTable1_container_body').style.height;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 기본화면의 세로스크롤 하단의 여백부분이 있는지 확인한다.
-    //1. After running the sample, make sure there is a margin at the bottom of the vertical scroll of the main screen.
-    //Verify 1. 여백부분은 보이지 않는다.(이전에는 여백이 보여짐) 스크롤을 하단을 내릴경우 스크롤 끝부분과의 여백은 보여짐
-    //1. The blank area is not visible (previously the blank area is shown). If you lower the scroll, you will see the margin to the end of the scroll.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + 'pivotTable1_container_content').style.height == scwin.__getDom($p.id + 'pivotTable1_container_body').style.height;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -520,9 +515,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 22-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

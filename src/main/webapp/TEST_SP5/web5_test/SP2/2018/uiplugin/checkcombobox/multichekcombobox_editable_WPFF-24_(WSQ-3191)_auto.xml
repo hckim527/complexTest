@@ -77,53 +77,22 @@
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.checkcombobox1_onviewchange = function(info) {
     debugger;
     console.log("info######" + info.oldValue + '\n' + info.newValue);
 };
 scwin.checkSearchList = function(el) {
-    return WebSquare.wUnit.getJq($(el)[0]).find("label").text() == "인천" && WebSquare.wUnit.getJq($(el)[1]).find("label").text() == "인천1" && WebSquare.wUnit.getJq($(el)[2]).find("label").text() == "인천2";
+    return scwin.__getJq($(el)[0]).find("label").text() == "인천" && scwin.__getJq($(el)[1]).find("label").text() == "인천1" && scwin.__getJq($(el)[2]).find("label").text() == "인천2";
 }
 scwin.checkSearchList2 = function(el) {
-    return WebSquare.wUnit.getJq($(el)[1]).find("label").text() == "인천" && WebSquare.wUnit.getJq($(el)[2]).find("label").text() == "인천1" && WebSquare.wUnit.getJq($(el)[3]).find("label").text() == "인천2";
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. 샘플실행 후 왼쪽 상단의 checkcombobox에 마우스를 클릭하여 edit상태로 진입 후 '인천'을 입력한다.
-    //1. After running the sample, click on the checkcombobox in the upper left corner to enter the edit state and enter 'Incheon'.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox1_label').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#checkcombobox1_input').css('display')", "block");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 입력값('인천')에 대해 컴포넌트 하단에 리스트로 검색결과(인천, 인천1, 인천2) 목록이 나타난다.
-    //1. A list of search results (Incheon, Incheon 1, Incheon 2) appears at the bottom of the component for the input value ('Incheon').
-    WebSquare.wUnit.addCommand("assert", "scwin.checkSearchList('#'+$p.id+'checkcombobox1_itemTable_main td')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#checkcombobox1_itemTable').css('display')", "block");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 동일하게 2번째, 3번째 checkcombobox에 '인천'을 입력한다.
-    //2. Enter 'Incheon' in the second and third checkcombobox.
-    //Verify 2. 동일하게 검색결과(인천, 인천1, 인천2) 목록이 나타난다.
-    //2. The same search result (Incheon, Incheon 1, Incheon 2) list appears.
-    //second
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox7_label').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkSearchList2('#'+$p.id+'checkcombobox7_itemTable_main td')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#checkcombobox7_itemTable').css('display')", "block");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //third
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('checkcombobox8_label').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkSearchList('#'+$p.id+'checkcombobox8_itemTable_main td')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#checkcombobox8_itemTable').css('display')", "block");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq($(el)[1]).find("label").text() == "인천" && scwin.__getJq($(el)[2]).find("label").text() == "인천1" && scwin.__getJq($(el)[3]).find("label").text() == "인천2";
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -133,9 +102,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 12-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

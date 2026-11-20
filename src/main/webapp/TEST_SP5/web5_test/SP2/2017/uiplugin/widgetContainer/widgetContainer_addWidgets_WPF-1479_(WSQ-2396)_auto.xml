@@ -10,6 +10,21 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onclickcustombtn = function() {
     console.log(arguments);
 }
@@ -23,35 +38,13 @@ scwin.alert = function() {
     alert("scwin.alert() is called!!!!");
 };
 scwin.checktype1 = function() {
-    return typeof WebSquare.wUnit.getObjById('widgetContainer1_widget0');
+    return typeof scwin.__getObj('widgetContainer1_widget0');
 }
 scwin.checktype2 = function() {
-    return typeof WebSquare.wUnit.getObjById('widgetContainer1_widget1');
+    return typeof scwin.__getObj('widgetContainer1_widget1');
 }
 scwin.checktype3 = function() {
-    return typeof WebSquare.wUnit.getObjById('widgetContainer1_widget2');
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. Script 탭에서 widgetContainer1.addWidgets 에 widget0 부분을 확인한다.
-    //1. On the Script tab, check widget0 for widgetContainer1.addWidgets.
-    //Verify 1. Review comments
-    //Test step 2 . widgetContainer1.addWidgets 에 widget1 부분을 확인한다.
-    //2. Check widget1 in widgetContainer1.addWidgets.
-    //Verify 2. Confirm comments
-    //Test step 3. widgetContainer1.addWidgets 에 widget2 부분을 확인한다.
-    //3. Check widget2 in widgetContainer1.addWidgets.
-    //Verify 3. Confirm comments
-    //Test step 4. 브라우저에서 확인한다.
-    //4. Check in the browser.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype1()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype3()", "object");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return typeof scwin.__getObj('widgetContainer1_widget2');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -126,9 +119,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 06-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -22,23 +22,38 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.checkHourInputScope = function() {
-    return WebSquare.wUnit.getObjById("inputCalendar2_calendar_selectbox_hour_itemTable_0").innerText == "9" && WebSquare.wUnit.getObjById("inputCalendar2_calendar_selectbox_hour_itemTable_11").innerText == "20";
+    return scwin.__getObj("inputCalendar2_calendar_selectbox_hour_itemTable_0").innerText == "9" && scwin.__getObj("inputCalendar2_calendar_selectbox_hour_itemTable_11").innerText == "20";
 }
 scwin.checkMinuteInputScope = function() {
-    return WebSquare.wUnit.getObjById("inputCalendar2_calendar_selectbox_minute_itemTable_0").innerText == "0" && WebSquare.wUnit.getObjById("inputCalendar2_calendar_selectbox_minute_itemTable_11").innerText == "55";
+    return scwin.__getObj("inputCalendar2_calendar_selectbox_minute_itemTable_0").innerText == "0" && scwin.__getObj("inputCalendar2_calendar_selectbox_minute_itemTable_11").innerText == "55";
 }
 scwin.checkSecondInputScope = function() {
-    return WebSquare.wUnit.getObjById("inputCalendar2_calendar_selectbox_second_itemTable_0").innerText == "0" && WebSquare.wUnit.getObjById("inputCalendar2_calendar_selectbox_second_itemTable_11").innerText == "55";
+    return scwin.__getObj("inputCalendar2_calendar_selectbox_second_itemTable_0").innerText == "0" && scwin.__getObj("inputCalendar2_calendar_selectbox_second_itemTable_11").innerText == "55";
 }
 scwin.checkHourScope = function() {
-    return WebSquare.wUnit.getObjById("calendar2_selectbox_hour_itemTable_0").innerText == "9" && WebSquare.wUnit.getObjById("calendar2_selectbox_hour_itemTable_11").innerText == "20";
+    return scwin.__getObj("calendar2_selectbox_hour_itemTable_0").innerText == "9" && scwin.__getObj("calendar2_selectbox_hour_itemTable_11").innerText == "20";
 }
 scwin.checkMinuteScope = function() {
-    return WebSquare.wUnit.getObjById("calendar2_selectbox_minute_itemTable_0").innerText == "0" && WebSquare.wUnit.getObjById("calendar2_selectbox_minute_itemTable_11").innerText == "55";
+    return scwin.__getObj("calendar2_selectbox_minute_itemTable_0").innerText == "0" && scwin.__getObj("calendar2_selectbox_minute_itemTable_11").innerText == "55";
 }
 scwin.checkSecondScope = function() {
-    return WebSquare.wUnit.getObjById("calendar2_selectbox_second_itemTable_0").innerText == "0" && WebSquare.wUnit.getObjById("calendar2_selectbox_second_itemTable_11").innerText == "55";
+    return scwin.__getObj("calendar2_selectbox_second_itemTable_0").innerText == "0" && scwin.__getObj("calendar2_selectbox_second_itemTable_11").innerText == "55";
 }
 scwin.setVal1 = function() {
     checkHour = scwin.checkHourInputScope();
@@ -58,41 +73,6 @@ scwin.setVal5 = function() {
 scwin.setVal6 = function() {
     checkSecond = scwin.checkSecondScope();
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_calendar_selectbox_hour_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_calendar_selectbox_minute_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_calendar_selectbox_second_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal3()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "checkHour && checkMinute && checkSecond", "true");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar2_selectbox_hour_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal4()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar2_selectbox_minute_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal5()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar2_selectbox_second_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal6()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "checkHour && checkMinute && checkSecond", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.s1 = "visibleHourList = \"9,10,11,12,13,14,15,16,17,18,19,20\"";

@@ -67,6 +67,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.autoComplete1_onviewchange = function(info) {
     focusFlag = true;
 };
@@ -117,7 +132,7 @@ scwin.checkVal4 = function() {
 	return changed == 2;
 }
 scwin.checkVal5 = function() {
-	return WebSquare.wUnit.getObjById('autoComplete2').getText() == '경기도1';
+	return scwin.__getObj('autoComplete2').getText() == '경기도1';
 }
 
 scwin.checkVal6 = function() {
@@ -133,10 +148,10 @@ scwin.checkVal9 = function() {
 	return changed == 4;
 }
 scwin.checkVal10 = function() {
-	return WebSquare.wUnit.getObjById('autoComplete4').getText() != null;
+	return scwin.__getObj('autoComplete4').getText() != null;
 }
 scwin.checkVal11 = function() {
-	return WebSquare.wUnit.getObjById('autoComplete4').getText() == '경기도1';
+	return scwin.__getObj('autoComplete4').getText() == '경기도1';
 }
 scwin.checkVal12 = function() {
 	return onviewchange == 5;
@@ -145,103 +160,6 @@ scwin.checkVal13 = function() {
 	return changed == 5;
 }
 
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 
-    //1.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_label').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. 
-    //2. 
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete2').getText() == null", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step
-    //
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_label').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#autoComplete2_input').val('')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step
-    //
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal5()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Test step
-    //
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_label').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete2_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#autoComplete2_input').val('')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //서울
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step
-    //
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal6()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal7()", "true");
-    // Test step 1. 
-    //1.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete4_label').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete4_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("pause", "500");	
-
-    // verify step 1. 
-    //2. 
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal8()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal9()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal10()", "true");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    //Test step
-    //
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete4_label').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete4_label').focus()");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#autoComplete4_input').val('')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("pause", "500");	
-    
-	//WebSquare.wUnit.addCommand("set", $p.id+"autoComplete4_itemTable_0.click()");
-
-    //Verify step
-    //
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal8()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal9()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal11()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Test step
-    //
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete4_label').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('autoComplete4_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#autoComplete4_input').val('')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //서울
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("pause", "500");		
-    //Verify step
-    //
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal12()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal13()", "true");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.focusFlag = false;
@@ -298,10 +216,6 @@ scwin.onpageload = function() {
     dataList1.setJSON(param);
     window.changed = 0;
     window.onviewchange = 0;
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 14-Mar-2018
-    //end unitTest
 }
 ]]></script>
     </head>

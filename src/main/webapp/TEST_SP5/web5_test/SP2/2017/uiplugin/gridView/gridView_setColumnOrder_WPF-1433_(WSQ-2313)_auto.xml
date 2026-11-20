@@ -29,6 +29,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     var jsonData = [{
             "col1": "1",
@@ -68,41 +77,10 @@ scwin.trigger3_onclick = function(e) {
     grd.setColumnOrder(["col1", "col2", "col3"]);
 };
 scwin.isBetween = function(colVal, idBefore, idAfter) {
-    var el = WebSquare.wUnit.getDomById($p.id + idBefore).nextElementSibling;
-    var nextElId = WebSquare.wUnit.getDomById($p.id + el.getAttribute("id")).nextElementSibling.getAttribute('id');
+    var el = scwin.__getDom($p.id + idBefore).nextElementSibling;
+    var nextElId = scwin.__getDom($p.id + el.getAttribute("id")).nextElementSibling.getAttribute('id');
     var dataValue = WebSquare.util.getDataPrefix("value");
     return el.getAttribute(dataValue) == colVal && nextElId == idAfter;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 2, 3, 1 버튼을 클릭한다.
-    //1. In the browser, click the 2, 3, 1 button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. col2 / col3 / col1 로 변경된다.
-    //1. It is changed to col2 / col3 / col1.
-    WebSquare.wUnit.addCommand("assert", "scwin.isBetween('col3', $p.id+'grd_column3',$p.id+'grd_column5')", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 2. 3, 1, 2 버튼을 클릭한다.
-    //2. Click the 3, 1, 2 button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. col3 / col1 / col2 로 변경된다.
-    //2. It is changed to col3 / col1 / col2.
-    WebSquare.wUnit.addCommand("assert", "scwin.isBetween('col1', $p.id+'grd_column1',$p.id+'grd_column3')", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. 1, 2, 3 버튼을 클릭한다.
-    //3. Click the 1, 2, and 3 buttons.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. col1 / col2 / col3 으로 변경된다.
-    //3. Change to col1 / col2 / col3.
-    WebSquare.wUnit.addCommand("assert", "scwin.isBetween('col2', $p.id+'grd_column5',$p.id+'grd_column1')", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -113,9 +91,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 30-Jan-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

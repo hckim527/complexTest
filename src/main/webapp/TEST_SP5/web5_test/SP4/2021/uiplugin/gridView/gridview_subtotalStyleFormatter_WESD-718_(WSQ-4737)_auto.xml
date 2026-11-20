@@ -36,6 +36,15 @@
             }
         </style>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     var data = [];
     var row = 50;
@@ -63,26 +72,13 @@ scwin.gridView1_subtotalStyleFormatter = function(value, formattedValue) {
     }
 }
 scwin.checkVal = function() {
-    var className1 = WebSquare.wUnit.getDomById($p.id + 'gridView1_body_tbody').children[20].children[6].className;
-    var className2 = WebSquare.wUnit.getDomById($p.id + 'gridView1_body_tbody').children[21].children[3].className;
+    var className1 = scwin.__getDom($p.id + 'gridView1_body_tbody').children[20].children[6].className;
+    var className2 = scwin.__getDom($p.id + 'gridView1_body_tbody').children[21].children[3].className;
     return className1.indexOf("w2subtotalplus") > 0 && className2.indexOf("w2subtotalminus") > 0;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

@@ -55,6 +55,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.refreshTextbox = function() {
     var rowStatusTxt = "";
     var json1 = dataList1.getAllJSON();
@@ -75,7 +84,7 @@ scwin.compareTwoArrays = function(arr1, arr2) {
     })
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -89,137 +98,6 @@ scwin.fireDbClick = function(node) {
         node.ondblclick();
     }
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    //Verify step 5. RowStatus 가 Update / Update 로 변경된다.
-    //5. RowStatus changes to Update / Update.
-    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['U', 'U'])", "true");
-    //Test step 6. dataList2.setData 버튼을 클릭한다.
-    //6. Click the dataList2.setData button.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    //Verify step 6. dataList2 의 데이터가 변경된다.
-    //6. The data in dataList2 is changed.
-    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
-    //Test step 7. 임의로 dataList2 컬럼을 수정한다.
-    //7. Optionally modify the dataList2 column.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['D', 'U', 'D', 'U'])", "true");
-    //Test step 8. 브라우저에서 dataList2.setXML 버튼을 클릭한다.
-    //8. In your browser, click the dataList2.setXML button.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    //Verify step 8. dataList2 의 데이터가 변경된다.
-    //8. The data in dataList2 is changed.
-    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
-    //Test step 9. 임의로 dataList2 컬럼을 수정한다.
-    //9. Optionally modify the dataList2 column.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    //Verify step 9. RowStatus 가 U / U / U / U로 변경된다.
-    //9. RowStatus is changed to U / U / U / U.
-    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['U', 'U', 'U', 'U'])", "true");
-    //Test step 10. 브라우저에서 dataList2.setJSON 버튼을 클릭한다.
-    //10. In your browser, click the dataList2.setJSON button.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    //Verify step 10. dataList2 의 데이터가 변경된다.
-    //10. The data in dataList2 is changed.
-    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
-    //Test step 11. 임의로 dataList2 컬럼을 수정한다.
-    //11. Optionally modify the dataList2 column.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    //Verify step 11. RowStatus 가U / U / U / U로 변경된다.
-    //11. RowStatus is changed to U / U / U / U.
-    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['U', 'U', 'U', 'U'])", "true");
-    //Test step 12. 브라우저에서 dataList2.setArray 버튼을 클릭한다.
-    //12. In your browser, click the dataList2.setArray button.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valBeforeChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "valAfterChange = WebSquare.wUnit.getObjById('gridView2_cell_0_1').innerText");
-    //Verify step 12. dataList2 의 데이터가 변경된다.
-    //12. The data in dataList2 is changed.
-    WebSquare.wUnit.addCommand("assert", "valBeforeChange != valAfterChange", "true");
-    //Test step 13. 임의로 dataList2 컬럼을 수정한다.
-    //13. Optionally modify the dataList2 column.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_2_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView2_cell_3_1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView2_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.compareTwoArrays(WebSquare.wUnit.getObjById('dataList2').rowStatusArr, ['D', 'U', 'D', 'U'])", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //debugger

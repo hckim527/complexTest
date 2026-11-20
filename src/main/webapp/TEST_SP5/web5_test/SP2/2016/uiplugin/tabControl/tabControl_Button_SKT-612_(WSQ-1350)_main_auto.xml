@@ -15,6 +15,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.tabs1_leftCheckClick = function(checked) {
     log = "tabs1_leftCheckbox, checked = " + checked
     //alert("tabs1_leftCheckbox, checked = " + checked);
@@ -46,55 +61,55 @@ scwin.trigger1_onclick = function() {
 }
 scwin.__isChecked = function() {}
 scwin.setVal1 = function() {
-    window[scwinId].tabs1_leftCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked);
+    window[scwinId].tabs1_leftCheckClick(scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked);
 }
 scwin.setVal2 = function() {
-    window[scwinId].tabs1_rightCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked);
+    window[scwinId].tabs1_rightCheckClick(scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked);
 }
 scwin.setVal3 = function() {
-    window[scwinId].tabs1_leftCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked);
+    window[scwinId].tabs1_leftCheckClick(scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked);
 }
 scwin.setVal4 = function() {
-    window[scwinId].tabs1_leftCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked);
+    window[scwinId].tabs1_leftCheckClick(scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked);
 }
 scwin.setVal5 = function() {
-    window[scwinId].tabs1_rightCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked);
+    window[scwinId].tabs1_rightCheckClick(scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked);
 }
 scwin.setVal6 = function() {
-    window[scwinId].tabs2_leftCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked);
+    window[scwinId].tabs2_leftCheckClick(scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked);
 }
 scwin.setVal7 = function() {
-    window[scwinId].tabs2_rightCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked);
+    window[scwinId].tabs2_rightCheckClick(scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked);
 }
 scwin.setVal8 = function() {
-    window[scwinId].tabs2_leftCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked);
+    window[scwinId].tabs2_leftCheckClick(scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked);
 }
 scwin.setVal9 = function() {
-    window[scwinId].tabs2_rightCheckClick(WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked);
+    window[scwinId].tabs2_rightCheckClick(scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked);
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked = true;
+    return scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked = true;
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked = true;
+    return scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked = true;
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked = false;
+    return scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[0].checked = false;
 }
 scwin.checkVal4 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked = false;
+    return scwin.__getObj('tabControl1_tab_tabs1_tabHTML').childNodes[2].checked = false;
 }
 scwin.checkVal5 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked = true;
+    return scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked = true;
 }
 scwin.checkVal6 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked = true;
+    return scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked = true;
 }
 scwin.checkVal7 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked = false;
+    return scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[0].checked = false;
 }
 scwin.checkVal8 = function() {
-    return WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked = false;
+    return scwin.__getObj('tabControl1_tab_tabs2_tabHTML').childNodes[2].checked = false;
 }
 scwin.checkLog1 = function() {
     return log == 'tabs1_leftCheckbox, checked = true';
@@ -120,89 +135,6 @@ scwin.checkLog7 = function() {
 scwin.checkLog8 = function() {
     return log3 == 'tabs2_rightCheckbox, checked = false';
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 4. 브라우저에서 sub1 양옆에 생긴 체크박스를 체크한다.
-    //4. In the browser, check the checkboxes that appear on both sides of sub1.
-    //Verify 4. tabs1_leftCheckbox, checked = true / tabs1_rightCheckbox, checked = true 팝업이 생성된다.
-    //4. tabs1_leftCheckbox, checked = true / tabs1_rightCheckbox, checked = true Popup is generated.
-    //Leftchecbox
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal1()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Rightcheckbox
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal2()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 5. sub1 양옆에 생긴 체크박스를 체크해제한다.
-    //5. Uncheck the check boxes that appear on both sides of sub1.
-    //Verify 5. tabs1_leftCheckbox, checked = false / tabs1_rightCheckbox, checked = false 팝업이 생성된다.
-    //5. tabs1_leftCheckbox, checked = false / tabs1_rightCheckbox, checked = false Popups are generated.
-    //Leftunchecbox
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal3()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal4()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Rightcheckbox
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal4()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal5()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog4()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 6. setTabHTML(tabs2, scwin.tab2_tabHTML); 버튼을 클릭한다.
-    //6. setTabHTML (tabs2, scwin.tab2_tabHTML); Click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 6. sub2 양옆에 체크박스가 생성된다.
-    //6. A check box is created on both sides of sub2.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[0].tagName == 'INPUT'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').childNodes[2].tagName == 'INPUT'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 7. sub2 양옆에 생긴 체크박스를 체크한다.
-    //7. Check the checkboxes on both sides of sub2.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabControl1_tab_tabs2_tabHTML').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 7. tabs2_leftCheckbox, checked = true / tabs2_rightCheckbox, checked = true 팝업이 생성된다.
-    //7. tabs2_leftCheckbox, checked = true / tabs2_rightCheckbox, checked = true Popups are generated.
-    //Leftcheckbox
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal5()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal6()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog5()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Rightcheckbox
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal6()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal7()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog6()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 8. sub2 양옆에 생긴 체크박스를 체크해제한다.
-    //8. Uncheck the check boxes that appear on both sides of sub2.
-    //Verify 8. tabs2_leftCheckbox, checked = false / tabs2_rightCheckbox, checked = false 팝업이 생성된다.
-    //8. tabs2_leftCheckbox, checked = false / tabs2_rightCheckbox, checked = false Popups are generated.
-    //Leftuncheckbox
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal7()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal8()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog7()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Rightuncheckbox
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal8()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal9()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLog8()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -216,9 +148,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 02-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

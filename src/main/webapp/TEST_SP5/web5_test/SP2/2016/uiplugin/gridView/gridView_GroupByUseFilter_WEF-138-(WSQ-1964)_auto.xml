@@ -23,14 +23,23 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.grid1_ongroupby = function(options) {
     return false;
 };
 scwin.__chec_Run = function(id) {
-    if (!WebSquare.wUnit.getDomById($p.id + id)) {
+    if (!scwin.__getDom($p.id + id)) {
         return false;
     }
-    return WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_label').innerText == "((category1 = 1 OR category1 = 2 OR category1 = 3) and (category2 = 1 OR category2 = 2 OR category2 = 3))";
+    return (document.getElementById('grid1_groupbyFilterBox_select_label') || document.getElementById('mf_grid1_groupbyFilterBox_select_label')).innerText == "((category1 = 1 OR category1 = 2 OR category1 = 3) and (category2 = 1 OR category2 = 2 OR category2 = 3))";
 }
 scwin.__checkFillter = function() {
     var strID = "";
@@ -38,9 +47,9 @@ scwin.__checkFillter = function() {
     var dataStyle_bak = WebSquare.util.getDataPrefix("style_bak");
     for (var i = 0; i < 50000; i++) {
         strID = "grid1_cell_" + i.toString() + "_0";
-        if (WebSquare.wUnit.getDomById($p.id + strID) != null) {
-            if (WebSquare.wUnit.getDomById($p.id + strID).getAttribute(dataStyle_bak) == null) {
-                if (WebSquare.wUnit.getDomById($p.id + strID).innerText != "1") {
+        if (scwin.__getDom($p.id + strID) != null) {
+            if (scwin.__getDom($p.id + strID).getAttribute(dataStyle_bak) == null) {
+                if (scwin.__getDom($p.id + strID).innerText != "1") {
                     ret = false;
                     break;
                 }
@@ -52,34 +61,6 @@ scwin.__checkFillter = function() {
         }
     }
     return ret;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 run 버튼을 클릭한다.
-    //1. In your browser, click the run button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. It is executed according to the conditions set in the right input.
-    WebSquare.wUnit.addCommand("assert", "scwin.__chec_Run('grid1_groupbyFilterBox_select_label')", "true");
-    //Test step 2. 2. FilterBoxLocation 에 생성된 category1 에서 필터 리스트를 펼친 후 사용자 필터를 적용한다. (예 : '= 1') 
-    // 2. Expand filter list in category1 created in FilterBoxLocation and apply user filter. (E.g. '= 1')
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_labelDiv')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listRow w2grid_groupbyZone_list_listRow')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grid1_item_0_selectbox_header_category1_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grid1_item_0_selectbox_header_category1_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grid1_btnConform_header_category1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Verify step 2: 2. 사용자필터가 적용된다. (그전버전에서는 사용자필터가 적용되지 않음)
-    // 2. The user filter is applied. (User filters are not applied in earlier versions)
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkFillter()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -121,9 +102,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 08-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

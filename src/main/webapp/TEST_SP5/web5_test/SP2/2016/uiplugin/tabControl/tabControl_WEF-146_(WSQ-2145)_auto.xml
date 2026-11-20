@@ -11,6 +11,15 @@
 			</xf:instance>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     var id = "addTAB" + i;
     var tabOptions = {
@@ -25,35 +34,14 @@ scwin.trigger1_onclick = function(e) {
     i++;
 };
 scwin.__closeIsATag = function() {
-    var nodeName = WebSquare.wUnit.getDomById($p.id + "tabControl1_tab_tabs5_close").nodeName;
-    return (nodeName == "A") && (typeof(WebSquare.wUnit.getDomById($p.id + "tabControl1_tab_tabs5_close").href) != "undefined");
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일 실행 후 개발자모드(F12) > Tabcontrol의 닫기버튼을 Elements로 검사하고 오른쪽 개발자모드의 한단계 아래를 클릭(역삼각형모양)한다.
-    //1. After executing the sample file, check the close button of Developer mode (F12)> Tabcontrol with Elements and click under one step of the right developer mode (inverted triangle).
-    // verify step 1. a태그로 되어있고 href속성도 추가되어 보여진다.(이전에는 div태그로 되어있었음)
-    //1. It is tagged with a and has the href attribute added (formerly div tag).
-    WebSquare.wUnit.addCommand("assert", "scwin.__closeIsATag()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    var nodeName = scwin.__getDom($p.id + "tabControl1_tab_tabs5_close").nodeName;
+    return (nodeName == "A") && (typeof(scwin.__getDom($p.id + "tabControl1_tab_tabs5_close").href) != "undefined");
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     window.i = 0;
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 06-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[ ]]></style>

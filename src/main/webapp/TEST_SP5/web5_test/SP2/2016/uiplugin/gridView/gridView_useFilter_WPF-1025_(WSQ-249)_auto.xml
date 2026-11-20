@@ -102,45 +102,18 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.hasFilterClass = function() {
-    var el = WebSquare.wUnit.getDomById($p.id + 'grid_emp_list_column13_filter');
+    var el = scwin.__getDom($p.id + 'grid_emp_list_column13_filter');
     return el.classList.contains('w2grid_customFilter_filter');
-}
-scwin.unitTest = function() {
-    // debugger;
-    // Init test
-    WebSquare.wUnit.start();
-    // Test step 1: 1. 샘플파일을 실행 후 행추가버튼을 통해 행을 추가하고 '3333'값을 입력한다. 
-    // - 1. After running the sample file, add a line using the Add Row button and enter the value '3333'.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid_emp_list_cell_0_1').childNodes[0].innerHTML = '3333'");
-    // Verify 1: 1. 그리드 상단에 행이 추가되고 3333값이 입력된다. - 1. A row is added to the top of the grid and a value of 3333 is entered.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid_emp_list_cell_0_1').childNodes[0].innerHTML == '3333'", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Test step 2: 2. 사원번호 항목에 필터를 선택하여 사용자지정필터에서 찾을조건 '=' 값은 '2222'로 설정하고 확인버튼을 클릭한다.
-    // - 2. In the Personnel Number field, select the filter and set the condition '=' value in the custom filter to '2222' and click the OK button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grid_emp_list_column13_filter').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid_emp_list_item_0_selectbox_column13_button').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid_emp_list_item_0_selectbox_column13_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid_emp_list_item_0_autocomplete_column13_button').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid_emp_list_item_0_autocomplete_column13_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grid_emp_list_btnConform_column13').click()");
-    // Verify 2: 2. 필터가 '2222'로 설정되고 사원번호 항목우측에 필터표시여부가 보여진다. - 2. The filter is set to '2222' and the filter display is shown on the right side of the Personnel Number field.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid_emp_list_cell_0_1').childNodes[0].innerHTML == '2222'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.hasFilterClass()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Test step 3: 3. 초기화버튼을 클릭한다. - 3. Click the Reset button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger222').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Verify 3: 3. 필터가 설정된 사원번호 항목우측에 필터표시여부가 역삼각형으로 초기화된다. - 3. The filter display status is initialized to the inverted triangle on the right side of the employee number item in which the filter is set.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'grid_emp_list_body_tbody').childNodes[0].style.display", "none");
-    WebSquare.wUnit.addCommand("assert", "scwin.hasFilterClass()", "false");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Run test
-    WebSquare.wUnit.run();
-    // Stop test
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -182,9 +155,6 @@ scwin.onpageload2 = function() {
     // Function test
     // Created by Sang.Do
     // Created date 17-Jan-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

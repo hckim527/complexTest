@@ -29,6 +29,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.init = function() {
     var jsonData = [{
             "col1": "0",
@@ -67,41 +74,20 @@ scwin.init = function() {
 };
 scwin.__isMerged = function() {
     var b = true;
-    WebSquare.wUnit.getJq("#wq_uuid_3_body_tbody tr").not(".w2grid_hidedRow").find("td[col_id='col1']").each(function(i, el) {
+    ((j) => j.length ? j : $('#mf_wq_uuid_3_body_tbody tr'))($('#wq_uuid_3_body_tbody tr')).not(".w2grid_hidedRow").find("td[col_id='col1']").each(function(i, el) {
         if (i != 2 && i != 0) {
-            if (WebSquare.wUnit.getJq(this).find("input").length) {
+            if (scwin.__getJq(this).find("input").length) {
                 b = false;
             }
         }
     });
     return b;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 
-    //1.
-    // verify step 3. 정상적으로 col1 컬럼이 colMerge 되어 최상위에만 체크박스가 표시된다. (2017-02-17 엔진에서는 아래 1. 현상처럼 표시됨.)
-    //3. The col1 column is colMerge normally and only the topmost check box is displayed. (On a 2017-02-17 engine, it looks like below 1.)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isMerged()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     scwin.init();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 13-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

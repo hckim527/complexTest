@@ -21,6 +21,28 @@
 			<w2:workflowCollection></w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.showFloatingLayer = function(title, width, height, url, modal, usePost, postData) {
     var top = document.documentElement.scrollTop + document.documentElement.clientHeight / 2 - parseInt(height) / 2;
     var left = document.documentElement.scrollLeft + document.documentElement.clientWidth / 2 - parseInt(width) / 2;
@@ -51,19 +73,19 @@ scwin.makeCommonPopup = function(popupId, popupIframeId, title, width, height, t
             param: {
                 handler: function(e) {
                     console.log("onclose");
-                    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
-                    WebSquare.wUnit.getObjById(popupIframeId).remove();
-                    WebSquare.wUnit.getObjById(popupId).remove();
-                    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
-                    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
-                        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+                    scwin.__getObj(popupIframeId).setSrc("");
+                    scwin.__getObj(popupIframeId).remove();
+                    scwin.__getObj(popupId).remove();
+                    ((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).last().css("z-index", "4001");
+                    if (((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+                        ((j) => j.length ? j : $('#mf__modal'))($('#_modal')).css("display", "none");
                     }
                 }
             }
         }]
     }, WebSquare.getBody());
-    WebSquare.wUnit.getJq(".pop_lay").css("z-index", "3999");
-    WebSquare.wUnit.getJq("#" + popupId).css("z-index", "4001");
+    ((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).css("z-index", "3999");
+    scwin.__getJq("#" + popupId).css("z-index", "4001");
     WebSquare.util.dynamicCreate(popupIframeId, "iframe", {
         style: "position: relative ;left: 0px;width: 100%;height: 100%;",
         name: popupIframeId,
@@ -73,12 +95,12 @@ scwin.makeCommonPopup = function(popupId, popupIframeId, title, width, height, t
 scwin.hideFloatingLayer = function(popupId) {
     var tmp = popupId.split("_");
     var popupIframeId = "PopIf_" + tmp[1];
-    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
-    WebSquare.wUnit.getObjById(popupIframeId).remove();
-    WebSquare.wUnit.getObjById(popupId).remove();
-    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
-    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
-        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+    scwin.__getObj(popupIframeId).setSrc("");
+    scwin.__getObj(popupIframeId).remove();
+    scwin.__getObj(popupId).remove();
+    ((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).last().css("z-index", "4001");
+    if (((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+        ((j) => j.length ? j : $('#mf__modal'))($('#_modal')).css("display", "none");
     }
 }
 scwin.setGridData = function(data, popupIdx) {
@@ -86,23 +108,6 @@ scwin.setGridData = function(data, popupIdx) {
     //hideFloatingLayer(popupIdx);
 }
 scwin.trigger1_onclick = function(e) {};
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Test step 1. 샘플파일을 실행 후 '팝업1오픈'을 클릭한다.
-    //1. Run the sample file and click 'Open pop-up 1'.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    // verify step 1. 작은 팝업창이보여지고 (우측스크롤바의 우측끝의 여백이 보이지 않고) 아래끝의 스크롤바의 아래끝영역사이의 여백이 보이지 않는다.(이전에는 여백이 보여짐)
-    //1. A small pop-up window is displayed (no margins at the right end of the right scroll bar), no margins between the bottom end areas of the scroll bar at the bottom end (previously the margins are shown)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#Pop_floatingLayerWPF1019WSQ2207popup').length == 1", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#Pop_floatingLayerWPF1019WSQ2207popup_contents').width() >= 500", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -124,13 +129,6 @@ scwin.onpageload2 = function() {
     /**
      * 공통팝업(플로팅레이어) 클로즈 하는 함수
      */
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 06-Feb-2018		
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[

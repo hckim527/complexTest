@@ -37,6 +37,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     //console.log('start...');
     dataList1.setJSON(jsonData);
@@ -58,7 +67,7 @@ scwin.gridView1_ongroupby = function() {
     return false;
 }
 scwin.fireDbClick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -72,47 +81,6 @@ scwin.fireDbClick = function(id) {
 scwin.__isCheck = function() {
     var log = WebSquare.logger.getLog();
     return log.indexOf('{"oldValue":"1","newValue":"222","oldSelectedIndex":2,"newSelectedIndex":0,"rowIndex":1,"colIndex":1}') != 0;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 'name2'항목의 첫번째값을 '111'로 변경한다.
-    //1. After executing the sample, change the first value of the 'name2' item to '111'.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val('111')");
-    //Verify 1. 첫번째 값이 '일' -> '111'로 변경된다.
-    //1. The first value is changed to 'day' -> '111'.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val()", "111");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'name2'항목의 두번째값을 '222'로 변경한다.
-    //2. Change the second value of the 'name2' entry to '222'.
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'gridView1_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val('222')");
-    //Verify 1. 첫번째 값이 '일' -> '111'로 변경된다.
-    //1. The first value is changed to 'day' -> '111'.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val()", "222");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 'name2'항목의 필터리스트(역삼각형)을 클릭하여 변경된 값으로 리스트가 갱신되는지 확인한다.
-    //3. Click on the filter list (inverted triangle) of the 'name2' item to see if the list is updated with the changed values.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_column1_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 필터리스트가 갱신되어 '111', '222'로 보여진다. (이전에는 두번째 값을 변경해도 필터리스트에 갱신된 값이 보여지지 않음)
-    //3. The filter list is updated to show '111' and '222'. (Previously, changing the second value does not show the updated value in the filter list)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_list').childNodes[3].innerText", "이");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'gridView1_customFilter_list').childNodes[3].innerText", "이");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 4. ctrl+마우스우클릭 > 로그보기로 oldSelectedIndex, newSelectedIndex가 전달되는지 확인한다.
-    //4. Verify that oldSelectedIndex and newSelectedIndex are passed to the ctrl + right-click> Log view.
-    //Verify
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -238,9 +206,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 17-July-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

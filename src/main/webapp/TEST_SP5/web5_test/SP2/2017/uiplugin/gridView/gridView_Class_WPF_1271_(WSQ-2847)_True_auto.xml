@@ -39,57 +39,27 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__isApplied = function(colid) {
     var dataCol_id = WebSquare.util.getDataPrefix("col_id");
-    var tds = WebSquare.wUnit.getJq('.grid_body_row').not('.w2grid_hidedRow').find('td[' + dataCol_id + '="' + colid + '"]');
+    var tds = ((j) => j.length ? j : $('.mf_grid_body_row'))($('.grid_body_row')).not('.w2grid_hidedRow').find('td[' + dataCol_id + '="' + colid + '"]');
     var count = 0;
     for (var i = 0; i < tds.length; i++) {
-        if (WebSquare.wUnit.getJq(tds[i]).children(1).hasClass("w2grid_input")) {
+        if (scwin.__getJq(tds[i]).children(1).hasClass("w2grid_input")) {
             count++;
         }
     }
     return count == tds.length;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. Source 탭에서 gridView1 의 checkEditableInputClass 부분을 확인한다.
-    //1. In the Source tab, check the checkEditableInputClass part of gridView1.
-    // verify step 1. checkEditableInputClass = 'true'
-    //1. checkEditableInputClass = 'true'
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1').getAttribute('checkEditableInputClass')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. Property 탭 또는 Source 탭에서 col1 / col3 의 readOnly 부분을 확인한다.
-    //2. In the Property tab or Source tab, check the readOnly part of col1 / col3.
-    // verify step 2. readOnly='true' 
-    //2. readOnly='true' 
-    // Test step 3. col1 / col3 의 disabled 부분을 확인한다.
-    //3. Check the disabled part of col1 / col3.
-    // verify step 3. disabled='true'
-    // Test step 4. 브라우저에서 확인한다.
-    //4. Check in the browser.
-    //WebSquare.wUnit.addCommand("set", "");
-    // verify step 4. readOnly 와 disabled 설정하지 않은 col2 컬럼만 'w2grid_input' class가 적용된다. / readOnly 와 disabled 설정한 컬럼은 'w2grid_input' class가 적용되지 않는다.
-    //4. Only 'col2' column with 'readOnly' and 'disabled' set applies to 'w2grid_input' class. The 'w2grid_input' class does not apply to / readOnly and disabled columns.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isApplied('col1')", "false");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isApplied('col2')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isApplied('col3')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 25-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

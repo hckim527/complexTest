@@ -15,82 +15,33 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.inputCalendar1_onviewchange = function(info) { //debugger;
     console.log(info.oldValue + "	" + info.newValue);
 };
 scwin.inputCalendar1_onyearselect = function(info) {};
 scwin.__lostFocus = function() {
-    WebSquare.wUnit.getJq('input').blur();
+    $('input').blur();
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getObjById('inputCalendar1_input').value == checkYear;
+    return scwin.__getObj('inputCalendar1_input').value == checkYear;
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getObjById('inputCalendar2_input').value == checkYearMonth;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 0. inputCalendar 속성을 확인한다.
-    //0. Check the inputCalendar property.
-    //Verify step 0. renderType='native'
-    //0. renderType = 'native'
-    //Test step 1. 샘플파일 실행 후 첫번째 캘린더아이콘을 클릭하여 연도값을 변경하고 'v'버튼을 클릭한다.
-    //1. After running the sample file, click the first calendar icon to change the year value and click the 'v' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_next_year_yearType')[0].click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_btn_ok_yearType')[0].click()");
-    //Verify step 1. 변경된 연도값이 입력창에 보여진다.
-    //1. The changed year value is displayed in the input window.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    //Test step 2. 첫번째 캘린더아이콘을 클릭하여 연도값을 변경하고 'x'버튼을 클릭한다.
-    //2. Click the first calendar icon to change the year value and click the 'x' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_next_year_yearType')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_btn_close_yearType')[0].click()");
-    //Verify step 2. 변경된 연도값이 입력창에 보여지지 않는다.
-    //2. The changed year value is not shown in the input window.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    //Test step 3. 두번째 캘런더(calendarValueType='yearMonth') 아이콘의 연도값을 변경하고 위의 1번과 2번을 수행한다.
-    //3. Change the year value of the second calendar (calendarValueType = 'yearMonth') icon and perform steps 1 and 2 above.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_last_month')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_next_month')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_next_year')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_btn_ok')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__lostFocus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 3. 위의 1번내용과 2번내용이 수행되어진다.
-    //3. Contents 1 and 2 are performed.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Test step 3. 두번째 캘런더(calendarValueType='yearMonth') 아이콘의 연도값을 변경하고 위의 1번과 2번을 수행한다.
-    //3. Change the year value of the second calendar (calendarValueType = 'yearMonth') icon and perform steps 1 and 2 above.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_last_month')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_next_month')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_next_year')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_header_btn_close')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__lostFocus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 3. 위의 1번내용과 2번내용이 수행되어진다.
-    //3. Contents 1 and 2 are performed.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj('inputCalendar2_input').value == checkYearMonth;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -110,9 +61,6 @@ scwin.onpageload2 = function() {
         checkYearMonth = String(checkYear) + "-" + String(checkMonth);
     }
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

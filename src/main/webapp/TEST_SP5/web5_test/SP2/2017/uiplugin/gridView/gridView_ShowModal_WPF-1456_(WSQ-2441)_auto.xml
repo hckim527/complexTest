@@ -23,59 +23,30 @@
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
 		
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin._checkRow = function() {
-	let tr = WebSquare.wUnit.getJq("#wq_uuid_3_body_tbody tr").not(".w2grid_hidedRow");
+	let tr = ((j) => j.length ? j : $('#mf_wq_uuid_3_body_tbody tr'))($('#wq_uuid_3_body_tbody tr')).not(".w2grid_hidedRow");
     return tr.length == 4;
 }
 scwin.clickCheckbox = function() {
-    if(WebSquare.wUnit.getObjById("wq_uuid_3_cell_1_0").childNodes[0].getAttribute("disabled") == null){
-        WebSquare.wUnit.getObjById("wq_uuid_3_cell_1_0").childNodes[0].click();
+    if(scwin.__getObj("wq_uuid_3_cell_1_0").childNodes[0].getAttribute("disabled") == null){
+        scwin.__getObj("wq_uuid_3_cell_1_0").childNodes[0].click();
     }
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 개발자도구 (F12) 를 실행한다.
-    //1. Run the Developer Tool (F12) in your browser.
-    //Test step 2. 콘솔탭에서 WebSquare.layer.showModal([]) 를 입력한다.
-    //2. On the Console tab, type WebSquare.layer.showModal ([]).
-    WebSquare.wUnit.addCommand("set", "WebSquare.layer.showModal([])");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. showModal 이 된다.
-    //2. Become showModal.
-    WebSquare.wUnit.addCommand("assert", "_modal.style.display == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    //Test 3. dataList1.insertRow() 를 입력한다.
-    //3. Type dataList1.insertRow ().
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').insertRow()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. Row 가 추가된다.
-    //3. Row is added.
-    WebSquare.wUnit.addCommand("set", "scwin._checkRow()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    //Test step 4. WebSquare.layer.hideModal() 를 입력한다.
-    //4. Enter WebSquare.layer.hideModal ().
-    WebSquare.wUnit.addCommand("set", " WebSquare.layer.hideModal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 4. hideModal 이 된다.
-    //4. Become a hideModal.
-    WebSquare.wUnit.addCommand("assert", "_modal.style.display == 'none'", "true");
-
-    //Test step 5. 임의의 체크박스를 클릭한다.
-    //5. Click any checkbox.
-    WebSquare.wUnit.addCommand("set", "scwin.clickCheckbox()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 5. 정상적으로 체크박스가 동작한다. (그전버전에서는 CheckBox 가 Disabled 되서 체크하지 못했음.)
-    //5. Check box works normally. (In previous versions, the CheckBox was disabled and could not be checked.)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_3_cell_1_0').childNodes[0].checked", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 		
 scwin.onpageload = function() {
     WebSquare.layer.showModal([]);

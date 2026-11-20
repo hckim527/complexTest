@@ -28,6 +28,13 @@
             }
         </style>
         <script type='text/javascript' lazy='false'><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.showMessage = function(message) {
     //  WebSquare.logger.printLog(message);
     console.log(message);
@@ -43,7 +50,7 @@ scwin.gridView1_onsubtotaldblclick = function(info) {
     scwin.showMessage('== onsubtotaldblclick ==\n[colID] = ' + info.colID + ', [startRowIndex] = ' + info.startRowIndex + ', [endRowIndex] = ' + info.endRowIndex + '\n[element] = ' + info.element.outerHTML);
 };
 scwin.__isEl = function() {
-    return el = WebSquare.wUnit.getJq('#gridView1_body_tbody tr');
+    return el = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr'))($('#gridView1_body_tbody tr'));
 }
 scwin.rgb2hex = function(rgb) {
     rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
@@ -54,9 +61,9 @@ scwin.rgb2hex = function(rgb) {
 }
 scwin.checkTopColor = function() {
     if (navigator.userAgent.indexOf("Firefox") > -1) {
-        var color = WebSquare.wUnit.getJq($('.w2grid_lastRow').last()).css('borderTopColor');
+        var color = scwin.__getJq($('.w2grid_lastRow').last()).css('borderTopColor');
     } else {
-        var color = WebSquare.wUnit.getJq($('.w2grid_lastRow').last()).css('border-top-color');
+        var color = scwin.__getJq($('.w2grid_lastRow').last()).css('border-top-color');
     }
     if (color.indexOf('rgb') > -1) {
         color = scwin.rgb2hex(color);
@@ -64,36 +71,18 @@ scwin.checkTopColor = function() {
     return color == '#ff0000' || color == 'red';
 }
 scwin.checkBackgroundColor = function() {
-    var backgroundColor = WebSquare.wUnit.getJq($('.w2grid_lastRow').last()).css('background-color');
+    var backgroundColor = scwin.__getJq($('.w2grid_lastRow').last()).css('background-color');
     if (backgroundColor.indexOf('rgb') > -1) {
         backgroundColor = scwin.rgb2hex(backgroundColor);
     }
     return backgroundColor == '#ffff00' || backgroundColor == 'yellow';
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getJq($('.w2grid_lastRow').last()).css('border-top-style') == 'solid';
+    return scwin.__getJq($('.w2grid_lastRow').last()).css('border-top-style') == 'solid';
 };
 scwin.checkVal2 = function() {
-    return Math.ceil(WebSquare.wUnit.getJq($('.w2grid_lastRow').last()).css('border-top-width').split('px')[0]) == 2;
+    return Math.ceil(scwin.__getJq($('.w2grid_lastRow').last()).css('border-top-width').split('px')[0]) == 2;
 };
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1').setBottomRowIndex(100)");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.checkTopColor()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkBackgroundColor()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.data = [];

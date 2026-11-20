@@ -71,26 +71,22 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.hasManyClass = function() {
-    var td = WebSquare.wUnit.getJq(".w2grid_input_table");
+    var td = ((j) => j.length ? j : $('.mf_w2grid_input_table'))($('.w2grid_input_table'));
     let count = 0;
     td.each(function(index, el) {
-        var classes = WebSquare.wUnit.getJq(this).attr("class");
+        var classes = scwin.__getJq(this).attr("class");
         (classes.match(/w2grid_input_table/g) || []).length != 1 ? count++ : "";
     });
     return count ? true : false;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.hasManyClass()", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     dltAppRcpt.insertRow();

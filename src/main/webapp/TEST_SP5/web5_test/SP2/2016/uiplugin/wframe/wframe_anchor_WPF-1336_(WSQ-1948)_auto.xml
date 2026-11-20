@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     wframe.setSrc("wframe1_anchor_WPF-1336_(WSQ-1948).xml");
 };
@@ -22,51 +31,18 @@ scwin.trigger2_onclick = function(e) {
     wframe.setSrc("wframe2_anchor_WPF-1336_(WSQ-1948).xml");
 };
 scwin.checkValue = function() {
-    if (WebSquare.wUnit.getJq('#anchor1').length == 0) {
-        return WebSquare.wUnit.getDomById($p.id + 'wframe_anchor1').innerText
+    if (((j) => j.length ? j : $('#mf_anchor1'))($('#anchor1')).length == 0) {
+        return scwin.__getDom($p.id + 'wframe_anchor1').innerText
     } else {
-        return WebSquare.wUnit.getDomById($p.id + 'anchor1').innerText
+        return scwin.__getDom($p.id + 'anchor1').innerText
     }
 }
 scwin.setValue = function() {
-    if (WebSquare.wUnit.getJq('#anchor1').length == 0) {
-        WebSquare.wUnit.getDomById('wframe_anchor1').click();
+    if (((j) => j.length ? j : $('#mf_anchor1'))($('#anchor1')).length == 0) {
+        (document.getElementById('wframe_anchor1') || document.getElementById('mf_wframe_anchor1')).click();
     } else {
         anchor1.click();
     }
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 trigger1버튼을 클릭한다.
-    //1. Run the sample file and click the trigger1 button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "300");
-    //Verify step 1. 화면에 frame1이 보여진다.
-    //1. Frame1 is shown on the screen.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "frame1");
-    //Test step 2. 화면의 frame1을 클릭한다.
-    //2. Click frame1 on the screen.
-    WebSquare.wUnit.addCommand("set", "scwin.setValue()");
-    //Verify step 2. 알림창에 wframe1이 보여진다.
-    //2. wframe1 is displayed in the notification window.
-    WebSquare.wUnit.addCommand("assert", "alert1IsShowed", "true");
-    //Test step 3. trigger2버튼을 클릭한다.
-    //3. Click the trigger2 button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "300");
-    //Verify step 3. 화면에 frame2이 보여진다.
-    //3. Frame2 is shown on the screen.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "frame2");
-    //Test step 4. 화면의 frame2를 클릭한다.
-    //4. Click frame2 on the screen.
-    WebSquare.wUnit.addCommand("set", "scwin.setValue()");
-    //Verify step 4. 알림창에 wframe2이 보여진다.(이전에는 알림창에 wframe1이 보여짐)
-    //4. wframe2 is displayed in the notification window (previously wframe1 is displayed in the notification window)
-    WebSquare.wUnit.addCommand("assert", "alert2IsShowed", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -78,9 +54,6 @@ scwin.onpageload2 = function() {
     window.alert1IsShowed = false;
     window.alert2IsShowed = false;
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

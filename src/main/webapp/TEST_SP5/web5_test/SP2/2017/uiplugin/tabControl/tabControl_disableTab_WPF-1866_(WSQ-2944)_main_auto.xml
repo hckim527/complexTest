@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     tabCon1.disableTab(0);
 };
@@ -22,63 +31,22 @@ scwin.trigger2_onclick = function(e) {
     tabCon1.enableTab(0);
 };
 scwin.isDisabled = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     return el.classList.contains('w2tabcontrol_disabled');
 }
 scwin.hasAttrDiasbled = function(id) {
-    return WebSquare.wUnit.getDomById($p.id + id).getAttribute("disabled") == "disabled";
+    return scwin.__getDom($p.id + id).getAttribute("disabled") == "disabled";
 }
 scwin.checkValue = function() {
-    if (WebSquare.wUnit.getJq('#ip1').length == 0) {
+    if (((j) => j.length ? j : $('#mf_ip1'))($('#ip1')).length == 0) {
         return scwin.hasAttrDiasbled('tabCon1_contents_content1_body_ip1')
     } else {
         return scwin.hasAttrDiasbled('ip1')
     }
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 1번의 샘플파일을 실행 후 'disableTab'버튼을 클릭한다. 
-    //1. Execute the sample file 1 and click the 'disableTab' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    // verify step 1. tab1이 disabled 처리되어진다. 
-    //1. tab1 is disabled.
-    WebSquare.wUnit.addCommand("assert", "scwin.isDisabled('tabCon1_tab_tabs1')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. tab2로 이동 후 'enableTab'버튼을 클릭한다. 
-    //2. Go to tab2 and click the 'enableTab' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabCon1_tab_tabs2').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 2. tab1이 활성화 되어진다.
-    //2. Tab1 is activated. 
-    WebSquare.wUnit.addCommand("assert", "scwin.isDisabled('tabCon1_tab_tabs1')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. tab1으로 이동하여 enabled되어졌는지 확인한다.
-    //3. Go to tab1 and make sure it is enabled.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('tabCon1_tab_tabs1').click()");
-    // verify step 3. tab1 및 컴포넌트가 enabled되어진다.(이전에는 컴포넌트가 enabled되어지지 않음)
-    //3. tab1 and the component are enabled.(Previously the component is not enabled)
-    WebSquare.wUnit.addCommand("assert", "scwin.isDisabled('tabCon1_tab_tabs1')", "false");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue()", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 19-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

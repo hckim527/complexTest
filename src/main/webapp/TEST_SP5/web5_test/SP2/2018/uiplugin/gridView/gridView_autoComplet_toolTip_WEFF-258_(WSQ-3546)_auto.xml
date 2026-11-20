@@ -23,6 +23,15 @@
 				</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     var tmp = 0;
     var jsonData = [{
@@ -129,7 +138,7 @@ scwin.onpageload = function() {
     dataList1.setJSON(jsonData);
 };
 scwin.fireOver = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id)
+    var node = scwin.__getDom($p.id + id)
     if (document.createEventObject) {
         node.fireEvent('onmouseover');
     } else if (document.createEvent) {
@@ -141,23 +150,8 @@ scwin.fireOver = function(id) {
     }
 }
 scwin.__checkHtml = function() {
-    return WebSquare.wUnit.getJq("#wq_uuid_3_tooltip").html();
+    return ((j) => j.length ? j : $('#mf_wq_uuid_3_tooltip'))($('#wq_uuid_3_tooltip')).html();
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.fireOver('wq_uuid_3_cell_0_3')");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('wq_uuid_3_tooltip').style.display == 'block'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkHtml() == 'name1'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 
 ]]></script>

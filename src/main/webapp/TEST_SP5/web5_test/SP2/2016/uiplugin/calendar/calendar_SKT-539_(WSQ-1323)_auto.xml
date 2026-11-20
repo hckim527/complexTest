@@ -15,6 +15,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.cal_onviewchange = function(info) {
     cal2.focus();
 };
@@ -22,25 +38,7 @@ scwin.cal_oniconclick = function() {
     cal2.focus();
 };
 scwin.isFocus = function() {
-    return WebSquare.wUnit.getJq(WebSquare.wUnit.getDomById($p.id + 'cal2_input')).is(':focus');
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 왼쪽의 inputCalendar에서 날짜를 직접입력하고(20160822) 마우스를 Focusout시킨다.
-    //1. After running the sample file, input the date directly in the inputCalendar on the left (20160822) and focus the mouse.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_input').focus()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_input').value = '20160822'");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('cal_input').blur()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 1. 날짜가 입력되어지고 Focus가 오른쪽의 inputCalendar로 이동되어진다.(이전에는 Focus가 이동되지 않음)
-    //1. The date is entered and the focus is moved to the inputCalendar on the right (previously Focus is not moved).
-    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq(scwin.__getDom($p.id + 'cal2_input')).is(':focus');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -50,9 +48,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 28-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

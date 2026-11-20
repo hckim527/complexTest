@@ -22,6 +22,15 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     var data = [];
     var row = 5;
@@ -79,41 +88,20 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).value == value) {
+    if (scwin.__getDom($p.id + id).value == value) {
         return true;
     }
     return false
 }
 scwin.checkContent = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).textContent == value) {
+    if (scwin.__getDom($p.id + id).textContent == value) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 col3항목의 값을 더블클릭 후 마우스를 blur 또는 enterkey를 입력한다.
-    //1. After running the sample, double-click the value of the col3 item and enter the mouse blur or enterkey.
-    //Verify step 1. DateValidCheck does not normally result in the message 'Date format is invalid'.(Previously occurred)
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_1_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkContent($p.id+'gridView1_cell_0_2', '2018-02-02')", "true");
-    //Test step 2. 새로고침(F5)후 맨끝 하단의 'setIoFormat'버튼을 클릭한다.
-    //2. After refreshing (F5), click the 'setIoFormat' button at the bottom of the terminal.
-    //Verify step 2. The value is changed to 01/02/2018 value normally.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('inputCalendar1_input', '01/02/2018')", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -122,9 +110,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

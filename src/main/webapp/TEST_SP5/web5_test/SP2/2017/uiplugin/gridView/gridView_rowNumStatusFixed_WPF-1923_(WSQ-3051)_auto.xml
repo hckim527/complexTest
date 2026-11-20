@@ -22,6 +22,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.tooltip_test = function(label) {
     //console.log("tooltip Formatter label is	"+ label);
     return "label tooltip formatter";
@@ -29,26 +36,12 @@ scwin.tooltip_test = function(label) {
 scwin.__colScrolled = function(td) {
     var count = 0;
     td.each(function() {
-        if (WebSquare.wUnit.getJq(this).css("width") == "0px") {
+        if (scwin.__getJq(this).css("width") == "0px") {
             count++;
         }
     });
     return count == td.length;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1').setScrollLeft(110)");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.__colScrolled(WebSquare.wUnit.getJq('#gridView1_body_tbody td[colindex=\"0\"]'))", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__colScrolled(WebSquare.wUnit.getJq('#gridView1_body_tbody td[colindex=\"1\"]'))", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.arr = [];
@@ -56,10 +49,6 @@ scwin.onpageload = function() {
         arr[i] = i;
     }
     dataList1.setData(arr);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 19-Mar-2018
-    //end unitTest
 }
 ]]></script>
     </head>

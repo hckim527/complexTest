@@ -23,19 +23,25 @@
         </xf:model>
         <script type="text/javascript" src="/coweb/js/common.js"></script>
         <script type="text/javascript" lazy="false"><![CDATA[
-scwin.unitTest = function() {
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('cbo_CselCd').setText('53010101 : ')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('cbo_CselCd').endEdit()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('cbo_CselCd').getText() == 'ALL'", "false");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {
-    WebSquare.wUnit.getObjById('dl_cbo_CselCd').setData(['53010101', '', '53030101', '']);
+    scwin.__getObj('dl_cbo_CselCd').setData(['53010101', '', '53030101', '']);
     //cbo_CselCd.setItemSet("data:dl_cbo_CselCd","FULL_NM","CODE")
-    WebSquare.wUnit.getObjById('cbo_CselCd').setNodeSet("data:dl_cbo_CselCd", "FULL_NM", "CODE");
+    scwin.__getObj('cbo_CselCd').setNodeSet("data:dl_cbo_CselCd", "FULL_NM", "CODE");
 }
 ]]></script>
     </head>

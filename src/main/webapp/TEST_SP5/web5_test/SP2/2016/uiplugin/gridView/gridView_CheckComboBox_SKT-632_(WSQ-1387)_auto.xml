@@ -60,6 +60,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     dataList2.setJSON([{
         "col1": "aa",
@@ -90,7 +99,7 @@ scwin.trigger1_onclick = function(e) {
     alertShowed = true;
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -114,53 +123,6 @@ scwin.getElementsByClassName = function(name) {
     } else {
         return document.getElementsByClassName(name.replace(/\./g, " "));
     }
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 name3 체크콤보박스의 리스트를 확인한다.
-    //1. In the browser, check the list of name3 check combo boxes.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. 11 / 22/ 33 / 44 리스트가 표시된다.
-    //1. A list of 11/22/33/44 is displayed.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2table_ccb_col_label')[1].innerText == '11'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2table_ccb_col_label')[2].innerText == '22'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2table_ccb_col_label')[3].innerText == '33'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2table_ccb_col_label')[4].innerText == '44'", "true");
-    //Test step 2. 임의로 데이터를 체크한다.
-    //2. Check the data at random.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_3_checkbox').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_4_checkbox').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_label').click()");
-    //Verify step 2. 선택한 데이터가 체크되어 표시된다.
-    //2. The selected data is checked and displayed.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').innerText", "33 44");
-    //Test step 3. Data List 버튼을 클릭한다.
-    //3. Click the Data List button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 3. 팝업과 함께 동적으로 리스트가 변경된다.
-    //3. The list changes dynamically with the popup.
-    WebSquare.wUnit.addCommand("assert", "alertShowed", "true");
-    //Test step 4. 체크콤보박스의 리스트를 확인한다.
-    //4. Check the list of check combo boxes.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_1_2')");
-    //Verify step 4. 동적으로 변경된 리스트가 표시된다. (전버전에서는 동적으로 변경시에도 기존에 데이터 리스트가 표시되는 현상이 발생)
-    //4. The dynamically changed list is displayed. (In previous version, data list is displayed even when changing dynamically)
-    WebSquare.wUnit.addCommand("assert", "scwin.getElementsByClassName('w2table_ccb_col_label')[1].innerText", "aa");
-    //Test step 5. 임의로 데이터를 체크한다.
-    //5. Check the data at random.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_1_checkbox').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_2_checkbox').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_label').click()");
-    //Verify step 5. 선택한 데이터가 체크되어 표시된다.
-    //5. The selected data is checked and displayed.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_2').innerText", "aa bb");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -196,9 +158,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 26-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -15,6 +15,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.getToday = function() {
     var date = new Date();
     dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
@@ -24,50 +39,14 @@ scwin.getToday = function() {
     return today;
 }
 scwin.isFocus = function() {
-    return WebSquare.wUnit.getJq("#inputCalendar4_calendar_cell_2_3").hasClass("w2calendar_selected")
+    return ((j) => j.length ? j : $('#mf_inputCalendar4_calendar_cell_2_3'))($('#inputCalendar4_calendar_cell_2_3')).hasClass("w2calendar_selected")
 }
 scwin.checkVal = function() {
-    return scwin.getToday() === WebSquare.wUnit.getDomById('inputCalendar4_calendar_currentDate').innerText;
+    return scwin.getToday() === (document.getElementById('inputCalendar4_calendar_currentDate') || document.getElementById('mf_inputCalendar4_calendar_currentDate')).innerText;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 0. inputCalendar에 속성을 추가한다.
-    //Add an attribute to inputCalendar.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar4').keepFixedDate = true");
-    // verify step 0. keepFixedDate = 'true'
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar4').keepFixedDate", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 달력버튼을 클릭하여 포커스되어진 날짜를 확인한다.
-    //1. Run the sample file and click on the calendar button to confirm the focus date.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar4_img').click()");
-    // verify step 1. keepFixedDate = 'true'
-    //The calendar"s focus date is shown and moved to the set date 20170901. (Normal)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar4').getValue() == '20170901'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 달력의 포커스날짜가 셋팅된 20170901일자로 이동되어 보여진다.(정상)
-    //2. Change the date and click the calendar button again.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar4_calendar_cell_2_3').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar4_img').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 2. 변경되어진 날짜로 포커스되어 보여지고 하단의 today날짜는 유지되어 진다.
-    //2. It will be focused on the modified date and the current today date will be maintained.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar4').getValue() == 20170913", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.isFocus()", "true");
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('inputCalendar4_calendar_currentDate').innerText == scwin.getToday()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
-    WebSquare.wUnit.getObjById('inputCalendar4').setValue("20170901");
+    scwin.__getObj('inputCalendar4').setValue("20170901");
 }
 ]]></script>
     </head>

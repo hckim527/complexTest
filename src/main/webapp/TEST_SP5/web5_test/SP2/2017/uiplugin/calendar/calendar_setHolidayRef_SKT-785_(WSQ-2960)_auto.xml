@@ -53,6 +53,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     calendar1.setHolidayRef("data:dataList1.col1");
 };
@@ -64,44 +71,12 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin.checkColor = function(id, value, rgb) {
-    var color = WebSquare.wUnit.getJq("#" + id).css("color");
+    var color = scwin.__getJq("#" + id).css("color");
     if (color.indexOf("rgb") != -1) {
         return color == rgb;
     }
     return color == value;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘
-    //1. After running 
-    //Verify step 1. Increment 
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_selectbox_year_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "100");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_selectbox_year_itemTable_39').click()");
-    //WebSquare.wUnit.addCommand("pause", "100");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_selectbox_month_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "100");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_selectbox_month_itemTable_8').click()");
-    //WebSquare.wUnit.addCommand("pause", "100");
-    //for mobile
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoYear(2017)");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoMonth(9)");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_1_0').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_3_5', 'red', 'rgb(255, 0, 0)')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_4_2', 'red', 'rgb(255, 0, 0)')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     dataList2.setData([1, "2017-09-18", 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);

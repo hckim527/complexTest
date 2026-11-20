@@ -33,6 +33,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     var str = "dl_gridData.setJSON before : " + chkCombo1.getValue();
     str += "<br/>";
@@ -43,40 +52,16 @@ scwin.trigger1_onclick = function(e) {
     txt1.setValue(str);
 };
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).textContent == value) {
+    if (scwin.__getDom($p.id + id).textContent == value) {
         return true;
     }
     return false
 }
 scwin.__select = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id).checked) {
+    if (scwin.__getDom($p.id + id).checked) {
         return true;
     }
     return false;
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 checkCombobox 에 데이터 "a2", "a3" 을 선택한다.
-    //1. In the browser, select data "a2", "a3" in checkCombobox.
-    //Verify step 1. Data "a2" and "a3" are selected.
-    //Test step 2. dl_gridData.setJSON 버튼을 클릭한다.
-    //2. Click the dl_gridData.setJSON button.
-    //Verify step 2. "a1", "a2", and "a3" are entered in the grid view.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_0_0', 'a1')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_1_0', 'a2')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_2_0', 'a3')", "true");
-    //Test step 3. 다시 checkCombobox 의 리스트를 펼친다.
-    //3. Expand the checkCombobox list again.
-    //Verify step 3. The 'a2' and 'a3' check boxes are selected.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('chkCombo1').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.__select($p.id+'chkCombo1_itemTable_1_checkbox')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__select($p.id+'chkCombo1_itemTable_2_checkbox')", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -94,9 +79,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 08-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

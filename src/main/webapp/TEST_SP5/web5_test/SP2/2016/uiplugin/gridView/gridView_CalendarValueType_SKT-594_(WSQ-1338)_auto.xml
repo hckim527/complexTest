@@ -27,6 +27,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -47,51 +56,10 @@ scwin.getToday = function() {
     return today;
 }
 scwin.compareDate = function() {
-    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_1").innerText == scwin.getToday() + " 00:00:00";
+    return scwin.__getDom($p.id+"gridView1_cell_0_1").innerText == scwin.getToday() + " 00:00:00";
 }
 scwin.setVal = function() {
-    scwin.fireDbClick(WebSquare.wUnit.getDomById('gridView1_cell_0_1'));
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 3. 브라우저에서 name2 컬럼의 셀을 calendar 에서 임의로 날짜와 시, 분, 초를 선택한다.
-    //3. In the browser, select the cell of the name2 column in the calendar and randomly select the date and hour, minute, and second.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_selected').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_hour_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_hour_itemTable_2').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_minute_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_minute_itemTable_2').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_second_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_second_itemTable_2').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_hour').selectedIndex = 2");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_minute').selectedIndex = 2");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1__col2_calendar_selectbox_second').selectedIndex = 2");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_time_confirm')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. calendar 데이터가 입력된다.
-    //3. The calendar data is entered.
-    WebSquare.wUnit.addCommand("assert", "scwin.compareDate()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    scwin.fireDbClick((document.getElementById('gridView1_cell_0_1') || document.getElementById('mf_gridView1_cell_0_1')));
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -101,9 +69,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 02-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

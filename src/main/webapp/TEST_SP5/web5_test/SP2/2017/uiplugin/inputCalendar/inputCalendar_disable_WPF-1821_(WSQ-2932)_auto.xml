@@ -14,6 +14,13 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.inputCalendar1_onviewchange = function(info) {
     console.log(info.oldValue + " " + info.newValue);
 };
@@ -51,67 +58,24 @@ scwin.trigger3_onclick = function(e) {
 };
 scwin.__checkCal = function() {
     var b = true
-    WebSquare.wUnit.getJq("#inputCalendar15_calendar_content table tbody td").each(function(i, el) {
-        if (WebSquare.wUnit.getJq(el).text() >= "11" && (WebSquare.wUnit.getJq(el).text() <= "27") && WebSquare.wUnit.getJq(el).hasClass("w2calendar_date_on")) {
-            if (WebSquare.wUnit.getJq(el).hasClass("w2calendar_date_disable")) {
+    ;((j) => j.length ? j : $('#mf_inputCalendar15_calendar_content table tbody td'))($('#inputCalendar15_calendar_content table tbody td')).each(function(i, el) {
+        if (scwin.__getJq(el).text() >= "11" && (scwin.__getJq(el).text() <= "27") && scwin.__getJq(el).hasClass("w2calendar_date_on")) {
+            if (scwin.__getJq(el).hasClass("w2calendar_date_disable")) {
                 console.log(1);
                 console.log(el);
                 b = false;
             }
         } else {
-            if (!WebSquare.wUnit.getJq(el).hasClass("w2calendar_date_disable")) {
+            if (!scwin.__getJq(el).hasClass("w2calendar_date_disable")) {
                 b = false;
             }
         }
     });
     return b;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 상단의 inputCalendar를 클릭하거나 직접 입력한다.(예 : 20170915)
-    //1. After running the sample file, click the inputCalendar at the top or enter it manually (eg 20170915).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#inputCalendar15_input').val(20170915)");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 1. inputCalendar의 값이 20170915로 입력되어진다.
-    //1. The value of inputCalendar is entered as 20170915.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar15_input').val()", "20170915");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. inputCalendar에 20170801을 입력 또는 선택하여 입력한 후 blur 이벤트를 발생시킨다.(포커스 아웃)
-    //2. Input or select 20170801 in inputCalendar, and then generate a blur event (focus out).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_img').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_header_last_month').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_calendar_cell_0_2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_img').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. 비활성화 구간의 값입력 시 이전의 날짜로 돌아간다.(20170915)
-    //2. When entering the value of the inactive section, return to the previous date. (20170915)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar15_input').val()", "20170915");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Test step 3. IE6, IE7, IE8에서 inputCalendar 클릭 시 20170911 ~ 20170927 날짜만 활성화되는지 확인한다.
-    //3. In IE6, IE7, IE8, click on inputCalendar and check that only 20170911 ~ 20170927 date is activated.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar15_img').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 3. IE6, IE7, IE8에서 20170911 ~ 20170927 날짜만 활성화되고 이전날짜와 이후날짜는 비활성화되어진다
-    //3. In IE6, IE7, IE8, only date 20170911 ~ 20170927 will be activated, and previous date and future date will be inactive.
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkCal()", "true");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 09-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

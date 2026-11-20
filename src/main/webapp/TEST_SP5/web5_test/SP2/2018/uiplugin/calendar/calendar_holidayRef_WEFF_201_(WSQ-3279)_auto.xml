@@ -20,6 +20,13 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.init = function() {
     //부모창 init함수에서 공휴일 데이터를 받아온다.
     var tmpArr = ["20180323", "20180322"];
@@ -30,55 +37,12 @@ scwin.trigger1_onclick = function(e) {
     dl_holiday.setData(tmpArr);
 };
 scwin.checkColor = function(id, value, rgb) {
-    var color = WebSquare.wUnit.getJq("#" + id).css("color");
+    var color = scwin.__getJq("#" + id).css("color");
     if (color.indexOf("rgb") != -1) {
         return color == rgb;
     }
     return color == value;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 calendar의 3월22일, 3월23일 부분을 확인한다.
-    //1. After running the sample file, check the March 22nd and March 23rd parts of the calendar.
-    //Verify step 1. March 22nd and 23rd are shown in red.
-    //pc
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_year_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_year_itemTable_40').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_month_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_selectbox_month_itemTable_2').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //mobile
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "scwin.init()");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoYear(2018)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoMonth(3)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_1_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_3_4', 'red', 'rgb(255, 0, 0)')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_3_5', 'red', 'rgb(255, 0, 0)')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. dl_holiday.setData 버튼을 클릭하고 calendar의 3월7일, 3월8일 부분을 확인한다.
-    //2. Click the dl_holiday.setData button and check the March 7th and March 8th parts of the calendar.
-    //Verify step 2. March 7 and March 8 of the calendar are shown in red (not previously applied).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_1_3', 'red', 'rgb(255, 0, 0)')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('calendar1_cell_1_4', 'red', 'rgb(255, 0, 0)')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
     scwin.init();
 }

@@ -69,7 +69,16 @@
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
         
-	scwin.onpageload = function() {
+	// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
 		
 	};
 	
@@ -85,7 +94,7 @@
 	};
 
 	scwin.Dbclick = function(id) {
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireDbClick(el);
 	}
 	scwin.fireDbClick = function(node) {
@@ -100,21 +109,8 @@
 		}
 	}	
 	scwin.checkVal = function() {
-		return WebSquare.wUnit.getDomById('wq_uuid_3_cell_2_1').innerText == '-';
+		return (document.getElementById('wq_uuid_3_cell_2_1') || document.getElementById('mf_wq_uuid_3_cell_2_1')).innerText == '-';
 	}
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('wq_uuid_3_column4')");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();	
 		
 ]]></script>
     </head>

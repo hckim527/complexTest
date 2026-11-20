@@ -24,6 +24,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.rgb2hex = function(rgb) {
     rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
     return (rgb && rgb.length === 4) ? "#" +
@@ -32,7 +39,7 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq("#" + id).css("background-color");
+    var rgb = scwin.__getJq("#" + id).css("background-color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
@@ -42,36 +49,6 @@ scwin._checkRgb = function(id, hexa) {
 }
 
 	
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_3_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-	WebSquare.wUnit.addCommand("pause", "500");
-			
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('gridView1_cell_4_2', '#fca73c')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-	WebSquare.wUnit.addCommand("pause", "500");
-	
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('gridView1_cell_3_2', '#fca73c')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-	WebSquare.wUnit.addCommand("pause", "500");	
-	
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('gridView1_cell_3_1', '#fca73c')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-	WebSquare.wUnit.addCommand("pause", "500");	
-	
-	WebSquare.wUnit.addCommand("pause", "500");	
-	
-    //WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('gridView1_cell_3_3', '#fca73c')", "true");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
 

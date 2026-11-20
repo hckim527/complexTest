@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     imports("uiplugin.popup");
     WebSquare.util.openPopup("", { //get방식으로 팝업의 아이디를 넘김니다.
@@ -50,7 +59,7 @@ scwin.trigger1_onclick = function(e) {
     });
 };
 scwin.isPopupOutUI = function() {
-    var el = WebSquare.wUnit.getDomById("pop1");
+    var el = (document.getElementById('pop1') || document.getElementById('mf_pop1'));
     var elStyle = window.getComputedStyle(el);
     return scwin.getPositionP(el.style.top, elStyle) > scwin.parse(containerStyle.getPropertyValue("height"));
 }
@@ -65,7 +74,7 @@ scwin.position = function(styleC, styleP) {
     return scwin.parse(styleC) - scwin.parse(styleP) + "px";
 }
 scwin.movePopToBottom = function() {
-    var el = WebSquare.wUnit.getDomById("pop1");
+    var el = (document.getElementById('pop1') || document.getElementById('mf_pop1'));
     var elStyle = window.getComputedStyle(el);
     el.style.top = scwin.position(containerStyle.getPropertyValue("height"), elStyle.getPropertyValue("height"));
     el.style.left = scwin.position(containerStyle.getPropertyValue("width"), elStyle.getPropertyValue("width"));
@@ -75,33 +84,6 @@ scwin.movePopToBottom = function() {
 scwin.checktype = function() {
     return typeof pop1;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 '팝업오픈'을 클릭한다.
-    //1. Run the sample file and click 'Open pop-up'.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    // verify step 1. test 팝업창이 생성된다.
-    //1. A test popup window is created.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. test팝업창의 우측상단에 '창사이즈최소화'버튼을 클릭 후 우측하단으로 이동 후 '창사이즈최소화'버튼을 클릭하여 복원한다.
-    //2. Click the 'Minimize Window Size' button on the upper right of the test popup window, move to the lower right, and click 'Minimize Window Size' button to restore it.
-    WebSquare.wUnit.addCommand("set", "pop1_minimize.click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.movePopToBottom()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "pop1_minimize.click()");
-    // verify step 2. UI화면영역에서 벗어나지 않게 팝업창이 복원되어 진다.(이전에는 창사이즈 영역 밖으로 test팝업창이 복원되어짐)
-    //2. The pop-up window is restored without leaving the UI screen area.(Previously, the test popup window was restored outside the window size area)
-    WebSquare.wUnit.addCommand("assert", "scwin.isPopupOutUI()", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -109,11 +91,8 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Created By: Sang.do
     //Created By: 19-Jan-2018
-    window.containerStyle = window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + "wq_uuid_1"));
+    window.containerStyle = window.getComputedStyle(scwin.__getDom($p.id + "wq_uuid_1"));
     //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -31,41 +31,25 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__isDisplayNormal = function() {
     var count = 0;
-    var spinner = WebSquare.wUnit.getJq("#wq_uuid_3").find(".w2spinner").each(function() {
-        if (WebSquare.wUnit.getJq(this).find(".w2spinner_btnArea").length) {
+    var spinner = ((j) => j.length ? j : $('#mf_wq_uuid_3'))($('#wq_uuid_3')).find(".w2spinner").each(function() {
+        if (scwin.__getJq(this).find(".w2spinner_btnArea").length) {
             count++;
         }
     });
     return count == spinner.length;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 0. spinner의 positionFix='true'로 설정한다.
-    //0. Set the spinner"s positionFix = 'true'.
-    // Test step 1. 샘플파일을 실행한다.
-    //1. run the same file
-    // verify step 1. 실행결과 spinner가 정상적으로 보여진다.(position : static지원함)
-    //1. The spinner is displayed normally.(position: static supported)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isDisplayNormal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 13-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

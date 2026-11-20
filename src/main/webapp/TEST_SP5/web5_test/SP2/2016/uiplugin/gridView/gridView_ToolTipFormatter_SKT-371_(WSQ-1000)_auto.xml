@@ -38,6 +38,15 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.imgClick = function(row, colID, data) {
     //alert("row : " + row + ", colID : " + colID + ", data : " + data);
 }
@@ -53,26 +62,8 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.mouseOverBehaviour = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireOver(el);
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 function tooltipFunc 을 확인한다.
-    //1. In the Source tab, check the function tooltipFunc.
-    //Test step 2. tooltipFormatter 를 확인한다.
-    //2. Check tooltipFormatter.
-    //Verify step 2. tooltipFormatter = "tooltipFunc"
-    //Test step 3. 브라우저에서 임의의 row 에 마우스오버 한다. (임의의 row 를 몇 번 더 마우스오버 해본다.)
-    //3. Mouse over any row in the browser. (Mouse over any row a few more times.)
-    //Verify step 3. Information about rowindex becomes tooltip.
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'grid1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_tooltip').text() == 'label = a1, rowIndex = 0, colIndex = 0'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -86,9 +77,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 28-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

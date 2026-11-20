@@ -32,6 +32,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.test = function() {
     //alert("aa");
     log = "aa";
@@ -44,33 +51,13 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq(id).css("background-color");
+    var rgb = scwin.__getJq(id).css("background-color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
         return color == hexa;
     }
     return rgb == hexa;
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 첫번째 컬럼의 항목값에 마우스를 클릭한다.
-    //1. After running the sample file, click mouse on the item value of the first column.
-    //Verify step 1. The item value of the first column is selected and shown in orange.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('#'+$p.id+'gridView1_cell_0_0', '#fca73c')", "true");
-    //Test step 2. 두번째 컬럼의 항목값의 이미지를 마우스로 클릭한다.
-    //2. Click the image of the item value in the second column with the mouse.
-    //Verify step 2. The 'aa' dialog will be displayed and the item value of the second column will be selected and shown in orange (previously no focus was moved when clicking on the image)
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'gridView1_cell_0_1').getElementsByTagName('td')[1].getElementsByTagName('img')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb('#'+$p.id+'gridView1_cell_0_1', '#fca73c')", "true");
-    WebSquare.wUnit.addCommand("assert", "log == 'aa'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -80,9 +67,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 27-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

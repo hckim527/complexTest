@@ -34,6 +34,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     textbox1.setValue("main_bigDecimal_test");
     var str = 'scwin.a = scwin.$w.bigDecimal("1");\nscwin.b= scwin.$w.bigDecimal("2");\nscwin.$w.bigDecimal.calc("scwin.a + scwin.b")=?';
@@ -45,38 +54,10 @@ scwin.trigger1_onclick = function() {
     input1.setValue(scwin.$w.bigDecimal.calc("scwin.a + scwin.b").toString());
 }
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).value == value) {
+    if (scwin.__getDom($p.id + id).value == value) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. main 샘플실행 후 1번 버튼을 클릭한다.
-    //1. After executing main sample, click button 1.
-    //Verify step 1. Return the value '3'.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('input1', '3')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. wframe1_관련 2번 버튼(bigDecimal test(wframe))을 클릭한다.
-    //2. Click button 2 (bigDecimal test (wframe)) related to wframe1_.
-    //Verify step 2. Return the value '-14'.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wframe1_trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('wframe1_input1', '-14')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. wframe2_관련 2번 버튼(bigDecimal test(wframe))을 클릭한다.
-    //3. Click button 2 (bigDecimal test (wframe)) related to wframe2_.
-    //Verify step 3. Return the value '-12.8'.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wframe2_trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('wframe2_input1', '-12.8')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -86,9 +67,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

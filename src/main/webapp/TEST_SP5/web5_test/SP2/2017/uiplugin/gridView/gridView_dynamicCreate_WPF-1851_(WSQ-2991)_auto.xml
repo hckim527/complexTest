@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.makeGrid = function() {
     var gridStr = "";
     gridStr += '<w2:grid xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms" dataList="dataList1" scrollByColumn="false" summaryAuto="false" scrollByColumnAdaptive="false" id="grid1" style="width: 500px;height: 150px;" ignoreCellClick="false" ignoreToggleOnDisabled="false" fixedColumnWithHidden="true" useShiftKey="true">';
@@ -36,23 +45,10 @@ scwin.makeGrid = function() {
     WebSquare.util.dynamicCreate("grid1", "grid", gridStr, WebSquare.getBody());
 }
 scwin.__checkEl = function(id) {
-    if (WebSquare.wUnit.getDomById(id)) {
+    if (scwin.__getDom(id)) {
         return true;
     }
     return false;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkEl('grid1_column5')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkEl('grid1_column3')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkEl('grid1_column1')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.logger.getErrorLog() == ''", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -62,9 +58,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 23-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

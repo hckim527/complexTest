@@ -21,6 +21,13 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.selectCallback = function() {
     var fileInfos = tobe.getFileInfos();
     dataList1.setJSON(fileInfos);
@@ -50,23 +57,10 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    /*
-    scwin.tobe_onprogress = function(info) {
-    	console.log(info.fileName + "("+info.percentData+"%)");
-    	
-    	window.rowidx = dataList1.getMatchedIndex("name", info.fileName);
-    	
-    	WebSquare.wUnit.getJq("td[colindex='3']:eq("+rowidx+") .w2grid_input").text(info.percentData+"%");
-    	WebSquare.wUnit.getJq("td[colindex='3']:eq("+rowidx+") .w2grid_input").css("width", info.percentData+"%");
-    };
-    */
     //멀티업로드 css주기
     window.multiId = "mf_tobe"; //multiupload 컴포넌트id 로 변경
     window.strUploaderId = "#" + multiId + "_file_input";
-    WebSquare.wUnit.getJq(strUploaderId).css("cursor", "pointer");
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
+    scwin.__getJq(strUploaderId).css("cursor", "pointer");
 }
 ]]></script>
 		<style type="text/css"><![CDATA[ 

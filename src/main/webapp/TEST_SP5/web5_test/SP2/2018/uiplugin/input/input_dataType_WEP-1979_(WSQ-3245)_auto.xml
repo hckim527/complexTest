@@ -32,35 +32,20 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).value == value) {
+    if (scwin.__getDom($p.id + id).value == value) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 0-1. config.xml input 속성을 확인한다.
-    //0-1. Check the config.xml input attribute.
-    //Verify step 0-1. Comments below
-    //Test step 0-2. 샘플파일에 config.xml input 속성 추가되어있음
-    //0-2. The config.xml input attribute has been added to the sample file.
-    //Verify step 0-2. Added config.xml input attribute to sample file
-    //Test step 1. 샘플실행 후 inputbox에 '123456789'값을 입력하고 enterkey를 수행한다.
-    //1. After running the sample, enter the value '123456789' in the inputbox and execute enterkey.
-    //Verify step 1. The displayFormat is changed to '1,2345,6789'.(Previously shown as '123456789' value)
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'input1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('input1').setValue('123456789')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').blur()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('input1', '1,2345,6789')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -69,9 +54,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

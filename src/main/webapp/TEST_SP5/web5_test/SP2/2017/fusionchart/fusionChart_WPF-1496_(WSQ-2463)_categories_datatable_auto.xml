@@ -350,7 +350,7 @@
         <script type="text/javascript" lazy="false"><![CDATA[
 scwin.__isDefect = function() {
     if (FusionCharts.version.join(".") == "3.7.0") {//SP4에서 옵션에 설정된 버전이 없는경우 3.7.0 버전을 로딩함.
-		var el = WebSquare.wUnit.getJq('.raphael-group-225-grid-header')[0],
+		var el = ((j) => j.length ? j : $('.mf_raphael-group-225-grid-header'))($('.raphael-group-225-grid-header'))[0],
 	            tspans = el.getElementsByTagName('tspan'),
 	            hasTextStart = tspans[0].innerText == "",
 	            hasTextEnd = tspans[1].innerText == "";
@@ -360,25 +360,12 @@ scwin.__isDefect = function() {
             hasTextStart = texts[1].innerText == "",
             hasTextEnd = texts[2].innerText == "";
     } else {
-        var el = WebSquare.wUnit.getJq('.raphael-group-113-guntt-header-text-container')[0],
+        var el = ((j) => j.length ? j : $('.mf_raphael-group-113-guntt-header-text-container'))($('.raphael-group-113-guntt-header-text-container'))[0],
             tspans = el.getElementsByTagName('tspan'),
             hasTextStart = tspans[1].innerText == "",
             hasTextEnd = tspans[2].innerText == "";
     }
     return hasTextEnd && hasTextStart;
-}
-scwin.unitTest = function() {
-    //Init test
-    WebSquare.wUnit.start();
-    //Test step 1. firefox에서 샘플파일을 실행한다.-Run the sample file in firefox.
-    //Verify 1. firefox에서 fwGanttChart2의 그래프가 정상적으로 보여진다.(이전에는 결함으로 보여지지 않음)-In Firefox, the graph of fwGanttChart2 is displayed normally (previously not seen as a defect).
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('fwGanttChart2').getAttribute('ref') == 'data:dataList1'", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isDefect()", "false");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -403,9 +390,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 23-Jan-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]>
         </script>

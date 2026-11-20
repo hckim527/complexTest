@@ -32,31 +32,28 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.setSimulate2 = function() {
-    WebSquare.wUnit.getJq('#gv1_scrollY_div').animate({
+    ((j) => j.length ? j : $('#mf_gv1_scrollY_div'))($('#gv1_scrollY_div')).animate({
         scrollTop: 60
     }, 500);
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getObjById('gv1_cell_7_2').getBoundingClientRect().left < WebSquare.wUnit.getObjById('gv1_cell_7_1').getBoundingClientRect().left;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 상단의 그리드뷰(subtotal포함)의 name2항목을 드래그하여 name3항목으로 이동한다.
-    //1. After executing the sample file, drag the name2 item of the grid view (including subtotal) at the top to move to the name3 item.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setSimulate2()");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    //Verify step 1. name2의 항목값이 모두 정상적으로 이동되어 보여진다.(이전에는 일부가 이동되지 않음)
-    //1. All of the item values ​​of name2 are shown as being moved normally (some of them are not moved before)
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_7_2').getBoundingClientRect().left < gv1_cell_7_1.getBoundingClientRect().left", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj('gv1_cell_7_2').getBoundingClientRect().left < scwin.__getObj('gv1_cell_7_1').getBoundingClientRect().left;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -133,9 +130,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 06-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

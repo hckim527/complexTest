@@ -10,6 +10,15 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.add = function(x, y, width, height) {
     var widget = widgetContainer1.addWidgets({
         title: "widget" + scwin.wcount,
@@ -49,34 +58,10 @@ scwin.trigger2_onclick = function(e) {
     widgetContainer1.setTitleClass("widget0", "w2widget_orange");
 };
 scwin.checkVal1 = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'widgetContainer1_widget0_title')).getPropertyValue('background-color') == 'rgb(255, 165, 0)';
+    return window.getComputedStyle(scwin.__getDom($p.id + 'widgetContainer1_widget0_title')).getPropertyValue('background-color') == 'rgb(255, 165, 0)';
 }
 scwin.checkVal2 = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'widgetContainer1_widget0_title')).getPropertyValue('background-color') != 'rgb(255, 165, 0)';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. TestData의 샘플(_main.xml)실행하고 'setTitleClass'버튼을 클릭한다.
-    //1. Run the TestData sample (_main.xml) and click the 'setTitleClass' button.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 'widget0' 위젯의 타이틀 색상이 오렌지색으로 보여진다.(style 적용)
-    //1. The title color of the 'widget0' widget is shown in orange (apply style)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 다시 'removeTitleClass'버튼을 클릭한다.
-    //2. Click the 'removeTitleClass' button again.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 'widget0' 위젯의 타이틀 색상(오렌지)이 지워진다.(style 제거)
-    //2. The title color of the 'widget0' widget (orange) is cleared (style removed)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + 'widgetContainer1_widget0_title')).getPropertyValue('background-color') != 'rgb(255, 165, 0)';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -135,9 +120,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 06-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

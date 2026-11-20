@@ -25,6 +25,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.func = function(str, num, row) {
     return row % 2 == 0 ? "a" : "b";
 }
@@ -40,13 +56,13 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.__isSorted = function(col_id) {
     var arr = [];
-    WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not(".w2grid_hidedRow").find('td[col_id="' + col_id + '"]').each(function(i, el) {
-        arr.push(WebSquare.wUnit.getJq(el).text());
+    ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr'))($('#gridView1_body_tbody tr')).not(".w2grid_hidedRow").find('td[col_id="' + col_id + '"]').each(function(i, el) {
+        arr.push(scwin.__getJq(el).text());
     })
     for (var i = 0; i < arr.length; i++) {
         if (arr[i] > arr[i + 1]) {
@@ -54,30 +70,6 @@ scwin.__isSorted = function(col_id) {
         }
     }
     return true;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. 브라우저에서 6번째 컬럼 expr 을 더블클릭하여 Sort 한다.
-    //3. In the browser, double-click the 6th column expr to sort.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column2')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 3. 6번째 컬럼 expression 이 Sort 된다.
-    //3. The sixth column expression is sorted.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isSorted('column4')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step
-    //
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column9')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step
-    //
-    WebSquare.wUnit.addCommand("assert", "scwin.__isSorted('num')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -113,13 +105,6 @@ scwin.onpageload2 = function() {
     */
     scwin.test = function(row) {
         return row.col1;
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 09-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

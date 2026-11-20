@@ -15,33 +15,26 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.__isValue = function() {
-    return val = WebSquare.wUnit.getObjById('wq_uuid_1_input').value;
+    return val = scwin.__getObj('wq_uuid_1_input').value;
 }
 scwin.setVal = function() {
-    return WebSquare.wUnit.getObjById('wq_uuid_1_input').value == scwin.__isValue();
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 날짜를 입력한다.
-    //1. Run the sample file and enter the date.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_1_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_1_calendar_cell_4_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_time_confirm').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_1_input').blur()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 정상적으로 날짜가 입력된다.(이전에는 시분초에 대한 validation 처리 로직이 없어서 '날짜형식이 잘못되었습니다.'라는 알림메시지 발생)
-    //1. The date is entered normally (Previously there was no validation processing logic for the hour and minute seconds, resulting in a 'Date format is invalid' notification)
-    WebSquare.wUnit.addCommand("assert", "scwin.setVal()", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_1_input').value != ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj('wq_uuid_1_input').value == scwin.__isValue();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -52,9 +45,6 @@ scwin.onpageload2 = function() {
     //Create date 28-Feb-2018
     //End unitTest
     window.val = undefined;
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

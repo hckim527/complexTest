@@ -15,6 +15,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.init = function() {
     widgetContainer1.addWidgets([{
             id: "widget0",
@@ -95,13 +110,13 @@ scwin.init = function() {
             "col3": "66666"
         }
     ];
-    WebSquare.wUnit.getObjById($p.id+'widgetContainer1_widget0_content_dataList1').setJSON(jsonData1);
-    WebSquare.wUnit.getObjById($p.id+'widgetContainer1_widget1_content_dataList1').setJSON(jsonData2);
-    WebSquare.wUnit.getObjById($p.id+'widgetContainer1_widget2_content_dataList1').setJSON(jsonData3);
+    scwin.__getObj($p.id+'widgetContainer1_widget0_content_dataList1').setJSON(jsonData1);
+    scwin.__getObj($p.id+'widgetContainer1_widget1_content_dataList1').setJSON(jsonData2);
+    scwin.__getObj($p.id+'widgetContainer1_widget2_content_dataList1').setJSON(jsonData3);
 }
 scwin.onwidgetload = function(id) {
-    WebSquare.wUnit.getObjById($p.id+'widgetContainer1_widget0_content_gridView').setCellColor(0, 0, "red");
-    WebSquare.wUnit.getObjById($p.id+'widgetContainer1_widget0_content_gridView').setRowColor(1, "red");
+    scwin.__getObj($p.id+'widgetContainer1_widget0_content_gridView').setCellColor(0, 0, "red");
+    scwin.__getObj($p.id+'widgetContainer1_widget0_content_gridView').setRowColor(1, "red");
 };
 scwin.trigger1_onclick = function(e) {
     widgetContainer1.importWidgets(null, true);
@@ -110,40 +125,11 @@ scwin.__isShowLogNormal = function() {
     var err = WebSquare.logger.getErrorLog();
     return !err;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일 1번을 실행 후 'importWidgets'버튼을 클릭하여 초기화한다.
-    //1. Execute sample file 1 and initialize it by clicking the 'importWidgets' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 1. 위젯 데이터가 초기화되어진다.
-    //1. Widget data is initialized.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer1_content').children().length == 0", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. ctrl+마우스우클릭으로 로그보기를 실행하여 에러로그가 있는지 확인한다.
-    //2. Run the ctrl + mouse right-click view to see if there is an error log.
-    //Verify step 2. 에러로그가 보여지지 않음(이전에는 Cannot read property "x" of null 관련 에러로그가 보여짐)
-    //2. Error log is not shown(Previously, Can not read property "x" of null related error log is shown)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isShowLogNormal()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     scwin.init();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 12-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

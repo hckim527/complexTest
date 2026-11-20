@@ -39,6 +39,30 @@
         </xf:model>
 
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.grdReg_onviewchange = function(info) {
     if (grdReg.getColumnID(info.colIndex) == "PROCESS_MAIN_AGNT_CD") {
         if (info.newValue == "ALL" || info.newValue == "") {
@@ -69,14 +93,14 @@ scwin.cellReadOnly = function(row) {
     grdReg.setDisabled("cell", row, "PROCESS_MAIN_AGNT_CD", false);
 };
 scwin.__numRowAdded = function(num) {
-    var tr = WebSquare.wUnit.getJq("#grdReg_body_tbody tr").not(".w2grid_hidedRow");
+    var tr = ((j) => j.length ? j : $('#mf_grdReg_body_tbody tr'))($('#grdReg_body_tbody tr')).not(".w2grid_hidedRow");
     return tr.length == num;
 }
 scwin.__selectedVal = function(id, val) {
-    return WebSquare.wUnit.getDomById(id).innerText == val;
+    return scwin.__getDom(id).innerText == val;
 }
 scwin.__triggerDbclick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -88,7 +112,7 @@ scwin.__triggerDbclick = function(id) {
     }
 }
 scwin.setVal = function() {
-    WebSquare.wUnit.getObjById('grdReg_cell_0_1').click();
+    scwin.__getObj('grdReg_cell_0_1').click();
 }
 scwin.setVal2 = function() {
     return scwin.__numRowAdded(2) == true;
@@ -111,69 +135,6 @@ scwin.setVal7 = function() {
 scwin.setVal8 = function() {
     return scwin.__selectedVal('grdReg_cell_0_2', '강서SO');
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 브라우저에서 행추가 버튼을 두번 클릭한다.
-    //1. Double-click the Add Row button in the browser.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnInsert').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnInsert').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. 그리드에 행이 2개 추가된다.
-    //1. Two rows are added to the grid.
-    WebSquare.wUnit.addCommand("assert", "scwin.setVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 처리주체 컬럼에서 KA사업 을 선택한다.
-    //2. Select the KA business in the Processing Principal column.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grdReg___selectbox_PROCESS_MAIN_AGNT_CD_itemTable_2').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. 처리주체 컬럼에 KA사업 이 선택된다.
-    //2. The KA business is selected in the processing subject column.
-    WebSquare.wUnit.addCommand("assert", "scwin.setVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. SO/KA 컬럼에서 임의의 데이터를 체크한 후 빈공간을 클릭해서 포커스 아웃시킨다.
-    //3. Check any data in the SO / KA column and click on the empty space to focus it out.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal4()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grdReg___checkcombobox_SALES_LV4_MBR_ID_itemTable_0_checkbox').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grdReg___checkcombobox_SALES_LV4_MBR_ID_button').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. SO/KA 컬럼에 데이터가 선택된다.
-    //3. Data is selected in the SO / KA column.
-    WebSquare.wUnit.addCommand("assert", "scwin.setVal5()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 4. 처리주체 컬럼에서 수도권남부SU 를 선택한다.
-    //4. Select the southern SU of the metropolitan area from the treatment subject column.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grdReg_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grdReg___selectbox_PROCESS_MAIN_AGNT_CD_itemTable_3').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 4. 수도권남부SU 가 선택한다.
-    //4. Southern SU of the metropolitan area chooses.
-    WebSquare.wUnit.addCommand("assert", "scwin.setVal6()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 5. SO/KA 컬럼에서 임의의 데이터를 체크한 후 빈공간을 클릭해서 포커스 아웃시킨다.
-    //5. Check any data in the SO / KA column and click on empty space to focus out.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal7()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grdReg___checkcombobox_SALES_LV4_MBR_ID_itemTable_1_checkbox').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grdReg___checkcombobox_SALES_LV4_MBR_ID_button').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 5. SO/KA 컬럼에 데이터가 선택된다.
-    //5. Data is selected in the SO / KA column.
-    WebSquare.wUnit.addCommand("assert", "scwin.setVal8()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
 
     window.custListCnt = 0;

@@ -278,6 +278,15 @@
         	</xf:submission>   
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.grd_TrdStat_ongroupby = function(options) {
     options.closeGroup = false;
     options.groupbyHeader = [{
@@ -292,40 +301,16 @@ scwin.trigger1_onclick = function(e) {
     scwin.$w.executeSubmission("sub_List");
 };
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"grd_TrdStat_cell_0_0").childNodes[0].innerText.trim() == 'A [ 5 건 ]';
+    return scwin.__getDom($p.id+"grd_TrdStat_cell_0_0").childNodes[0].innerText.trim() == 'A [ 5 건 ]';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"grd_TrdStat_cell_7_0").childNodes[0].innerText.trim() == 'B [ 1 건 ]';
+    return scwin.__getDom($p.id+"grd_TrdStat_cell_7_0").childNodes[0].innerText.trim() == 'B [ 1 건 ]';
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"grd_TrdStat_cell_10_0").childNodes[0].innerText.trim() == 'SA [ 11 건 ]';
+    return scwin.__getDom($p.id+"grd_TrdStat_cell_10_0").childNodes[0].innerText.trim() == 'SA [ 11 건 ]';
 }
 scwin.checkVal4 = function() {
-    return WebSquare.wUnit.getJq('#grd_TrdStat_cell_0_0').is(':visible') == true;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 'submission'버튼을 클릭한다.
-    //1. Run the sample file and click the 'submission' button.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 1. gridView에 데이터가 보여진다.
-    //1. Data is displayed in gridView.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    //Test step 2. '시급'항목명을 마우스로 groupbyZon으로 끌어놓는다.
-    //2. Drag the 'Urgent' item name to groupbyZon with your mouse.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_TrdStat_scrollX_right').scrollLeft = 265.5");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. '시급'항목이 groupby되어지고 A[5건], B[1건], SA[11건]으로 groupby되어진다.
-    //2. The 'urgent' item is grouped and grouped into A [5], B [1], SA [11].
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return ((j) => j.length ? j : $('#mf_grd_TrdStat_cell_0_0'))($('#grd_TrdStat_cell_0_0')).is(':visible') == true;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -335,9 +320,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 06-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

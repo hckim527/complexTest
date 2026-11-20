@@ -478,6 +478,21 @@
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.btn_download_onclick = function() {
     var options = {};
     options.fileName = "TAC월별배분량대비어획량.xlsx";
@@ -485,22 +500,7 @@ scwin.btn_download_onclick = function() {
     pivotTable1.pivotExcelDownload(options);
 };
 scwin.checktype = function() {
-    return typeof WebSquare.wUnit.getObjById('pivotTable1_pvtTable');
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행하여 povot table이 정상적으로 보여지는지 확인한다.
-    //1. Execute the sample file to check if the povot table is displayed normally.
-    // verify step 1. 샘플파일을 실행하여 povot table이 정상적으로 보여짐이 확인된다.
-    //1. Execute the sample file and check that the povot table is displayed normally.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
+    return typeof scwin.__getObj('pivotTable1_pvtTable');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -520,9 +520,6 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Created By: Sang.do
     //Created By: 23-Jan-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

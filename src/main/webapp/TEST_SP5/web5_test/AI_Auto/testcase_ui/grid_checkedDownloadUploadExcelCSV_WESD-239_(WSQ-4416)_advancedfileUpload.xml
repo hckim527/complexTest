@@ -42,6 +42,30 @@
 			]]>
 			</style>
 			<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {
     scwin.setImgURL();
     scwin.uploadInfo = $p.getParameter("popupParam");
@@ -280,7 +304,7 @@ scwin.setImgURL = function() {
     isPwd.setStyle("background", scwin.dotURL);
 };
 scwin.returnData = function(vData) {
-    with(WebSquare.wUnit.getObjById(WebSquare.excelUploadUUID).scope) {
+    with(scwin.__getObj(WebSquare.excelUploadUUID).scope) {
         if (scwin.processMsg != "") {
             scwin.hideProcessMessage();
         }
@@ -338,7 +362,7 @@ scwin.returnData = function(vData) {
                     data: scwin.child
                 };
                 if (scwin.dataList != "") {
-                    scwin.dcComp = WebSquare.wUnit.getObjById(scwin.dataList);
+                    scwin.dcComp = scwin.__getObj(scwin.dataList);
                     scwin.preCnt = scwin.dcComp.getRowCount();
                     if (scwin.uploadType == 1 || scwin.uploadType == 2) { // 0:실제데이터, 1:출력그대로, 2: 0+1
                         if (scwin.delim != ",") {
@@ -429,8 +453,8 @@ scwin.showProcessMessage = function(processMsg) {
         if (!processMsg || processMsg == "") {
             return;
         }
-        scwin.processbar2_main = WebSquare.wUnit.getDomById($p.id + "___processbar2");
-        scwin.processbar2 = WebSquare.wUnit.getDomById($p.id + "___processbar2_i");
+        scwin.processbar2_main = scwin.__getDom($p.id + "___processbar2");
+        scwin.processbar2 = scwin.__getDom($p.id + "___processbar2_i");
         scwin.processMsgURL = WebSquare.core.getConfiguration("processMsgURL");
         scwin.processMsgHeight = WebSquare.core.getConfiguration("processMsgHeight");
         scwin.processMsgWidth = WebSquare.core.getConfiguration("processMsgWidth");
@@ -506,8 +530,8 @@ scwin.showProcessMessage = function(processMsg) {
 };
 scwin.hideProcessMessage = function() {
     try {
-        scwin.processbar2 = WebSquare.wUnit.getDomById($p.id + "___processbar2");
-        scwin.processbar2i = WebSquare.wUnit.getDomById($p.id + "___processbar2_i");
+        scwin.processbar2 = scwin.__getDom($p.id + "___processbar2");
+        scwin.processbar2i = scwin.__getDom($p.id + "___processbar2_i");
         if (typeof scwin.processbar2 != "undefined" && scwin.processbar2 != null) {
             scwin.processbar2.style.zIndex = -1;
             scwin.processbar2.style.display = "none";
@@ -550,7 +574,7 @@ scwin.sendFILE_onclick = function(e) {
             return false;
         }
         if (scwin.maxFileSize != -1) {
-            scwin.uploadFile = WebSquare.wUnit.getDomById($p.id + "excelPop_wframe_filename");
+            scwin.uploadFile = scwin.__getDom($p.id + "excelPop_wframe_filename");
             if (scwin.uploadFile && scwin.uploadFile.files) {
                 if (scwin.maxFileSize < scwin.uploadFile.files[0].size) {
                     alert(scwin.Grid_warning9);
@@ -720,9 +744,6 @@ scwin.onpageload2 = function() {
     scwin.Upload_msg16 = "";
     scwin.Upload_msg17 = "";
     scwin.Grid_warning9 = "";
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]>
 		</script>

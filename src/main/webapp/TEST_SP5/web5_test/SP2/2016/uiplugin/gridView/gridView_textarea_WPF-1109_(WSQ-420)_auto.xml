@@ -24,6 +24,15 @@
 
 
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -36,40 +45,12 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.isIE = function() {
     var myNav = navigator.userAgent.toLowerCase();
     return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. IE11에서 샘플파일을 실행하고 calendar 이미지를 클릭하여 날짜를 입력한다.
-    //1. Run the sample file in IE11 and click on the calendar image to enter the date.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_3_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // is IE 9 and later or not IE
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. calendar필드에 날짜가 입력되고 마우스커서가 깜빡거린다.
-    //1. The date is entered in the calendar field and the mouse cursor blinks.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3__col2_input').val()", "20160101");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 입력 후 calendar에 마우스커서가 깜빡일때 오른쪽의 textarea에 마우스를 클릭하여 입력한다.
-    //2. When the mouse cursor is blinking on the calendar after input, click mouse on the textarea on the right.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'wq_uuid_3_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // is IE 9 and later or not IE
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. textarea영역에 정상으로 입력되어진다.(이전에는 입력시도시 calendar필드로 마우스커서가 이동되는현상발생)
-    //2. The textarea area is entered normally (the mouse cursor moves to the calendar field in the previous attempt)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3__col3').val()", "here");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -78,13 +59,6 @@ scwin.onpageload2 = function() {
     dataList1.insertRow();
     dataList1.insertRow();
     dataList1.insertRow();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 09-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

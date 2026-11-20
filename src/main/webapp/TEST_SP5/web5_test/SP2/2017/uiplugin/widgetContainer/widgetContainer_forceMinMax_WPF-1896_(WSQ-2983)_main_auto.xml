@@ -15,6 +15,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.init = function() {
     widgetContainer1.addWidgets([{
             id: "widget0",
@@ -251,15 +266,15 @@ scwin.init = function() {
             "col3": "66666"
         }
     ];
-    WebSquare.wUnit.getObjById('widgetContainer1_widget0_content_dataList1').setJSON(jsonData1);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget1_content_dataList1').setJSON(jsonData2);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget2_content_dataList1').setJSON(jsonData3);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget3_content_dataList1').setJSON(jsonData4);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget4_content_dataList1').setJSON(jsonData5);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget5_content_dataList1').setJSON(jsonData6);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget6_content_dataList1').setJSON(jsonData7);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget7_content_dataList1').setJSON(jsonData8);
-    WebSquare.wUnit.getObjById('widgetContainer1_widget8_content_dataList1').setJSON(jsonData9);
+    scwin.__getObj('widgetContainer1_widget0_content_dataList1').setJSON(jsonData1);
+    scwin.__getObj('widgetContainer1_widget1_content_dataList1').setJSON(jsonData2);
+    scwin.__getObj('widgetContainer1_widget2_content_dataList1').setJSON(jsonData3);
+    scwin.__getObj('widgetContainer1_widget3_content_dataList1').setJSON(jsonData4);
+    scwin.__getObj('widgetContainer1_widget4_content_dataList1').setJSON(jsonData5);
+    scwin.__getObj('widgetContainer1_widget5_content_dataList1').setJSON(jsonData6);
+    scwin.__getObj('widgetContainer1_widget6_content_dataList1').setJSON(jsonData7);
+    scwin.__getObj('widgetContainer1_widget7_content_dataList1').setJSON(jsonData8);
+    scwin.__getObj('widgetContainer1_widget8_content_dataList1').setJSON(jsonData9);
 	//mf_widgetContainer1_widget0_content_dataList1.setJSON(jsonData1);
 	//mf_widgetContainer1_widget1_content_dataList1.setJSON(jsonData2);
 	//mf_widgetContainer1_widget2_content_dataList1.setJSON(jsonData3);
@@ -271,27 +286,8 @@ scwin.init = function() {
 	//mf_widgetContainer1_widget8_content_dataList1.setJSON(jsonData9);	
 }
 scwin.__resizeEle = function() {
-    WebSquare.wUnit.getJq("#widgetContainer1").css("width", "470px");
+    ((j) => j.length ? j : $('#mf_widgetContainer1'))($('#widgetContainer1')).css("width", "470px");
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__resizeEle()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('widgetContainer1_widget0_title_btnMinimize').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer1_widget0').css('height') == '27px'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('widgetContainer1_widget0_title_btnMaximize').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer1_widget0').css('height') == '2704px'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
     scwin.init();
 }

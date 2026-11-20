@@ -23,30 +23,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     debugger;
     dataList1.setRowData(1, [1, 2, 2, 2]);
 };
 scwin.__isMergeRow = function() {
     var dataCol_id = WebSquare.util.getDataPrefix("col_id");
-    var td2 = WebSquare.wUnit.getJq("#gridView1_body_tbody").find("td[" + dataCol_id + "='col1']").get(1);
-    return WebSquare.wUnit.getJq(td2).css("background-color") == "rgb(255, 255, 255)" || WebSquare.wUnit.getJq(td2).css("background-color") == "rgba(0, 0, 0, 0)";
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 'setRowData'버튼을 클릭하여 row를 추가한다.
-    //1. Run the sample file and click on the 'setRowData' button to add the row.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 1. 추가된 row가 colMerge되어지고 배경색도 정상적으로 적용되어진다.(이전에는 배경색은 회색이었음)
-    //1. The added row is colMergeed and the background color is applied normally (previously the background color was gray)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isMergeRow()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    var td2 = ((j) => j.length ? j : $('#mf_gridView1_body_tbody'))($('#gridView1_body_tbody')).find("td[" + dataCol_id + "='col1']").get(1);
+    return scwin.__getJq(td2).css("background-color") == "rgb(255, 255, 255)" || scwin.__getJq(td2).css("background-color") == "rgba(0, 0, 0, 0)";
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -60,13 +51,6 @@ scwin.onpageload2 = function() {
         4, 4, 4, 4,
         3, 4, 4, 4
     ]);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 12-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

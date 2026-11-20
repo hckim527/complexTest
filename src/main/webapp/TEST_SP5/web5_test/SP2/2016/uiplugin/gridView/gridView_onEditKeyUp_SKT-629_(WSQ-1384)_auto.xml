@@ -128,21 +128,27 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 
 		
 
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView1_oneditkeyup = function(info) {
     //alert(1);
     log = "1";
 };
 scwin.fireDbClick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -152,38 +158,6 @@ scwin.fireDbClick = function(id) {
     } else if (typeof node.ondblclick == 'function') {
         node.ondblclick();
     }
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 2. text컬럼의 입력필드에 마우스를 더블클릭(edit모드)하고 키보드의 방향키(위,아래,좌,우)를 각각 실행한다.
-    //2. Double-click (edit mode) on the input field of the text column and execute the direction keys (up, down, left, right) of the keyboard respectively.
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'gridView1_cell_2_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 입력모드로 변경되고 키보드의 방향키가 이동시 이벤트(alert = 1값)가 실행되어 보여진다.(이전에는 이벤트 실행안됨)
-    //2. It changes to input mode and event (alert = 1 value) is executed when the direction key of keyboard is moved. (Previous event is not executed)
-    //UP
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log", "1");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "log = undefined");
-    //DOWN
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log", "1");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "log = undefined");
-    //LEFT
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log", "1");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "log = undefined");
-    //RIGHT
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log", "1");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -202,9 +176,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 13-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

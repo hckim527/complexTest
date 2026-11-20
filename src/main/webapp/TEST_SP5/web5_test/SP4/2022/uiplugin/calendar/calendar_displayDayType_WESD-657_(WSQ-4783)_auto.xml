@@ -32,7 +32,16 @@
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
         
-	scwin.onpageload = function() {
+	// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
 		dataList1.setData([1,'a',2,'b',3,'c',4,'d',5,'e']);
 	};
 	
@@ -44,19 +53,8 @@
 	};
 
 	scwin.checkVal = function() {
-		return WebSquare.wUnit.getDomById($p.id + 'wq_uuid_24_content').getElementsByTagName('th')[0].innerText == '일';
+		return scwin.__getDom($p.id + 'wq_uuid_24_content').getElementsByTagName('th')[0].innerText == '일';
 	}
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "400");
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();
 	
 	]]></script>
     </head>

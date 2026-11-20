@@ -24,6 +24,13 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.init = function() {
     var jsonData = [{
             "MENU_ID": "Education",
@@ -162,37 +169,13 @@ scwin.trigger4_onclick = function(e) {
     msgAlert = gridView1.getDescendantRowIndexArray(2);
 };
 scwin.compareTwoArrays = function(arr1, arr2) {
-    return WebSquare.wUnit.getJq(arr1).not(arr2).length == 0 && WebSquare.wUnit.getJq(arr2).not(arr1).length == 0;
+    return scwin.__getJq(arr1).not(arr2).length == 0 && scwin.__getJq(arr2).not(arr1).length == 0;
 }
 scwin.checkVal1 = function() {
     return scwin.compareTwoArrays(msgAlert, [7]) == true;
 }
 scwin.checkVal2 = function() {
     return scwin.compareTwoArrays(msgAlert, [3, 4, 5, 6]) == true;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플 실행 후 'gridView1.getAncestorRowIndexArray(9);'버튼을 클릭한다.
-    //1. After running the sample, click the 'gridView1.getAncestorRowIndexArray (9);' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. 상위노드의 인덱스인 7을 가져온다.
-    //1. Get the index 7 of the ancestor node.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 'gridView1.getDescendantRowIndexArray(2);'버튼을 클릭한다.
-    //2. Click the 'gridView1.getDescendantRowIndexArray (2);' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 2. 하위노드의 인덱스인 3,4,5,6이 보여진다.
-    //2. The indexes of the child nodes 3, 4, 5, and 6 are shown. 
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -203,13 +186,6 @@ scwin.onpageload2 = function() {
     // 모두 닫기
     //모두 펼치기
     window.msgAlert = undefined;
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 19-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[

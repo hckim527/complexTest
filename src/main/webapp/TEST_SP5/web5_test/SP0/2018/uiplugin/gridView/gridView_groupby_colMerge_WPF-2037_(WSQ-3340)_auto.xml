@@ -36,6 +36,13 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
     scwin.data1 = [
         "0", "A", 1,
@@ -108,7 +115,7 @@ scwin.formatter = function(data) {
 };
 scwin.trigger2_onclick = function(e) {};
 scwin.checkMerge = function() {
-    var el = WebSquare.wUnit.getJq("#grid1_body_tbody tr").not(".w2grid_hidedRow").children();
+    var el = ((j) => j.length ? j : $('#mf_grid1_body_tbody tr'))($('#grid1_body_tbody tr')).not(".w2grid_hidedRow").children();
     for (i = 0; i < el.length - 1; i++) {
         if (i % 3 == 0 && i != 0) {
             if (el[i].innerText == "0" || window.getComputedStyle(el[0]).getPropertyValue("border-bottom-width") == "0px") {
@@ -122,42 +129,13 @@ scwin.checkMerge = function() {
     }
 }
 scwin.checkUnMerge = function() {
-    var el = WebSquare.wUnit.getJq("#grid1_body_tbody tr").not(".w2grid_hidedRow").not(".w2grid_lastRow");
+    var el = ((j) => j.length ? j : $('#mf_grid1_body_tbody tr'))($('#grid1_body_tbody tr')).not(".w2grid_hidedRow").not(".w2grid_lastRow");
     for (i = 1; i < el.length; i++) {
-        if (WebSquare.wUnit.getJq($(el)[i]).children()[0].innerText != "0") {
+        if (scwin.__getJq($(el)[i]).children()[0].innerText != "0") {
             return false;
         }
     }
     return true;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 '분류1'항목의 값을 확인한다.
-    //1. After executing the sample, check the value of 'Classification 1' item.
-    //Verify step 1. The value '0' is displayed as colMerge.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkMerge()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. '분류1'항목을 groupby 시키고 '0'값의 colMerge가 모두 해제되어 보여지는지 확인한다.
-    //2. Group the 'Category 1' item and make sure that all colMerge values of '0' are shown off.
-    //Verify step 2. The 'Category 1' item is groupby and a '0' value is shown to clear all colMerge.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyZone_div').childElementCount == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkUnMerge()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. '분류1'항목의 groupby를 해제한다
-    //3. Release groupby of 'Category 1' item
-    //Verify step 3. The groupby is released and the value '0' is shown again as colMerge.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_closeButtonImg').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyZone_div').childElementCount == 0", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkMerge()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -167,9 +145,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 05-Apr-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

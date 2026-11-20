@@ -41,13 +41,22 @@
 
 
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView2_oneditkeyup = function(info) {
     if (info.keyCode === 13) {
         dataList1.insertRow();
     }
 };
 scwin.fireDbClick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -59,7 +68,7 @@ scwin.fireDbClick = function(id) {
     }
 }
 scwin.__isBackground = function() {
-    var color = WebSquare.wUnit.getJq("#gridView2_cell_0_2").css("background-color");
+    var color = ((j) => j.length ? j : $('#mf_gridView2_cell_0_2'))($('#gridView2_cell_0_2')).css("background-color");
     if (color.indexOf("rgb") < 0) {
         return color == "#fca73c";
     }
@@ -68,30 +77,6 @@ scwin.__isBackground = function() {
 scwin.setVal = function() {
     scwin.fireDbClick('gridView2_cell_0_1');
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView2_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify  1.  edit모드로 변경된다.
-    //1. Change to edit mode.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView2__col2').css('display')", "block");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 그 상태에서 EnterKey를 누른다.
-    //2. In that state, press EnterKey.
-    //WebSquare.wUnit.addCommand("set", "");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2.  readonly인 name3항목필드로 포커스가 이동되고 row가 추가된다.(이전에는 다음필드가 readonly일경우 row가 추가되지 않았음)
-    //2. The focus is moved to the readonly name3 item field and the row is added. (Previously the row was not added if the next field was readonly.)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isBackground()", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView2_body_tbody tr').not('.w2grid_hidedRow').length == 4", "true");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function unitTest

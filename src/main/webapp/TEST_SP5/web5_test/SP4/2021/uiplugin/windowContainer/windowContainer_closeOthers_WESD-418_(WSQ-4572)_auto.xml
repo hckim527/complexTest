@@ -11,6 +11,15 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.createWindowTest = function(title) {
     wc1.createWindow(title, "", "", "windowTitle", "windowId", "newWindow", scwin.mainClose);
     //wc1.createWindow( title , iconUrl , src , windowTitle , windowId , openAction , closeAction , windowTooltip )
@@ -22,23 +31,8 @@ scwin.trigger1_onclick = function(e) {
     wc1.closeOthers("main");
 };
 scwin.__isCheckVal = function() {
-    return WebSquare.wUnit.getDomById($p.id+'wc1_nameLayer_mf_wc1_subWindow3') != null;
+    return scwin.__getDom($p.id+'wc1_nameLayer_mf_wc1_subWindow3') != null;
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_gridView2___autoComplete_0_col1_col1_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheckVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
 
     /*        

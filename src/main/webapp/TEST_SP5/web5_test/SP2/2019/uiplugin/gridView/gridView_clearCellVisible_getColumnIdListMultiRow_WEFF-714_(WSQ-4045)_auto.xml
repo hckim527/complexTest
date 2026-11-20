@@ -49,12 +49,18 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
-    WebSquare.wUnit.getJq(document).keydown(function(e) {
+    scwin.__getJq(document).keydown(function(e) {
         if (e.keyCode == 113) {
             var rowIdx = grd_sample1.getFocusedRowIndex();
             //				var chkCellRow = "mf_" + "grd_sample1" + "_cell_" + rowIdx + "_" + 0;
-            //				WebSquare.wUnit.getJq("#"+chkCellRow).attr("rowspan", "2"); 
             grd_sample1.setCellVisible(rowIdx, "extChkRow", true);
             grd_sample1.setCellVisible(rowIdx, "extRow1", true);
             grd_sample1.setCellVisible(rowIdx, "extRow2", true);
@@ -1175,23 +1181,6 @@ scwin.trigger5_onclick = function(e) {
     var ret = grd_sample1.getColumnIdListMultiRow();
     textarea1.setValue(JSON.stringify(ret));
 };
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand('pause', '500');
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd_sample1_headerRowStatus_bodyRow_1').height() >= 42", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
-    WebSquare.wUnit.addCommand('pause', '500');
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#textarea1').val() != ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload">

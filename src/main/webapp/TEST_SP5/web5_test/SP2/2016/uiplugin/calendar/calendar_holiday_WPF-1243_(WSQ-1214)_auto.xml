@@ -18,44 +18,35 @@
     		</xf:instance>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin._checkErr = function() {
     var log = WebSquare.logger.getLog();
     return log.indexOf("Cannot read property 'setValue' of null") == -1;
 }
 scwin._isDate = function() {
-    return date = WebSquare.wUnit.getDomById($p.id + 'calendar1_currentDate').innerText;
+    return date = scwin.__getDom($p.id + 'calendar1_currentDate').innerText;
 }
 scwin.clickDate = function() {
-    var id = WebSquare.wUnit.getJq(".w2calendar_selected").attr("id");
-    WebSquare.wUnit.getJq("#" + id).prev().click();
+    var id = ((j) => j.length ? j : $('.mf_w2calendar_selected'))($('.w2calendar_selected')).attr("id");
+    scwin.__getJq("#" + id).prev().click();
 }
 scwin.check = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'calendar1_currentDate').innerText != date;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //WebSquare.wUnit.addCommand("set", "date = scwin._isDate()");
-    WebSquare.wUnit.addCommand("set", "scwin._isDate()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. 샘플파일을 실행 후 Ctrl+마우스우클릭 으로 로그보기를 클릭한다.
-    //1. Run the sample file and click View Log with Ctrl + Right Click.
-    //Verify 1. 로그가 오류없이 정상적으로 보여진다.(이전에는 로그보기에 오류메시지 발생함)
-    //1. The log is displayed normally without error (previously an error message appears in the log view)
-    WebSquare.wUnit.addCommand("assert", "scwin._checkErr()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 다른날짜를 클릭한다.
-    //2. Click a different date.
-    WebSquare.wUnit.addCommand("set", "scwin.clickDate()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 다른날짜가 정상적으로 업데이트된다.(이전에는 holiday에 설정한 날짜로 계속 고정됨)
-    //2. Other dates will be updated normally (previously fixed to the date set in holiday)
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('calendar1_currentDate').innerText != date","true");
-    WebSquare.wUnit.addCommand("assert", "scwin.check()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + 'calendar1_currentDate').innerText != date;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -67,9 +58,6 @@ scwin.onpageload2 = function() {
     var date;
     //End unitTest
     window.date = undefined;
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

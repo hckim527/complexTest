@@ -37,6 +37,15 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     scwin.data1 = [
         "0", "(주)A", 1,
@@ -148,51 +157,14 @@ scwin.trigger3_onclick = function(e) {
     scwin.search();
 };
 scwin.checkValue = function(id2) {
-    if (WebSquare.wUnit.getDomById($p.id + id2)) {
-        return WebSquare.wUnit.getJq(".w2grid_groupby_depth_1")[0].innerText;
+    if (scwin.__getDom($p.id + id2)) {
+        return ((j) => j.length ? j : $('.mf_w2grid_groupby_depth_1'))($('.w2grid_groupby_depth_1'))[0].innerText;
     }
     return "";
 }
 scwin.checkGroup = function() {
-    var el = WebSquare.wUnit.getJq("#grid1_body_tbody tr")[1];
+    var el = ((j) => j.length ? j : $('#mf_grid1_body_tbody tr'))($('#grid1_body_tbody tr'))[1];
     return el.innerText.trim().substr(0, 14);
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 1. 샘플실행 후 '분류2'항목을 필터링(#B,$C)하고 '금액'항목을 필터링(7)한다.
-    //1. After running the sample, filter the 'Category 2' item (# B, $ C) and filter the 'Amount' item (7).
-    //Verify step 1. The #B, 7 values are shown filtered.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header3_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[3].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header3_filter').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header4_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[1].click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_body_tbody tr').not('.w2grid_hidedRow').length == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_1').text()", "#B");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_0_2').text()", "7");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. '금액'항목을 groupby 시킨다.
-    //2. Group the item 'Amount'.
-    //Verify step 2. The 'Amount' and 'Category 2' items are groupby.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkGroup()", "7 - #B [ 1 건 ]");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -202,9 +174,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 29-Mar-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

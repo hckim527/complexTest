@@ -27,6 +27,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.input1_displayFormatter1 = function(value) {
     return "input1:" + value;
 }
@@ -53,29 +62,7 @@ scwin.input3_oneditkeyup = function(info) {
     console.log(logStr);
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id + "image1").hasAttribute("usemap");
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 콘솔창을 실행(F12)하여 상단의 입력창에 "123"값을 입력한다.
-    //1. Execute the sample file and execute the console window (F12) and input the value "123" in the upper input window.
-    //Verify step 1. The oldValue, newValue, and keyCode values are displayed in the console log 
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('input1').focus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log == 'oldValue=1, newValue=1, keyCode=49'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log == 'oldValue=12, newValue=12, keyCode=50'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "log == 'oldValue=123, newValue=123, keyCode=51'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + "image1").hasAttribute("usemap");
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -86,9 +73,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 20-Apr-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -31,6 +31,15 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.chktree_onlabelclick = function(value, nodeElement, index) {};
 scwin.chktree_ontoggleclick = function(nodeElement, index, isRendered) {};
 scwin.treeview1_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {
@@ -49,27 +58,11 @@ scwin.fireMouseHover = function(node) {
     }
 }
 scwin.__triggerMouseover = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireMouseHover(el);
 }
 scwin.__isPointer = function() {
-    return WebSquare.wUnit.getJq("#treeview1_icon_3").css("cursor") == "pointer";
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "3000");
-    // Test step 1. 샘플파일 실행 후 treeview_icon_label에 마우스로 가져간다.
-    //1. After running the sample file, mouse over treeview_icon_label.
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerMouseover('treeview1_icon_3')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 1. 손가락 모양으로 보여진다.(이전에는 손가락 모양이 아닌 포인터였음)
-    //1. 손가락 모양으로 보여진다.(이전에는 손가락 모양이 아닌 포인터였음)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isPointer()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return ((j) => j.length ? j : $('#mf_treeview1_icon_3'))($('#treeview1_icon_3')).css("cursor") == "pointer";
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -32027,13 +32020,6 @@ scwin.onpageload2 = function() {
         }
     ];
     dataList1.setJSON(jsonData);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 12-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[ 

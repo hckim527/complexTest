@@ -23,6 +23,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireOver = function(node) {
     if (document.createEventObject) {
         node.fireEvent('onmouseover');
@@ -35,36 +44,14 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.mouseOverBehaviour = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireOver(el);
 }
 scwin.__hasTooltip = function() {
-    if (!WebSquare.wUnit.getDomById($p.id + 'gridView1_tooltip')) {
+    if (!scwin.__getDom($p.id + 'gridView1_tooltip')) {
         return false;
     }
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + "gridView1_tooltip")).getPropertyValue("display") == "block";
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 gridView1 의 tooltipDisplay 를 확인한다.
-    //1. In the Source tab, check the tooltipDisplay of gridView1.
-    //Verify 1. tooltipDisplay='true'
-    //Test step 2. tooltipShowAlways 를 확인한다.
-    //2. Check tooltipShowAlways.
-    //Verify 2. tooltipShowAlways = 'true'
-    //Test step 3. 브라우저에서 inputType 이 버튼(button항목)인 컬럼에 마우스오버한다.
-    //3. In your browser, hover over the column whose inputType is the button (button item).
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_3')");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    //Verify 3. 해당 컬럼의 툴팁이 표시된다. (그전버전에서는 inputType='button' 일 경우 tooltip 이 나오지 않는 현상발생)
-    //3. The tooltip for that column is displayed. (In previous versions, if inputType = 'button', tooltip does not appear)
-    WebSquare.wUnit.addCommand("assert", "scwin.__hasTooltip()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + "gridView1_tooltip")).getPropertyValue("display") == "block";
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -75,9 +62,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 08-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

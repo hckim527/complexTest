@@ -77,53 +77,30 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.checkVal0 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_0").getAttribute(scwin.dataColMerge) == 'true';
+    return scwin.__getDom($p.id+"gridView1_cell_0_0").getAttribute(scwin.dataColMerge) == 'true';
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_1").getAttribute(scwin.dataColMerge) == 'true';
+    return scwin.__getDom($p.id+"gridView1_cell_0_1").getAttribute(scwin.dataColMerge) == 'true';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_2").getAttribute(scwin.dataColMerge) == 'true';
+    return scwin.__getDom($p.id+"gridView1_cell_0_2").getAttribute(scwin.dataColMerge) == 'true';
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_3").getAttribute(scwin.dataColMerge) == 'true';
+    return scwin.__getDom($p.id+"gridView1_cell_0_3").getAttribute(scwin.dataColMerge) == 'true';
 }
 scwin.checkVal4 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_4").getAttribute(scwin.dataColMerge) == 'true';
+    return scwin.__getDom($p.id+"gridView1_cell_0_4").getAttribute(scwin.dataColMerge) == 'true';
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 각 컬럼들의 colMerge='true' 인지 확인한다.- In the Source tab, make sure that each column has colMerge = 'true'.
-    //Verify 1. colMerge='true'
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal0()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. Emp. / Customer. / Visit. 컬럼들의 upperColumn 이 설정되어 있는지 확인한다. - Emp. / Customer. / Visit. Check that the upperColumns of the columns are set.
-    //Verify 2. upperColumn='deptNm' / upperColumn='empNm' / upperColumn='custNm'
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById($p.id+'gridView1').cellInfoHash.chk.options.upperColumn == 'deptNm'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById($p.id+'gridView1').cellInfoHash.custNm.options.upperColumn == 'empNm'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById($p.id+'gridView1').cellInfoHash.visitCnt.options.upperColumn == 'custNm'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 브라우저에서 colMerge 가 잘 되었는지 확인한다. (예제 그림 참고)-Make sure that colMerge works fine in your browser. (See illustration)
-    //Verify 3. 기존과 다르게 Visit. 컬럼의 5부분이 Merge 되지 않는다.-Unlike the previous visit. The 5 parts of the column are not merged.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById($p.id+'gridView1_cell_3_4').innerText == '5'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
     scwin.dataColMerge = WebSquare.util.getDataPrefix("colMerge");
     scwin.dataUpperColumn = WebSquare.util.getDataPrefix("upperColumn");

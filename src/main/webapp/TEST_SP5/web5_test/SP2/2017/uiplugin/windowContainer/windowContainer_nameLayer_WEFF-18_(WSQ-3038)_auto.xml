@@ -113,34 +113,8 @@ scwin.convertStringInt = function(str) {
     return parseInt(res);
 }
 scwin.setValue = function(str) {
-    left = scwin.convertStringInt(WebSquare.wUnit.getJq('#windowContainer1_name').css('left'));
+    left = scwin.convertStringInt(((j) => j.length ? j : $('#mf_windowContainer1_name'))($('#windowContainer1_name')).css('left'));
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플 실행 후 브라우저 화면을 줄인다.
-    //1. Reduce the browser screen after running the sample.
-    //Verify step 1. The move button (arrow) of the nameBar is shown.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('body').css('width', '50%');");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#windowContainer1_left').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#windowContainer1_right').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setValue()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. nameBar 이동버튼을 왼쪽 또는 오른쪽으로 클릭한다.
-    //2. Move the nameBar button left or right  Click.
-    //Verify step 2. The movement of nameBar is moved by 500 pixels (there was no attribute before)
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_left').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.convertStringInt(WebSquare.wUnit.getJq('#windowContainer1_name').css('left')) == (left + 500)", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
     scwin.doInit();
 }

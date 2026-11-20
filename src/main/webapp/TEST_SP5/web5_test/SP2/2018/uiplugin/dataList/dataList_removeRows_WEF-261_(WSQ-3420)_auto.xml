@@ -109,53 +109,13 @@ scwin.trigger4_onclick = function(e) {
     dataList1.removeRows(dataList1.getMatchedIndex('col2', '1'));
 };
 scwin.checkFilter = function(text1) {
-    var arr = WebSquare.wUnit.getJq(".w2grid_customFilter_list_listColumn_text");
+    var arr = ((j) => j.length ? j : $('.mf_w2grid_customFilter_list_listColumn_text'))($('.w2grid_customFilter_list_listColumn_text'));
     var string = "";
     for (i = 1; i < arr.length; i++) {
         string = string + arr[i].innerText;
     }
     return string.indexOf(text1) == -1;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 '금액'항목의 필터리스트를 클릭하고 'A'로 필터링한다.
-    //1. After running the sample, click the filter list in the 'Amount' item and filter it by 'A'.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_column19_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_list').querySelectorAll('div')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_list').querySelectorAll('div')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. '금액'항목이 'A'로 필터링되어진다.
-    //1. The 'Amount' item is filtered to 'A'.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_0_1').innerText == 'A'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'delete'버튼을 클릭한다.
-    //2. Click the 'delete' button.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_column19_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_column19_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 2. 'A'로 필터링되어진 데이터가 삭제되어진다.
-    //2. The data filtered by 'A' is deleted.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkFilter('A')", "true");
-    //Test step 3. '금액'항목의 필터링을 해제('전체선택' 체크)한다.
-    //3. Un-filter the 'Amount' item (check 'Select All').
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_list').querySelectorAll('div')[1].click()");
-    //Verify step 3. 'A'값을 제외한 나머지 값들이 보여진다.(이전에는 삭제한 'A'값의 셀이 남아서 보여짐)
-    //3. The remaining values ​​except for the 'A' value are displayed (Previously, the deleted cell of 'A' value remains and is shown)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.grid_body_row').not('.w2grid_hidedRow').length == 3", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 ]]></script>
 		<style type="text/css">

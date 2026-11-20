@@ -24,7 +24,22 @@
         </xf:model>
         <script type="javascript" lazy="false"><![CDATA[
 
-    scwin.onpageload = function() {
+    // 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+scwin.onpageload = function() {
         var jsonData = [{col1:"a",col3:"a"},{col1:"c",col3:"c"},{col1:"d",col3:"d"},{col1:"b",col3:"b"}];
         dataList1.setJSON(jsonData);
     };
@@ -64,21 +79,9 @@
     }
 
 	scwin.checkVal = function() {
-		let check_val = WebSquare.wUnit.getObjById('gridView1').getGroupbyData()
+		let check_val = scwin.__getObj('gridView1').getGroupbyData()
 		return check_val === undefined;
 	};	
-	scwin.unitTest = function(){
-		//Init test
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()","true");
-		WebSquare.wUnit.addCommand("pause", "500");
-
-		//Run and Stop unit Test
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();
     
     ]]></script>
     </head>

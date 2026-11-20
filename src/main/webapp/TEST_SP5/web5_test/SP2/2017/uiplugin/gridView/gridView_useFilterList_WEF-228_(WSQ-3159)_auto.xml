@@ -27,6 +27,15 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     scwin.data1 = [
         "(가)다라다", "A", "07:30",
@@ -231,7 +240,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.addEl = function(id, array) {
@@ -256,32 +265,6 @@ scwin.checkVal = function() {
         return v === beforeArr[i]
     });
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 gridView의 금액항목을 더블클릭하여 sorting한다.
-    //1. After executing the sample, double-click the amount item of gridView and sort it.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('grid1_header4')");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
-    //Verify step 1. 금액항목이 sorting되어진다.
-    //1. Amount items are sorted.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "false");
-    //Test step 2. 그후 filterList를 클릭하여 '전체선택'체크 해지하고 다시 '전체선택'체크한다.
-    //2. Then click filterList, uncheck 'Select all' and check 'Select all' again.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_header4_filter').click()");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_customFilter_list_listColumn_checkbox')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2list_listColumn w2list_listColumn_checkbox w2grid_customFilter_list_listColumn_checkbox')[1].click()");
-    //Verify step 2. 1번에서 sorting되어진 sorting아이콘이 유지되어 보여진다.(이전에는 아이콘이 사라짐)
-    //2. The sorting icon that was sorted in step 1 will be displayed (previously the icon will disappear).
-    //WebSquare.wUnit.addCommand("assert", "typeof document.getElementsByClassName('w2grid_head_sort_asc')[0] == 'object'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -293,9 +276,6 @@ scwin.onpageload2 = function() {
     window.afterArr = [];
     window.initArr = [];
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

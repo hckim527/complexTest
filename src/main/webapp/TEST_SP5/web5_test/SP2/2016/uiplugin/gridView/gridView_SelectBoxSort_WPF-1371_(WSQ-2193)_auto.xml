@@ -142,6 +142,22 @@
             </w2:dataCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -154,16 +170,16 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.__sortCol = function() {
-    var el = WebSquare.wUnit.getDomById($p.id + "gridView1_column15");
+    var el = scwin.__getDom($p.id + "gridView1_column15");
     scwin.fireDbClick(el);
 }
 scwin.__isSorted = function() {
-    var el = WebSquare.wUnit.getJq('.grid_body_row').not('.w2grid_hidedRow').find('td[col_id="col1"]');
+    var el = ((j) => j.length ? j : $('.mf_grid_body_row'))($('.grid_body_row')).not('.w2grid_hidedRow').find('td[col_id="col1"]');
     var arr = [];
     var tmp = [];
     for (var i = 0; i < el.length; i++) {
-        arr.push(WebSquare.wUnit.getJq(el[i]).text());
-        tmp.push(WebSquare.wUnit.getJq(el[i]).text());
+        arr.push(scwin.__getJq(el[i]).text());
+        tmp.push(scwin.__getJq(el[i]).text());
     }
     tmp = tmp.sort();
     return scwin.__equalArr(arr, tmp);
@@ -175,24 +191,6 @@ scwin.__equalArr = function(arr1, arr2) {
         }
     }
     return true;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. Source 탭에서 col1 의 sortLabel 부분을 학인한다.
-    //1. In the Source tab, examine the sortLabel part of col1.
-    // verify step 1. sortLabel='true'
-    //2. Sort the col1 column in the browser.
-    //Test step 2. 브라우저에서 col1 컬럼을 Sort 한다.
-    //2. Sort the col1 column in the browser.
-    WebSquare.wUnit.addCommand("set", "scwin.__sortCol()");
-    //Verify step 2. label 순으로 Sort 된다. (그전에는 라벨로 소트하는 기능이 없었음)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isSorted()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -212,13 +210,6 @@ scwin.onpageload2 = function() {
     //options.sortIndex = "0 1 2";
     //options.sortOrder = "-1 -1 1";
     // dataList3.multisort( options );
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 06-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

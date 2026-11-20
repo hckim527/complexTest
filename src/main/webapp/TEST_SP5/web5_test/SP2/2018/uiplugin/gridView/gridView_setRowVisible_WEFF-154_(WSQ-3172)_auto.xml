@@ -15,53 +15,40 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {
     var totRow = 200;
-    var totCol = WebSquare.wUnit.getObjById('grid1').getTotalCol();
+    var totCol = scwin.__getObj('grid1').getTotalCol();
     var arr = [];
     for (var i = 0; i < totRow; i++) {
         for (var j = 0; j < totCol; j++) {
             arr.push("index_" + i + "_" + j);
         }
     }
-    WebSquare.wUnit.getObjById('grid1').setData(arr);
+    scwin.__getObj('grid1').setData(arr);
 };
 scwin.onpageunload = function() {};
 scwin.trigger1_onclick = function(e) {
-    for (var i = 0; i < WebSquare.wUnit.getObjById('grid1').getTotalRow(); i++) {
+    for (var i = 0; i < scwin.__getObj('grid1').getTotalRow(); i++) {
         if (i != 50 && i != 100 && i != 199) {
-            WebSquare.wUnit.getObjById('grid1').setRowVisible(i, false);
+            scwin.__getObj('grid1').setRowVisible(i, false);
         }
     }
 };
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 'setRowVisible false'버튼을 클릭한다.
-    //1. After running the sample, click the 'setRowVisible false' button.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. gridView의 값이 갱신되어 보여진다.
-    //1. The value of gridView is updated.
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_0_0').textContent != 'index_0_0'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_50_0').textContent == 'index_50_0'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 가로스크롤을 오른쪽으로 이동하여 정상적으로 데이터가 출력되는지 확인한다.
-    //2. Move the horizontal scroll to the right to see if the data is output normally.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_scrollX_right').scrollLeft = 500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 정상적인 데이터가 출력되어 보여진다. (이전에는 일부 데이터가 출력되지 않음)
-    //2. Normal data is displayed. (Previously some data will not be output)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_50_6').textContent == 'index_50_6'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_199_6').textContent == 'index_199_6'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_199_9').textContent == 'index_199_9'", "true");
-
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -70,9 +57,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 28-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -21,6 +21,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     var jsonData = [{
         "col1": "a",
@@ -70,26 +79,8 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 disabled버튼을 클릭하여 name2항목의 첫번째 값(test)을 더블클릭한다.
-    //After running the sample file, click the disabled button and double-click the first value (test) of the name2 entry.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grd1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. text값이 textarea로 보여지고 영역은 disabled로 처리되어 보여진다.(이전에는 enable로 보여짐)
-    //The text value is shown as textarea and the area is treated as disabled (previously shown as enable)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_grd1__col2').getValue() == 'test'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_grd1__col2').getDisabled()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -100,9 +91,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 22-Jan-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

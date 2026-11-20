@@ -31,12 +31,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView1_oneditdblclick = function(row, col) {
     //alert("row : "+row+", col : "+col);
     window.log = "row : " + row + ", col : " + col;
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById(id);
+    var el = scwin.__getDom(id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -50,23 +59,6 @@ scwin.fireDbClick = function(node) {
         node.ondblclick();
     }
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 결과값(21)항목을 더블클릭(editing모드변경)한 상태에서 마우스로 더블클릭을 수행한다.
-    //1. Execute the sample file and double-click the result (21) item with the mouse while double-clicking (changing the editing mode).
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_1_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('G_'+$p.id+'gridView1__col1')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify 1. oneditdblclickd이벤트가 수행되어 더블클릭되어진 값에 대한 indexrow, indexcol값이 alert창에 보여진다. (row:1, col:0)
-    //1. The oneditdblclickd event is executed and the indexrow and indexcol values of the double-clicked values are displayed in the alert window. (row: 1, col: 0)
-    WebSquare.wUnit.addCommand("assert", "window.log == 'row : 1, col : 0'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -76,9 +68,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 28-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

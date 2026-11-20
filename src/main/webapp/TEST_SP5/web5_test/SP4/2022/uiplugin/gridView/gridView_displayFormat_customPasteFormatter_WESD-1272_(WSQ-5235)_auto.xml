@@ -40,7 +40,23 @@
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
         
-	scwin.onpageload = function() {
+	// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+scwin.onpageload = function() {
 		
 	};
 	
@@ -109,7 +125,7 @@ scwin.programmaticPaste = function(target, text) {
   
   
 	scwin.Dbclick = function(id) {
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireDbClick(el);
 	}
 	scwin.fireDbClick = function(node) {
@@ -124,7 +140,7 @@ scwin.programmaticPaste = function(target, text) {
 		}
 	}    
 	scwin.simulateWrapper = function(target, type, options) {
-		WebSquare.wUnit.getJq(target).simulate(type, options);
+		scwin.__getJq(target).simulate(type, options);
 	}
 	scwin.setSimulate1 = function() {
 		scwin.simulateWrapper('#G_wq_uuid_3__col1', 'key-sequence', {
@@ -134,25 +150,6 @@ scwin.programmaticPaste = function(target, text) {
 	scwin.checkVal = function() {
 		return window.check_data == '123456789';
 	}	
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('wq_uuid_3_cell_2_0')");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand("set", "scwin.programmaticPaste(WebSquare.wUnit.getDomById('G_wq_uuid_3__col1'), '123456789')");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_1_2').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-		
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();		
 	]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">

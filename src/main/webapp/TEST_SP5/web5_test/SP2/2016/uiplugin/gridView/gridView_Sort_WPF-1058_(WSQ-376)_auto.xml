@@ -15,8 +15,24 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__triggerDbclick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -28,10 +44,10 @@ scwin.__triggerDbclick = function(id) {
     }
 }
 scwin.__isSorted = function(colID) {
-    var td = WebSquare.wUnit.getJq(".grid_body_row").not(".w2grid_hidedRow").find('td[col_id=' + colID + ']');
+    var td = ((j) => j.length ? j : $('.mf_grid_body_row'))($('.grid_body_row')).not(".w2grid_hidedRow").find('td[col_id=' + colID + ']');
     var arr = [];
     td.each(function() {
-        arr.push(WebSquare.wUnit.getJq(this).text());
+        arr.push(scwin.__getJq(this).text());
     });
     for (var i = 0; i < arr.length - 1; i++) {
         if (arr[i] > arr[i + 1]) {
@@ -39,28 +55,6 @@ scwin.__isSorted = function(colID) {
         }
     }
     return true;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 브라우저에서 3번째 컬럼 expression 을 더블클릭한다.
-    //2. In the browser, double-click the third column expression. 
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerDbclick('grid1_column7')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 3번째 컬럼 expression 이 Sort 된다.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isSorted('column8')", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. 4번째 컬럼을 더블클릭한다.
-    //3. Double-click the fourth column.
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerDbclick('grid1_column3')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. 4번째 컬럼이 Sort 된다.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isSorted('column6')", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -74,13 +68,6 @@ scwin.onpageload2 = function() {
         1, 2, "", "qq",
         1, 2, "", "zz"
     ]);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 09-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

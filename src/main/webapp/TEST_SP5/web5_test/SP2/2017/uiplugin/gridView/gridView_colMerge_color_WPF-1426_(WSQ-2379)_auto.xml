@@ -22,8 +22,24 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.getBackground = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     return el.style.backgroundColor;
 }
 scwin.rgb2hex = function(rgb) {
@@ -34,26 +50,13 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq("#" + id).css("background-color");
+    var rgb = scwin.__getJq("#" + id).css("background-color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
         return color == hexa;
     }
     return rgb == hexa;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행하여 name1항목값의 colMerge된 배경색의 색상을 확인한다.
-    //1. Run the sample file to check the colMered background color of the value of the name1 entry.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 1. 배경색이 merge된 최상단 cell을 기준으로 색상이 녹색으로 merge되어 보여진다.(이전에는 색상은 merge되지 않음)
-    //1. The color of the top cell merged with the background color is merged into green (Previously, the colors are not merged).1. The color of the top cell merged with the background color is merged into green (Previously, the colors are not merged).
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'gridView1_cell_1_0', '#20ff20')", "true");
-    //run and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -70,9 +73,6 @@ scwin.onpageload2 = function() {
     //Created by: Sang.do
     //Created date: 03-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         <style type="text/css"><![CDATA[

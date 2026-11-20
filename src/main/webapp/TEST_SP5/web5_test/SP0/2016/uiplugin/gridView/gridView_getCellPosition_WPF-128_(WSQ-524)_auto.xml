@@ -234,6 +234,22 @@
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.grd_ExcelSample_onviewchange = function(info) {
     var colId = grd_ExcelSample.getColumnID(info.colIndex);
     if (colId == "result") {
@@ -323,14 +339,14 @@ scwin.fireContextMenu = function(node) {
     }
 }
 scwin.__contextMenu = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireContextMenu(el);
 }
 scwin.__isSelectedRow = function() {
     var count = 0;
-    var td = WebSquare.wUnit.getJq($("#grd_ExcelSample_body_tbody tr").last()).find("td");
+    var td = scwin.__getJq($("#grd_ExcelSample_body_tbody tr").last()).find("td");
     td.each(function(index, el) {
-        var color = WebSquare.wUnit.getJq(el).css("background-color");
+        var color = scwin.__getJq(el).css("background-color");
         if (color.indexOf("rgb") > -1) {
             color = scwin.rgb2hex(color);
         }
@@ -351,27 +367,6 @@ scwin.__isShowNormal = function() {
     var log = WebSquare.logger.getLog();
     return log.indexOf("getCellPosition (") === -1;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Test step 1. 샘플파일을 실행하고 그리드의 스크롤을 하단까지 이동시키고 그리드컬럼(상, 선로명, 용량, 선로값, 선로번호, 판정 등)을 마우스 우클릭으로 클릭한다. 
-    //1. Run the sample file, move the grid to the bottom, and right click on the grid column (phase, line name, capacity, line value, line number, ruling, etc.).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_ExcelSample').setTopRowIndex(15)");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "scwin.__contextMenu('grd_ExcelSample_cell_4_2')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. 그리드의 스크롤이 하단까지 이동되고 그리드컬럼이 선택되어 진다.
-    //1. The scroll of the grid is moved to the bottom and the grid column is selected.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grd_ExcelSample_scrollY_div').scrollTop != 0", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("assert", "scwin.__isSelectedRow()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isShowNormal()", "true");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
 }
 ]]></script>

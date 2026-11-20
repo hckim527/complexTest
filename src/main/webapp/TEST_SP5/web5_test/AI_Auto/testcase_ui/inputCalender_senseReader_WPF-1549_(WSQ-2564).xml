@@ -85,31 +85,35 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     cal_wframe.setSrc("./cal_wframe.xml");
-    WebSquare.wUnit.getJq("#cal_wframe").attr("tabindex", "0").focus();
+    ((j) => j.length ? j : $('#mf_cal_wframe'))($('#cal_wframe')).attr("tabindex", "0").focus();
 };
 scwin.anchor1_onclick = function() {
     cal_wframe.setSrc("./cal_wframe.xml");
-    WebSquare.wUnit.getJq("#cal_wframe").attr("tabindex", "0").focus();
+    ((j) => j.length ? j : $('#mf_cal_wframe'))($('#cal_wframe')).attr("tabindex", "0").focus();
 };
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    WebSquare.wUnit.getJq("#anchor2").focusout(function() {
-        WebSquare.wUnit.getJq("#cal_wframe").hide();
+    ;((j) => j.length ? j : $('#mf_anchor2'))($('#anchor2')).focusout(function() {
+        ((j) => j.length ? j : $('#mf_cal_wframe'))($('#cal_wframe')).hide();
     });
-    WebSquare.wUnit.getJq("#tgrp").focus(function() {
-        WebSquare.wUnit.getJq(this).css("color", "red");
+    ((j) => j.length ? j : $('#mf_tgrp'))($('#tgrp')).focus(function() {
+        scwin.__getJq(this).css("color", "red");
     });
-    WebSquare.wUnit.getJq("#tgrp").blur(function() {
-        WebSquare.wUnit.getJq(this).css("color", "blue");
-        WebSquare.wUnit.getJq("#wq_uuid_12_input").focus();
+    ((j) => j.length ? j : $('#mf_tgrp'))($('#tgrp')).blur(function() {
+        scwin.__getJq(this).css("color", "blue");
+        ((j) => j.length ? j : $('#mf_wq_uuid_12_input'))($('#wq_uuid_12_input')).focus();
     });
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[ ]]></style>

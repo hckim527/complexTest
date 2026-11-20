@@ -21,6 +21,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireOver = function(node) {
     if (document.createEventObject) {
         node.fireEvent('onmouseover');
@@ -37,36 +46,8 @@ scwin.mouseOverBehaviour = function(id, p) {
     scwin.fireOver(el[p]);
 }
 scwin.getTooltip = function() {
-    var el = WebSquare.wUnit.getDomById($p.id + "gridView1_tooltip");
+    var el = scwin.__getDom($p.id + "gridView1_tooltip");
     return el.innerText;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. Design 탭에서 gridView 마우스 오른쪽 -> Footer 추가 / SubTotal 추가 버튼을 클릭한다.
-    //1. On the Design tab, right-click gridView-> Add Footer / Add SubTotal.
-    // verify step 1. Footer 와 SubTotal 이 추가된다.
-    //1. Footer and SubTotal are added.
-    //Test step 2. Property 탭 또는 Source 탭에서 gridView1 의 tooltipDisplay 부분을 확인한다.
-    //2. In the Property tab or the Source tab, check the tooltipDisplay portion of gridView1.
-    //Verify step 2. tooltipDisplay='true'
-    //Test step 3. 브라우저에서 Footer 와 SubTotal 부분에 마우스 오버한다. 
-    //3. Mouse over the Footer and SubTotal sections in the browser.
-    //Verify step 3. Footer 와 SubTotal 에 대해 Tooltip 이 생성된다. (그전버전에서는 Tooltip 이 생성되지 않음)
-    //3. Tooltip is created for Footer and SubTotal. (Tooltip is not created in previous versions)
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('column3', 3)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.getTooltip() == '100000000'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_column4', 0)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.getTooltip() == '100000000'", "true");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -98,13 +79,6 @@ scwin.onpageload2 = function() {
         }
     ];
     dataList1.setJSON(jsonData);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 30-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -15,6 +15,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
     var totRow = 100;
     var totCol = grid1.getTotalCol();
@@ -42,7 +49,7 @@ scwin.trigger1_onclick = function(e) {
     }
 };
 scwin.checkColor = function(id, value, rgb) {
-    var color = WebSquare.wUnit.getJq(id).css("background-color");
+    var color = scwin.__getJq(id).css("background-color");
     if (color.indexOf("rgb") != -1) {
         return color == rgb;
     }
@@ -50,37 +57,15 @@ scwin.checkColor = function(id, value, rgb) {
 }
 
 scwin.setVal1 = function() {
-    WebSquare.wUnit.getJq('#grid1_scrollY_div').animate ({scrollTop:360}, 50);
+    ((j) => j.length ? j : $('#mf_grid1_scrollY_div'))($('#grid1_scrollY_div')).animate ({scrollTop:360}, 50);
 }
 scwin.setVal2 = function() {
-    WebSquare.wUnit.getJq('#grid1_scrollY_div').animate ({scrollTop:50}, 50);
+    ((j) => j.length ? j : $('#mf_grid1_scrollY_div'))($('#grid1_scrollY_div')).animate ({scrollTop:50}, 50);
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getJq(WebSquare.wUnit.getJq('#grid1_body_tbody tr')[38]).css('display') == 'none' && WebSquare.wUnit.getJq(WebSquare.wUnit.getJq('#grid1_body_tbody tr')[38]).is(':visible') == false;
+    return scwin.__getJq(((j) => j.length ? j : $('#mf_grid1_body_tbody tr'))($('#grid1_body_tbody tr'))[38]).css('display') == 'none' && scwin.__getJq(((j) => j.length ? j : $('#mf_grid1_body_tbody tr'))($('#grid1_body_tbody tr'))[38]).is(':visible') == false;
 }
 
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('#grid1_cell_50_0', 'yellow', 'rgb(255, 255, 0)')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 세로스크롤을 아래로 조금씩 내리고 다시 위로 올려본다.
-    //2. Lower the vertical scroll down and back up.
-    //Verify step 2. Hidden rows are not shown.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload">

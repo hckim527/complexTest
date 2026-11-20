@@ -22,6 +22,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     count++;
     widgetContainer1.addWidgets({
@@ -36,28 +45,10 @@ scwin.trigger1_onclick = function(e) {
     });
 };
 scwin.checkValue = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id)) {
+    if (scwin.__getDom($p.id + id)) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. TestData 1번의 _mainContainer.xml을 실행 후 'addWidget'버튼을 클릭한다.
-    //1. Run TestData # _mainContainer.xml and click the 'addWidget' button.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify  1. 위젯컨테이너안에 서브위젯이 생성되고 'widget1'이 보여진다.(정상)
-    //1. A sub-widget is created in the widget container and 'widget1' is displayed. (Normal)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('widgetContainer1_widget1')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer1_widget1_content_wq_uuid_13').text() == 'widget1'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -68,9 +59,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 13-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

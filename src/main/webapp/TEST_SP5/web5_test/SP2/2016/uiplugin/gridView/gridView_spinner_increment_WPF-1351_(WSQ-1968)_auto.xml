@@ -27,6 +27,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.test = function(row, col) {
     var obj = {};
     if (row == 0) {
@@ -67,44 +76,12 @@ scwin.fireDbClick = function(node) {
     //}
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById(id);
+    var el = scwin.__getDom(id);
     scwin.fireDbClick(el);
     //var ev = document.createEvent("MouseEvents");
     //ev.initEvent("dblclick", true, true);
     //el.dispatchEvent(ev);
 }
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 name2항목의 첫번째 컬럼에 마우스를 더블클릭하여 삼각형(위)를 2번 클릭하여 증가시킨다.
-    //1. After running the sample file, double-click on the first column of the name2 item and double-click on the triangle (above) to increase it.
-    //Verify step 1. Increment by 2 and show 4 values.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('wq_uuid_3_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_wq_uuid_3___spinner_col2_upButton').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_wq_uuid_3___spinner_col2_upButton').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'G_'+$p.id+'wq_uuid_3___spinner_col2___input').value == '3'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('wq_uuid_3_cell_1_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_wq_uuid_3___spinner_col2_upButton').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_wq_uuid_3___spinner_col2_upButton').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'G_'+$p.id+'wq_uuid_3___spinner_col2___input').value == '5'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('wq_uuid_3_cell_2_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_wq_uuid_3___spinner_col2_upButton').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_wq_uuid_3___spinner_col2_upButton').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'G_'+$p.id+'wq_uuid_3___spinner_col2___input').value == '9'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function 

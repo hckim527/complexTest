@@ -12,6 +12,15 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.createWindow = function(title, winId) {
     //var path = "components/container/" ;
     var path = "";
@@ -21,8 +30,7 @@ scwin.createWindow = function(title, winId) {
     if (!windowCreated) {
         var selectedIdx = windowContainer1.getSelectedIndex();
         //하단 status 에 text 추가
-        //var statusDoc = WebSquare.wUnit.getDomById($p.id+"windowContainer1_subWindow1_status");
-        var statusDoc = WebSquare.wUnit.getDomById($p.id + "windowContainer1_subWindow" + selectedIdx + "_status");
+        var statusDoc = scwin.__getDom($p.id + "windowContainer1_subWindow" + selectedIdx + "_status");
         //windowMaxNum 이 6개 이상 오픈시 처리
         if (statusDoc.children.length > 1) {
             return;
@@ -41,37 +49,6 @@ scwin.trigger9_onclick = function(e) {
     windowContainer1.setWindowCustomMsg("test!!!!!!!");
     windowContainer1.setWindowStatusMsg("111msg");
 };
-scwin.unitTest = function() {
-    // debugger;
-    // Init test
-    WebSquare.wUnit.start();
-    // Test step 1: 1. 추가된 속성 useCustomMsg="true" , customMsg="안녕하세요."입력하고 실행한 후 하단의 Add2버튼을 클릭한다.
-    // 1. Added attribute useCustomMsg = 'true'customMsg = 'Hello' Enter and run it, then click the Add2 button at the bottom.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('windowContainer1').getAttribute('useCustomMsg')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('windowContainer1').getAttribute('customMsg')", "안녕하세요.");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Verify 1: 1. 컨테이너 하단에 customMsg에서 설정한 '안녕하세요.'메시지가 보여진다.
-    // 1. The 'Hello' message is displayed at the bottom of the container, set by customMsg.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow0_custom_msg').innerHTML", "안녕하세요.");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Test step 2: 2. Add2, Add3, Add4등을 클릭하고 하단의 멀티창 이미지를 클릭한 후 멀티창 한개를 클릭한다
-    // 2. Click Add2, Add3, Add4, click the multi-window image at the bottom, and then click one of the multi-windows.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_sequential').click()");
-    // Verify 2: 2. It is divided into multi-window screen and it can be distinguished by division color for the selected window.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow0_header_title').innerHTML", "Add2 PAGE");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow1_header_title').innerHTML", "Add3 PAGE");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'windowContainer1_subWindow2_header_title').innerHTML", "Add4 PAGE");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // Run test
-    WebSquare.wUnit.run();
-    // Stop test
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -80,9 +57,6 @@ scwin.onpageload2 = function() {
     // Function test
     // Created by Sang.Do
     // Created date 17-Jan-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[

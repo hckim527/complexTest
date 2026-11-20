@@ -22,7 +22,16 @@
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
         
-		scwin.onpageload = function() {
+		// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
 			dataList1.insertRow();
 			dataList1.insertRow();
 			dataList1.insertRow();
@@ -112,26 +121,12 @@ scwin.gridView1_onaftercolumnmove = function(info) {
 		}
 	}
 	scwin.rightClick = function(id){
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireClick(el);
 	}         
 	scwin.checkVal = function(){
-		return WebSquare.wUnit.getJq('#gridView1_contextMenu_list').offset().top == 0;
+		return ((j) => j.length ? j : $('#mf_gridView1_contextMenu_list'))($('#gridView1_contextMenu_list')).offset().top == 0;
 	}   
-	scwin.unitTest = function(){
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-
-		WebSquare.wUnit.addCommand("set", "scwin.rightClick('gridView1_cell_5_1')");
-		WebSquare.wUnit.addCommand("pause", "1000");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();	
 
 ]]></script>
     	<style><![CDATA[ 

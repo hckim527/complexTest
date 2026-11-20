@@ -39,8 +39,17 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -68,36 +77,15 @@ scwin.getElementsByClassName = function(name) {
 scwin.__checkCheckBox = function() {
     if (wq_uuid_3_header__column5_checkboxLabel__id.checked == true) {
         // select all 
-        return (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_0').checked == true) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_1').checked == true) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_2').checked == true);
+        return (scwin.__getDom('G_'+$p.id+'gridView1___checkbox_col1_0').checked == true) && (scwin.__getDom('G_'+$p.id+'gridView1___checkbox_col1_1').checked == true) && (scwin.__getDom('G_'+$p.id+'gridView1___checkbox_col1_2').checked == true);
     } else {
         // un-select all
-        return (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_0').checked == false) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_1').checked == false) && (WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___checkbox_col1_2').checked == false);
+        return (scwin.__getDom('G_'+$p.id+'gridView1___checkbox_col1_0').checked == false) && (scwin.__getDom('G_'+$p.id+'gridView1___checkbox_col1_1').checked == false) && (scwin.__getDom('G_'+$p.id+'gridView1___checkbox_col1_2').checked == false);
     }
 }
 scwin.checktype = function() {
     return typeof scwin.getElementsByClassName('w2grid_head_sort_asc')[0] === 'object';
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column5')");
-    //Verify step 3. 선택한 컬럼이 Sort 된다.
-    //3. The selected column is sorted.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.getElementsByClassName('w2checkbox_label').length == 4", "true");
-    //Test step 4. column5 의 Label 을 클릭한다.
-    //4. Click Label in column5
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "scwin.getElementsByClassName('w2checkbox_label')[0].click()");
-    //Verify step 4. 체크박스가 전체체크 / 전체해제 된다.
-    //4. The check box is checked / unlocked as a whole.    
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkCheckBox()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function 

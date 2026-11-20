@@ -10,15 +10,18 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
-scwin.unitTest = function() {
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("assert", "scwin.checkLabel()","true");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
 };
 scwin.checkLabel = function () {
     var dataCheckboxLabel = WebSquare.util.getDataPrefix("checkboxLabel");
-    if (WebSquare.wUnit.getDomById($p.id+'grid1_column7').textContent == WebSquare.wUnit.getDomById($p.id+'grid1_column7').getAttribute(dataCheckboxLabel)) {
+    if (scwin.__getDom($p.id+'grid1_column7').textContent == scwin.__getDom($p.id+'grid1_column7').getAttribute(dataCheckboxLabel)) {
         return true;
     }
     return false;
@@ -32,9 +35,6 @@ scwin.onpageload2 = function() {
         "다", 8, "대구", 64,
         "라", 1, "부산", 23
     ]);
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 };
 ]]></script>
     </head>

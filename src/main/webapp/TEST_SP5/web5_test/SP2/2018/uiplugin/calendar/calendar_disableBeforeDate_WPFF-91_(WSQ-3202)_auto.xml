@@ -15,69 +15,30 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger1_onclick = function(e) {
-    WebSquare.wUnit.getObjById('calendar1').disableBeforeDate("20180110");
+    scwin.__getObj('calendar1').disableBeforeDate("20180110");
 };
 scwin.trigger2_onclick = function(e) {
-    WebSquare.wUnit.getObjById('calendar1').disableAfterDate("20180120");
+    scwin.__getObj('calendar1').disableAfterDate("20180120");
 };
 scwin.trigger3_onclick = function(e) {
-    WebSquare.wUnit.getObjById('calendar1').enableAllDate();
+    scwin.__getObj('calendar1').enableAllDate();
 };
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_selectbox_month_button').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_selectbox_month_itemTable_0').click()");
-    //WebSquare.wUnit.addCommand("pause", "500");
-    //for mobile
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoYear(2018)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1').gotoMonth(1)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_2_5').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('calendar1_currentDate').textContent == '2018/01/19'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_3_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('calendar1_currentDate').textContent == '2018/01/19'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'disableBeforeDate'버튼을 클릭한다.
-    //2. Click the 'disableBeforeDate' button.
-    //Verify step 2. The date before January 10, 2018 (9th) is disabled.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_1_3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('calendar1_currentDate').textContent == '2018/01/10'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_1_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('calendar1_currentDate').textContent == '2018/01/10'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 'enableAllDate'버튼을 클릭한다.
-    //3. Click the 'enableAllDate' button.
-    //Verify step 3. All dates are enabled (10 to 20 days are enabled.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('calendar1_cell_1_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('calendar1_currentDate').textContent == '2018/01/09'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('calendar1_cell_3_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('calendar1_currentDate').textContent == '2018/01/21'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
 }
 ]]></script>

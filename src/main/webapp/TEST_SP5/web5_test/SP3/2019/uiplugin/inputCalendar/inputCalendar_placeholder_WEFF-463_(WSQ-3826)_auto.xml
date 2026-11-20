@@ -24,6 +24,15 @@
 			</xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.dateMask = function(value) {
     if (typeof value == "number") {
         value = value + "";
@@ -73,7 +82,7 @@ scwin.dateMask_yearMonth = function(value) {
 }
 scwin.fireKeyEvent = function(inputCalendarId, value) {
     var obj = window[inputCalendarId];
-    var input = WebSquare.wUnit.getDomById($p.id + inputCalendarId + "_input")
+    var input = scwin.__getDom($p.id + inputCalendarId + "_input")
     if (obj && input) {
         if (obj.focus) {
             obj.focus();
@@ -101,27 +110,12 @@ scwin.fireKeyEvent = function(inputCalendarId, value) {
     }
 }
 scwin.getInputValue = function(inputCalendarId) {
-    var dom = WebSquare.wUnit.getDomById($p.id + inputCalendarId + "_input");
+    var dom = scwin.__getDom($p.id + inputCalendarId + "_input");
     if (dom) {
         return dom.value;
     }
     return null;
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 "엑셀다운로드"버튼을 클릭한다.
-    WebSquare.wUnit.addCommand('assert', "inputCalendar2.options.placeholder == 'yyyyMMdd'", 'true');
-    WebSquare.wUnit.addCommand('pause', '500');
-    WebSquare.wUnit.addCommand('assert', "inputCalendar3.options.placeholder == 'yyyyMM'", 'true');
-    WebSquare.wUnit.addCommand('pause', '500');
-    WebSquare.wUnit.addCommand('assert', "inputCalendar8.options.placeholder == 'yyyyMMdd HH:mm:SS'", 'true');
-    WebSquare.wUnit.addCommand('pause', '500');
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
 }

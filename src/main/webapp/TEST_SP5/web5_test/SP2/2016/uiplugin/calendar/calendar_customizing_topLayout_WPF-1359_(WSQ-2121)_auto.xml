@@ -13,47 +13,25 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__isShowButtonOnTop = function(parentClass, clsLeft, clsRight) {
-    var header = WebSquare.wUnit.getJq(parentClass);
-    var elLeft = WebSquare.wUnit.getJq(header).find(clsLeft);
-    var elRight = WebSquare.wUnit.getJq(header).find(clsRight);
+    var header = scwin.__getJq(parentClass);
+    var elLeft = scwin.__getJq(header).find(clsLeft);
+    var elRight = scwin.__getJq(header).find(clsRight);
     if (!elLeft || !elRight) {
         return false;
     }
-    return WebSquare.wUnit.getJq(elLeft).css("left") < WebSquare.wUnit.getJq(elRight).css("left");
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행한다.
-    //1. Run the sample file.
-    // verify step 1. calendar상단 우측에 today버튼과 닫기 버튼이 보여진다.
-    //1. Today button and close button are displayed on the top right of calendar.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isShowButtonOnTop('#calendar2 .w2calendar_header', '.w2calendar_go_today', '.w2calendar_date_cancel')", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 2. 실행된 화면의 inputcalendar의 달력이미지를 클릭한다.(오른쪽 달력이미지)
-    //2. Click the calendar image of inputcalendar on the screen that was executed (right calendar image).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar2_img').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. calendar가 보여지고 상단 우측에 today버튼과 닫기 버튼이 보여진다. 
-    //2. The calendar is shown and the today button and the close button are shown on the top right.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isShowButtonOnTop('#'+$p.id+'inputCalendar2_calendar .w2calendar_header', '.w2calendar_go_today', '.w2calendar_date_cancel')", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq(elLeft).css("left") < scwin.__getJq(elRight).css("left");
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 07-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

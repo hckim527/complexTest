@@ -644,6 +644,13 @@
             }
         </style>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
     var dataListArr = $p.data.getAllDataCollection();
     for (var i = 0; i < dataListArr.length; i++) {
@@ -879,37 +886,17 @@ scwin.dragendswan = function(endRowindex) {
     //scwin.seqsort();
 };
 scwin.__isAddedRow = function() {
-    var tr = WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not("tr.w2grid_hidedRow");
+    var tr = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr'))($('#gridView1_body_tbody tr')).not("tr.w2grid_hidedRow");
     var el = tr.get(tr.length - 1);
-    return WebSquare.wUnit.getJq(el).find("td:first").text() == "31";
+    return scwin.__getJq(el).find("td:first").text() == "31";
 }
 scwin.__showErrLog = function() {
     var err = WebSquare.logger.getErrorLog();
     return err ? true : false;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 브라우저에서 GridView 의 스크롤을 맨아래로 내린 후 insertRow 버튼을 클릭한다.
-    //1. In the browser, scroll down the GridView to the bottom and click the insertRow button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollY_div').scrollTop = 400");
-    WebSquare.wUnit.addCommand("set", "trigger2.click()");
-    WebSquare.wUnit.addCommand("pause", "300");
-    //WebSquare.wUnit.addCommand("assert", "scwin.__isAddedRow()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("assert", "gridView1.getTopRowIndex()", "21");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

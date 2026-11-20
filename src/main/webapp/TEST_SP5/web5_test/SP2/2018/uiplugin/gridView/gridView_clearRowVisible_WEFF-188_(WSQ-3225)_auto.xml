@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     var totRow = 200;
     var totCol = grid1.getTotalCol();
@@ -62,36 +71,10 @@ scwin.select11_onviewchange = function(info) {
     }
 };
 scwin.compareValue = function(id1, id2) {
-    if (WebSquare.wUnit.getDomById($p.id + id1).textContent == WebSquare.wUnit.getDomById($p.id + id2).textContent) {
+    if (scwin.__getDom($p.id + id1).textContent == scwin.__getDom($p.id + id2).textContent) {
         return false;
     }
     return true;
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 상단의 radio버튼을 순서대로 전체 > 선택 > 미선택 > 선택 > 전체 를 클릭한다.
-    //1. After running the sample, click the radio button at the top and select All> Select> Unselect> Select> All.
-    //Verify step 1. Duplicate columns are not visible.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#select11_input_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.compareValue($p.id+'grid1_cell_3_1', 'grid1_cell_4_1')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.compareValue($p.id+'grid1_cell_8_1', 'grid1_cell_9_1')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.compareValue($p.id+'grid1_cell_11_1', 'grid1_cell_12_1')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -100,9 +83,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

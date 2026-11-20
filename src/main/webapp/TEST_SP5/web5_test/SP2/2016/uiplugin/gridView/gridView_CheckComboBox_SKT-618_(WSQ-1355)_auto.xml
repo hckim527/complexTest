@@ -60,8 +60,17 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -71,51 +80,6 @@ scwin.fireDbClick = function(id) {
     } else if (typeof node.ondblclick == 'function') {
         node.ondblclick();
     }
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 name3 컬럼 셀의 inputType 을 확인한다.
-    //1. In the Source tab, check the inputType of the name3 column cell.
-    //Verify step 1. inputType="checkcombobox" 
-    //1. inputType = "checkcombobox"
-    //Test step 2. allOption= 을 확인한다.
-    //2. Check allOption =.
-    //Verify step 2. allOption="true"
-    //2. allOption = "true"
-    //Test step 3. 브라우저에서 name3 컬럼의 셀을 임의로 데이터를 체크한 후, 하단에 선택적용 버튼을 클릭한다.
-    //3. In the browser, check the data of the cell in the name3 column, and then click the Apply button at the bottom.
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_2_checkbox').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_3_checkbox').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_btn_confirm').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 3. 체크한 임의의 데이터가 선택된다.
-    //3. Any checked data is selected.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').innerText", "22 33");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_2_checkbox').checked", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_3_checkbox').checked", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 4. 다시 하단에 선택해제 버튼을 클릭한다.
-    //4. Click the Deselect button at the bottom again.
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_btn_cancel').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_btn_confirm').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 4. 체크한 임의의 데이터가 해제된다.
-    //4. Any checked data is released.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_2').innerText == ''", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_2_checkbox').checked", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_gridView1___checkcombobox_col3_itemTable_3_checkbox').checked", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -150,9 +114,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 27-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

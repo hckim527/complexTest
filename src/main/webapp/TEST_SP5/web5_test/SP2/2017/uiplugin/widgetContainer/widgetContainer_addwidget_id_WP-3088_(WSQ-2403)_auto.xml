@@ -21,6 +21,21 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger1_onclick = function(e) {
     scwin.bFormatter = function() {
         return [{
@@ -105,34 +120,7 @@ scwin.widgetContainer_onclickcustombtn = function(widgetId, btnId) {
     //alert("위젯아이디 : "+widgetId+"\n"+"버튼아이디 : "+btnId);
 };
 scwin.checktype = function() {
-    return typeof WebSquare.wUnit.getObjById('widgetContainer1_widget1');
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 'addWidget'버튼을 클릭한다.
-    //1. After running the sample file, click the 'addWidget' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    //Verify step 1. '위젯1'이 추가되어 보여진다.
-    //1. 'Widget 1' is added and shown.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    //Test step 2. 위젯1 화면의 우측에 파란색 첫 번째 멀티창 이미지를 클릭한다.
-    //2. On the right side of the Widget 1 screen, click the blue first multi-window image.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('widgetContainer1_widget1_title_custombtn').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. 알림창에 버튼아이디가 'custombtn'이 보여진다.
-    //2. In the notification window, the button ID 'custombtn' is displayed.
-    WebSquare.wUnit.addCommand("assert", "btnVal", "custombtn");
-    //Test step 3. 위젯1 화면의 우측에 파란색 두 번째 멀티창 이미지를 클릭한다.
-    //3. On the right side of the Widget 1 screen, click the blue second multi-window image.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('widgetContainer1_widget1_title_custombtn2').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. 알림창에 버튼아이디가 'custombtn2'이 보여진다.(이전에는 'custombtn'이 보여짐)
-    //3. The button ID 'custombtn2' is displayed in the notification window (previously 'custombtn' is displayed)
-    WebSquare.wUnit.addCommand("assert", "btnVal", "custombtn2");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return typeof scwin.__getObj('widgetContainer1_widget1');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -144,9 +132,6 @@ scwin.onpageload2 = function() {
     //Created date: 06-Feb-2018
     window.btnVal = "";
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[

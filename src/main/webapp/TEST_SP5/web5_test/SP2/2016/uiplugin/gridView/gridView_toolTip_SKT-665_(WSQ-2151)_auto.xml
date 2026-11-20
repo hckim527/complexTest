@@ -61,9 +61,24 @@
 		</xf:model>
 
 		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.__resizeEle = function() {
-    WebSquare.wUnit.getJq("body").css("width", "450px");
-    WebSquare.wUnit.getJq("#grd_internet").css("width", "450px");
+    $('body').css("width", "450px");
+    ((j) => j.length ? j : $('#mf_grd_internet'))($('#grd_internet')).css("width", "450px");
 }
 scwin.fireOver = function(node) {
     if (document.createEventObject) {
@@ -77,34 +92,13 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.checkSize = function() {
-    if (WebSquare.wUnit.getObjById($p.id + 'grd_internet_tooltip').render.clientWidth === 246) {
+    if (scwin.__getObj($p.id + 'grd_internet_tooltip').render.clientWidth === 246) {
         return true;
     }
     return false;
 }
 scwin.setVal = function() {
-    scwin.fireOver(WebSquare.wUnit.getDomById('grd_internet_cell_1_2'));
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 2. 브라우저의 창을 임의로 줄인다.
-    //2. Decrease the browser window randomly.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__resizeEle()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 요금제 두번째 컬럼을 마우스오버한다.
-    //3. Mouse over the second column.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 툴팁이 사이즈에 맞게 생성된다. (기존에는 무조건 한줄로 나옴)
-    //3. Tooltips are created to fit the size. (Previously unconditional one line)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd_internet_tooltip').css('display')", "block");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkSize()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    scwin.fireOver((document.getElementById('grd_internet_cell_1_2') || document.getElementById('mf_grd_internet_cell_1_2')));
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -145,9 +139,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 09-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 

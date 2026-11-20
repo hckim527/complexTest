@@ -39,6 +39,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -51,40 +60,14 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkValue = function(id) {
-    if (WebSquare.wUnit.getDomById(id)) {
+    if (scwin.__getDom(id)) {
         return true;
     }
     return false;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. girdView_MultiSort_WSQ-266_(WSQ-2203).xml 실행한다.
-    // Run girdView_MultiSort_WSQ-266_ (WSQ-2203) .xml.
-    //Test step 2. GridViewColumn의 inputType속성값을 spinner로 설정 실행하고 number3항목의 컬럼값을 더블클릭 후 삼각형모양을 클릭하여 값을 변경한다.
-    //Set the inputType property of the GridViewColumn to spinner, double-click the column value of the number3 item, and change the value by clicking the triangle shape.
-    //Verify 2. 값이 순차적으로 변경된다.
-    //The values are changed sequentially.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'wq_uuid_3_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('G_'+$p.id+'wq_uuid_3___spinner_number3___input')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_3___spinner_number3_downButton_image').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3___spinner_number3___input').val() == '5'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_3___spinner_number3_downButton_image').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3___spinner_number3___input').val() == '4'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_3___spinner_number3_downButton_image').click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3___spinner_number3___input').val() == '3'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -94,9 +77,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 26-Jan-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

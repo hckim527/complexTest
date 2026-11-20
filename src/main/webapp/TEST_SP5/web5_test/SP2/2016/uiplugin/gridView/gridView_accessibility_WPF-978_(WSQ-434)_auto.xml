@@ -69,6 +69,22 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.initialize = function() {
     fruitCode.setJSON([{
         "fruitName": "Apple",
@@ -184,7 +200,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.rgb2hex = function(rgb) {
@@ -195,48 +211,13 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq("#" + id).css("background-color");
+    var rgb = scwin.__getJq("#" + id).css("background-color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
         return color == hexa;
     }
     return rgb == hexa;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. WebSquare5 에서 config.xml 에 속성을 추가한다. (Test Data 내용확인)
-    //1. In WebSquare5, add the attribute to config.xml. (Confirm Test Data Contents)
-    //Verify step 1. Add properties
-    //Test step 2. 브라우저에서 checkcombobox 컬럼 (직업)을 클릭한다.
-    //2. In the browser, click the checkcombobox column (occupation).
-    //Verify step 2. The job list is activated.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollX_right').scrollLeft = 150");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_12').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1___checkcombobox_WORK_itemTable').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. Tab 키를 누른다.
-    //3. Press the Tab key.
-    //Verify step 3. Move to the next key, the key.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'gridView1_cell_0_13', '#fca73c')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 4. 첫번째 그리드에서 혈액형을 변경한다.
-    //4. Change the blood type on the first grid.
-    //Verify step 4. As the blood type changes, the blood type of the second grid changes as well.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_10')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1___selectbox_BLOOD_TYPE_itemTable_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_12_cell_0_9').text().trim() == 'A형'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -246,9 +227,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 05-May-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

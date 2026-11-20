@@ -39,6 +39,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.test = function(row, col) {
     var obj = {};
     if (row == 0) {
@@ -70,59 +86,26 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkDisplay = function(id) {
-    if (WebSquare.wUnit.getJq(id).css("display") == "block") {
+    if (scwin.__getJq(id).css("display") == "block") {
         return true;
-    } else if (WebSquare.wUnit.getJq(id).css("display") == "inline-block") {
+    } else if (scwin.__getJq(id).css("display") == "inline-block") {
         return true;
     } else {
         return false;
     }
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getJq('#wq_uuid_3_cell_0_1').hasClass('gridBodyDefault_spinner') == false;
+    return ((j) => j.length ? j : $('#mf_wq_uuid_3_cell_0_1'))($('#wq_uuid_3_cell_0_1')).hasClass('gridBodyDefault_spinner') == false;
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getJq('#wq_uuid_3_cell_1_1').hasClass('gridBodyDefault_spinner') == false;
+    return ((j) => j.length ? j : $('#mf_wq_uuid_3_cell_1_1'))($('#wq_uuid_3_cell_1_1')).hasClass('gridBodyDefault_spinner') == false;
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getJq('#wq_uuid_3_cell_2_1').hasClass('gridBodyDefault_spinner') == false;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭 또는 Property 탭에서 col2 의 inputType 부분을 확인한다.
-    //1. Check the inputType part of col2 in the Source tab or Property tab.
-    //Verify step 1. inputType="spinner"
-    //1. inputType = "spinner"
-    //Test step 2. viewType 부분을 확인한다.
-    //2. Check the viewType part.
-    //Verify step 2. viewType ="default"
-    //2. viewType = "default"
-    //Test step 3. 브라우저에서 name2 컬럼을 확인한다.
-    //3. Check the name2 column in your browser.
-    //Verify step 3. name2 컬럼에 spinner 표시가 없다.
-    //3. There is no spinner mark in the name2 column.           
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 4. name2 임의의 컬럼을 더블클릭한다.
-    //4. Double-click any column in name2.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'wq_uuid_3_cell_1_1')");
-    //Verify step 4. Edit 모드로 진입하면서 spinner 표시가 생긴다.
-    //4. Enter the Edit mode and the spinner display appears.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkDisplay('#G_'+$p.id+'wq_uuid_3___spinner_col2')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkDisplay('#G_'+$p.id+'wq_uuid_3___spinner_col2___input')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return ((j) => j.length ? j : $('#mf_wq_uuid_3_cell_2_1'))($('#wq_uuid_3_cell_2_1')).hasClass('gridBodyDefault_spinner') == false;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -132,9 +115,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 30-Jan-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

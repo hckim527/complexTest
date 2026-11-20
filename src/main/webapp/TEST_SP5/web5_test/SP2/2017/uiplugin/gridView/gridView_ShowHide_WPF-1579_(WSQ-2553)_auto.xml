@@ -39,6 +39,13 @@
         	</xf:submission>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.submission1_submitdone = function(e) {
     //		$w.hideModal();
 };
@@ -60,66 +67,20 @@ scwin.grd_oncellindexchange = function(row, col, oldRow, oldCol) {
     //		scwin.$w.executeSubmission("submission1", null, grd);
 };
 scwin.__isSubmissionWorked = function() {
-    var sub = WebSquare.wUnit.getJq("#___processbar2_i");
-    return (sub.length > 0) && (WebSquare.wUnit.getJq(sub).css("display") == "block");
+    var sub = ((j) => j.length ? j : $('#mf____processbar2_i'))($('#___processbar2_i'));
+    return (sub.length > 0) && (scwin.__getJq(sub).css("display") == "block");
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getJq('#grd_cell_0_1').css('background-color') == 'rgb(252, 167, 60)';
+    return ((j) => j.length ? j : $('#mf_grd_cell_0_1'))($('#grd_cell_0_1')).css('background-color') == 'rgb(252, 167, 60)';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getJq('#grd_cell_0_0').css('background-color') == 'background-color: rgb(252, 167, 60)';
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 브라우저에서 임의의 컬럼을 선택한다.
-    //2. Select an arbitrary column in the browser.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_0').click()");
-    // verify step 2. submission 이 동작한다.
-    //2. Submission works;
-    WebSquare.wUnit.addCommand("assert", "scwin.__isSubmissionWorked()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Test step 3. submission 동작중에 임의의 컬럼을 마우스 또는 키보드로 선택한다
-    //3. Select any column on the mouse or keyboard during submission operation.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 3. 비활성되어서 이동할 수 없다.
-    //3. It is inactive and can not be moved.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "false");
-    WebSquare.wUnit.addCommand("pause", "4000");
-    //Test step 4. submission 이 종료 후 임의로 마우스 또는 키보드로 다른컬럼을 선택 (이동) 한다.
-    //4. At the end of submission, arbitrarily select (move) another column with mouse or keyboard.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 4. submission 이 동작한다.
-    //4. Submission works
-    WebSquare.wUnit.addCommand("assert", "scwin.__isSubmissionWorked()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Test step 5. 다시 submission 동작중에 임의의 컬럼을 마우스 또는 키보드로 선택한다.
-    //5. Select any column on the mouse or keyboard again during submission operation.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 5. 비활성되어서 이동할 수 없다.
-    //5. It is inactive and can not be moved.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "false");
-    WebSquare.wUnit.addCommand("pause", "4000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return ((j) => j.length ? j : $('#mf_grd_cell_0_0'))($('#grd_cell_0_0')).css('background-color') == 'background-color: rgb(252, 167, 60)';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     scwin.init();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 09-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

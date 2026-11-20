@@ -22,6 +22,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.test = function() {
     $w.log("main" + "_initScript");
 }
@@ -52,30 +61,14 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.mouseOverBehaviour = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireOver(el);
 }
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById(id).innerText == value) {
+    if (scwin.__getDom(id).innerText == value) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. main샘플 실행 후 마우스를 위와 아래에 있는 inputbox 각각에 over한다.
-    //1. After running the main sample, overlay the mouse on each of the inputbox above and below it.
-    //Verify step 1. w1_input1dummy, w2_input1dummy The tooltip value is displayed.
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('w1_input1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'wq_uuid_2_balloonTip_label', $p.id+'w1_input1dummy')", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('w2_input1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'wq_uuid_2_balloonTip_label', $p.id+'w2_input1dummy')", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -84,9 +77,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 22-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

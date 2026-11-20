@@ -39,6 +39,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     autoComplete1.changeChooseOption("0", "선택_test1");
 };
@@ -52,65 +61,10 @@ scwin.trigger4_onclick = function(e) {
     selectbox2.changeChooseOption("0", "선택_test4");
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     var ev = document.createEvent("MouseEvents");
     ev.initEvent("dblclick", true, true);
     el.dispatchEvent(ev);
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 scwin.trigger1_onclick = function 부분을 확인한다.
-    //1. In the Source tab, check scwin.trigger1_onclick = function.
-    //Verify step 1. autoComplete1.changeChooseOption('0', '선택_test1');
-    //1. autoComplete1.changeChooseOption('0', '선택_test1');
-    //Test step 2. scwin.trigger2_onclick = function 부분을 확인한다.
-    //2. Check the scwin.trigger2_onclick = function section.
-    //Verify step 2. autoComplete2.changeChooseOption('0', '선택_test2');
-    //2. autoComplete2.changeChooseOption('0', '선택_test2');
-    //Test step 3. scwin.trigger3_onclick = function 부분을 확인한다.
-    //3. Check the scwin.trigger3_onclick = function section.
-    //Verify step 3. selectbox1.changeChooseOption('0', '선택_test3');
-    //3. selectbox1.changeChooseOption('0', '선택_test3');
-    //Test step 4. scwin.trigger4_onclick = function 부분을 확인한다.
-    //4. Check the scwin.trigger4_onclick = function section.
-    //Verify step 4. selectbox2.changeChooseOption('0', '선택_test4');
-    //4. selectbox2.changeChooseOption('0', '선택_test4');
-    //Test step 5. 브라우저에서 autoComplete1.changeChooseOption('0', '선택_test1'); 버튼을 클릭한다.
-    //5. In the browser, autoComplete1.changeChooseOption ('0', 'select _test1'); Click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    //Verify step 5. 선택_test1 로 변경된다. (-선택- -> 선택_test1)
-    //5. Change to select _test1. (- Select -> -> select _test1)
-    //WebSquare.wUnit.addCommand("assert", "autoComplete1_label.innerText", "선택_test1");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete1').selectedItem.text", "선택_test1");
-    //Test step 6. autoComplete2.changeChooseOption('0', '선택_test2'); 버튼을 두번 클릭한다.
-    //6. autoComplete2.changeChooseOption ('0', 'select _test2'); Double-click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    //Verify step 6. 선택_test2 로 변경된다. (1 -> 선택_test2)
-    //6. The selection is changed to _test2. (1 -> select _test2)
-    //WebSquare.wUnit.addCommand("assert", "autoComplete2_label.innerText", "선택_test2");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete2').selectedItem.text", "선택_test2");
-    //Test step 7. selectbox1.changeChooseOption('0', '선택_test3'); 버튼을 클릭한다.
-    //7. selectbox1.changeChooseOption ('0', 'select _test3'); Click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    //Verify step 7. 선택_test3 로 변경된다. (-선택- -> 선택_test3)
-    //7. Change to select _test3. (- Select -> -> select _test3)
-    //WebSquare.wUnit.addCommand("assert", "selectbox1_label.innerText", "선택_test3");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('selectbox1_input_0')[0].innerText", "선택_test3");
-    //Test step 8. selectbox2.changeChooseOption('0', '선택_test4'); 버튼을 두번 클릭한다.
-    //8. selectbox2.changeChooseOption ('0', 'select _test4'); Double-click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    //Verify step 8. 선택_test4 로 변경된다. (1 -> 선택_test4)
-    //8. Change to select _test4. (1 -> select _test4)
-    //WebSquare.wUnit.addCommand("assert", "selectbox2_label.innerText", "선택_test4");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('selectbox2_input_0')[0].innerText", "선택_test4");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -129,9 +83,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 26-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

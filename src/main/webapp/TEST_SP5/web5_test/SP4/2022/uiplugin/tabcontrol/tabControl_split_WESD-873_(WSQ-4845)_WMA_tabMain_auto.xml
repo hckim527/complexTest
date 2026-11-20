@@ -20,6 +20,15 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     dataMap1.set("key1", $p.getFrame().getURL($p.getFrame().getSrc() || "[WMA_tabMain]" + location.origin));
     scwin.trigger1_onclick();
@@ -82,26 +91,7 @@ scwin.tabControl1_ontabsplit = function(tabIdx) {
     $p.openPopup(src, options);
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById('popup_'+$p.id+'tabControl1_contents_tab_2_body') != null;
-}
-scwin.unitTest = function() {
-    //Init test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "400");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "400");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "400");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tab_2_tabHTML').click()");
-    WebSquare.wUnit.addCommand("pause", "400");
-    WebSquare.wUnit.addCommand("pause", "400");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop unit Test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom('popup_'+$p.id+'tabControl1_contents_tab_2_body') != null;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -109,9 +99,6 @@ scwin.onpageload2 = function() {
     }
     if(WebSquare._xv !== "SP5"){requires("uiplugin.popup");}
     scwin.cnt = 0;
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

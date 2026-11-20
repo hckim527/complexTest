@@ -10,14 +10,23 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireEvent = function(id, event) {
-    var dom = WebSquare.wUnit.getDomById($p.id + id);
+    var dom = scwin.__getDom($p.id + id);
     if (dom) {
         eval("dom." + event + "();");
     }
 }
 scwin.fireEvent2 = function(id) {
-    var dom = WebSquare.wUnit.getDomById($p.id + id);
+    var dom = scwin.__getDom($p.id + id);
     if (dom) {
         grid1.clickRightButtonCell({
             srcElement: dom
@@ -121,35 +130,6 @@ scwin.configure_test = function() {
     });
     chart_test_javascript.fc().render(chart_test_javascript.render);
 };
-scwin.test = function() {
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("set", "trigger1.click()");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "trigger2.click()");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", trigger3.click());
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "chart_test_flash.setAccessibility(true)");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "chart_test_javascript.setAccessibility(true)");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "scwin.getJSONData_test()");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "scwin.getDataAsCSV_test()");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "scwin.setchartAttribute_test()");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("assert", "scwin.getchartAttribute_test()", "true");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("assert", "scwin.setPlotColor_test()", "true");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "scwin.applyStyle_test()");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.addCommand("set", "scwin.addTrendLine_test()");
-    WebSquare.wUnit.addCommand("pause", "200");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -416,9 +396,6 @@ scwin.onpageload2 = function() {
     };
     scwin.draw();
     //test();
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

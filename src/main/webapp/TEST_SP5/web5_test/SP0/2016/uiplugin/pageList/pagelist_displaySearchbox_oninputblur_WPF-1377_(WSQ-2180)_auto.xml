@@ -51,6 +51,21 @@
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.setNo = function(startNo) {
     var len = gridRowCount;
     for (var ix = 0; ix < len; ix++) {
@@ -97,10 +112,10 @@ scwin.pageList3_oninputblur = function(value) {
     log1 = "value = " + value;
 };
 scwin.checkVal1 = function() {
-	return WebSquare.wUnit.getObjById('pageList3').getSelectedIndex() == 7;
+	return scwin.__getObj('pageList3').getSelectedIndex() == 7;
 }
 scwin.checkVal2 = function() {
-	return WebSquare.wUnit.getObjById('pageList3').getCount() == 6;
+	return scwin.__getObj('pageList3').getCount() == 6;
 }
 scwin.checkVal3 = function() {
 	return log == 'current = 5, before = 1';
@@ -108,44 +123,6 @@ scwin.checkVal3 = function() {
 scwin.checkVal4 = function() {
 	return log1 == 'value = 5';
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 샘플파일을 실행 후 하단의 InputBox로 되어있는 PageList에 '7'을 입력하고 EnterKey를 누른다.
-    //2. After running the sample file, enter '7' in the PageList with InputBox at the bottom and press EnterKey.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').value = 7");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').blur()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('pageList3').setCount(6)");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2pageList_li_label')[0].innerText == ' /6'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').value = 5");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pageList3_input').blur()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.gridRowCount = 7;

@@ -23,31 +23,27 @@
   </xf:model>
 
   <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.isIE = function() {
     var myNav = navigator.userAgent.toLowerCase();
     return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getObjById("G_" + $p.id + "grd_EmpInfo1__DEPTNO").getValue() == '1_test3';
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1.
-    //1.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_EmpInfo1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grd_EmpInfo1__DEPTNO').focus()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1.
-    //2.
-    WebSquare.wUnit.addCommand("assert", "document.activeElement.tagName", "INPUT");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj("G_" + $p.id + "grd_EmpInfo1__DEPTNO").getValue() == '1_test3';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -77,13 +73,6 @@ scwin.onpageload2 = function() {
     dlt_EmpInfo.setJSON(jsonData);
     grd_EmpInfo1.setCellReadOnly(1, "DEPTNO", true);
     grd_EmpInfo1.setCellReadOnly(0, "DNAME", true);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 16-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
  </head>

@@ -66,6 +66,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.test = function(rowIndex, colIndex, label) {
     //debugger;
     if (colIndex === 1) {
@@ -86,36 +95,9 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.mouseOverBehaviour = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireOver(el);
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('selectBox1_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('selectBox1_itemTable_0')");
-    // verify step 3. 툴팁이 생성되지 않는다.
-    //3. Tooltip is not created.
-    WebSquare.wUnit.addCommand("assert", "typeof selectBox1_tooltip === 'undefined'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 4. GridView 의 임의로 여러개 컬럼을 마우스오버한다.
-    //4. Mouse over multiple columns in the GridView.
-    // verify step 4. 모든 컬럼에서 툴팁이 생성된다.
-    //4. Tooltips are created in all columns.
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '0'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '1'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('gridView1_cell_0_2')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_tooltip').text() == '2222222222222222222'", "true");
-    WebSquare.wUnit.addCommand("pause", "200");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     arr = [];

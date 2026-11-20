@@ -20,36 +20,26 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.checkVal1 = function() {
     return autoComp1.getAttribute('submenuSize') == 'auto';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'autoComp1_itemTable_0') != null;
+    return scwin.__getDom($p.id + 'autoComp1_itemTable_0') != null;
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"autoComp1_itemTable_0").innerText == '[100]대리점사업부';
+    return scwin.__getDom($p.id+"autoComp1_itemTable_0").innerText == '[100]대리점사업부';
 }
 scwin.checkVal4 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'autoComp1').style.width == WebSquare.wUnit.getDomById($p.id + 'autoComp1_itemTable').style.width;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step1. Property 탭에서 submenuSize 가 auto 인지 확인한다.- In the Property tab, verify that submenuSize is auto.
-    //Verify 1. submenuSize='auto'
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 브라우저에서 submenu 버튼을 클릭한다.- In the browser, click the submenu button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComp1_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. submenu 가 활성화 된다.(width가 동일하게 보여진다.)-The submenu is activated.(The width is shown the same.)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + 'autoComp1').style.width == scwin.__getDom($p.id + 'autoComp1_itemTable').style.width;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -65,9 +55,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 22-Jan-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

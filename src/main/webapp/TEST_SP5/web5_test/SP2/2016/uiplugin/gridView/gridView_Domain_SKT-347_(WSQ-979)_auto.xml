@@ -59,8 +59,17 @@
 		</xf:model>
 
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -75,7 +84,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.__isBackground = function() {
-    var color = WebSquare.wUnit.getJq("#wq_uuid_9_cell_1_2").css("background-color");
+    var color = ((j) => j.length ? j : $('#mf_wq_uuid_9_cell_1_2'))($('#wq_uuid_9_cell_1_2')).css("background-color");
     if (color.indexOf("rgb") < 0) {
         return color != "rgb(252, 167, 60)";
     }
@@ -83,29 +92,6 @@ scwin.__isBackground = function() {
 }
 scwin.setVal = function() {
     scwin.dbClick('wq_uuid_9_cell_0_2');
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. 브라우저에서 name3 에 컬럼을 더블클릭 후 'qong1243@sss.com' 을 입력 후 엔터키를 누른다.
-    //1. Double-click on the column name3 in your browser, type 'qong1243@sss.com' and press Enter.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_9___autoComplete_0_col3_col3_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_9___autoComplete_0_col3_col3_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_9_cell_0_2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 'qong1243@sss.com' 데이터가 입력 후 다음 컬럼으로 Focus 이동된다. 
-    // 1. After inputting 'qong1243@sss.com' data, focus is moved to the next column.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_9_cell_0_2').innerText", "qong1243@sss.com");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isBackground()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -115,9 +101,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 16-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

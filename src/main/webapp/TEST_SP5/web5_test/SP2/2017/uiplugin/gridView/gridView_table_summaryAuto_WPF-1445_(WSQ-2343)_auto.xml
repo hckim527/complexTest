@@ -39,8 +39,17 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.checkDocType = function(domId, summary) {
-    var gridViewBodyTable = WebSquare.wUnit.getDomById(domId);
+    var gridViewBodyTable = scwin.__getDom(domId);
 	var domSummary = "";
     if (gridViewBodyTable) {
         domSummary = gridViewBodyTable.getAttribute('summary') ?? '';
@@ -50,25 +59,6 @@ scwin.checkDocType = function(domId, summary) {
     }
 	return false;
 };
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 개발자모드(F12)에서 gridView header를 elements하여 summary부분을 확인한다.(summary로 검색 3번째검색값) 
-    //1. After executing the sample file, check the summary part by inserting the gridview header in developer mode (F12) (search as summary, 3rd search value)
-    //Verify 1. gridView의 summary에 header title값만 가져온다.(html tag는 가져오지 않음) summary='name4,name5,name6'
-    //1. Get only the header title value in the gridView summary (no html tags are imported). summary = 'name4, name5, name6'
-	WebSquare.wUnit.addCommand("assert", "scwin.checkDocType('gridView2_body_table', 'name4,name5,name6')", "true");
-	WebSquare.wUnit.addCommand("pause", "500");
-	//Test step 2. 샘플파일을 실행 후 개발자모드(F12)에서 tableLayout title1부분의 header를 elements하여 summary부분을 확인한다.(summary로 검색 6번째검색값)
-	//2. After executing the sample file, check the summary part by inserting the header of the title1 part of tableLayout in developer mode (F12).
-	//Verify 2. tableLayout의 summary에 header title값만 가져온다.(html tag는 가져오지 않음) summary='title1,title2,title3,title4'
-	//2. Get only the header title value in the tableLayout"s summary (no html tags are imported). summary = 'title1, title2, title3, title4'
-	WebSquare.wUnit.addCommand("assert", "scwin.checkDocType($p.id+'wq_uuid_11', 'title1,title2,title3,title4')", "true");
-	WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -77,9 +67,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 06-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

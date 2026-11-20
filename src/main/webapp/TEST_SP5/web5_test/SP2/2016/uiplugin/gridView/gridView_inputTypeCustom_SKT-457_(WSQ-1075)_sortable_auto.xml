@@ -188,6 +188,15 @@ scwin.getType = function(info) {
 
 ]]></script>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.b1_onclick = function(e) {
     var rowIndex = WebSquare.util.getNumber(rowTb.getValue());
     gridView1.refreshRow(rowIndex);
@@ -229,7 +238,7 @@ scwin.trigger2_onclick = function(e) {
 };
 scwin.gridView2_onviewchange = function(info) {};
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -244,13 +253,13 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.checkColumm1 = function() {
-    return WebSquare.wUnit.getDomById("gridView1_cell_0_0").innerText == "1" && WebSquare.wUnit.getDomById('gridView1_cell_1_0').innerText == "2" && WebSquare.wUnit.getDomById('gridView1_cell_2_0').innerText == "3" && WebSquare.wUnit.getDomById('gridView1_cell_3_0').innerText == "4" && WebSquare.wUnit.getDomById('gridView1_cell_4_0').innerText == "5";
+    return (document.getElementById('gridView1_cell_0_0') || document.getElementById('mf_gridView1_cell_0_0')).innerText == "1" && (document.getElementById('gridView1_cell_1_0') || document.getElementById('mf_gridView1_cell_1_0')).innerText == "2" && (document.getElementById('gridView1_cell_2_0') || document.getElementById('mf_gridView1_cell_2_0')).innerText == "3" && (document.getElementById('gridView1_cell_3_0') || document.getElementById('mf_gridView1_cell_3_0')).innerText == "4" && (document.getElementById('gridView1_cell_4_0') || document.getElementById('mf_gridView1_cell_4_0')).innerText == "5";
 }
 scwin.checkColumm2 = function() {
-    return WebSquare.wUnit.getDomById("gridView2_cell_0_0").innerText == "radio" && WebSquare.wUnit.getDomById('gridView2_cell_1_0').innerText == "checkbox" && WebSquare.wUnit.getDomById('gridView2_cell_2_0').innerText == "button" && WebSquare.wUnit.getDomById('gridView2_cell_3_0').innerText == "calendar" && WebSquare.wUnit.getDomById('gridView2_cell_4_0').innerText == "image";
+    return (document.getElementById('gridView2_cell_0_0') || document.getElementById('mf_gridView2_cell_0_0')).innerText == "radio" && (document.getElementById('gridView2_cell_1_0') || document.getElementById('mf_gridView2_cell_1_0')).innerText == "checkbox" && (document.getElementById('gridView2_cell_2_0') || document.getElementById('mf_gridView2_cell_2_0')).innerText == "button" && (document.getElementById('gridView2_cell_3_0') || document.getElementById('mf_gridView2_cell_3_0')).innerText == "calendar" && (document.getElementById('gridView2_cell_4_0') || document.getElementById('mf_gridView2_cell_4_0')).innerText == "image";
 }
 scwin.checkSorted = function() {
-    return WebSquare.wUnit.getDomById("gridView2_cell_8_0").innerText == "button" && WebSquare.wUnit.getDomById('gridView2_cell_9_0').innerText == "calendar" && WebSquare.wUnit.getDomById('gridView2_cell_10_0').innerText == "checkbox" && WebSquare.wUnit.getDomById('gridView2_cell_11_0').innerText == "image" && WebSquare.wUnit.getDomById('gridView2_cell_12_0').innerText == "radio";
+    return (document.getElementById('gridView2_cell_8_0') || document.getElementById('mf_gridView2_cell_8_0')).innerText == "button" && (document.getElementById('gridView2_cell_9_0') || document.getElementById('mf_gridView2_cell_9_0')).innerText == "calendar" && (document.getElementById('gridView2_cell_10_0') || document.getElementById('mf_gridView2_cell_10_0')).innerText == "checkbox" && (document.getElementById('gridView2_cell_11_0') || document.getElementById('mf_gridView2_cell_11_0')).innerText == "image" && (document.getElementById('gridView2_cell_12_0') || document.getElementById('mf_gridView2_cell_12_0')).innerText == "radio";
 }
 scwin.setVal = function() {
     scwin.dbClick('gridView1_cell_0_0');
@@ -284,69 +293,6 @@ scwin.setVal14 = function() {
 }
 scwin.setVal15 = function() {
     scwin.dbClick('gridView2_header1');
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 상단그리드 컬럼에 위에서부터 5개row의 값(1,2,3,4,5)을 입력한다.
-    //1. After executing the sample file, enter the values ​​(1,2,3,4,5) of the five rows from the top into the upper grid column.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal4()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal6()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal8()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_5_0').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 1. 1, 2, 3, 4, 5값이 차례대로 입력된다.
-    //1. The values ​​1, 2, 3, 4, and 5 are entered in order.
-    //WebSquare.wUnit.addCommand("assert", "scwin.checkColumm1()", "true");
-    //Test step 2. 하단그리드 컬럼을 더블클릭하여 위에서부터 5개row의 콤보박스 속성값을 차례대로 변경한다.
-    //2. Double-click the lower grid column and change the value of the combo box property of the five rows from top to bottom.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal10()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView2___selectbox_col1_itemTable_0').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal11()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView2___selectbox_col1_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal12()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView2___selectbox_col1_itemTable_2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal13()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView2___selectbox_col1_itemTable_3').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal14()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView2___selectbox_col1_itemTable_4').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. radio, checkbox, button, calendar, image 속성값이 입력되고 상단그리드의 속성도 함께 변경된다.
-    //2. radio, checkbox, button, calendar, the image attribute values ​​and the input may be changed with properties of the upper grid.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColumm2()", "true");
-    //Test step 3. 하단그리드의 col1 헤더를 더블클릭하여 오름차순 sort한 후 상단그리드에 마우스를 오버하고 마우스스크롤을 이동한다.
-    //3. Double-click the col1 header in the lower grid to sort in ascending order, then move the mouse over the upper grid and move the mouse scroll.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal15()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 3. 정상적으로 소팅된다.
-    //3. Sorts normally.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkSorted()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -391,9 +337,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 27-Mar-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

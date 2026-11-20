@@ -21,35 +21,24 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.__isInteger = function() {
-    var num = +(WebSquare.wUnit.getObjById('gridView1_column11').innerText.replace(',', ''));
+    var num = +(scwin.__getObj('gridView1_column11').innerText.replace(',', ''));
     return num == 50100.94;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. Property 탭 또는 Source 탭에서 column11 의 expression 부분을 확인한다.
-    //1. In the Property tab or Source tab, check the expression part of column11.
-    // verify step 1. expression="SUM("col2")"
-    //1. expression = "SUM ("col2")"
-    // Test step 2. column11 의 dataType 부분을 확인한다.
-    //2. Check the dataType part of column11.
-    // verify step 2. dataType="number" 
-    //2. dataType = "number"
-    // Test step 3. displayFormat 부분을 확인한다.
-    //3. Check the displayFormat section.
-    // verify step 3. displayFormat="#,##0.00"
-    //3. displayFormat = "#, ## 0.00"
-    // Test step 4. 브라우저에서 Footer 부분을 확인한다.
-    //4. Check the Footer section in your browser.
-    // verify step 4. 정확하게 소수점까지 계산된다. (그전버전에서는 그림1처럼 정수로 올림되는 현상이 발생함)
-    //4. Accurate to the decimal point. (In previous versions, the result is raised to an integer as shown in Figure 1.)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isInteger()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -67,13 +56,6 @@ scwin.onpageload2 = function() {
     window.jsonData = JSON.parse(tempData);
     dataList1.setJSON(jsonData);
     txt1.setValue("Row Count : " + dataList1.getRowCount());
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 25-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

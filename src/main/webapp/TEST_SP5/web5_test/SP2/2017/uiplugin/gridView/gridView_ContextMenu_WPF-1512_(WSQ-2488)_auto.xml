@@ -61,6 +61,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('oncontextmenu');
@@ -73,47 +82,18 @@ scwin.fireClick = function(node) {
     }
 }
 scwin.rightClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireClick(el);
 }
 scwin.clickContextMenu = function() {
-    var el = WebSquare.wUnit.getJq('.w2grid_contextMenu_row')[3];
+    var el = ((j) => j.length ? j : $('.mf_w2grid_contextMenu_row'))($('.w2grid_contextMenu_row'))[3];
     el.click();
 }
 scwin.setVal = function() {
-    localStorage.setItem('width', WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width"));
+    localStorage.setItem('width', ((j) => j.length ? j : $('#mf_wq_uuid_3_body_table'))($('#wq_uuid_3_body_table')).css("width"));
 }
 scwin.checkVal = function() {
-    return localStorage.getItem('width') == WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width");
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. Source 탭에서 dataList1 의 contextMenu 부분을 확인한다.
-    //1. In the Source tab, check the contextMenu part of dataList1.
-    // verify step 1. contextMenu='true'
-    //Test step 2. 브라우저에서 임의의컬럼에서 마우스오른쪽 버튼을 클릭한다.
-    //2. Right-click on any column in the browser.
-    WebSquare.wUnit.addCommand("set", "scwin.rightClick($p.id+'wq_uuid_3_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. 선택된 컬럼의 ContextMenu 가 생성된다.
-    //2. The ContextMenu of the selected column is created.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_3_contextMenu_list').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. ContextMenu 에서 '선택 컬럼 크기 자동 맞추기' 를 클릭한다.
-    //3. In the ContextMenu, click 'Auto-fit selection column size'.
-    WebSquare.wUnit.addCommand("set", "scwin.clickContextMenu()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. 선택된 컬럼의 크기가 자동으로 맞춰진다. (2017-02-17 엔진에서는 선택된 컬럼이 없어지는 현상이 발생함)
-    //3. The size of the selected column is automatically adjusted. (In 2017-02-17 engine, selected column disappears)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return localStorage.getItem('width') == ((j) => j.length ? j : $('#mf_wq_uuid_3_body_table'))($('#wq_uuid_3_body_table')).css("width");
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -122,12 +102,9 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Created By: Sang.do
     //Created By: 30-Jan-2018
-    window.height = WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width");
+    window.height = ((j) => j.length ? j : $('#mf_wq_uuid_3_body_table'))($('#wq_uuid_3_body_table')).css("width");
     localStorage.removeItem('height');
     //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

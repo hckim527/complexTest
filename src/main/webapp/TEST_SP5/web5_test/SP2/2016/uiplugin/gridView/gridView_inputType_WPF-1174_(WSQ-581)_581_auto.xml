@@ -41,6 +41,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     var options = {};
     options.headerColor = "#46AAFF";
@@ -54,7 +63,7 @@ scwin.trigger1_onclick = function(e) {
     gridView1.advancedExcelDownload(options, infoArr);
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -68,24 +77,6 @@ scwin.fireDbClick = function(node) {
         node.ondblclick();
     }
 }
-scwin.unitTest = function() {
-    //Init test
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 col1의 displayMode='value delim Label' 인지 확인한다.-In the Source tab, verify that col1"s displayMode = 'value delim Label'.
-    //Verify 1. displayMode='value delim Label'
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById($p.id+'gridView1_cell_0_0').getAttribute('displayMode') == 'value delim label'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 브라우저에서 name1 컬럼의 데이터를 임의로 선택한다.-Select arbitrarily the data of the name1 column in the browser.\
-    //Verify 2. (예) 222/222-(Example) 222/222
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1___selectbox_col1_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById($p.id+'gridView1_cell_0_0').innerText == '222/222'", "true");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -95,9 +86,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 22-Jan-2018
     //End untiTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

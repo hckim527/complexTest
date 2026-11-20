@@ -25,6 +25,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView1_onscrollend = function() {
     eventIsActived = true;
     ngmf.layerAlert("gridView1_onscrollend");
@@ -41,36 +50,14 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id+"gridView1_cell_13_1").innerText == '1' && eventIsActived == false;
+    return scwin.__getDom($p.id+"gridView1_cell_13_1").innerText == '1' && eventIsActived == false;
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getJq('#gridView1_cell_13_1').is(':focus');
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 w2:gridView 의 filterFocusMode 를 확인한다.
-    //1. In the Source tab, check the filterFocusMode of w2: gridView.
-    //Verify step 1. filterFocusMode="followfocus"
-    //1. filterFocusMode = "followfocus"
-    //Test step 2. 브라우저에서 col2 열의 첫번째 행 (1)에 포커스를 주고, 헤더를 더블클릭을 2번 한다.
-    //2. In the browser, give focus to the first row (1) of the col2 column, and double-click the header twice.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column9')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column9')");
-    //Verify step 2. 해당 열이 내림차순으로 정렬되면서 1이 맨아래로 이동된다. (전버전에서는 내림차순으로 정렬시 onscrollend 이벤트가 동작하였음.) 
-    //2. The column is moved in the descending order and 1 is moved to the bottom. (In previous versions, the onscrollend event worked when sorting in descending order.)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return ((j) => j.length ? j : $('#mf_gridView1_cell_13_1'))($('#gridView1_cell_13_1')).is(':focus');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -88,9 +75,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 27-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

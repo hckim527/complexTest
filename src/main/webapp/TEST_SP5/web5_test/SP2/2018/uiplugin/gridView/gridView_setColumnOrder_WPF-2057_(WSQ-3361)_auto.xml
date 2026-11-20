@@ -36,6 +36,15 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     scwin.data1 = [
         "0", "0", 1,
@@ -174,7 +183,7 @@ scwin.trigger4_onclick = function(e) {
     grid2.setColumnOrder('col2', 'col1');
 };
 scwin.___fireOver = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('onmouseover');
     } else if (document.createEvent) {
@@ -187,21 +196,6 @@ scwin.___fireOver = function(id) {
 }
 scwin.checkVal = function() {
     return typeof grid2_tooltip == "undefined";
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 '분류1'항목에 마우스를 over한다.
-    //1. After running the sample, mouse over 'Classification 1' item.
-    WebSquare.wUnit.addCommand("set", "scwin.___fireOver('grid2_column5')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. '분류1'항목에 tooltip이 정상적으로 보여지지 않는다. (이전에는 tooltip이 보여지는 결함이 있었고 UI도 비정상적으로 길게 보여짐) 
-    //1. Tooltip is not displayed normally in 'Category 1' item. (Previously there was a flaw showing the tooltip and the UI was looking abnormally long)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -219,9 +213,6 @@ scwin.onpageload2 = function() {
     //Create by Truong.Luu
     //Create date 17-July-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

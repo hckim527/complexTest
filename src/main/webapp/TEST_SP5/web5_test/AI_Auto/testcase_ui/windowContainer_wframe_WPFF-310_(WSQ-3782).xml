@@ -15,24 +15,28 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger1_onclick = function(e) {
     var title = "wframe_select_customFormatter" + scwin.cnt++;
     //createWindow( title, iconURL, src, windowTitle, openAction, closeAction )
     windowContainer1.createWindow(title, null, "windowContainer_wframe_WPFF-310_(WSQ-3782)_sub.xml", "");
 };
 scwin.getSelectboxItem = function(compType, itemType) {
-    return WebSquare.wUnit.getObjById('windowContainer1').windows[0].window.frame.scope[compType].itemArr[0][itemType];
-}
-scwin.unitTest = function() {
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("set", "scwin.trigger1_onclick();", "");
-    WebSquare.wUnit.addCommand("pause", "100", "");
-    WebSquare.wUnit.addCommand("assert", "scwin.getSelectboxItem('selectbox_component', 'label')", "selectbox_component_customFormatter라벨1 : 밸류1");
-    WebSquare.wUnit.addCommand("assert", "scwin.getSelectboxItem('selectbox_component', 'value')", "밸류1");
-    WebSquare.wUnit.addCommand("assert", "scwin.getSelectboxItem('selectbox_native', 'label')", "selectbox_native_customFormatter라벨1 : 밸류1");
-    WebSquare.wUnit.addCommand("assert", "scwin.getSelectboxItem('selectbox_native', 'value')", "밸류1");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj('windowContainer1').windows[0].window.frame.scope[compType].itemArr[0][itemType];
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -40,9 +44,6 @@ scwin.onpageload2 = function() {
     }
     scwin.cnt = 1;
     //unitTest();
-    if (typeof scwin.unitTest === "function") {
-        //scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

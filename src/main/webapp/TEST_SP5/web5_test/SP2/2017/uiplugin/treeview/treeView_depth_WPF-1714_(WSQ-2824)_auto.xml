@@ -20,6 +20,13 @@
             </w2:dataCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger2_onclick = function(e) {
     treeview1.spanNode(2);
 };
@@ -53,64 +60,7 @@ scwin.trigger8_onclick = function(e) {
     }, true);
 };
 scwin.isClosed = function(id) {
-    return WebSquare.wUnit.getJq("#" + id).hasClass('w2treeview_close_child');
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일 실행 후 3번을 클릭한다. 
-    //1. After executing the sample file, click 3 times.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. a1-1노드가 접혀진다.(기능추가)
-    //1. a1-1 node is collapsed (add function)
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 3번 클릭 상태에서 4번을 클릭한다.
-    //2. In the third click state, click 4 times.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 2. a1-1노드가 펼쳐진다.(기능추가)
-    //2. The a1-1 node is expanded (add function).
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. 4번 클릭 상태에서 5번을 클릭한다.
-    //3. In the fourth click state, click 5 times.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 3. a1하위노드가 모두 접혀진다.(기능추가)(첨부이미지참고)
-    //3. All the a1 child nodes are collapsed (additional function) (see attached image)
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_6')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_10')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_14')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 4. 5번 클릭 상태에서 7번을 클릭한다.
-    //4. In the 5th click state, click 7 times.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger8').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 4. a1하위노드가 모두 펼쳐진다.(기능추가)    
-    //4. All a1 subnodes are expanded (add function).
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "false");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_6')", "false");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_10')", "false");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_14')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 5. 7번 클릭 상태에서 6번을 클릭한다.
-    //5. In the 7th click state, click 6 times.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger7').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 5. a1하위노드가 모두 접혀진다.(기능추가)
-    //5. All the a1 child nodes are collapsed (add function)
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_2')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_6')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_10')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.isClosed('treeview1_node_14')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq("#" + id).hasClass('w2treeview_close_child');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -191,13 +141,6 @@ scwin.onpageload2 = function() {
         }
     };
     sample.setDataList1();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 26-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

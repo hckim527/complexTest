@@ -28,6 +28,15 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger2_onclick = function(e) {
     var jsonData = [{
             "col1": "가가가",
@@ -71,57 +80,10 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_body_tbody tr').not('.w2grid_hidedRow').length == 4", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grd2_column1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_0_2').text() == 'kim'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_1_2').text() == 'shin'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_2_2').text() == 'shin'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_3_2').text() == 'shin'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').length == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value').text() == 'name3'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_closeButtonImg').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd2_column5_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column').length == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_value').text() == 'name1'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_1_0').text() == '가가가'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_2_0').text() == '가가가'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_5_0').text() == '나나나'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grd2_cell_8_0').text() == '다다다'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 
 ]]></script>

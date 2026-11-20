@@ -28,6 +28,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     var data = dataList1.getAllJSON();
     grid1.setJSON(data);
@@ -36,53 +45,13 @@ scwin.onfocus = function() {
     result.setValue(result.getValue() + '\n[' + this.id + '] ' + WebSquare.util.getFocusedComponentId());
 };
 scwin.focusItem = function(id) {
-    return WebSquare.wUnit.getDomById($p.id + id).focus();
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 tab키로 이동한다.inputbox, treeView, selectbox, anchor, 
-    //1. Run the sample file and move to the tab key.inputbox, treeView, selectbox, anchor, gridView (autoComplete), triger tab
-    WebSquare.wUnit.addCommand("set", "scwin.focusItem('input1')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'input1'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.focusItem('treeview')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'treeview'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.focusItem('select1')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'select1'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.focusItem('anchor1')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'anchor1'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.focusItem('grid1')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'grid1'", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.focusItem('trigger')");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'trigger' ", "true");
-    // verify step 1. 각각 아래와 같이 포커스가 되어있는 컴포넌트의 ID가 정상적으로 반환된다.[input1] input1[treeview] treeview[select1] select1[anchor1] anchor1[grid1] grid1[trigger] trigger[trigger] trigger[trigger] trigger
-    //1. The ID of the focused component is returned as shown below. [input1] input1[treeview] treeview[select1] select1[anchor1] anchor1[grid1] grid1[trigger] trigger[trigger] trigger
-    //Test step 2. selectbox의 다른값을 클릭한다.
-    //2. Click another value in the selectbox.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('select1').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('select1_itemTable_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 2. 동일하게 [select1] select1 값이 보여진다.
-    //2. The [select1] select1 value is displayed in the same way.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.util.getFocusedComponentId() == $p.id+'select1'", "true");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + id).focus();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     scwin.init();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 22-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

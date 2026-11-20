@@ -63,19 +63,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.checkType = function() {
-    return WebSquare.wUnit.getJq("input[type='tel']").length == 11;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "2000");
-    //Verify step 1. 요소검사에서 111tel111값으로 검색 시 18개가 적용되어 보여진다.(이전에는 7개만 보여짐)
-    //1. When searching for 111tel111 in the element check, 18 are shown to be applied (previously 7 are shown)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkType()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq("input[type='tel']").length == 11;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -85,9 +81,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 15-Jun-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

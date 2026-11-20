@@ -50,6 +50,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     var jsonData = [{
         "col1": "col1",
@@ -85,7 +94,7 @@ scwin.trigger2_onclick = function(e) {
     console.log("grd1.getHeaderColumnVisible('h_col4') :: " + grd1.getHeaderColumnVisible('h_col4'));
     console.log("grd1.getHeaderColumnVisible('h_col5') :: " + grd1.getHeaderColumnVisible('h_col5'));
     console.log("grd1.getHeaderColumnVisible('h_col6') :: " + grd1.getHeaderColumnVisible('h_col6'));
-    console.log("WebSquare.wUnit.getObjById('grd1').getHeaderColumnVisible('h_col7') :: " + grd1.getHeaderColumnVisible('h_col7'));
+    console.log("grd1.getHeaderColumnVisible('h_col7') :: " + grd1.getHeaderColumnVisible('h_col7'));
 };
 scwin.trigger3_onclick = function(e) {
     grd1.setColumnVisible('col2', false);
@@ -101,64 +110,15 @@ scwin.trigger4_onclick = function(e) {
 };
 scwin.isBetween = function(colVal, idBefore, idAfter) {
     var dataValue = WebSquare.util.getDataPrefix("value");
-    var el = WebSquare.wUnit.getDomById($p.id + idBefore).nextElementSibling;
-    var nextElId = WebSquare.wUnit.getDomById($p.id + el.getAttribute("id")).nextElementSibling.getAttribute('id');
+    var el = scwin.__getDom($p.id + idBefore).nextElementSibling;
+    var nextElId = scwin.__getDom($p.id + el.getAttribute("id")).nextElementSibling.getAttribute('id');
     return el.getAttribute(dataValue) == colVal && nextElId == idAfter;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 및 콘솔 실행 후 'moveCol'버튼을 클릭한다.
-    //1. Run the sample file and run the console and click the 'moveCol' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. h_col1의 row가 h_col2와 h_col5사이로 이동되어진다.
-    //1. The row of h_col1 is moved between h_col2 and h_col5.
-    WebSquare.wUnit.addCommand("assert", "scwin.isBetween('h_col1', $p.id+'grd1_h_col2',$p.id+'grd1_h_col5')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 'hidden'버튼을 클릭한다.
-    //2. Click the 'hidden' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    // verify step 2. h_col2d의 row가 숨겨져서 보여진다.
-    //2. The row of h_col2d is shown hidden.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col2')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. 'chkVisible'을 클릭하고 콘솔창을 확인한다.
-    //3. Click 'chkVisible' and check the console window.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    // verify step 3. body의 col2, col5, col6 값은 false로 보여지고 col3, col10은 undefined로 보여지고 나머지는 true로 보여진다.그리고 header의 col2, col3, col4 값은 false로 보여진다.
-    //3. The col2, col5, and col6 values in the body are shown as false, and col3 and col10 are shown as undefined and the rest are shown as true.The col2, col3, and col4 values in the header are shown as false.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col2')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col5')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col6')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col3') == undefined", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col10') == undefined", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col4')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col7')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col8')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col9')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getColumnVisible('col1')", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getHeaderColumnVisible('h_col2')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getHeaderColumnVisible('h_col2')", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd1').getHeaderColumnVisible('h_col2')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     scwin.init();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 26-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

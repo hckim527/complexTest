@@ -29,14 +29,27 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     dataList_menu.modifyRowStatus(1, "C");
 };
@@ -57,26 +70,11 @@ scwin.gridView1_onviewchange = function(info) {
     }
 };
 scwin.__isIconShow = function() {
-    var el = WebSquare.wUnit.getDomById($p.id + 'gridView1_body_tbody').getElementsByTagName('tr')[2];
+    var el = scwin.__getDom($p.id + 'gridView1_body_tbody').getElementsByTagName('tr')[2];
     return el.childNodes[1].getAttribute("class") == "gridBodyDefault gridBodyDefault_rowStatus w2grid_rowStatus_C";
 }
 scwin.__triggerClick = function() {
-    return WebSquare.wUnit.getJq(checkBox).click();
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 3번째 row의 체크박스를 클릭한다.
-    //1. Execute the sample file and click the check box of the third row.
-    WebSquare.wUnit.addCommand("set", "scwin.__triggerClick()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. 체크박스 왼쪽컬럼에 +기호가 보여진다.(이전에는 보여지지 않음)
-    //1. The + sign appears in the left column of the checkbox.(Previously not shown)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isIconShow()", "true");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq(checkBox).click();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -543,12 +541,9 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Created By: Sang.do
     //Created By: 25-Jan-2018
-    window.row3 = WebSquare.wUnit.getJq('#gridView1_body_tbody tr:nth-child(3)');
-    window.checkBox = WebSquare.wUnit.getJq(row3).find('td:nth-child(3) input');
+    window.row3 = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr:nth-child(3)'))($('#gridView1_body_tbody tr:nth-child(3)'));
+    window.checkBox = scwin.__getJq(row3).find('td:nth-child(3) input');
     //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[

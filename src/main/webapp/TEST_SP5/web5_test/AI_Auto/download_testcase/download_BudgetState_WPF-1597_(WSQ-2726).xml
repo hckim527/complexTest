@@ -131,6 +131,13 @@
 			src="/js/gulummaacc/respond.min.js"></script> <script type="text/javascript" 
 			language="javascript" src="/js/gulummaacc/html5shiv.min.js"></script> <![endif] -->
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.initScreen = function() {
     var sessionMap = WebSquare.session.getAttribute("userSession");
     var AREA_CD = sessionMap.mberRow.AREA_CD;
@@ -298,7 +305,7 @@ scwin.grd_BudgetState_oncelldblclick = function(row, col) {
     comLib.openPopup("popup_facilityInfo", "ui/imggadm/facilityinfo/popup_facilityInfoLayout.xml&FCLTCD=" + FCLTCD + "&P1=0&P2=0", options);
 };
 scwin.grd_BudgetState_resize = function() {
-    var winHeight = WebSquare.wUnit.getJq(window).height();
+    var winHeight = scwin.__getJq(window).height();
     grd_BudgetState.setGridHeight(winHeight - 220);
 };
 scwin.callback = function() {
@@ -322,14 +329,11 @@ scwin.onpageload = function() {
     //특성체크 조회 조건에 맞게 필터링 한다.
     // subTotal displayformatter 합계 지역설정
     // subTotal displayformatter 합계 유형설정
-    WebSquare.wUnit.getJq(window).resize(function() {
+    scwin.__getJq(window).resize(function() {
         if (scwin.grd_BudgetState_resize) scwin.grd_BudgetState_resize();
     });
     //scwin.initScreen();
     $p.executeSubmission("submission1");
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

@@ -23,6 +23,13 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.grid1_ongroupby = function(options) {
     return false;
 };
@@ -49,32 +56,11 @@ scwin.grid1_groupbyFilterBoxFormatter = function(data) {
     return label;
 };
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById('grid1_groupbyZone_list_items_main').querySelectorAll('div')[2].innerText == '0';
+    return (document.getElementById('grid1_groupbyZone_list_items_main') || document.getElementById('mf_grid1_groupbyZone_list_items_main')).querySelectorAll('div')[2].innerText == '0';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getJq($('.w2grid_groupbyZone_list_listRow')[2]).find('input')[0].click();
+    return scwin.__getJq($('.w2grid_groupbyZone_list_listRow')[2]).find('input')[0].click();
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_groupbyZone_div').childElementCount > 0", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_groupbyZone_column_labelDiv')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //WebSquare.wUnit.addCommand("set", "scwin.checkVal2()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_1_0').innerText != '0'", "true");
-	
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.arr = [];

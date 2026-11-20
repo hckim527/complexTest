@@ -41,26 +41,19 @@
     	<stylesheet src="/ui/pot/exc/aa/css/WebSquare.css" />
     	<style src="/heagun/css/WebSquare.css" />
     	<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     scvar.fn_listToggle(true);
 };
 scwin.trigger2_onclick = function(e) {
     scvar.fn_listToggle(false);
 };
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grd_list_cell_2_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'grd_list_cell_17_1').style.backgroundColor == 'rgb(255, 128, 0)'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -86,13 +79,13 @@ scwin.onpageload2 = function() {
      */
     scvar.fn_toggle = function(obj) {
         //debugger;
-        window.grp = obj.grp || WebSquare.wUnit.getJq('#grp_detail');
+        window.grp = obj.grp || ((j) => j.length ? j : $('#mf_grp_detail'))($('#grp_detail'));
         window.btn = obj.btn || trigger1;
         window.id = btn.getID();
         window.grd = obj.grd || grd_list;
         window.btnTxt = obj.btnTxt || ['상세정보 보기', '상세정보 닫기'];
         if (scwin.toggleObj.toggleFlag) {
-            WebSquare.wUnit.getJq('#' + id).removeClass('down').addClass('up');
+            scwin.__getJq('#' + id).removeClass('down').addClass('up');
             grp.hide();
             //btn.setValue(btnTxt[0]);
             grd.setGridHeight(scwin.toggleObj.height[0]);
@@ -101,7 +94,7 @@ scwin.onpageload2 = function() {
             console.log("down    " + scwin.toggleObj.rowIdx + " //  " + scwin.toggleObj.colIdx);
             grd.setFocusedCell(scwin.toggleObj.rowIdx, scwin.toggleObj.colIdx, true); //false
         } else {
-            WebSquare.wUnit.getJq('#' + id).removeClass('up').addClass('down');
+            scwin.__getJq('#' + id).removeClass('up').addClass('down');
             grp.show();
             //btn.setValue(btnTxt[1]);
             grd.setGridHeight(scwin.toggleObj.height[1]);
@@ -118,9 +111,6 @@ scwin.onpageload2 = function() {
         scwin.toggleObj.toggleFlag = flag;
         scwin.toggleFlag = scvar.fn_toggle(grd_list);
     };
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

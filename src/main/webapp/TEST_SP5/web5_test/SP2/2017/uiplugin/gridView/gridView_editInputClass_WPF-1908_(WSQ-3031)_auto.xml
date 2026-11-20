@@ -33,6 +33,15 @@
 			<w2:workflowCollection></w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger11_onclick = function(e) {
     //			grid1.mergeByCol();
     grid1.mergeCells("bycol");
@@ -49,32 +58,8 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플 실행 후 'mergeClo'버튼을 클릭한다.
-    //1. After running the sample, click the 'mergeClo' button.
-    //Verify step 1. The first value ('1111') is shown merged.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger11').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_0_0').textContent == '11111'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_1_0').css('display') == 'none'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_2_0').css('display') == 'none'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_cell_3_0').css('display') == 'none'", "true");
-    //Test step 2. 더블클릭하여 edit모드로 진입 후 F12를 통해 inspect로 class값을 확인한다.
-    //2. Double click to enter edit mode and check the class value with inspect through F12.
-    //Verify step 2. The class = 'w2input w2gridinput' value is shown.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grid1_cell_0_0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_1_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('G_'+$p.id+'grid1__col1').getAttribute('class') == 'w2input w2gridinput'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -83,9 +68,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 23-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[

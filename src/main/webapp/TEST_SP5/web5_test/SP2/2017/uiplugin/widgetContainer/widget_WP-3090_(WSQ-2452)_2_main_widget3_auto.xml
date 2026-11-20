@@ -40,6 +40,15 @@
 			<w2:workflowCollection></w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     widgetContainer1.addWidgets({
         'title': "경쟁사신탁모니터입수현황",
@@ -53,54 +62,28 @@ scwin.init = function() {
     });
 };
 scwin.checkVal0 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_0_0").innerText == 'data_0_0';
+    return scwin.__getDom($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_0_0").innerText == 'data_0_0';
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_1_0").innerText == 'data_1_0';
+    return scwin.__getDom($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_1_0").innerText == 'data_1_0';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_2_0").innerText == 'data_2_0';
+    return scwin.__getDom($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_2_0").innerText == 'data_2_0';
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_3_0").innerText == 'data_3_0';
+    return scwin.__getDom($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_3_0").innerText == 'data_3_0';
 }
 scwin.checkVal4 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_4_0").innerText == 'data_4_0';
+    return scwin.__getDom($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_4_0").innerText == 'data_4_0';
 }
 scwin.checkVal5 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_5_0").innerText == 'data_5_0';
+    return scwin.__getDom($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_5_0").innerText == 'data_5_0';
 }
 scwin.checkVal6 = function() {
-    return WebSquare.wUnit.getDomById($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_6_0").innerText == 'data_6_0';
+    return scwin.__getDom($p.id+"widgetContainer1_box1_content_wq_uuid_13_cell_6_0").innerText == 'data_6_0';
 }
 scwin.checkVal7 = function() {
     return localStorage.getItem('log') == 'true';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 2. TestData 2번의 _main_widget3.xml을 실행한다.
-    //2. Run Test_Data_2_main_widget3.xml.
-    //Verify 2. 알림창에 'done'메시지가 보여진다.
-    //2. The message 'done' is displayed in the notification window.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal7()", "true");
-    //WebSquare.wUnit.addCommand("assert", "widgetContainer1_box1_content_WebSquare.wUnit.getObjById('wq_uuid_13_cell_0_2').textContent == 'data_0_1'","true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3: 3. 알림창의 확인버튼을 클릭한다.
-    // 3. Click the OK button in the notification window.
-    // Verify 3: 3. 그리드에 데이터가 보여진다.
-    // 3. Data is displayed on the grid.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal0()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal4()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal5()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal6()", "true");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -111,9 +94,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 13-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[

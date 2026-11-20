@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.inputCalendar1_onviewchange = function(info) { //debugger;
     console.log(info.oldValue + "	" + info.newValue);
 };
@@ -23,42 +32,10 @@ scwin.clickOkButton = function() {
     document.getElementsByClassName('w2calendar_header_btn_ok_yearType')[0].click();
 }
 scwin.checkEl = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id)) {
+    if (scwin.__getDom($p.id + id)) {
         return true;
     }
     return false;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 왼쪽 첫번째 inputCalendar 입력창에 년도를 입력 후 옆의 달력아이콘을 클릭한다.
-    //1. Run the sample file, enter the year in the first inputCalendar input window on the left, and click the calendar icon next to it.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCalendar1').focus()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1').setValue('2018')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 1. 달력아이콘에도 입력한 년도로 selectbox값이 보여진다.
-    //1. The calendar icon also shows the selectbox value as the year entered.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl($p.id+'inputCalendar1_calendar')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //pc
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_calendar_selectbox_year_label').innerText == '2018년'", "true");
-    //mobile
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('inputCalendar1_calendar').getValue() == '2018'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 왼쪽 첫번째 inputCalendar 달력아이콘을 클릭하여 년도를 선택하고 확인(체크버튼)을 클릭한다.
-    //2. Click the first inputCalendar calendar icon on the left to select the year and click OK (check button).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('inputCalendar1_calendar_last_year').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2calendar_header_btn_ok_yearType')[0].click()");
-    // verify step 2. inputCalendar 입력창에 선택했던 년도가 입력되어진다.
-    //2. Input the year you selected in the inputCalendar input window.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCalendar1_input').val() == '2017'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -67,9 +44,6 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Created By: Sang.do
     //Created By: 23-Jan-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

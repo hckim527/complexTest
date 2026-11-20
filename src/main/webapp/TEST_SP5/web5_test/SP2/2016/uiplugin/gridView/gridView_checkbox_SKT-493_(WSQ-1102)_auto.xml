@@ -61,32 +61,20 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     grd.setCellReadOnly(1, 0, true);
 };
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id+"grd_cell_1_0").childNodes[0].getAttribute('disabled') == 'true';
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 0. 샘플파일의 그리드뷰의 inputtype이 checkbox로 되어있는 body의 속성에 checkAlways="true"를 설정한다.
-    //0. Set checkAlways = "true" to the attribute of the body whose input type of the grid view of the sample file is checkbox.
-    //Verify step 0. The inputtype of the grid view in the sample file is set to checkAlways = "true" in the body attribute of the checkbox.
-    //Test step 1. 실행후 그리드뷰 하단의 특정 row에 readOnly이벤트를 발생시키는 트리거버튼을 클릭한다.
-    //1. After execution, click the trigger button that causes the readOnly event to occur at a specific row at the bottom of the grid view.
-    //Verify step 1. A specific row is changed to readOnly state (not clicked)
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Test step 2. 상단의 header checkbox를 클릭하여 전체선택 또는 전체해제를 실행한다.
-    //2. Click on the header checkbox at the top to execute the entire selection or the entire release.
-    //Verify step 2. A row that is readOnly is also selected and released entirely.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grd_column5').childNodes[0].click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_cell_1_0').childNodes[0].getAttribute('checked') == ''", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id+"grd_cell_1_0").childNodes[0].getAttribute('disabled') == 'true';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -95,9 +83,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 28-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

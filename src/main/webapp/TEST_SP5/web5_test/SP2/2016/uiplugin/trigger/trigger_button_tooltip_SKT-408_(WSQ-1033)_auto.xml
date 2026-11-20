@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     trigger1.setDisabled(true);
     //trigger1.setDisabled( false );
@@ -31,31 +40,7 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.setVal = function() {
-    scwin.fireOver(WebSquare.wUnit.getDomById($p.id + 'trigger1'));
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 버튼에 마우스를 오버한다.
-    //1. Run the sample file and mouse over the button.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "3000");
-    //Verify 1. 툴팁내용이 보여진다.
-    //1. Tooltip contents are displayed.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'wq_uuid_0_balloonTip').style.display == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 버튼을 클릭한다.
-    //2. Click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 버튼이 비활성화(disabled)되고 툴팁이 보이지 않는다.(이전에는 툴팁이 계속 남아서 보여짐)
-    //2. The button is disabled and the tooltip is not visible (previously the tooltip remains visible)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'wq_uuid_0_balloonTip').style.display == 'none'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    scwin.fireOver(scwin.__getDom($p.id + 'trigger1'));
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -65,9 +50,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 28-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

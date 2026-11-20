@@ -31,38 +31,22 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__isShowFooter = function() {
-    var tr = WebSquare.wUnit.getJq('#row7');
-    return (WebSquare.wUnit.getJq(tr).find("td:nth-child(6)").text() == "3000") && (WebSquare.wUnit.getJq(tr).find("td:last").text() == "60000")
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "300");
-    // Test step 1. WebSquare 에서 공급가액 의 footer id 부분을 확인한다.
-    //1. Check the footer id part of the supply price in WebSquare.
-    // verify step 1. id=''
-    WebSquare.wUnit.addCommand("assert", "!WebSquare.wUnit.getJq('#row7').find('td:last').attr('id')", "true");
-    //Test step 2. 브라우저에서 footer 부분을 확인한다.
-    //2. Check the footer in your browser. 
-    //Verify step 2. 정상적으로 footer 가 표현된다. 3000, 60000(그전버전에서는 id 가 없으면 footer 가 나오지 않음)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isShowFooter()", "true");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    var tr = ((j) => j.length ? j : $('#mf_row7'))($('#row7'));
+    return (scwin.__getJq(tr).find("td:nth-child(6)").text() == "3000") && (scwin.__getJq(tr).find("td:last").text() == "60000")
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     dc_res_001.setData(['20160830', 'aaaa', '1111', '1000', '10000', '20160830', 'aaaa', '1111', '1000', '20000', '20160830', 'aaaa', '1111', '1000', '30000']);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 07-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

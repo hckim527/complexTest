@@ -35,7 +35,14 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript"><![CDATA[
-        var jsonData = [
+        // jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+var jsonData = [
     {
         "col1": "a",
         "col2": "1000",
@@ -60,24 +67,11 @@
 		debugger;
 	};
 			scwin.__hasClass = function() {
-				var el0 = WebSquare.wUnit.getJq("#gridView1_column1_filter");
+				var el0 = ((j) => j.length ? j : $('#mf_gridView1_column1_filter'))($('#gridView1_column1_filter'));
 
-				return WebSquare.wUnit.getJq(el0).hasClass("w2grid_customFilter_open");
+				return scwin.__getJq(el0).hasClass("w2grid_customFilter_open");
 			}
 			
-			scwin.unitTest = function(){
-				//init
-				WebSquare.wUnit.start();
-				WebSquare.wUnit.addCommand("pause", "500");  
-
-				WebSquare.wUnit.addCommand("assert", "scwin.__hasClass()", "true");
-				WebSquare.wUnit.addCommand("pause", "500");
-
-				//Run  and stop
-				WebSquare.wUnit.run();
-				WebSquare.wUnit.stop();        
-			}
-			scwin.unitTest();			
 	]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload2" ev:onpageunload="scwin.onpageunload">

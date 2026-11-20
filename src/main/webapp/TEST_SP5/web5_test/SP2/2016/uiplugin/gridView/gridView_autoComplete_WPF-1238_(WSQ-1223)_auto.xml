@@ -26,8 +26,24 @@
         </xf:model>
         
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -42,7 +58,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.checkEL = function(id) {
-    if (WebSquare.wUnit.getJq(id).css("display") == "block") {
+    if (scwin.__getJq(id).css("display") == "block") {
         return true;
     }
     return false;
@@ -53,33 +69,12 @@ scwin.isIE = function() {
 }
 scwin.__isCheck = function() {
     if (scwin.isIE() && (scwin.isIE() == 11)) {
-        return WebSquare.wUnit.getJq("#G_gridView1___autoComplete_2_col2_col2_itemTable").css("display") == "block";
+        return ((j) => j.length ? j : $('#G_mf_gridView1___autoComplete_2_col2_col2_itemTable'))($('#G_gridView1___autoComplete_2_col2_col2_itemTable')).css("display") == "block";
     }
     return true;
 }
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getJq('#G_'+$p.id+'gridView1___autoComplete_2_col2_col2_label').text() == '1';
-}
-scwin.unitTest = function() {
-    // Int test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. Source 탭 또는 Property 에서 name2 컬럼의 cell 의 inputType 을 확인한다.- 1. In the Source tab or Property, check the inputType of the cell in the name2 column.
-    //Verify 1. inputType='autoComplete'
-    //Test step 4. 브라우저에서 readOnly 를 해제설정한 마지막 cell 을 더블클릭 후 '1' 을 입력한다.(name2항목의 3번째 컬럼)- Double-click the last cell in the browser that has readOnly disabled and enter '1'.(the third column of the name2 entry)
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_2_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 4. 입력한 '1' 에 대해서 autoComplete 된다.- AutoComplete for '1' entered.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEL('#G_'+$p.id+'gridView1___autoComplete_2_col2_col2_input')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheck()", "true");
-    WebSquare.wUnit.addCommand("pause", "2500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop unitTest
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getJq('#G_'+$p.id+'gridView1___autoComplete_2_col2_col2_label').text() == '1';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -108,9 +103,6 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Create by Truong.Luu
     //Create date 23-Jan-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

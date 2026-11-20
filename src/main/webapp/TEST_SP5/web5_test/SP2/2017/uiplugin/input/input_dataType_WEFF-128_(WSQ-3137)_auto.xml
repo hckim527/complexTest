@@ -15,8 +15,17 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -26,25 +35,6 @@ scwin.fireDbClick = function(id) {
     } else if (typeof node.ondblclick == 'function') {
         node.ondblclick();
     }
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 float항목의 필드에 '0'값을 입력하고 enter 또는 다른영역을 마우스로 클릭한다.
-    //1. After executing the sample, enter '0' in the field of the float item and click on the enter or other area with the mouse.
-    WebSquare.wUnit.addCommand("set", "scwin.fireDbClick($p.id+'grid1_cell_0_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grid1__column6').setValue('0')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_0_3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 정상적으로 '0'값이 입력되어 보여진다. (이전에는 '0'값이 입력되지 않음)
-    //1. Normally '0' value is displayed. (Previously no '0' value is entered)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_0_2').innerText == '0'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -77,9 +67,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 22-Feb-2018
     //End unitTest	
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

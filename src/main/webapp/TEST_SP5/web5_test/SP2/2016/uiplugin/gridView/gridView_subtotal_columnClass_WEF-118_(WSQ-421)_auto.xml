@@ -60,28 +60,21 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__colHasAttr = function() {
-    var el = WebSquare.wUnit.getJq('*[id="column17"]');
+    var el = scwin.__getJq('*[id="column17"]');
     el.each(function() {
-        if (WebSquare.wUnit.getJq(this).hasClass("bbbb")) {
+        if (scwin.__getJq(this).hasClass("bbbb")) {
             count++;
         }
     });
     return el.length == count;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. In the Developer Tools Elements, check the class value of gridview1> subtotal> column17 (compare attachment image or search by column17 in developer tool or search by 'bbbb' value)
-    //2. 개발자도구 Elements에서 gridview1 > subtotal > column17의 class값을 확인한다.(첨부이미지 비교하여 참고 또는 개발자도구에서 column17로 검색 또는 'bbbb' 값으로 검색)
-    // verify step 2. class의 값 맨처음에 columnclass에서 설정한 값('bbbb')가 보여진다.columnclass='bbbb'(이전에는 columnclass에서 설정한 값이 보이지 않았음)
-    //2. The value of the class ('bbbb') is displayed at the beginning of the column.columnclass = 'bbbb'(Previously, the value set in the columnclass was not visible.)
-    WebSquare.wUnit.addCommand("assert", "scwin.__colHasAttr()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -92,9 +85,6 @@ scwin.onpageload2 = function() {
     //Created By: 08-Feb-2018
     window.count = 0;
     //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[

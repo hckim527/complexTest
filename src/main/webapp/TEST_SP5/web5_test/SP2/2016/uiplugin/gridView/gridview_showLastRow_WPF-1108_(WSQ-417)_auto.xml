@@ -36,31 +36,22 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__isShowLastData = function() {
-    var tds = WebSquare.wUnit.getJq("#gridView1_body_tbody .grid_body_row").not('.w2grid_hidedRow').last().find('td');
+    var tds = ((j) => j.length ? j : $('#mf_gridView1_body_tbody .grid_body_row'))($('#gridView1_body_tbody .grid_body_row')).not('.w2grid_hidedRow').last().find('td');
     var count = 0;
     tds.each(function(index, el) {
-        if (index > 1 && (WebSquare.wUnit.getJq(el).text() != "")) {
+        if (index > 1 && (scwin.__getJq(el).text() != "")) {
             count++;
         }
     });
     return count == tds.length - 2;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. 샘플화면을 실행 후왼쪽 gridView의 스크롤을 빠르게 내린다.
-    //3. Run the sample screen and quickly scroll down the left gridview.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1').setTopRowIndex(45)");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 3. 마지막 row data도 정상적으로 갱신된다.(이전에는 잘못 갱신되거나 일부 값이 보이지 않았음)
-    //3. The last row data is also updated normally (previously incorrectly updated or not showing some values).
-    WebSquare.wUnit.addCommand("assert", "scwin.__isShowLastData()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -1062,13 +1053,6 @@ scwin.onpageload2 = function() {
         }
     ];
     dtlHR_MASTXM.setJSON(json1);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 07-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

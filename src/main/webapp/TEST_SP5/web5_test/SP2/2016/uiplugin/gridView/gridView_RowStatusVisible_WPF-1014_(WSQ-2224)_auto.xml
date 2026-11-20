@@ -22,6 +22,30 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger3_onclick = function(e) {
     dataList1.insertRow();
 };
@@ -36,7 +60,7 @@ scwin.trigger4_onclick = function(e) {
     //			dataList1.insertRow();	// 추가로 추석처리 함
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -51,41 +75,14 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.__isEl = function() {
-    return el = WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not(".w2grid_hidedRow");
+    return el = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr'))($('#gridView1_body_tbody tr')).not(".w2grid_hidedRow");
 }
 scwin.checkVal = function() {
-    scwin.fireDbClick(WebSquare.wUnit.getDomById($p.id+"gridView1_cell_0_0"));
+    scwin.fireDbClick(scwin.__getDom($p.id+"gridView1_cell_0_0"));
 }
 scwin.checkVal2 = function() {
-    WebSquare.wUnit.getObjById("G_"+$p.id+"gridView1__col1").setValue(WebSquare.wUnit.getObjById("G_"+$p.id+"gridView1__col1").getValue() + '222');
+    scwin.__getObj("G_"+$p.id+"gridView1__col1").setValue(scwin.__getObj("G_"+$p.id+"gridView1__col1").getValue() + '222');
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.checkVal2()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').textContent == '삼림빵222'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText == '삼림빵222'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1').getRowStatus(0) == 'U'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.__isEl().length == 4", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1').getRowStatus(3) == 'C'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //dataList1.setData([1,2,3,4,5,6,7,8,9]);

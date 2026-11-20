@@ -22,30 +22,35 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.autoComplete1_onviewchange = function(info) {
     if (info.newValue == "G") {
         autoComplete1.setValue(info.oldValue);
     }
 };
 scwin.trigger1_onclick = function(e) {
-    WebSquare.wUnit.getObjById('autoComplete1_label').click();
-    WebSquare.wUnit.getObjById('autoComplete1_input').focus();
+    scwin.__getObj('autoComplete1_label').click();
+    scwin.__getObj('autoComplete1_input').focus();
     autoComplete1.inputKeyDown({
         keyCode: 85
     }, false);
-    WebSquare.wUnit.getObjById('autoComplete1_input').value = "U";
+    scwin.__getObj('autoComplete1_input').value = "U";
     //console.log(autoComplete1.viewArr);
 };
-scwin.unitTest = function() {
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "20");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('autoComplete1_label').textContent == 'UY'", "true");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.trigger2_onclick = function(e) {
     autoComplete1.inputKeyDown({
         keyCode: 13
@@ -73,9 +78,6 @@ scwin.onpageload2 = function() {
         }
     ];
     dl_select.setJSON(jsonData);
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

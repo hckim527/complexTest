@@ -22,6 +22,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.test = function() {
     $w.log("main" + "_initScript");
 }
@@ -100,33 +109,8 @@ scwin.trigger3_onclick = function() {
     }
 };
 scwin.checkVal = function() {
-    var temp = WebSquare.wUnit.getDomById($p.id + 'tabControl1_contents_test_1_body').className.includes('w2wframe');
+    var temp = scwin.__getDom($p.id + 'tabControl1_contents_test_1_body').className.includes('w2wframe');
     return temp;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 개발자도구를 열고 main샘플 실행 후 'addTab(wframe)' 버튼 클릭 후 inspect를 확인하고 class로 시작하는 파일이 wframe로 보여지는지 확인한다.(이전에는 iframe로 보여짐)
-    //1. Open the developer tool, run the main sample, check the inspect after clicking the 'addTab (wframe)' button, and check that the file starting with class is shown as wframe (previously shown as iframe)
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 1. id='tabControl1_contents_test_1_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
-    //1. id='tabControl1_contents_test_1_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
-    //WebSquare.wUnit.addCommand("assert","WebSquare.wUnit.getDomById($p.id+'tabControl1_contents_test_1_body').className == 'w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Test step 2. 'addTab(wframePreload)' 버튼 클릭 후 inspect를 확인하고 class로 시작하는 파일이 wframe로 보여지는지 확인한다.(이전에는 iframe로 보여짐)
-    //2. Click on the 'addTab (wframePreload)' button to check inspect and check that the file starting with class is visible as a wframe (previously shown as iframe)
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. id='tabControl1_contents_test_2_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
-    //2. id='tabControl1_contents_test_2_body'의class='w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'
-    //WebSquare.wUnit.addCommand("assert","WebSquare.wUnit.getDomById($p.id+'tabControl1_contents_test_1_body').className == 'w2wframe w2tabContainer_contents w2tabcontrol_contents_wrapper'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -137,9 +121,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 20-Mar-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

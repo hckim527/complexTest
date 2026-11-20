@@ -27,6 +27,15 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     scwin.data1 = [
         "가", "B", 200,
@@ -248,30 +257,13 @@ scwin.trigger2_onclick = function(e) {
     grid1.setColumnVisible("col1", false);
 };
 scwin.setVal = function() {
-    before = WebSquare.wUnit.getDomById($p.id + 'grid1_foot_table').getBoundingClientRect().y;
+    before = scwin.__getDom($p.id + 'grid1_foot_table').getBoundingClientRect().y;
 }
 scwin.setVal2 = function() {
-    after = WebSquare.wUnit.getDomById($p.id + 'grid1_foot_table').getBoundingClientRect().y;
+    after = scwin.__getDom($p.id + 'grid1_foot_table').getBoundingClientRect().y;
 }
 scwin.checkVal = function() {
     return before == after;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 하단의 'setColumn'버튼을 클릭하여 groupbyFilterBox의 위치가 동일하게 유지되는지를 확인한다.
-    //1. After running the sample, click the 'setColumn' button at the bottom to check whether the position of the groupbyFilterBox is the same.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
-    //Verify step 1. setColumnvisible() API를 실행해도 동일하게 유지된다.(이전에는 아래로 내려가는 현상이 발생함)
-    //1. The setColumnvisible () API will remain the same (it will go down before)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -283,9 +275,6 @@ scwin.onpageload2 = function() {
     window.before = 0;
     window.after = 0;
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

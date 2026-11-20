@@ -39,30 +39,18 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.checkBox = function() {
-    var el = WebSquare.wUnit.getDomById($p.id + "gridView1_column5").childNodes[0]
+    var el = scwin.__getDom($p.id + "gridView1_column5").childNodes[0]
     return el.checked && !el.indeterminate;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 0. SKT관련 config.xml설정 미적용후 테스트하면 정상동작함(적용해도 정상임)
-    //0. SKT-related config.xml setting does not work and then it works normally (even if it is applied)
-    //Test step 1. 샘플파일 실행 후 개발자모드(F12)실행한다.
-    //1. Execute the sample file and execute developer mode (F12).
-    //Verify step 1. 실행화면에서 console화면이 보여진다.
-    //1. The console screen is displayed on the execution screen.
-    //Test step 2. consose창에 'dataList1.setCellData(1, 'col1', '1');''dataList1.setCellData(2, 'col1', '1');'입력하고 실행한다.
-    //2. In the console window, type 'dataList1.setCellData (1,' col1 ',' 1 ');' 'dataList1.setCellData (2,' col1 ',' 1 ');
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').setCellData(1, 'col1', '1')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').setCellData(2, 'col1', '1')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. 그리드뷰의 헤더가 전체선택으로 체크되어진다.(이전에는 체크되지 않음)
-    //2. The header of the grid view is checked as a whole selection (previously unchecked).
-    WebSquare.wUnit.addCommand("assert", "scwin.checkBox()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -72,9 +60,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 06-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

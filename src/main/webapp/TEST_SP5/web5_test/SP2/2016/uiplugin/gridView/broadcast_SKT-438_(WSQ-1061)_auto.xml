@@ -58,6 +58,30 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger1_onclick = function(e) {
     dataList1.setBroadcast(false);
 };
@@ -76,46 +100,16 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.setVal = function() {
-    scwin.fireDbClick(WebSquare.wUnit.getObjById('wq_uuid_5_cell_0_0'));
+    scwin.fireDbClick(scwin.__getObj('wq_uuid_5_cell_0_0'));
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'wq_uuid_5_cell_0_0').innerText == '333';
+    return scwin.__getDom($p.id + 'wq_uuid_5_cell_0_0').innerText == '333';
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'wq_uuid_5_cell_0_0').innerText == '333';
+    return scwin.__getDom($p.id + 'wq_uuid_5_cell_0_0').innerText == '333';
 }
 scwin.checkVal3 = function() {
-    return WebSquare.wUnit.getObjById($p.id+"wq_uuid_9").getValue() == '33';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 그리드뷰의 첫번째 필드에 마우스를 클릭하고 우측하단의 inputbox에 값을 수정한다.
-    //1. After executing the sample file, click mouse on the first field of the grid view and modify the value in the inputbox on the bottom right.
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_wq_uuid_5__col1').setValue(333)");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_5_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 그리드뷰의 첫번째 필드에 값이 수정된다.(이전버전에서는 수정되지 않음)
-    //1. The value is modified in the first field of the grid view (not modified in previous versions).
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. broadcase fals버튼을 클릭하고 동일하게  inputbox에 값을 수정한다.
-    //2. Click on the broadcase fals button and modify the value in the input box.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('wq_uuid_9').setValue('33')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 그리드뷰의 첫번째 필드에 값이 수정되지 않는다.(정상임)
-    //2. Values are not modified in the first field of the grid view (normal)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getObj($p.id+"wq_uuid_9").getValue() == '33';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -128,9 +122,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 28-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

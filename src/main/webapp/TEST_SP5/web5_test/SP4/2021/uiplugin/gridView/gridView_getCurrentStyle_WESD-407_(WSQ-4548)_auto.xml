@@ -64,6 +64,21 @@
 			<w2:workflowCollection></w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.init = function() {
     handler_horizontal.setUserData("resizable", false);
     $w.local.setItem('initGrid', grid1.getGridStyle());
@@ -180,7 +195,7 @@ scwin.item6_onclick = function(e) {
 				grid1.setColumnVisible(hiddenIdx , true);
 				
 				// remove object(WebSquare.util.dynamicCreate) in context menu list.
-				var id = WebSquare.wUnit.getObjById( "item6_" + hiddenIdx );
+				var id = scwin.__getObj("item6_" + hiddenIdx);
 				if(!!id){
 					id.remove();
 				}
@@ -205,7 +220,7 @@ scwin.item6_onmouseover = function(e) {
 				var headerIdArr = grid1.getHeaderIDArr(idx-i);
 				var headerValue = grid1.getHeaderValue(headerIdArr[0]);
 				
-				var id = WebSquare.wUnit.getObjById( "item6_" + hiddenIdx );
+				var id = scwin.__getObj("item6_" + hiddenIdx);
 				
 				if(!id){
 					// create the dynamic websquare object.
@@ -218,7 +233,7 @@ scwin.item6_onmouseover = function(e) {
 				}, /* object : 컴포넌트에 적용될 attribute 값*/
 				hiddenColGrp //생성할 object의 부모
 				);
-				var id = WebSquare.wUnit.getObjById("item6_" + hiddenIdx);
+				var id = scwin.__getObj("item6_" + hiddenIdx);
 				// create the dynamic event.
 				id.bind("onclick", function(e) {
 					var colIdx = parseInt(this.getID().split("_")[1]);
@@ -241,27 +256,6 @@ scwin.hiddenColGrp_onmouseover = function(e) {
 scwin.hiddenColGrp_onmouseout = function(e) {
     hiddenColGrp.hide();
 };
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'btn_pinit').children[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'btn_sch').children[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'btn_pexport').children[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'btn_pinit').children[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'btn_pimport').children[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_column11').next()[0].innerText == 'name7'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -274,10 +268,9 @@ scwin.onpageload2 = function() {
     document.onmousemove = function(e) {
         window.resizable = handler_horizontal.getUserData("resizable");
         if (resizable) {
-            window.resizeGrp = WebSquare.wUnit.getObjById("resize_grp");
-            // 0. WebSquare.wUnit.getJq("#resize_grp").offset().top ??? -> padding info.
+            window.resizeGrp = scwin.__getObj("resize_grp");
             // if vertical scrollbar is visible in browser, you need to consider the scrollTop.  
-            resize_grp.setSize(null, e.clientY - WebSquare.wUnit.getJq("#resize_grp").offset().top);
+            resize_grp.setSize(null, e.clientY - ((j) => j.length ? j : $('#mf_resize_grp'))($('#resize_grp')).offset().top);
         }
     };
     document.onmouseup = function(e) {
@@ -297,9 +290,6 @@ scwin.onpageload2 = function() {
     
 
 	scwin.init();
-	if (typeof scwin.unitTest === "function") {
-		scwin.unitTest();
-	}
 };
 //------------------------------------
 //------------------------------------

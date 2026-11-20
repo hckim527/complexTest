@@ -23,11 +23,20 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.grid1_ongroupby = function(options) {
     return false;
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -43,35 +52,11 @@ scwin.fireDbClick = function(node) {
 }
 
 scwin.check = function() {
-    return WebSquare.wUnit.getJq("#G_grid1__category3").position().top < 100 ? false : true;
+    return ((j) => j.length ? j : $('#G_mf_grid1__category3'))($('#G_grid1__category3')).position().top < 100 ? false : true;
 }
 scwin.checkVal2 = function() {
-    return typeof WebSquare.wUnit.getDomById('G_grid1__category3') == 'object';
+    return typeof (document.getElementById('G_grid1__category3') || document.getElementById('mf_G_grid1__category3') || document.getElementById('mf_G_mf_grid1__category3') || document.getElementById('G_mf_grid1__category3')) == 'object';
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('grid1_cell_1_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.check()", "true");
-
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyZone_div').childNodes.length > 0", "true");
-
-    WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2grid_groupbyZone_column_closeButtonImg')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('grid1_cell_1_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.arr = [];

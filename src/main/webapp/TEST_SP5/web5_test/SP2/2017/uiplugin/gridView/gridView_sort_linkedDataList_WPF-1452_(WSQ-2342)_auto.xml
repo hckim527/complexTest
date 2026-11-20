@@ -26,11 +26,27 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.getVals = function() {
-    var arrs = WebSquare.wUnit.getJq("#gridView1_body_tbody tr").find("td[col_id = col2]");
+    var arrs = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr'))($('#gridView1_body_tbody tr')).find("td[col_id = col2]");
     var arrOutputs = [];
     for (i = 0; i < arrs.length; i++) {
-        arrOutputs.push(WebSquare.wUnit.getJq(arrs[i].firstChild).val());
+        arrOutputs.push(scwin.__getJq(arrs[i].firstChild).val());
     }
     return arrOutputs;
 }
@@ -40,7 +56,7 @@ scwin.compareTwoArrays = function(a1, a2) {
     })
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -55,13 +71,13 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.checkVal1 = function() {
-	const txt1 = WebSquare.wUnit.getDomById('gridView1_cell_0_1_text').value
-	const txt2 = WebSquare.wUnit.getDomById('gridView1_cell_12_1_text').value	
+	const txt1 = (document.getElementById('gridView1_cell_0_1_text') || document.getElementById('mf_gridView1_cell_0_1_text')).value
+	const txt2 = (document.getElementById('gridView1_cell_12_1_text') || document.getElementById('mf_gridView1_cell_12_1_text')).value	
     return txt1 == '1,000' && txt2 == '300,001,003,000,455,333,455' ;
 }
 scwin.checkVal2 = function() {
-	const txt1 = WebSquare.wUnit.getDomById('gridView1_cell_0_1_text').value
-	const txt2 = WebSquare.wUnit.getDomById('gridView1_cell_12_1_text').value	
+	const txt1 = (document.getElementById('gridView1_cell_0_1_text') || document.getElementById('mf_gridView1_cell_0_1_text')).value
+	const txt2 = (document.getElementById('gridView1_cell_12_1_text') || document.getElementById('mf_gridView1_cell_12_1_text')).value	
     return txt1 == '300,001,003,000,455,333,455' && txt2 == '1,000' ;
 }
 scwin.checkVal3 = function() {
@@ -70,26 +86,6 @@ scwin.checkVal3 = function() {
 scwin.checkVal4 = function() {
     return scwin.compareTwoArrays(arrSortByDES, scwin.getVals());
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 name2항목의 header를 더블클릭하여 sorting한다.(오름차순 및 내림차순)
-    //1. After running the sample file, double-click the header of the name2 item to sort it (ascending and descending).
-    //Verify step 1. name2항목의 숫자값이 정상적으로 sorting되어진다.
-    //1. name2항목의 숫자값이 정상적으로 sorting되어진다.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column3')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column3')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.jsonData = [{

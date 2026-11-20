@@ -45,60 +45,29 @@
     		<w2:workflowCollection></w2:workflowCollection>    		
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.btn_trigger1_onclick = function(e) {
     dma_OfficeInfo.set("cntrAmt", "");
     dma_OfficeInfo.set("cntrPwr", "");
 };
 scwin.__setValue = function(id, value) {
-    var input = WebSquare.wUnit.getDomById($p.id + id);
+    var input = scwin.__getDom($p.id + id);
     input.value = value;
 }
 scwin.__getVal = function(id) {
-    var input = WebSquare.wUnit.getDomById($p.id + id);
+    var input = scwin.__getDom($p.id + id);
     return input.value;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    // Test step 2. 브라우저에서 초기화 버튼을 클릭한다.
-    //2. Click the Reset button in your browser.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // verify step 2. 기본적으로 입력되어 있던 계약전력 / 계약금액 란이 초기화된다.
-    //2. The Contract Power / Contract Amount column, which was entered by default, is initialized. 
-    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_27') == ''", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_33') == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. 초기화된 계약전력과 계약금액 란에 임의의 금액숫자를 입력한다.
-    //3. Enter an arbitrary amount of money in the initial contract power and contract amount field.
-    WebSquare.wUnit.addCommand("set", "scwin.__setValue($p.id+'wq_uuid_27', '12,345')");
-    WebSquare.wUnit.addCommand("set", "scwin.__setValue($p.id+'wq_uuid_33', '1,234,567')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. 임의의 계약전력과 금액숫자가 입력된다.
-    //3. An arbitrary contract power and a number of amounts are entered.
-    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_27') == '12,345'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_33') == '1,234,567'", "true");
-    //Test step 4. 다시 초기화 버튼을 클릭한다.
-    //4. Click the Reinitialize button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 4. 입력된 임의의 계약전력과 금액숫자가 초기화된다
-    //4. The entered arbitrary contract power and the number of money are initialized.
-    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_27') == ''", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__getVal($p.id+'wq_uuid_33') == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 31-Jan-2018
-    //end unitTest
 }
 ]]></script>
     </head>

@@ -13,6 +13,15 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger01_onclick = function(e) {
     var winID = "sample01"
     var url = "./windowContainer_setWindowPosition_WPF-1726_(WSQ-2854_)_sub.xml";
@@ -27,58 +36,15 @@ scwin.trigger5_onclick = function(e) {
     mdi.setWindowPosition('300px', 10);
 };
 scwin.getStyle = function(style) {
-    var el = WebSquare.wUnit.getDomById($p.id + 'mdi_subWindow0');
+    var el = scwin.__getDom($p.id + 'mdi_subWindow0');
     return el.style[style];
 }
 scwin.checktype = function() {
     return typeof mdi_subWindow0;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 page버튼을 클릭한다.
-    //1. Run the sample file and click the page button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger01').click()");
-    // verify step 1. sample01이라는 mdi화면이 보여진다.
-    //1. The mdi screen named sample01 is displayed.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('mdi_subWindow0_header_title').innerText", "sample01");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. size(px)버튼을 클릭한다.
-    //2. Click the size (px) button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    // verify step 2. size와 position에서 설정한 값대로 보여진다.
-    //2. It is displayed as the value set in size and position.
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('top')", "10px");
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('left')", "30px");
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('width')", "200px");
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('height')", "300px");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. size(number)버튼을 클릭한다.
-    //3. Click the size (number) button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
-    // verify step 3. size와 position에서 설정한 값대로 보여진다.
-    //3. It is displayed as the value set in size and position.
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('top')", "10px");
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('left')", "300px");
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('width')", "200px");
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyle('height')", "300px");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 25-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

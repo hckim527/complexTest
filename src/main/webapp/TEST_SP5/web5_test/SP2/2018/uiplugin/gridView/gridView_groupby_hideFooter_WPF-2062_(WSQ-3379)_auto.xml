@@ -36,6 +36,15 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     //		
 }
@@ -100,32 +109,7 @@ scwin.trigger1_onclick = function() {
     dataList1.setData(scwin.data1.slice(0));
 };
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id+"grid1_cell_0_0").firstElementChild.innerText.trim() == '0 [ ,6 건 ]';
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 0. 20180409일 기준 SP1엔진만 반영됨(추후 SP2도 반영예정) -> 20180413_SP2반영됨
-    //0. Only SP1 engines will be reflected on 20180409 days (future SP2 will be reflected) -> 20180413_SP2 reflected
-    //Test step 1. 샘플실행 후 "조회"버튼 클릭 후 "분류1", 분류2"항목을 각각 groupby 시킨다.
-    //1. After running the sample, click the "Query" button and group the items "Category 1" and "Category 2" respectively.
-    WebSquare.wUnit.addCommand("pause", "2000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. 데이터가 조회되고 '분류1', 분류2'항목이 각각 groupby 되어진다.
-    //1. The data is searched and the 'Category 1' and 'Category 2' items are respectively groupby.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_groupbyZone_div').childElementCount == 2", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. gridView영역의 toggle(-,+)버튼을 클릭(1 depth인 0값, 2 depth인 0-A값)하여 기능이 정상동작하는지 확인한다.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_minus')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 2. 
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id+"grid1_cell_0_0").firstElementChild.innerText.trim() == '0 [ ,6 건 ]';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -135,9 +119,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 14-Jun-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css">

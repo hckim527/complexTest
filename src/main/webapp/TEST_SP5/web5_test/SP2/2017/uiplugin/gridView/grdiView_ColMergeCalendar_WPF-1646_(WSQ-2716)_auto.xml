@@ -59,6 +59,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     var jsonData = [{
             "col1": "20110101",
@@ -208,7 +217,7 @@ scwin.init = function() {
     dataList1.setJSON(jsonData);
 };
 scwin.dbClick = function(id) {
-    el = WebSquare.wUnit.getDomById(id);
+    el = scwin.__getDom(id);
     ev = document.createEvent("MouseEvents");
     ev.initEvent("dblclick", true, true);
     el.dispatchEvent(ev);
@@ -222,29 +231,6 @@ scwin.checktype2 = function() {
 scwin.checktype3 = function() {
     return typeof G_wq_uuid_3___autoComplete_1_col8_col8 === "undefined";
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 col2 / col3 / col6 / col7 / col8 의 colMergeEdit 부분을 확인한다.
-    //1. In the Source tab, check colMergeEdit for col2 / col3 / col6 / col7 / col8.
-    //Verify step 1. colMergeEdit='false'
-    //1. colMergeEdit = 'false'
-    //Test step 2. 브라우저에서 Select / textArea / autoCom 컬럼에 두번째 셀을 편집을 시도한다.
-    //2. In your browser, try editing the second cell in the Select / textArea / autoCom column.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('wq_uuid_3_cell_1_3')");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('wq_uuid_3_cell_1_4')");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('wq_uuid_3_cell_1_5')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. colMergeEdit 가 false 로 설정된 머지된 셀은 편집이 되지 않는다. (그전버전에서는 1번 그림처럼 편집이되며, Merge 가 해제되는 현상발생함)
-    //2. Merge cells with colMergeEdit set to false are not editable. (In the previous version, it will be edited as shown in picture 1 and Merge will be released.)
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype1()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype3()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
     scwin.init();
 }

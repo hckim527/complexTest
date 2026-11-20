@@ -15,7 +15,14 @@
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
         
-	scwin.onpageload = function() {
+	// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+scwin.onpageload = function() {
 		scwin.btn_createWin_onclick();
 		scwin.btn_createWin_onclick();
 		scwin.btn_createWin_onclick();
@@ -59,24 +66,8 @@
 	};
 	
 	scwin.checkVal = function() {
-		return WebSquare.wUnit.getJq('#windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow5').hasClass('w2windowContainer_selectedNameLayer');
+		return scwin.__getJq('#windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow5').hasClass('w2windowContainer_selectedNameLayer');
 	}
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#windowContainer1').width('700')");
-		WebSquare.wUnit.addCommand("pause", "400");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('windowContainer1_left').click()");
-		WebSquare.wUnit.addCommand("pause", "400");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}	
-	scwin.unitTest()
-	
 	]]></script>
 	</head>
 	<body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">

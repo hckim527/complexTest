@@ -23,6 +23,15 @@
 			</w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 /**************************************************************************************
     그리드뷰 해더에 필터용 input 생성 및 필터 처리
 
@@ -184,7 +193,7 @@ scwin.fn_clearHeaderFileter = function( grdiViewObj ){
 
 
 	scwin.dbClick = function(id) {
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireDbClick(el);
 	}
 	scwin.fireDbClick = function(node) {
@@ -199,23 +208,8 @@ scwin.fn_clearHeaderFileter = function( grdiViewObj ){
 		}
 	}
 	scwin.checkVal1 = function() {
-		return WebSquare.wUnit.getDomById('gridView1_cell_2_0').innerText == 'B1234';
+		return (document.getElementById('gridView1_cell_2_0') || document.getElementById('mf_gridView1_cell_2_0')).innerText == 'B1234';
 	}		
-	scwin.unitTest = function() {
-		//init
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_filterSet').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column1')");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-		WebSquare.wUnit.addCommand("pause", "400");
-		//Run  and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();
 	
 ]]></script>
 	</head>

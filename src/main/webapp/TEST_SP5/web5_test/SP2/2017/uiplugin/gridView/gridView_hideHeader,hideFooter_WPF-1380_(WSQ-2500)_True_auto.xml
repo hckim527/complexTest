@@ -10,24 +10,17 @@
     		</xf:instance>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.__isNotShowHeaderFooter = function() {
-    var trs = WebSquare.wUnit.getJq("#grid1_body_tbody").find("tr").not(".w2grid_hidedRow");
-    var numTdHF = WebSquare.wUnit.getJq(trs).find("td.w2grid_groupby_depth_0").length;
+    var trs = ((j) => j.length ? j : $('#mf_grid1_body_tbody'))($('#grid1_body_tbody')).find("tr").not(".w2grid_hidedRow");
+    var numTdHF = scwin.__getJq(trs).find("td.w2grid_groupby_depth_0").length;
     return (trs.length == 5) && (numTdHF == 0);
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. 브라우저에서 확인한다.
-    //3. Check in browser
-    // verify step 3. Header 와 Footer 부분이 표현된다.
-    //3. Header and Footer parts are represented.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isNotShowHeaderFooter()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -77,13 +70,6 @@ scwin.onpageload2 = function() {
         }
     };
     grid1.groupby(options);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 12-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[ 

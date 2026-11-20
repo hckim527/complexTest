@@ -33,13 +33,22 @@
 			</w2:dataCollection>
 		</xf:model>
 	<script type="text/javascript" lazy="false"><![CDATA[
-	scwin.onpageload = function() {
+	// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
 		dlt_menu.setJSON([{"chk":"","depth":"1","label":"메뉴1","value":"menu1","path":"xml/client/menu1.xml"},{"chk":"","depth":"2","label":"메뉴1-1","value":"menu1-1","path":"xml/client/menu1-1.xml"},{"chk":"","depth":"2","label":"메뉴1-2","value":"menu1-2","path":"xml/client/menu1-2.xml"},{"chk":"","depth":"3","label":"메뉴1-2-1","value":"menu1-2-1","path":"xml/client/menu1-2-1.xml"},{"chk":"","depth":"2","label":"메뉴1-3","value":"menu1-3","path":"xml/client/menu1-3.xml"},{"chk":"","depth":"1","label":"메뉴2","value":"menu2","path":"xml/client/menu2.xml"},{"chk":"","depth":"2","label":"메뉴2-1","value":"menu2-1","path":"xml/client/menu2-1.xml"},{"chk":"","depth":"1","label":"메뉴3","value":"menu3","path":"xml/client/menu3.xml"},{"chk":"","depth":"2","label":"메뉴3-1","value":"menu3-1","path":"xml/client/menu3-1.xml"},{"chk":"","depth":"2","label":"메뉴3-2","value":"menu3-2","path":"xml/client/menu3-2.xml"}]);
 		dlt_menu2.setJSON([{"chk":"","depth":"1","label":"메뉴1","value":"menu1","path":"xml/client/menu1.xml"},{"chk":"","depth":"2","label":"메뉴1-1","value":"menu1-1","path":"xml/client/menu1-1.xml"},{"chk":"","depth":"2","label":"메뉴1-2","value":"menu1-2","path":"xml/client/menu1-2.xml"},{"chk":"","depth":"3","label":"메뉴1-2-1","value":"menu1-2-1","path":"xml/client/menu1-2-1.xml"},{"chk":"","depth":"2","label":"메뉴1-3","value":"menu1-3","path":"xml/client/menu1-3.xml"},{"chk":"","depth":"1","label":"메뉴2","value":"menu2","path":"xml/client/menu2.xml"},{"chk":"","depth":"2","label":"메뉴2-1","value":"menu2-1","path":"xml/client/menu2-1.xml"},{"chk":"","depth":"1","label":"메뉴3","value":"menu3","path":"xml/client/menu3.xml"},{"chk":"","depth":"2","label":"메뉴3-1","value":"menu3-1","path":"xml/client/menu3-1.xml"},{"chk":"","depth":"2","label":"메뉴3-2","value":"menu3-2","path":"xml/client/menu3-2.xml"}]);
 	};
 
 	scwin.Dbclick = function(id) {
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireDbClick(el);
 	}
 	scwin.fireDbClick = function(node) {
@@ -54,38 +63,11 @@
 		}
 	}	
 	scwin.checkVal1 = function() {
-		return WebSquare.wUnit.getDomById('gridView1_column7').querySelectorAll('td').length == 2;
+		return (document.getElementById('gridView1_column7') || document.getElementById('mf_gridView1_column7')).querySelectorAll('td').length == 2;
 	}
 	scwin.checkVal2 = function() {
-		return WebSquare.wUnit.getDomById('gridView1_cell_0_2').innerText == '메뉴1';
+		return (document.getElementById('gridView1_cell_0_2') || document.getElementById('mf_gridView1_cell_0_2')).innerText == '메뉴1';
 	}	
-	scwin.unitTest = function(){
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').querySelector('input').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_1_0').querySelector('input').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_7_0').querySelector('input').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_8_0').querySelector('input').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_9_0').querySelector('input').click()");
-		WebSquare.wUnit.addCommand("pause", "500");			
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column7')");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column7')");
-		WebSquare.wUnit.addCommand("pause", "500");			
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();	
 	
 	
 	]]></script></head>

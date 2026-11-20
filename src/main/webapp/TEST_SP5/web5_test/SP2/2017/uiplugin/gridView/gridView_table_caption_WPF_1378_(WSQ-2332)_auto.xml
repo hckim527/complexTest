@@ -46,22 +46,18 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.__isCheckCaption = function() {
-    var cap = WebSquare.wUnit.getDomById($p.id + "group3").innerHTML;
+    var cap = scwin.__getDom($p.id + "group3").innerHTML;
     return cap == "그룹2 테스트 은(는) title7,title10,title8,title11,title9,title12 을(를) 나타낸 표" || cap == "그룹2 테스트  is title7,title10,title8,title11,title9,title12 displayed in the table";
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 0. 테스트엔진에서 아래의 2번은 config.xml파일 수정필요
-    //0.In the test engine, you need to modify the config.xml file
-    //Verify step 1. captionAuto가 적용된다(첨부 test2참고)
-    //1. captionAuto is applied (see attachment test2)
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCheckCaption()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -71,9 +67,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 03-Apr-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

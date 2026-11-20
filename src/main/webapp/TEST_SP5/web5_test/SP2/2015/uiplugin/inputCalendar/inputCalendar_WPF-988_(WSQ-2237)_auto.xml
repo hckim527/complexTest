@@ -25,6 +25,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.getToday = function() {
     var date = new Date();
     var dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
@@ -34,23 +49,7 @@ scwin.getToday = function() {
     return today;
 }
 scwin.checkVal = function() {
-    return scwin.getToday() === WebSquare.wUnit.getObjById('wq_uuid_4_input').value;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. inputCalendar_WPF-988_(WSQ-2237).xml 실행한다.
-    //1. Run inputCalendar_WPF-988_ (WSQ-2237) .xml.
-    //Test step 2. setCurrentDate = true로 설정하고 실행한다.
-    //2. Set and run setCurrentDate = true.
-    //Verify 2. 현재날짜가 Default로 보여진다.(이전에는 속성값이 비활성화되어 스튜디오의 속성에서 보이지않음)
-    //2. The current date is shown as Default (previously the attribute value is disabled and not visible in the studio"s properties)
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('wq_uuid_4_input').value == scwin.getToday()","true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.getToday() === scwin.__getObj('wq_uuid_4_input').value;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -60,9 +59,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 07-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

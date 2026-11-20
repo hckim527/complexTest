@@ -30,19 +30,28 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     dataMap1.setArray(["20201130", "202010", "2020", "2020113011", "202011301130"]);
     dataList1.setData(["가나다", "가나다", "가나라마다아", "가나라마다아", "사가나자다", "사가나자다", "사자마", "사자마", "자가", "자가", "abcde", "abcde", "ab1123f", "ab1123f", "자ac12가", "자ac12가", "fz사zf", "fz사zf"]);
 };
 scwin.onpageunload = function() {};
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id + 'wq_uuid_3_itemTable_main').getElementsByTagName('tr')[1].innerText == "하하가가나가나다라하";
+    return scwin.__getDom($p.id + 'wq_uuid_3_itemTable_main').getElementsByTagName('tr')[1].innerText == "하하가가나가나다라하";
 }
 scwin.setVal1 = function() {
-    WebSquare.wUnit.getDomById($p.id + 'G_gridView1__col2').value = '-';
+    scwin.__getDom($p.id + 'G_gridView1__col2').value = '-';
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -56,24 +65,6 @@ scwin.fireDbClick = function(node) {
         node.ondblclick();
     }
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCal1_img').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "document.getElementsByClassName('w2calendar_time_confirm')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('inputCal1_input').focus()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#inputCal1_input').hasClass('w2inputCalendar_focus')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 ]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload">

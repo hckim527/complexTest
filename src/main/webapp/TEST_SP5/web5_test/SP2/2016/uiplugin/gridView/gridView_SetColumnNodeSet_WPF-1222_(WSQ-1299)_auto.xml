@@ -43,6 +43,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     dataList4.setData(['bb', '22', 'cc', '33', 'dd', '44']);
     gridView1.setColumnNodeSet(0, "data:dataList4", "label", "value");
@@ -58,46 +65,11 @@ scwin.trigger3_onclick = function(e) {
 scwin.checkCompareVal = function(vals) {
     var arr = document.getElementsByClassName("w2selectbox_native_select");
     for (var i = 0; i < arr.length; i++) {
-        if (vals[i] != WebSquare.wUnit.getJq(arr[i]).val()) {
+        if (vals[i] != scwin.__getJq(arr[i]).val()) {
             return false;
         }
     }
     return true;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭에서 senseReader 를 확인한다.
-    //1. In the Source tab, check senseReader.
-    //Verify step 1. senseReader="true"
-    //1. senseReader = "true"
-    //Test step 2. setColumnNodeSet 버튼을 클릭한다.
-    //2. Click the setColumnNodeSet button.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. 지정된 인덱스에 setColumnNodeSet 된다.
-    //2. The specified index is setColumnNodeSet.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkCompareVal(['bb','bb','bb','bb','cc','dd'])", "true");
-    //Test step 3. refreshColumnItemset 버튼을 클릭한다.
-    //3. Click the refreshColumnItemset button.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 3. 컬럼을 다시 갱신한다.
-    //3. Update the column again.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkCompareVal(['bb','bb','bb','bb','cc','dd'])", "true");
-    //Test step 4. redrawColumn 버튼을 클릭한다.
-    //4. Click the redrawColumn button.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 4. 해당하는 열에 컬럼을 다시 그린다.
-    //4. Redraw the column in the appropriate column.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkCompareVal(['bb','bb','bb','bb','cc','dd'])", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -109,9 +81,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 12-Mar-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

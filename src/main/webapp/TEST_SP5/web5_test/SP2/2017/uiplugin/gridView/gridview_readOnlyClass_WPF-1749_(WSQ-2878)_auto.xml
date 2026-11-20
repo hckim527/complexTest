@@ -30,35 +30,25 @@
         </style>
         
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     gridView1.setReadOnly('row', 1, true);
 };
 scwin.__row1HasBackground = function() {
-    var tds = WebSquare.wUnit.getJq('#gridView1_body_tbody tr:nth-child(2) td');
+    var tds = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr:nth-child(2) td'))($('#gridView1_body_tbody tr:nth-child(2) td'));
     var count = 0;
     for (var i = 0; i < tds.length; i++) {
-        if (WebSquare.wUnit.getJq(tds[i]).hasClass('readOnlyClass')) {
+        if (scwin.__getJq(tds[i]).hasClass('readOnlyClass')) {
             count++;
         }
     }
     return count == tds.length;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 'setReadOnly'버튼을 클릭한다.
-    //1. Run the sample file and click the 'setReadOnly' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. 1번째 index row의 배경색이 변경되어진다.(이전에는 기능이 없었음)
-    //1. The background color of the 1st index row is changed.(Previously no functionality)
-    WebSquare.wUnit.addCommand("assert", "scwin.__row1HasBackground()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -75,9 +65,6 @@ scwin.onpageload2 = function() {
     //Function unitTest
     //Created By: Sang.do
     //Created By: 23-Jan-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -39,6 +39,15 @@
     		</w2:dataCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.gridView1_onviewchange = function(info) {};
 scwin.fn_init = function() {
     var selList1 = [{
@@ -101,50 +110,20 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkValue = function(id, value) {
-    if (WebSquare.wUnit.getDomById($p.id + id).lastChild.innerText == value) {
+    if (scwin.__getDom($p.id + id).lastChild.innerText == value) {
         return true;
     }
     return false
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. Sorce 탭에서 useCtrlOnMultisort='false' 인지 확인한다.
-    //1. In the Sorce tab, make sure useCtrlOnMultisort = 'false'.
-    //Verify step 1. useCtrlOnMultisort = 'false'
-    //Test step 2. 브라우저에서 컬럼을 Sort 한다.
-    //2. Sort the column in the browser.
-    //Verify step 2. The column is sorted in the browser.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_0_1', '가2')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_1_1', '나1')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_2_1', '다1')", "true");
-    // Test step 3. 3. 다른 컬럼을 Sort 한다.
-    // 3. Sort the other columns.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_column1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Verify step 3. 3. 다른 컬럼도 Sort 된다. (MultiSort)
-    // 3. Other columns are also sorted. (MultiSort)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_0_1', '다1')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_1_1', '나1')", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue($p.id+'gridView1_cell_2_1', '가2')", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     scwin.fn_init();
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[

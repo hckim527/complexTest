@@ -10,6 +10,15 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.createMouseEvent = function(ev, type) {
     if (ev.initMouseEvent) {
         if (WebSquare.util.isIE(9) || WebSquare.util.isIE(10)) {
@@ -39,7 +48,7 @@ scwin.createMouseEvent = function(ev, type) {
         if (document.createEventObject) {
             var mouseEvent = document.createEventObject();
             mouseEvent.button = 0;
-            WebSquare.wUnit.getDomById($p.id + ev).fireEvent(type, mouseEvent);
+            scwin.__getDom($p.id + ev).fireEvent(type, mouseEvent);
         }
     }
 }
@@ -58,19 +67,12 @@ scwin.setVal = function() {
 scwin.checkVal = function() {
     return grid1.getCellData(0, 2) == '제주도';
 }
-scwin.unitTest = function() {
+scwin.initTest = function() {
     var target = 'grid1_column3';
     window.evtObj = {};
-    WebSquare.wUnit.getDomById($p.id + target).onclick = function(ev) {
+    scwin.__getDom($p.id + target).onclick = function(ev) {
         evtObj[target] = ev;
     };
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id+'grid1_column3').click()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -81,8 +83,8 @@ scwin.onpageload2 = function() {
         "다", 8, "대구", 64,
         "라", 1, "부산", 23
     ]);
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
+    if (typeof scwin.initTest === "function") {
+        scwin.initTest();
     }
 }
 ]]></script>

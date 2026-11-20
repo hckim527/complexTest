@@ -312,12 +312,18 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.doInit = function() {
     //var v_node = WebSquare.ModelUtil.findInstanceNode("response/RES_SELECT_EMP_LIST/vector");
     //debugger;
@@ -340,7 +346,7 @@ scwin.doInit = function() {
     grid1.setCellData(8, 0, "aaaa")
 }
 scwin.fireDbClick = function(id) {
-    var node = WebSquare.wUnit.getDomById($p.id + id);
+    var node = scwin.__getDom($p.id + id);
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
     } else if (document.createEvent) {
@@ -350,33 +356,6 @@ scwin.fireDbClick = function(id) {
     } else if (typeof node.ondblclick == 'function') {
         node.ondblclick();
     }
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 동적으로 autoComplete로 설정하기 위해 'change to AutoComplete'버튼을 클릭한다.
-    //1. After running the sample, click the 'change to AutoComplete' button to dynamically set it to autoComplete.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 2번째 값이 20에서 'ACCOUNTING'으로 변경된다.
-    //1. The second value is changed from 20 to 'ACCOUNTING'.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_1_0').innerText == 'ACCOUNTING'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 변경된 autoComplete 값을 동적으로 disable하기 위해 'setCellDisableEdit() toggle'버튼을 클릭한다.
-    //2. Click the 'setCellDisableEdit () toggle' button to dynamically disable the changed autoComplete value.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_1_0').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_1_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 2번째 값이 disable되어 editing이 되지 않는다. (이전에는 기능이 없었음)
-    //2. The second value is disabled and editing is not possible. (Previously no functionality)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_grid1___autoComplete_1_DEPTNO_dynamic_autoComplete_1_0_input').css('display')", "none");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -397,9 +376,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 22-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         <style>

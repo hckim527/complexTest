@@ -47,6 +47,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     dataList1.insertRow();
     dataList1.insertRow();
@@ -67,7 +76,7 @@ scwin.gridView1_onviewchange = function(info) {
     txt.setValue(info.newValue);
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -81,31 +90,6 @@ scwin.fireDbClick = function(node) {
         node.ondblclick();
     }
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 2. 브라우저에서 아무 셀을 선택해서 임의의 데이터를 입력한다.
-    //2. Select any cell in the browser to enter arbitrary data.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_gridView1__col2').setValue('2017-01-20')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify 2. 데이터가 입력된다.
-    //2. Data is input.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_gridView1__col2').getValue() == '2017-01-20'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 바로 Focus Out 하지 않고, 스크롤을 움직인다.
-    //3. Do not focus out, move the scroll.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollY_div').scrollTop = 0");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. onviewChange 이벤트가 적용되서 하단 텍스트박스에 newValue 가 표시된다. (2017-01-20 엔진에서는 onviewChange 이벤트가 발생하지 않음)
-    //3. The onViewChange event is applied and newValue is displayed in the bottom text box. (No onViewChange event is raised on the 2017-01-20 engine)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('txt').getValue() == '2017-01-20'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -115,9 +99,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 05-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

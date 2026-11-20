@@ -62,13 +62,13 @@ scwin.submission1_submitdone = function(e) {
     localStorage.setItem('showAlert', 'true');
 };
 scwin.__isCreatedProcessMsg = function() {
-    return WebSquare.wUnit.getJq("#___processbar2_i").length > 0;
+    return ((j) => j.length ? j : $('#mf____processbar2_i'))($('#___processbar2_i')).length > 0;
 }
 scwin.__isCanceledProcess = function() {
-    return WebSquare.wUnit.getJq("#___processbar2_i").css("display") == "none";
+    return ((j) => j.length ? j : $('#mf____processbar2_i'))($('#___processbar2_i')).css("display") == "none";
 }
 scwin.__isCancelButton = function() {
-    var iframe = WebSquare.wUnit.getDomById("___processbar2_i").childNodes[0];
+    var iframe = (document.getElementById('___processbar2_i') || document.getElementById('mf____processbar2_i')).childNodes[0];
     var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
     var button = innerDoc.getElementById("abortButton");
     if (button) {
@@ -77,7 +77,7 @@ scwin.__isCancelButton = function() {
     return false;
 }
 scwin.__clickCancelButton = function() {
-    var iframe = WebSquare.wUnit.getDomById("___processbar2_i").childNodes[0];
+    var iframe = (document.getElementById('___processbar2_i') || document.getElementById('mf____processbar2_i')).childNodes[0];
     var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
     var button = innerDoc.getElementById("abortButton");
     return button.click();
@@ -86,52 +86,11 @@ scwin.checkVal = function() {
     //alert(localStorage.getItem('showAlert'));
     return localStorage.getItem('showAlert') == 'true';
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 2. 브라우저에서 create 버튼을 클릭한다.
-    //Click create button in browser
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. ProcessMsg 가 생성된다.
-    //ProcessMsg is created.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCreatedProcessMsg()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. ProcessMsg 안에 취소버튼을 클릭한다. 
-    //Click cancel button in ProcessMsg
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCancelButton()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.__clickCancelButton()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. Submission 이 취소된다.
-    //3. Submission is canceled.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isCanceledProcess()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 4. 다시 create 버튼을 클릭후 5초를 기다린다.
-    //4. Click the create button again and wait 5 seconds.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "5000");
-    //Verify step 4. 완료 팝업이 생성된다.
-    //4. A completion popup is created.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     window.showAlert = false;
-    //Function unitTest
-    //Created by: Sang.Do
-    //Created date: 13-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

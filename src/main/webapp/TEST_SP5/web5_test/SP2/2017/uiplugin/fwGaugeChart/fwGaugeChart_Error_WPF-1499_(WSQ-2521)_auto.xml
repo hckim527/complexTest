@@ -49,6 +49,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     generator1.removeAll();
 };
@@ -67,7 +76,7 @@ scwin.trigger5_onclick = function(e) {
     generator1.insertChild();
 };
 scwin._checkHtml = function() {
-    return WebSquare.wUnit.getJq('#generator1').html();
+    return ((j) => j.length ? j : $('#mf_generator1'))($('#generator1')).html();
 }
 scwin._hasError = function() {
     var log = WebSquare.logger.getErrorLog();
@@ -81,47 +90,7 @@ scwin.checktype = function() {
     }
 }
 scwin.checkVal = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById($p.id + 'generator1_0_fwGaugeChart1')).getPropertyValue('display') == 'block';
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 1.insertChild 버튼을 클릭한다.
-    //1. In the browser, click the 1.insertChild button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. fwGaugeChart 가 생성된다.
-    //1. fwGaugeChart is created.
-    //WebSquare.wUnit.addCommand("assert", "typeof generator1_0_fwGaugeChart1","object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 2.removeAll 버튼을 클릭한다.
-    //2. Click the 2.removeAll button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 모든 fwGaugeChart 가 삭제된다.
-    //2. All fwGaugeCharts are deleted.
-    WebSquare.wUnit.addCommand("assert", "scwin._checkHtml() == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 3.insert 버튼을 클릭한다.
-    //3. Click the 3.insert button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. fwGaugeChart 가 생성된다.
-    //3. fwGaugeChart is created.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 4. 로그보기 (Ctrl + 마우스 오른쪽) 를 실행한다.
-    //4. Execute the log view (Ctrl + right mouse).
-    //Verify 4. 로그에 에러로그가 존재하지 않는다. (20170210 버전에서는 에러로그가 존재함.)
-    //4. There is no error log in the log. (Error log exists in version 20170210.)
-    WebSquare.wUnit.addCommand("assert", "scwin._hasError() == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle(scwin.__getDom($p.id + 'generator1_0_fwGaugeChart1')).getPropertyValue('display') == 'block';
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -173,9 +142,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 05-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

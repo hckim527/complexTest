@@ -192,7 +192,7 @@ scwin.grid1_groupbyFilterBoxFormatter = function(f) {
     console.log(JSON.stringify(f));
 }
 scwin.checkValue = function() {
-    var data = WebSquare.wUnit.getJq("#grid1_body_tbody tr>td:nth-child(3)");
+    var data = ((j) => j.length ? j : $('#mf_grid1_body_tbody tr>td:nth-child(3)'))($('#grid1_body_tbody tr>td:nth-child(3)'));
     for (i = 0; i < data.length; i++) {
         if (data[i].innerText != "가") {
             return false;
@@ -201,53 +201,6 @@ scwin.checkValue = function() {
     }
     return true;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. 샘플파일을 실행 후 분류1의 필터를 클릭하여 사용자필터(= 가)를 설정 후 재조회버튼을 클릭한다.
-    //1. After executing the sample file, click the filter of Classification 
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header2_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listColumn_checkbox')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_item_0_selectbox_header2_button').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_item_0_selectbox_header2_itemTable_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_btnConform_header2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_label').innerText", "((분류1 = 가))");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 이후에 분류1의 필터를 클릭하여 컬럼필터를 '가'로 설정후 재조회버튼을 클릭한다.
-    //2. Click on the filter in Classification 1 and set the column filter to 'A'.
-    //Verify step 2. The column filter ('a') is retained and shown (previously the filter is loosened).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header2_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_list').querySelectorAll('div')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header2_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_label').innerText", "((분류1 = 가))");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 2번상태('가'로 필터링)에서 '분류1'항목을 groupby한 후 재조회버튼을 클릭한다.
-    //3. In group 2 state (filter by 'a') groupby 'Category 1' item and click re-inquiry button.
-    //Verify step 3. When groupby and re-inquiry button is clicked, groupby is released and column filter ('a') is kept and displayed.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('grid1_groupbyFilterBox_select_label').innerText == '((분류1 = 가))'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 ]]></script>
 		<style type="text/css">

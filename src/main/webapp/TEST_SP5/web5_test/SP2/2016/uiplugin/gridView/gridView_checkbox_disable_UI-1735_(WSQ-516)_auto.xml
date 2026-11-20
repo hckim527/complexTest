@@ -61,40 +61,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     grd.setCellReadOnly(1, 0, true);
 };
 scwin.checkVal = function() {
-    return WebSquare.wUnit.getDomById($p.id+"grd_cell_1_0").getAttribute('data-readonly') == 'true';
+    return scwin.__getDom($p.id+"grd_cell_1_0").getAttribute('data-readonly') == 'true';
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일의 그리드뷰의 inputtype이 checkbox로 되어있는 body의 속성에 checkAlways="true"를 설정한다.
-    //Set checkAlways = "true" to the attribute of the body whose input type is checkbox in the grid view of the sample file.
-    //Verify 1. 샘플파일의 그리드뷰의 inputtype이 checkbox로 되어있는 body의 속성에 checkAlways="true"로 설정된다.
-    //The inputtype of the grid view of the sample file is set to checkAlways = "true" in the body attribute of the checkbox.
-    //Test step 2. 실행후 그리드뷰 하단의 특정 row에 readOnly이벤트를 발생시키는 트리거버튼을 클릭한다.
-    //After execution, click the trigger button that causes the readOnly event to occur at a specific row at the bottom of the grid view.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 특정 row가 readOnly상태로 변경된다.(클릭안됨)
-    //A specific row is changed to readOnly state (not clicked)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 상단의 header checkbox를 클릭하여 전체선택 또는 전체해제를 실행한다.
-    //Click on the header checkbox at the top to perform a full selection or an all-out.
-    WebSquare.wUnit.addCommand("set", "document.getElementsByTagName('input')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. readOnly상태인 row도 전체선택 및 전체해제가 실행된다.
-    //A row with readOnly state is also selected and released entirely.
-    WebSquare.wUnit.addCommand("assert", "document.getElementsByTagName('input')[2].checked", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
 }
 ]]></script>

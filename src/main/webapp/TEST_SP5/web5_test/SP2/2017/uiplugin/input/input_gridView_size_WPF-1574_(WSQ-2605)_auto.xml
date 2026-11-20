@@ -43,6 +43,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -55,36 +64,12 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. IE에서 샘플파일을 실행하고 그리드뷰를 더블클릭하여 edit모드 진입 후 inputbox의 size를 확인한다. 
-    //1. Run the sample file in IE and double-click the grid view to check the size of the input box after entering edit mode.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'wq_uuid_3_cell_0_3')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 1. 그리드뷰의 inputbox의 size가 정상적으로 보여진다.(이전에는 우측과 아래쪽으로 여백없이 보여짐)
-    //1. The size of the input box in the grid view is displayed normally (previously no space is shown on the right and bottom)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3__col4').css('top')", "22px");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_wq_uuid_3__col4').css('left')", "210px");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 14-03-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

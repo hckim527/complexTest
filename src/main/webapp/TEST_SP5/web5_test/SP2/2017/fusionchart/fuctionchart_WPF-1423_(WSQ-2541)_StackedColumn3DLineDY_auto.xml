@@ -10,6 +10,21 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.draw = function() {
     var options = {
         "caption": "Half Yearly Revenue Analysis",
@@ -24,21 +39,8 @@ scwin.draw = function() {
     chart_test_flash.setJSONData(dataObj);
 }
 scwin.__isEl = function() {
-    var el = WebSquare.wUnit.getObjById('accessibility_'+$p.id+'chart_test_flash').childNodes;
+    var el = scwin.__getObj('accessibility_'+$p.id+'chart_test_flash').childNodes;
     return el1 = el[1].childNodes;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 4. 4번샘플 실행 후 동일하게 요소검사를 통해 "accessibility_chart_test_flash"를 검색한다.
-    //4. After executing sample 4, search for "accessibility_chart_test_flash" through the same element check.
-    //Verify 4. <li>Year : 8/6/2006, Revenue : 1327</li>
-    WebSquare.wUnit.addCommand("assert", "scwin.__isEl()[1].childNodes[0].innerText == 'Year : 8/6/2006, Revenue : 1327'", "true");
-    WebSquare.wUnit.addCommand("assert", "scwin.__isEl()[1].childNodes[0].tagName == 'LI'", "true");
-    WebSquare.wUnit.addCommand("pause", "2000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -182,9 +184,6 @@ scwin.onpageload2 = function() {
     //Create date 06-Mar-2018
     //End unitTest
     window.el1 = undefined;
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

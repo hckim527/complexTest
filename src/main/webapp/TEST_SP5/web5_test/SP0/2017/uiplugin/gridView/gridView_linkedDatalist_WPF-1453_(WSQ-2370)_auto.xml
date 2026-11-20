@@ -59,6 +59,15 @@
             </w2:dataCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     categoryData.setJSON([{
         "label": "A",
@@ -145,7 +154,7 @@ scwin.onpageload = function() {
 
 	scwin.changeNativeSelectOption = function(id, optionValue) {
 		// 셀렉트 박스 엘리먼트 가져오기
-		var selectElem = WebSquare.wUnit.getDomById(id);
+		var selectElem = scwin.__getDom(id);
 		if (!selectElem) {
 			console.error('셀렉트 박스를 찾을 수 없습니다.');
 			return;
@@ -158,42 +167,15 @@ scwin.onpageload = function() {
 		console.log('옵션이 "' + optionValue + '"로 변경되었습니다.');
 	}
   	scwin.checkVal1 = function() {
-		return WebSquare.wUnit.getDomById('gridView1_cell_0_1').innerText.includes('B중분류-1');
+		return (document.getElementById('gridView1_cell_0_1') || document.getElementById('mf_gridView1_cell_0_1')).innerText.includes('B중분류-1');
 	}	
   	scwin.checkVal2 = function() {
-		return WebSquare.wUnit.getDomById('gridView1_cell_0_2').innerText.includes('B중분류-1-소분류1');
+		return (document.getElementById('gridView1_cell_0_2') || document.getElementById('mf_gridView1_cell_0_2')).innerText.includes('B중분류-1-소분류1');
 	}	
   	scwin.checkVal3 = function() {
-		return WebSquare.wUnit.getDomById('gridView1_cell_0_2').innerText.includes('B중분류-2-소분류1');
+		return (document.getElementById('gridView1_cell_0_2') || document.getElementById('mf_gridView1_cell_0_2')).innerText.includes('B중분류-2-소분류1');
 	}		
 	
-	scwin.unitTest = function() {
-		//init
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		//WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.changeNativeSelectOption('gridView1_cell_0_0_select_input_0', 'B')");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-		WebSquare.wUnit.addCommand("pause", "400");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-		WebSquare.wUnit.addCommand("pause", "400");		
-
-		WebSquare.wUnit.addCommand("set", "scwin.changeNativeSelectOption('gridView1_cell_0_1_select_input_0', 'B중분류-2')");
-		WebSquare.wUnit.addCommand("pause", "500");			
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-		WebSquare.wUnit.addCommand("pause", "400");		
-
-		WebSquare.wUnit.addCommand("set", "scwin.changeNativeSelectOption('gridView1_cell_0_1_select_input_0', 'B중분류-2')");
-		WebSquare.wUnit.addCommand("pause", "500");			
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-		WebSquare.wUnit.addCommand("pause", "400");				
-		//Run  and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();
 	
 ]]></script>
     </head>

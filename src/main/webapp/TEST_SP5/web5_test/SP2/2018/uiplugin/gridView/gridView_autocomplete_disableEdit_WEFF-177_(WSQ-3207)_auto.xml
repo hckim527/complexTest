@@ -57,6 +57,21 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.onpageload = function() {};
 scwin.onpageunload = function() {};
 scwin.trigger1_onclick = function(e) {
@@ -87,49 +102,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.setVal = function() {
-    scwin.fireDbClick(WebSquare.wUnit.getObjById('gridView1_cell_0_1'));
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 'gridView1.disableEdit(true)'버튼을 클릭하고 name2항목의 컬럼을 더블클릭한다.
-    //1. After running the sample, click the 'gridView1.disableEdit (true)' button and double-click the column of the name2 item.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. gridView의 name2항목의 selectbox의 List가 모두 보여진다.(이전에는 List가 모두 보여지지 않음)
-    //1. List all the selectboxes of the name2 item in the gridView (previously the List is not shown)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1___autoComplete_0_col2_col2_itemTable').style.display == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'disableEdit(true)'버튼을 클릭하고 autoComplete selectbox를 더블클릭한다.
-    //2. Click the 'disableEdit (true)' button and the autoComplete Double-click the selectbox.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1___autoComplete_0_col2_col2_label').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. autoComplete selectbox의 List가 모두 보여진다.(이전에는 List가 모두 보여지지 않음)
-    //2. Show all List of autoComplete selectbox (Previously not all List is shown)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_itemTable').style.display == 'block'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_input').style.display == 'none'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step  3. 'disableEdit(false)'버튼을 클릭하고 autoComplete selectbox를 더블클릭하여 enable되어지고 edit모드로 보여지는지 확인한다.
-    //3. Click the 'disableEdit (false)' button and double-click the autoComplete selectbox to make sure it is enabled and visible in edit mode.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('autoComplete1_label').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. enable되어지고 edit모드로 되어진다.
-    //3. Enabled and put into edit mode.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_input').style.display == 'block'", "true");
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'autoComplete1_label').style.display == 'none'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    scwin.fireDbClick(scwin.__getObj('gridView1_cell_0_1'));
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -139,9 +112,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 02-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

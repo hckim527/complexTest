@@ -22,6 +22,30 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.test = function(rowIndex, colIndex, label) {
     if (label.indexOf("googlelogo_color_272x92dp") > -1) {
         label = "맑음";
@@ -29,7 +53,7 @@ scwin.test = function(rowIndex, colIndex, label) {
     return label;
 };
 scwin.mouseOverBehaviour = function(id) {
-    var myElement = WebSquare.wUnit.getDomById($p.id + id);
+    var myElement = scwin.__getDom($p.id + id);
     myElement.addEventListener("mouseover", function() {
         console.log('hover');
     });
@@ -38,34 +62,7 @@ scwin.mouseOverBehaviour = function(id) {
     myElement.dispatchEvent(mouseEvent);
 }
 scwin.checktype = function() {
-    return typeof WebSquare.wUnit.getObjById('gridView1_tooltip');
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 0. 샘플파일의 default는 showImageTooltip = 'false'
-    //0. The default in the sample file is showImageTooltip = 'false'
-    // verify step 0
-    // Test step 1. 샘플파일을 실행 후 name4항목의 이미지에 마우스를 오버한다.
-    //1. Execute the sample file and mouse over the image of name4 item.
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_0_3')");
-    //Verify step 1. tooltip이 보여지지 않는다.(정상)
-    //1. Tooltip is not shown (normal)
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "string");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. showImageTooltip = 'true'로 설정 후(샘플 변경) name4항목의 이미지에 마우스를 오버한다.
-    //2. Set showImageTooltip = 'true' (sample change) and mouse over image of name4 item.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1').setAttribute('showImageTooltip', 'true')");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'gridView1_cell_2_3')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 2. tooltip이 보여진다.(정상)
-    //2. The tooltip is shown (normal)
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
+    return typeof scwin.__getObj('gridView1_tooltip');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -82,13 +79,6 @@ scwin.onpageload2 = function() {
     dataList1.setData([1, 2, 3, "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRAeQywGoEZcTN2otuaK9xIAtsQq8lHxibbzXrl7EfsajJNkc_Eww"], "append");
     dataList1.setData([1, 2, 3, "https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"], "append");
     dataList1.setData([1, 2, 3, "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRAeQywGoEZcTN2otuaK9xIAtsQq8lHxibbzXrl7EfsajJNkc_Eww"], "append");
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 19-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
         }

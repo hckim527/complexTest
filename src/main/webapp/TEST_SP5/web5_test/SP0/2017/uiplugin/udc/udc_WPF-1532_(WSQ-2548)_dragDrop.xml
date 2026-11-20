@@ -16,9 +16,6 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<!--w2:require src="udc_WPF-1532_(WSQ-2548)_dragDrop.xml"></w2:require-->
@@ -85,8 +82,23 @@ scwin.onpageload2 = function() {
     			<w2:anchor id="anchor1" style="float:left;" class="btn_rblack" label="" ev:onclick="scwin.anchor1_onclick">
     				<xf:label>전송</xf:label>
     				<script ev:event="onclick" type="javascript"><![CDATA[
-    					var dlt_id = udc_obj.id + "_dataList1";
-    					var dltObj = WebSquare.wUnit.getObjById(dlt_id); 
+    					// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+var dlt_id = udc_obj.id + "_dataList1";
+    					var dltObj = scwin.__getObj(dlt_id); 
     					for(var i = 0; i < udc_obj.fileArr.length; i++){
 		                    var files = udc_obj.fileArr[i];
 		                    for (var j = 0; j < files.length; j++) {
@@ -115,10 +127,25 @@ scwin.onpageload2 = function() {
     			<w2:anchor id="anchor2" style="float:left;" class="btn_rblack" label="">
     				<xf:label>삭제</xf:label>
     				<script ev:event="onclick" type="javascript"><![CDATA[ 
-		                var dlt_id = udc_obj.id + "_dataList1";
-    					var dltObj = WebSquare.wUnit.getObjById(dlt_id);
+		                // 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+var dlt_id = udc_obj.id + "_dataList1";
+    					var dltObj = scwin.__getObj(dlt_id);
     					
-    					var _dragGrp = WebSquare.wUnit.getObjById(udc_obj.id + "_dragGrp");
+    					var _dragGrp = scwin.__getObj(udc_obj.id + "_dragGrp");
     					
 		                var chkArr = gridView1.getCheckedIndex( "chk" );
 		                
@@ -174,8 +201,23 @@ scwin.onpageload2 = function() {
     					</w2:row>
     				</w2:gBody>
     				<script ev:event="oncellclick(row,col)" type="javascript"><![CDATA[
-    					var dlt_id = udc_obj.id + "_dataList1";
-    					var dltObj = WebSquare.wUnit.getObjById(dlt_id);
+    					// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+var dlt_id = udc_obj.id + "_dataList1";
+    					var dltObj = scwin.__getObj(dlt_id);
     					
     					var colId = dltObj.getColumnID(col);
 		                if( colId == "download"){
@@ -206,7 +248,31 @@ scwin.onpageload2 = function() {
     		</xf:group>
     		<script ev:event="oncreated(options)" type="javascript"><![CDATA[
     		
-				/**
+				// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+/**
 				* //property handling
 				* $w.log("id:" + options.id);
 				* $w.log("style:" + options.style);
@@ -233,8 +299,8 @@ scwin.onpageload2 = function() {
 						
 				udc_obj.upload_result_cnt;
 				udc_obj.statusIdx = 0;
-				udc_obj.dropStatus = WebSquare.wUnit.getDomById($p.id+"dropStatus");
-	            udc_obj.dropfile = WebSquare.wUnit.getDomById($p.id+"dropfile");
+				udc_obj.dropStatus = scwin.__getDom($p.id+"dropStatus");
+	            udc_obj.dropfile = scwin.__getDom($p.id+"dropfile");
 	            udc_obj.fileArr = [];
 	            udc_obj.statusArr = [];
 	            
@@ -305,7 +371,7 @@ scwin.onpageload2 = function() {
             	 
             	// 데이터리스트를 반환한다. 
             	this.getDataList = function(){
-            		return WebSquare.wUnit.getObjById( dlt_id );
+            		return scwin.__getObj(dlt_id);
             	};
 			]]></script>
     		<w2:style type="text/css"><![CDATA[ ]]></w2:style>

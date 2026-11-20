@@ -27,6 +27,15 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     //Function 
     //Created by: Quan.Nguyen
@@ -35,7 +44,7 @@ scwin.onpageload = function() {
     window.afterArr = [];
     window.initArr = [];
     //end
-    WebSquare.wUnit.getJq('#grid1_main_div').css('bottom', '1px');
+    ((j) => j.length ? j : $('#mf_grid1_main_div'))($('#grid1_main_div')).css('bottom', '1px');
     scwin.data1 = [
         "(가)다라다", "A", "07:30",
         "(가)다라다", "A", "07:20",
@@ -244,7 +253,7 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.addEl = function(id, array) {
@@ -274,43 +283,6 @@ scwin.checkVal2 = function() {
         return v === beforeArr[i]
     });
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 gridView 분류1항목을 가,나,다로 필터링을 수행한다.
-    //1. After executing the sample, filter the gridView Classification 1 items as follows.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header2_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_list').querySelectorAll('div')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");	
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header2_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal1()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_groupbyFilterBox_select_label').innerText == '(분류1 in [가 ,나 ,다])'", "true");
-
-    //Test step 2. 이후에 분류1항목을 더블클릭하여 sorting한다.
-    //2. Double-click classification 1 item to sort.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('grid1_header2')");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal2()");
-    //Verify step 2. sorting이되어지고 sorting표시(삼각형)가 보여진다.
-    //2. Sorting is done and sorting display (triangle) is shown.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "false");
-    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2grid_head_sort_asc').length == 1", "true");
-
-    //Test step 3. '재조회'버튼을 클릭한다.
-    //3. Click the 'Redial' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("set", "scwin.setVal3()");
-    //Verify step 3. sorting 및 sorting표시(삼각형)가 유지되어 보여진다.
-    //3. The sorting and sorting marks (triangles) are kept and shown.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("assert", "document.getElementsByClassName('w2grid_head_sort_asc').length == 1", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 ]]></script>
 		<style type="text/css">

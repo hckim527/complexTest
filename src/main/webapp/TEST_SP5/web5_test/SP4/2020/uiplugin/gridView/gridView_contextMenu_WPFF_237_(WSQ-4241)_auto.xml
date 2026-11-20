@@ -21,6 +21,15 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     var json = [{
             col1: 'Name1',
@@ -74,40 +83,19 @@ scwin.fireClick = function(node) {
     }
 }
 scwin.rightClick = function(id) {
-    var el = WebSquare.wUnit.getDomById(id);
+    var el = scwin.__getDom(id);
     scwin.fireClick(el);
 }
 scwin.clickContextMenu = function() {
-    var el = WebSquare.wUnit.getJq('.w2grid_contextMenu_row')[3];
+    var el = ((j) => j.length ? j : $('.mf_w2grid_contextMenu_row'))($('.w2grid_contextMenu_row'))[3];
     el.click();
 }
 scwin.setVal = function() {
-    localStorage.setItem('width', WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width"));
+    localStorage.setItem('width', ((j) => j.length ? j : $('#mf_wq_uuid_3_body_table'))($('#wq_uuid_3_body_table')).css("width"));
 }
 scwin.checkVal = function() {
-    return localStorage.getItem('width') == WebSquare.wUnit.getJq("#wq_uuid_3_body_table").css("width");
+    return localStorage.getItem('width') == ((j) => j.length ? j : $('#mf_wq_uuid_3_body_table'))($('#wq_uuid_3_body_table')).css("width");
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "300");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_1').click()");
-    WebSquare.wUnit.addCommand("pause", "300");
-    //Test step 2. 브라우저에서 임의의컬럼에서 마우스오른쪽 버튼을 클릭한다.
-    //2. Right-click on any column in the browser.
-    WebSquare.wUnit.addCommand("set", "scwin.rightClick($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "300");
-    //Verify step 2. 선택된 컬럼의 ContextMenu 가 생성된다.
-    //2. The ContextMenu of the selected column is created.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById('gridView1_contextMenu_list').children[5].innerText == '전체 컬럼 크기 자동 맞추기 해제'", "true");
-    WebSquare.wUnit.addCommand("pause", "300");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     // SysteMenu

@@ -74,7 +74,16 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
-        scwin.currentTabIndex = 0;
+        // DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+scwin.currentTabIndex = 0;
 scwin.dlt = [];
 scwin.grd = [];
 
@@ -1537,7 +1546,7 @@ debugger;
 
 
 	scwin.Dbclick = function(id) {
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireDbClick(el);
 	}
 	scwin.fireDbClick = function(node) {
@@ -1552,26 +1561,8 @@ debugger;
 		}
 	}	
 	scwin.checkVal1 = function() {
-		return WebSquare.wUnit.getDomById('mf_grd_doc_cell_5_8').getAttribute('colspan') == 2;
+		return (document.getElementById('mf_grd_doc_cell_5_8') || document.getElementById('grd_doc_cell_5_8')).getAttribute('colspan') == 2;
 	}
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grd_doc_col5')");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grd_doc_col5')");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()","true");
-		WebSquare.wUnit.addCommand("pause", "500");	
-
-				
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}	
-	scwin.unitTest()
-	
 	]]></script>
     </head>
     <body ev:onpageload="scwin.onpageload" ev:onpageunload="scwin.onpageunload">

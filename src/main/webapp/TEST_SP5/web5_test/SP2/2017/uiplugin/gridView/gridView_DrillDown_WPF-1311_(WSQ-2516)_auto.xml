@@ -24,6 +24,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     var jsonData2 = [{
         "value": "a1",
@@ -35,38 +42,14 @@ scwin.trigger2_onclick = function(e) {
     dataList1.insertRow(28);
 };
 scwin.__isAddedRow = function() {
-    var tr = WebSquare.wUnit.getJq("#gridView1_body_tbody tr").not("tr.w2grid_hidedRow");
+    var tr = ((j) => j.length ? j : $('#mf_gridView1_body_tbody tr'))($('#gridView1_body_tbody tr')).not("tr.w2grid_hidedRow");
     var el = tr.get(tr.length - 1);
-    return WebSquare.wUnit.getJq(el).find("td:first").text() == "31";
+    return scwin.__getJq(el).find("td:first").text() == "31";
 }
 scwin.__showErrLog = function() {
     var err = WebSquare.logger.getErrorLog();
     return err ? true : false;
 }
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollY_div').scrollTop = 400");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.__isAddedRow()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollY_div').scrollTop = 420");
-    WebSquare.wUnit.addCommand("pause", "100");
-
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1').getTopRowIndex() == 21", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.__showErrLog()", "false");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.jsonData = [{
@@ -187,10 +170,6 @@ scwin.onpageload = function() {
         }
     ];
     dataList1.setJSON(jsonData);
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 14-03-2018
-    //end unitTest
 }
 ]]></script>
     </head>

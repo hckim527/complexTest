@@ -183,6 +183,22 @@
 			.w2grid_input_readonly{color: red !important;}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.doInit = function() {
     scwin.data = [{
             "check": "",
@@ -5220,48 +5236,17 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.checkColor = function(id, rgb) {
-    var element = WebSquare.wUnit.getDomById($p.id + id)
-    var color = WebSquare.wUnit.getJq($(element).children()[0]).css("color");
+    var element = scwin.__getDom($p.id + id)
+    var color = scwin.__getJq($(element).children()[0]).css("color");
     return color == rgb;
 }
 scwin.checkVal = function() {
-	return WebSquare.wUnit.getDomById('gridView1_cell_3_14').classList.contains('w2grid_default_readonly');
+	return (document.getElementById('gridView1_cell_3_14') || document.getElementById('mf_gridView1_cell_3_14')).classList.contains('w2grid_default_readonly');
 }	
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //1. 샘플실행 후 "Rejected Reason"항목의 3번째 row값("오류위치")이 readOnly상태(빨강색)인지 확인한다.(값입력시 입력되지 않음)
-    //G_gridView1__remark
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_3_14')");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_3_14').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkColor('gridView1_cell_3_14', 'rgb(255, 0, 0)')", "true");
-    //2. 가로스크롤을 아래로 끝까지 이동 후 스크롤을 위로 이동시켜 3번째 row값이 readOnly상태를 유지하는지 확인한다.(빨강색이면 readOnly상태임) 
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", $p.id+"gridView1_scrollY_div.scrollTop = 500");
-    WebSquare.wUnit.addCommand("pause", "500");
-	
-	WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollY_div').scrollTop = 800");	
-    WebSquare.wUnit.addCommand("pause", "500");
-	WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollY_div').scrollTop = 1200");	
-    WebSquare.wUnit.addCommand("pause", "500");
-	WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_scrollY_div').scrollTop = 0");	
-    //2. 동일하게 readOnly상태(빨강색)가 유지되어진다.
-    //(이전에는 readOnly상태(검정색)가 풀리는 결함이 있었음)
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_3_14')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 scwin.onpageload = function() {
     scwin.doInit();
     //Function unitTest

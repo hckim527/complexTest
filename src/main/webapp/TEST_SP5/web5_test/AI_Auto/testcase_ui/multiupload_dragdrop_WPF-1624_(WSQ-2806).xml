@@ -22,6 +22,13 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.selectCallback = function(fileArr) {
     console.log(fileArr);
     var fileInfos = tobe.getFileInfos();
@@ -30,8 +37,8 @@ scwin.selectCallback = function(fileArr) {
 scwin.tobe_onprogress = function(info) {
     console.log(info.fileName + "(" + info.percentData + "%)");
     var rowidx = dataList1.getMatchedIndex("name", info.fileName);
-    WebSquare.wUnit.getJq("td[colindex='3']:eq(" + rowidx + ") .w2grid_input").text(info.percentData + "%");
-    WebSquare.wUnit.getJq("td[colindex='3']:eq(" + rowidx + ") .w2grid_input").css("width", info.percentData + "%");
+    scwin.__getJq("td[colindex='3']:eq(" + rowidx + ") .w2grid_input").text(info.percentData + "%");
+    scwin.__getJq("td[colindex='3']:eq(" + rowidx + ") .w2grid_input").css("width", info.percentData + "%");
 };
 scwin.multiupload10_ondone = function(data) {
     console.log(JSON.stringify(data));
@@ -74,9 +81,6 @@ scwin.onpageload2 = function() {
     // file drag
     // file drop
     scwin.init();
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[ 

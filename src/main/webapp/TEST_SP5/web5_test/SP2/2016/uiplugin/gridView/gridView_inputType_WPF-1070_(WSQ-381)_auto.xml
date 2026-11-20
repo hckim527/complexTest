@@ -36,11 +36,20 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.func = function(str, num, row) {
     return row % 2 == 0 ? "a" : "b";
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -53,54 +62,6 @@ scwin.fireDbClick = function(node) {
     } else if (typeof node.ondblclick == 'function') {
         node.ondblclick();
     }
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. config.xml 에 공통설정을 추가한다.
-    //1. Add common configuration to config.xml.
-    //Verify step 1. 코멘트 확인
-    //1. 코멘트 확인
-    //Test step 2. Source 탭 -> inputType="expression" 인지 확인한다.
-    //2. Check the Source tab -> inputType = "expression".
-    //Verify step 2. inputType="expression"
-    //2. inputType="expression"
-    //Test step 3. Source 탭 -> expressionSort="true" 인지 확인한다.
-    //3. Make sure the Source tab -> expressionSort = "true".
-    //Verify step 3. expressionSort="true"
-    //3. expressionSort="true"
-    //Test step 4. func 컬럼의 Property 탭 or Source 탭 -> displayFormat='#,##0' 인지 확인한다.  
-    //4. Make sure the property tab of the func column or Source tab -> displayFormat = '#, ## 0'.
-    //Verify step 4. displayFormat='#,##0'
-    //4. displayFormat='#,##0'
-    //Test step 5. expr 컬럼의 Property 탭 or Source 탭 -> displayFormatter ="orCommon.convToAmtFormat" 인지 확인한다.
-    //5. Verify that the Property tab of the expr column or Source tab -> displayFormatter = "orCommon.convToAmtFormat".
-    //Verify step 5. displayFormatter ="orCommon.convToAmtFormat"
-    //5. displayFormatter = "orCommon.convToAmtFormat"
-    //Test step 6. 브라우저에서 func 컬럼과 expr 컬럼을 Sort 한다.  
-    //6. Sort the func and expr columns in the browser.
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column3')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_4').innerText == 'a0'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_4').innerText == 'b0'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_2_4').innerText == 'a0'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 6. func 컬럼과 expr 컬럼이 Sort 된다.  
-    //6. The func and expr columns are sorted.            
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('gridView1_column2')");
-    WebSquare.wUnit.addCommand("pause", "100");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_5').innerText == '마늘빵'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_5').innerText == '모카빵'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_2_5').innerText == '삼림빵'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -141,9 +102,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 09-Mar-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

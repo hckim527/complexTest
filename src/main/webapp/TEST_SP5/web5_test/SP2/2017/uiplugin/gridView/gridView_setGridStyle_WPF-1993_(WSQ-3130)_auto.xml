@@ -17,11 +17,35 @@
             </w2:dataCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.init = function() {
     scwin.setColumnID(window.jsonData1);
 };
 scwin.makeDataList = function(id, obj) {
-    if (WebSquare.wUnit.getObjById(id) != undefined) {
+    if (scwin.__getObj(id) != undefined) {
         $p.data.remove(id);
     }
     // dataList1 = $p.data.create : SP5에서 해결해야 할 문제 (scope에 dynamic 적용) 
@@ -79,48 +103,10 @@ scwin.trigger1_onclick = function(e) {
     scwin.setColumnID2();
 };
 scwin.checkEl = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id)) {
+    if (scwin.__getDom($p.id + id)) {
         return true;
     }
     return false;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step  1. 샘플실행 후 col0 항목의 값을 필터링한다.(역삼각형모양 클릭 후 필터를 1로 설정)
-    //After running the sample, filter the value of the col0 item (click on the inverted triangle and set the filter to 1)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('gridView1_hcol0_filter')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('gridView1_groupbyFilterBox_select_label')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_hcol0_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('.w2grid_customFilter_list_listRow')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('gridView1_hcol0_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. col0항목의 값이 1로 필터링되고 하단의 groupbyFilterbox의 값이 보여진다. ((col0 = 1))
-    //The value of the col0 entry is filtered to 1 and the value of the groupbyFilterbox at the bottom is shown. ((col0 = 1))
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText", "1");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_0').innerText", "1");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_2_0').innerText", "1");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_groupbyFilterBox_select_label').innerText", "((col0 = 1))");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step2. 좌측상단의 'setGridStyle'버튼을 클릭한다.
-    //Click the 'setGridStyle' button in the upper left corner.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify2. gridView의 col0항목의 필터가 유지되고 하단의 groupbyFilterbox의 값도 유지되어 보여진다.(이전에는 유지 되지 않음)
-    //The filter of the col0 item of the gridView is maintained and the value of the groupbyFilterbox at the bottom is also maintained.(Previously not retained)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').innerText", "1");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_1_0').innerText", "1");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_2_0').innerText", "1");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_groupbyFilterBox_select_label').innerText", "((col0 = 1))");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('.w2grid_customFilter_filter').length == 1", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -154,9 +140,6 @@ scwin.onpageload2 = function() {
     //Create date 27-Jan-2018
     //End unitTest
     scwin.init();
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

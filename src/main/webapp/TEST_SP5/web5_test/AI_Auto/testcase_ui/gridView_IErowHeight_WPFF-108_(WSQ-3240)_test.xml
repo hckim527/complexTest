@@ -34,6 +34,13 @@
 	
 		
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.trigger1_onclick = function(e) {
     gridView1.setFormat("col1", "###,#0.00000");
 };
@@ -46,32 +53,7 @@ scwin.radio1_onchange = function() {
     }
 };
 scwin.simulateWrapper = function(target, type, options) {
-    WebSquare.wUnit.getJq(target).simulate(type, options);
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand('pause', '500');
-    //Test step 1. Source 탭에서 scwin.trigger1_onkeydown 를 확인한다.
-    //1. In the Source tab, check scwin.trigger1_onkeydown.
-    //Verify step 1. alert ("onkeydown");
-    //Test step 2. scwin.trigger1_onkeypress 를 확인한다.
-    //2. Check scwin.trigger1_onkeypress.
-    //Verify step 2. alert ("onkeypress");
-    //Test step 3. scwin.trigger1_onkeyup 를 확인한다.
-    //3. Check scwin.trigger1_onkeyup.
-    //Verify step 3. alert ("onkeyup");
-    WebSquare.wUnit.addCommand('pause', '500');
-    WebSquare.wUnit.addCommand('set', $p.id+'radio1_input_1.click()');
-    WebSquare.wUnit.addCommand('pause', '500');
-    //WebSquare.wUnit.addCommand('set', 'scwin.simulateWrapper("#WebSquare.wUnit.getObjById('radio1_input_1')", "key-combo", {combo: "TAB"})');
-    WebSquare.wUnit.addCommand('set', 'WebSquare.wUnit.getJq("#radio1_input_1").simulate("key-combo", {combo: "left-arrow"})');
-    WebSquare.wUnit.addCommand('pause', '500');
-    //  WebSquare.wUnit.addCommand('assert', 'log == "onkeydown"', 'true');
-    WebSquare.wUnit.addCommand('pause', '500');
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    scwin.__getJq(target).simulate(type, options);
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -89,9 +71,6 @@ scwin.onpageload2 = function() {
     }, {
         "col1": "데이터6"
     }];
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

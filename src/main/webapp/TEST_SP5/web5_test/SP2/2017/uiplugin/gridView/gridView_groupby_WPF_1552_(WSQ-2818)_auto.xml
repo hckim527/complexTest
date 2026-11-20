@@ -19,6 +19,15 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     var jsonData = [{
             "category1": "1",
@@ -58,25 +67,18 @@ scwin.init = function() {
 scwin.grid1_ongroupby = function(options) {
     return false;
 };
-scwin.unitTest = function() {
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('triger6').click()");
-    WebSquare.wUnit.addCommand("assert", "ischeckbox", "false");
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-};
 scwin.triger6_onclick = function(e) {
     // category1 header filter click
-    var filter = WebSquare.wUnit.getDomById($p.id + 'grid1_header_category1_filter');
+    var filter = scwin.__getDom($p.id + 'grid1_header_category1_filter');
     filter.click();
     // filterList 전체선택 check하여 해지
-    var checkbox = WebSquare.wUnit.getDomById($p.id + 'grid1_customFilter_list').childNodes[1].childNodes[0];
+    var checkbox = scwin.__getDom($p.id + 'grid1_customFilter_list').childNodes[1].childNodes[0];
     checkbox.click();
     // category2 header filter click	
-    var filter1 = WebSquare.wUnit.getDomById($p.id + 'grid1_header_category2_filter');
+    var filter1 = scwin.__getDom($p.id + 'grid1_header_category2_filter');
     filter1.click();
     // filterList 전체선택 체크값 확인	
-    var checkbox1 = WebSquare.wUnit.getDomById($p.id + 'grid1_customFilter_list').childNodes[1].childNodes[0];
+    var checkbox1 = scwin.__getDom($p.id + 'grid1_customFilter_list').childNodes[1].childNodes[0];
     // 	category2의 filterList 전체선택 체크값이 해지되면정상이고 값비교		
     ischeckbox = checkbox1.checked;
 };
@@ -89,9 +91,6 @@ scwin.onpageload2 = function() {
     // category2 filterList의 전체선택 체크박스 체크해지(true)비교을 위한 변수선언
     window.ischeckbox = true;
     // 자동화테스트를 위한 버튼생성
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		

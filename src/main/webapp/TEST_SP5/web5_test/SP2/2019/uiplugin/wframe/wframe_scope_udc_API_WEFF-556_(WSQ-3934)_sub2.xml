@@ -17,9 +17,6 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 
@@ -208,7 +205,14 @@ scwin.onpageload2 = function() {
 							
 						 ]]></script>
 							<script ev:event="ondone(data)" type="text/javascript"><![CDATA[
-								var colId = "progress";
+								// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+var colId = "progress";
 								if(!udc_obj.SUPPORT_HTML5){
 									colId = "flashProgress";
 								}
@@ -244,9 +248,9 @@ scwin.onpageload2 = function() {
 						       				var colIdx = udc_grd.getColumnIndex("progress");
 											var grdId = udc_grd.getID();
 											console.log( grdId + "_cell_" + rowIdx + "_" + colIdx);
-											WebSquare.wUnit.getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr ").css("border", "0px").css("background", "transparent");;
-											WebSquare.wUnit.getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").css("background", "transparent");
-											WebSquare.wUnit.getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").html(statusStr);
+											scwin.__getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr ").css("border", "0px").css("background", "transparent");;
+											scwin.__getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").css("background", "transparent");
+											scwin.__getJq("#"+ grdId + "_cell_" + rowIdx + "_" + colIdx + ".progress nobr div").html(statusStr);
 						       			}
 						       		}
 						       		else {

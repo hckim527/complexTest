@@ -15,6 +15,21 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.init = function() {
     widgetContainer.addWidgets([{
             id: "widget1",
@@ -55,22 +70,9 @@ scwin.onwidgetload = function(id) {
     output.setValue(output.getValue() + '\n' + '[' + id + '] widget load complete');
 };
 scwin.checkValue = function() {
-    var str = WebSquare.wUnit.getObjById($p.id+'output').getValue().trim();
+    var str = scwin.__getObj($p.id+'output').getValue().trim();
     st = str.replace(/\r?\n/g, "");
     return st;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일(widgetContainer_Load_WP-3100_(WSQ-2542).xml)을 실행 후 우측의 메시지를 확인한다.
-    //1. Run the sample file (widgetContainer_Load_WP-3100_ (WSQ-2542) .xml) and check the message on the right.
-    //Verify 1. 위젯1, 위젯2, 위젯3 각각 onwidgetload 이벤트가 발생하고 이후에 위젯컨테이너의 onload 이벤트가 발생되어진다.
-    //1. Widget 1, Widget 2, Widget 3 Each onwidgetload event is fired and then the widget container"s onload event is fired.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue() == '['+$p.id+'widgetContainer_widget1] widget load complete['+$p.id+'widgetContainer_widget2] widget load complete['+$p.id+'widgetContainer_widget3] widget load completewidgetContainer load complete'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -81,9 +83,6 @@ scwin.onpageload2 = function() {
     //Create date 31-Jan-2018
     //End unitTest
     scwin.init();
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

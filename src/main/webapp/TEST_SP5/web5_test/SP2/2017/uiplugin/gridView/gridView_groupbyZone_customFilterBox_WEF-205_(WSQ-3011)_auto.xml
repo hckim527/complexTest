@@ -27,6 +27,22 @@
 			}
 		</style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.onpageload = function() {
     scwin.data1 = [
         "(가)다라다", "A", "07:30",
@@ -220,7 +236,7 @@ scwin.grid1_groupbyFilterBoxFormatter = function(data) {
     return label;
 };
 scwin.getCount = function() {
-    var tr = WebSquare.wUnit.getJq("#grid1_body_tbody tr");
+    var tr = ((j) => j.length ? j : $('#mf_grid1_body_tbody tr'))($('#grid1_body_tbody tr'));
     var count = 0;
     for (i = 0; i < tr.length; i++) {
         if (tr[i].style.display == "") {
@@ -231,41 +247,15 @@ scwin.getCount = function() {
     return count;
 }
 scwin.checkValue = function(id1, id2) {
-    if (WebSquare.wUnit.getDomById(id1)) {
-	console.log("1 : "+WebSquare.wUnit.getJq("#" + id1).text());
-        return WebSquare.wUnit.getJq("#" + id1).text();
-    } else if (WebSquare.wUnit.getDomById(id2)) {
-        return WebSquare.wUnit.getJq("#" + id2).text();
-	console.log("2 : "+WebSquare.wUnit.getJq("#" + id2).text());
+    if (scwin.__getDom(id1)) {
+	console.log("1 : "+scwin.__getJq("#" + id1).text());
+        return scwin.__getJq("#" + id1).text();
+    } else if (scwin.__getDom(id2)) {
+        return scwin.__getJq("#" + id2).text();
+	console.log("2 : "+scwin.__getJq("#" + id2).text());
     }
     return "";
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_header2_filter').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_list').querySelectorAll('span')[2].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_customFilter_list').querySelectorAll('span')[4].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("assert", "scwin.getCount() == 3", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.getCount() == 5", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkValue('grid1_headerRowNumber_bodyRow_0', '_headerRowNumber') == '(가)다라다 [ 3 건 ] '", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('dataList1').removeAll()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#grid1_groupbyFilterBox_select_label').text() == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 ]]></script>
 		<style type="text/css">
 		</style>

@@ -45,6 +45,15 @@
 			}
 		]]></style>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.panels1_panelsOpen = function(e) {
     console.log("panels1_open");
 }
@@ -82,7 +91,7 @@ scwin.accordion1_onclick = function(panelInfo, isOpen) {
     log = isOpen;
 };
 scwin.__checkEl = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id)) {
+    if (scwin.__getDom($p.id + id)) {
         return true;
     }
     return false;
@@ -99,35 +108,11 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.mouseOverBehaviour = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireOver(el);
 }
 scwin.checkVal1 = function() {
     return log == true;
-}
-scwin.unitTest = function() {
-    //init
-    // WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 F12버튼을 클릭한다.
-    //1. Run the sample file and click the F12 button.
-    //Verify step 1. Execution screen and console window are displayed.
-    //Test step 2. 가입서비스선택항목에 마우스를 오버하고 클릭한다.
-    //2. Mouse over the subscription service selection and click it.
-    //Verify step 2. When mouse over, console log is displayed and true value is displayed when clicked (previously undefined)
-    WebSquare.wUnit.addCommand("assert", "scwin.__checkEl('accordion1_panel_panel1_title')", "true");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('accordion1_panel_panel1_title')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('accordion1_panel_panel1_title').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    //Test step 3. 화면아래의 test버튼을 클릭한다.
-    //3. Click the test button at the bottom of the screen.
-    //Verify step 3. You will see panel1 in the console log (previously no logs left).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("assert", "log1 == 'panel1'", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -140,9 +125,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 28-Feb-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 	</head>

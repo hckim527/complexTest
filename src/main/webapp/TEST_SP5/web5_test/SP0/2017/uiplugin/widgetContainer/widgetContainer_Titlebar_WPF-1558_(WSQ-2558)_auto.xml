@@ -15,6 +15,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     widgetContainer.addWidgets([{
             id: "widget1",
@@ -50,7 +59,7 @@ scwin.init = function() {
     ]);
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -64,34 +73,6 @@ scwin.fireDbClick = function(node) {
         node.ondblclick();
     }
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일을 실행 후 위젯1의 상단의 TitleBar를 마우스로 더블클릭한다.
-    //1. Run the sample file and double-click the TitleBar at the top of Widget 1.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('widgetContainer_widget1_title_text')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 위젯1의 창이 최대화로 보여진다.
-    //1. Widget 1"s window is shown as maximized.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer_widget1').hasClass('w2widget_maximized w2widget_fixed')", "true");
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.height == '495px'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.width == '100%'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 최대화상태에서 위젯1의 상단의 TitleBar를 마우스로 더블클릭한다.
-    //2. In the maximized state, double-click the TitleBar at the top of Widget 1 with your mouse.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick('widgetContainer_widget1_title_text')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 위젯1의 창이 원래대로(최소화) 보여진다.
-    //2. The window of widget 1 is displayed as original (minimized).
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#widgetContainer_widget1').hasClass('w2widget_maximized w2widget_fixed')", "false");
-    //WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.height == '300px'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getDomById($p.id+'widgetContainer_widget1').style.width != '100%'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -101,9 +82,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 05-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

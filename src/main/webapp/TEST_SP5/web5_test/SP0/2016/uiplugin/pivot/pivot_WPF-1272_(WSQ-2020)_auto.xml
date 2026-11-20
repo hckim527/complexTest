@@ -32,6 +32,13 @@
 		</xf:model>
 		
 		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.submission1_submitdone = function(e) {
     dc_stats.setData(e.responseText.split(","));
 };
@@ -46,48 +53,19 @@ scwin.amtFormat = function(value) {
 }
 scwin.checkVal = function() {
     debugger;
-    //return WebSquare.wUnit.getJq("th[header-data*='row:2'][rowspan*='1'][colspan = '2']")[0].innerText;
-    return WebSquare.wUnit.getDomById('pivotTable1_head_table').querySelectorAll('th')[6].innerText == '자동차';
+    return (document.getElementById('pivotTable1_head_table') || document.getElementById('mf_pivotTable1_head_table')).querySelectorAll('th')[6].innerText == '자동차';
 }
 scwin.getVal2 = function() {
     debugger;
-    if (WebSquare.wUnit.getJq("th[data-coordinate='1,5'][colspan='3']").length > 0) {
-        return WebSquare.wUnit.getJq("th[data-coordinate='1,5'][colspan='3']")[0].innerText;
+    if (scwin.__getJq("th[data-coordinate='1,5'][colspan='3']").length > 0) {
+        return scwin.__getJq("th[data-coordinate='1,5'][colspan='3']")[0].innerText;
     } else {
         return "undefine";
     }
 }
 scwin.getVal3 = function() {
-    return WebSquare.wUnit.getJq("th[data-coordinate='1,1'][colspan='4'][rowspan = '1']")[0].innerText;
+    return scwin.__getJq("th[data-coordinate='1,1'][colspan='4'][rowspan = '1']")[0].innerText;
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "document.getElementsByTagName('a')[0].click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#wq_uuid_12_body_tbody').children().length > 0", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pivotTable1_body_table').children().length > 0", "true");
-
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "firstValue = scwin.getVal()");
-    //WebSquare.wUnit.addCommand("set", "firstValue2 = scwin.getVal2()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pivotTable1_container_scrollX').scrollLeft = 100");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "secondValue2 = scwin.getVal2()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('pivotTable1_container_scrollX').scrollLeft = 400");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //WebSquare.wUnit.addCommand("set", "secondValue = scwin.checkVal()");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     //Function 

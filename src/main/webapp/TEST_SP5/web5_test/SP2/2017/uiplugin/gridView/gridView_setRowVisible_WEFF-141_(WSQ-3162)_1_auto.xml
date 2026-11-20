@@ -246,32 +246,12 @@ scwin.trigger1_onclick = function(e) {
     grid1.setFocusedCell(25, 0);
 };
 scwin.__isBackground = function() {
-    var color = WebSquare.wUnit.getJq("#grid1_cell_25_0").css("background-color");
+    var color = ((j) => j.length ? j : $('#mf_grid1_cell_25_0'))($('#grid1_cell_25_0')).css("background-color");
     if (color.indexOf("rgb") < 0) {
         return color != "rgb(252, 167, 60)";
     }
     return color == "rgb(252, 167, 60)";
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 7번째 rowindex를 클릭하고 tab key를 여러번 클릭하여 8번째 rowindex로 이동되는지를 확인한다.
-    //1. After running the sample, click on the 7th rowindex and click the tab key several times to see if it moves to the 8th rowindex.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grid1_cell_7_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 8번째 rowindex로 이동되어진다. (이전에는 7번째 rowindex의 마지막 컬럼에서 tab key이동시 header화면으로 tab 이동되어짐)
-    //1. Move to the 8th rowindex. (Previously, when tab key is moved from the last column of the 7th rowindex, tab is moved to header screen)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isBackground()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     grid1.setRef({

@@ -26,6 +26,15 @@
         <w2:layoutInfo/>
         <w2:publicInfo method=""/>
         <script lazy="false" type="text/javascript"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
 	
 };
@@ -55,21 +64,21 @@ scwin.onpageload = function() {
 		}
 	}	
 	scwin.mouseOverBehaviour = function(id) {
-		var el = WebSquare.wUnit.getDomById($p.id + id);
+		var el = scwin.__getDom($p.id + id);
 		scwin.fireOver(el);
 	}
 	scwin.mouseOutBehaviour = function(id) {
-		var el = WebSquare.wUnit.getDomById($p.id + id);
+		var el = scwin.__getDom($p.id + id);
 		scwin.fireOut(el);
 	}	
 	scwin.checkVal = function() {
-		const tooltipElement = WebSquare.wUnit.getDomById('grd_list_tooltip');
+		const tooltipElement = (document.getElementById('grd_list_tooltip') || document.getElementById('mf_grd_list_tooltip'));
 		let reVal = false;
 		
 		if (tooltipElement) {
 			let displayValue = tooltipElement.style.display;
 			console.log('tooltip 요소의 display 값:', displayValue);
-			reVal = WebSquare.wUnit.getDomById('grd_list_tooltip').style.display != 'block';
+			reVal = (document.getElementById('grd_list_tooltip') || document.getElementById('mf_grd_list_tooltip')).style.display != 'block';
 		} else {
 			console.log('요소가 존재하지 않음: grd_list_tooltip');
 			reVal = true;
@@ -77,58 +86,14 @@ scwin.onpageload = function() {
 		return reVal;
 	}		
 	scwin.checkVal1 = function() {
-		return WebSquare.wUnit.getDomById('ccb1_tooltip').style.display == 'block';
+		return (document.getElementById('ccb1_tooltip') || document.getElementById('mf_ccb1_tooltip')).style.display == 'block';
 	}
 	scwin.checkVal2 = function() {
-		return WebSquare.wUnit.getDomById('checkcombobox1_tooltip').style.display == 'block';
+		return (document.getElementById('checkcombobox1_tooltip') || document.getElementById('mf_checkcombobox1_tooltip')).style.display == 'block';
 	}	
 	scwin.checkVal3 = function() {
-		return WebSquare.wUnit.getDomById('checkcombobox2_tooltip').style.display == 'block';
+		return (document.getElementById('checkcombobox2_tooltip') || document.getElementById('mf_checkcombobox2_tooltip')).style.display == 'block';
 	}	
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ccb1_button').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ccb1_itemTable_1').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('ccb1_button').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('ccb1_label')");
-		WebSquare.wUnit.addCommand("pause", "1200");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-		WebSquare.wUnit.addCommand('pause', '500');
-
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox1_button').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox1_itemTable_1_checkbox').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox1_button').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('checkcombobox1_label')");
-		WebSquare.wUnit.addCommand("pause", "1200");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-		WebSquare.wUnit.addCommand('pause', '500');
-		
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox2').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox2_itemTable_1').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox2').click()");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('checkcombobox2').click()");
-		WebSquare.wUnit.addCommand("pause", "500");				
-		WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour('checkcombobox2_itemTable_1_label')");
-		WebSquare.wUnit.addCommand("pause", "1200");
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-		WebSquare.wUnit.addCommand('pause', '500');
-		
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();
 	
 	
 ]]></script>

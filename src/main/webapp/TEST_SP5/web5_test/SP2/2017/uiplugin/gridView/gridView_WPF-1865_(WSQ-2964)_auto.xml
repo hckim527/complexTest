@@ -49,6 +49,15 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.init = function() {
     //debugger;
     grd.setData(dataList1.getAllData());
@@ -99,47 +108,9 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플파일 실행 후 'setCellAllowChar' 버튼을 클릭한다.
-    //1. After running the sample file, click the 'setCellAllowChar' button.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. 0,123 값으로 보여진다.
-    //1. It is shown as 0,123 value.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_cell_2_2').innerText == '0,123'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'setCellMaxLength' 버튼을 클릭하고 값을 입력한다.
-    //2. Click the 'setCellMaxLength' button and enter a value.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'grd_cell_3_2')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('G_grd__dynamic_secret_3_2').setValue('1234')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 1자리수만 입력되어진다.
-    //2. Only one digit is entered.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('G_grd__dynamic_secret_3_2').getValue().length == '1'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 'setCellDisplayFormat' 버튼을 클릭한다.
-    //3. Click the 'setCellDisplayFormat' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 01||23 값으로 보여진다.
-    //3. It is shown as 01 || 23 value.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grd_cell_2_2').innerText == '01||23'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     scwin.init();

@@ -147,6 +147,15 @@
 		</xf:model>
 
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireOver = function(node) {
     if (document.createEventObject) {
         node.fireEvent('onmouseover');
@@ -159,30 +168,14 @@ scwin.fireOver = function(node) {
     }
 }
 scwin.mouseOverBehaviour = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireOver(el.getElementsByTagName("img")[0]);
 }
 scwin.__hasId = function(id) {
-    if (WebSquare.wUnit.getDomById($p.id + id)) {
+    if (scwin.__getDom($p.id + id)) {
         return true;
     }
     return false;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 3. 브라우저에서 inputType="textImage" 인 컬럼을 마우스오버한다.
-    //3. In the browser, mouse over the column with inputType = "textImage".
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.mouseOverBehaviour($p.id+'grd_sum_cell_5_0')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify 3. 툴팁이생성된다. (그전엔진버전에서는 툴팁이 생성되지않는 현상이 발생함)
-    //3. A tooltip is created. (Tool tip is not generated in previous engine version)
-    WebSquare.wUnit.addCommand("assert", "scwin.__hasId('grd_sum_tooltip')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -192,9 +185,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 01-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 

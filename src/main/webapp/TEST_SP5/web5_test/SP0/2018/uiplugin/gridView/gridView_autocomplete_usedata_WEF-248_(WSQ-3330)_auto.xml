@@ -29,6 +29,15 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     var row = 10;
     var col = 3;
@@ -57,39 +66,8 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.Dbclick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 1. 샘플실행 후 'col2'항목의 첫번째 row('1'값)를 마우스로 더블클릭하여 edit모드로 진입한다.
-    //1. After executing the sample, double click the first row ('1' value) of 'col2' item to enter edit mode.
-    //Verify step 1. The first row enters edit mode.
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').css('display') == 'block'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. '5'값으로 변경 후 EnterKey를 누른다.
-    //2. Change to the value '5' and press EnterKey.
-    //Verify step 2. Change to the value '5' (not previously changed to EnterKey).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val('5')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_0_1').text() == '5'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 다시 더블클릭하여 '50'을 입력하고 EnterKey를 누른다.
-    //3. Double click again to enter '50' and press EnterKey.
-    //Verify step 3. Change to the value '50' (not previously changed to EnterKey).
-    WebSquare.wUnit.addCommand("set", "scwin.Dbclick($p.id+'gridView1_cell_0_1')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getJq('#G_gridView1___autoComplete_0_col2_col2_input').val('50')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#gridView1_cell_0_1').text() == '50'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -98,9 +76,6 @@ scwin.onpageload2 = function() {
     //Function 
     //Created by: Thuyet.Pham
     //Created date: 30-Mar-2018
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

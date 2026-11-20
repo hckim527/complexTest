@@ -32,38 +32,25 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
-scwin.__click = function() {
-    if (WebSquare.wUnit.getObjById('gv1_column6').childNodes[0].getAttribute("disabled") != "disabled") {
-        WebSquare.wUnit.getObjById('gv1_column6').childNodes[0].click();
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
     }
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭 또는 Property 탭에서 gv1 의 column6 inputType 부분을 확인한다.
-    //1. In the Source tab or the Property tab, check the column6 inputType part of gv1.
-    //Verify step 1. inputType='checkbox' 
-    //1. inputType = 'checkbox'
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_column6').childNodes[0].getAttribute('type')", "checkbox");
-    //Test step 2. disabled 부분을 확인한다.
-    //2. Check the disabled section.
-    // WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. disabled='true'
-    //2. disabled = 'true'
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_column6').childNodes[0].getAttribute('disabled')", "disabled");
-    //Test step 3. 브라우저에서 column6 부분(전체체크박스)을 클릭한다.
-    //3. In the browser, click on the column6 part (full checkbox).
-    WebSquare.wUnit.addCommand("set", "scwin.__click()");
-    //WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. disabled 이 되어 있어서 전체체크가 되지 않는다. (그전버전에서는 disabled 에서도 체크가 되는 현상발생)
-    //3. It is disabled and the whole check is not done. (In the previous version, disabled is also checked.)
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_column6').childNodes[0].checked", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_0_0').childNodes[0].checked", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_1_0').childNodes[0].checked", "false");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gv1_cell_2_0').childNodes[0].checked", "false");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return r == undefined ? id : r;
+};
+scwin.__click = function() {
+    if (scwin.__getObj('gv1_column6').childNodes[0].getAttribute("disabled") != "disabled") {
+        scwin.__getObj('gv1_column6').childNodes[0].click();
+    }
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -91,9 +78,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 06-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

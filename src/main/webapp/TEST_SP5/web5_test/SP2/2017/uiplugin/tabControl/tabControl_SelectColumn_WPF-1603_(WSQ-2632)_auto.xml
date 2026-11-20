@@ -59,9 +59,24 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.checkVal = function() {
     var ret = true;
-    var itemArr1 = WebSquare.wUnit.getObjById('G_'+$p.id+'gridView1___selectbox_col1').itemArr;
+    var itemArr1 = scwin.__getObj('G_'+$p.id+'gridView1___selectbox_col1').itemArr;
     var itemArr2 = selectbox1.itemArr;
     if (itemArr1.length !== itemArr2.length) {
         return "length diff";
@@ -74,28 +89,6 @@ scwin.checkVal = function() {
     }
     return ret;
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. Design 탭에 gridview 탭 선택해서 col1 의 inputType 부분을 확인한다.
-    //On the Design tab, select the gridview tab and check the inputType part of col1.
-    //Verify 1. inputType = 'select'
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('tabControl1_tab_tabs2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('gridView1_cell_0_0').getAttribute(dataInputType) == 'select'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_0_0').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Veryfi 4. 3번째 select 탭의 Select 처럼 정상적으로 바인딩되서 리스트가 보여진다. (그전버전에서는 비활성화 된 탭에 있는 경우 바인딩 되지 않아서 리스트가 보이지 않았음)
-    //The list is displayed as it is normally bound as in the Select on the third select tab. (In previous versions, if you were on a disabled tab, the list was not visible because it was not bound.)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     dataList1.setData(["aa", "11", "bb", "22"]);

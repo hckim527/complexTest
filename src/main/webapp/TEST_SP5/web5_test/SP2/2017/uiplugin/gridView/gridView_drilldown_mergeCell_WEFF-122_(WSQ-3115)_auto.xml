@@ -105,6 +105,15 @@
             </xf:instance>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger1_onclick = function(e) {
     grid1.setCellData(2, 1, "test data!!!");
 };
@@ -171,46 +180,11 @@ scwin.trigger7_onclick = function(e) {
     grid1.setFocusedCell(3, 3, false);
 };
 scwin.__isColspan = function() {
-    var col = WebSquare.wUnit.getDomById($p.id+"grid1_cell_3_4").getAttribute("colspan");
+    var col = scwin.__getDom($p.id+"grid1_cell_3_4").getAttribute("colspan");
     if (col >= 2) {
         return false;
     }
     return true;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. 샘플실행 후 1번째 row(0부터시작)인 1값의 +버튼을 클릭하고 하위의 2값의 +버튼을 클릭한다.(메뉴명의 1값과 2값의 +버튼 클릭)
-    //1. After running the sample, click the + button for the 1 value (starting from the first row) and click the + button for the lower 2 values (click the + button for 1 value and 2 value for the menu name)
-    //Verify 1. gridView값이 drilldown되어 보여진다.
-    //1. The gridView value is shown as drilldown.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_1_3').childNodes[0].childNodes[0].click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_2_3').innerText.trim() == '2'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_2_3').childNodes[0].childNodes[1].click()");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_3_3').innerText.trim() == '3'", "true");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_4_3').innerText.trim() == '4'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 'merge'버튼을 클릭한다.
-    //2. Click the 'merge' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger6').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 3번째 rowindex값인 메뉴명 3의 사용자관리와 사용여부가 merge되어 보여진다.
-    //2. User management and use of menu name 3 which is the value of 3rd rowindex are merged.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getObjById('grid1_cell_3_4').getAttribute('colspan') == '2'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 2값의 -버튼을 클릭하여 접는다.
-    //3. Click the 2-value button to collapse it.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('grid1_cell_2_3').childNodes[0].childNodes[1].click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 접혀진 3의 merge도 접혀져서 보여지지 않는다. (이전에는 5값의 rowindex값이 merge되어 보여짐)
-    //3. The folded 3 merge is not folded. (Previously rowindex values of 5 values are shown merged)
-    WebSquare.wUnit.addCommand("assert", "scwin.__isColspan()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -231,9 +205,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 09-Mar-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

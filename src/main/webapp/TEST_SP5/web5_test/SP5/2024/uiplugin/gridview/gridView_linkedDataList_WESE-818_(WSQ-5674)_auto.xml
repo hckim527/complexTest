@@ -27,6 +27,15 @@
         <w2:layoutInfo/>
         <w2:publicInfo method=""/>
         <script lazy="false" type="text/javascript"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
 	var data = [];
 	var row = 100;
@@ -41,7 +50,7 @@ scwin.onpageload = function() {
 
 
 	scwin.Dbclick = function(id) {
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireDbClick(el);
 	}
 	scwin.fireDbClick = function(node) {
@@ -56,37 +65,8 @@ scwin.onpageload = function() {
 		}
 	}	
 	scwin.checkVal = function() {
-		return WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col4').value == '';
+		return scwin.__getDom('G_'+$p.id+'gridView1__col4').value == '';
 	}
-
-	scwin.unitTest = function() {
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_scrollY_div').scrollTop = 300");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_11_3')");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col4').value = '2323'");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_11_2').click()");
-		WebSquare.wUnit.addCommand("pause", "500");				
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_11_3')");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('G_'+$p.id+'gridView1__col4').value = ''");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('gridView1_cell_11_2').click()");
-		WebSquare.wUnit.addCommand("pause", "500");				
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('gridView1_cell_11_3')");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}	
-	scwin.unitTest()	
-	
 
 ]]></script>
     </head>

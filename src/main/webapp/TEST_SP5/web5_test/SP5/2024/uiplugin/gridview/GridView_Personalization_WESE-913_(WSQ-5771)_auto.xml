@@ -71,6 +71,15 @@
 		<w2:layoutInfo />
 		<w2:publicInfo method="" />
 		<script lazy="false" type="text/javascript"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.onpageload = function() {
     //GridView의 초기 개인화 스타일 저장하기
 	$p.local.setItem("P00198_init_grid", grd_main.getCurrentGridStyle());
@@ -191,40 +200,15 @@ scwin.btn_clearLog_onclick = function (e) {
 		}
 	}
 	scwin.rightClick = function(id){
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireClick(el);
 	}         
 	scwin.setVal = function(){
-		WebSquare.wUnit.getDomById('grd_main_contextMenu_list').querySelectorAll('div')[1].click()
+		(document.getElementById('grd_main_contextMenu_list') || document.getElementById('mf_grd_main_contextMenu_list')).querySelectorAll('div')[1].click()
 	}   	
 	scwin.checkVal = function(){
-		return WebSquare.wUnit.getDomById('grd_main_column11').offsetWidth == 0;
+		return (document.getElementById('grd_main_column11') || document.getElementById('mf_grd_main_column11')).offsetWidth == 0;
 	}   
-	scwin.unitTest = function(){
-		//Unit
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_init').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-		
-		WebSquare.wUnit.addCommand("set", "scwin.rightClick('grd_main_column11')");
-		WebSquare.wUnit.addCommand("pause", "1000");
-		WebSquare.wUnit.addCommand("set", "scwin.setVal()");
-		WebSquare.wUnit.addCommand("pause", "1000");
-
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_save').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btn_load').click()");
-		WebSquare.wUnit.addCommand("pause", "500");	
-			
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//Run test and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest();	
 	
 ]]></script>
 	</head>

@@ -15,6 +15,21 @@
             </w2:workflowCollection>
         </xf:model>
          <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
 scwin.trigger1_onclick = function(e) {
     //debugger;
     alert(scwin.$w.getFrameId());
@@ -37,7 +52,7 @@ scwin.trigger3_onclick = function(e) {
 };
 scwin.trigger4_onclick = function(e) {
     debugger;
-    var mainCtn = parent.WebSquare.wUnit.getObjById("windowContainer1");
+    var mainCtn = ((id) => { if (typeof id !== 'string') return id; const W = parent.WebSquare, C = W.idCache, U = W.idToUUID, F = (k) => new parent.Function('return ' + k)(); if (!W.strictMode) id = id.replace(/mf_/g, ''); if (C[U[id]]) return C[U[id]]; let r; try { r = F(id); } catch (e) {} if (r == undefined && W.strictMode) { const P = W.strictModeFrame.id + '_'; let s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id); s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P); if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } } } return r == undefined ? id : r; })("windowContainer1");
     //alert(mainCtn.selectedIndex);
     //alert(mainCtn.getSelectedIndex());
     localStorage.setItem("log1", mainCtn.getSelectedIndex());
@@ -48,13 +63,10 @@ scwin.onpageload2 = function() {
     }
     requires("uiplugin.popup");
     debugger;
-    window.mainCtn = parent.WebSquare.wUnit.getObjById("windowContainer1");
+    window.mainCtn = ((id) => { if (typeof id !== 'string') return id; const W = parent.WebSquare, C = W.idCache, U = W.idToUUID, F = (k) => new parent.Function('return ' + k)(); if (!W.strictMode) id = id.replace(/mf_/g, ''); if (C[U[id]]) return C[U[id]]; let r; try { r = F(id); } catch (e) {} if (r == undefined && W.strictMode) { const P = W.strictModeFrame.id + '_'; let s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id); s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P); if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } } } return r == undefined ? id : r; })("windowContainer1");
     //alert(mainCtn.getSelectedIndex());
     localStorage.setItem("log", mainCtn.getSelectedIndex());
     //setTimeout(function(){alert(mainCtn.getSelectedIndex());},1000);
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -122,6 +122,15 @@
 			</w2:dataCollection>
 		</xf:model>
 <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.initScreen = function() {
     //초기화 및 권한체크 
     comLib.FormLoadSetting(sFORMCAPTION, sFORMLOCATION, scwin.globalVal.sBUTTONLIST, sUSERAUTH);
@@ -507,7 +516,7 @@ scwin.cmbSHRDEPT_CODE_onviewchange = function(info) {
     }
 };
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
 }
 scwin.fireDbClick = function(node) {
@@ -524,31 +533,6 @@ scwin.fireDbClick = function(node) {
 scwin.clickImage = function() {
     var im = document.getElementsByTagName("img");
     im[0].click()
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 1. 브라우저에서 imageClickFunction 이 적용된 근무지 1, 2, 3 등의 1차 평가자의 우측, 2차 평가자의 우측 등의 컬럼을 더블클릭한다.
-    //1. Double-click on the right side of the primary evaluator, the right side of the secondary evaluator, etc., at work 1, 2, 3, etc., where imageClickFunction is applied in the browser.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'grdHR_MAJRXM_cell_0_10')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'grdHR_MAJRXM_cell_0_13')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'grdHR_MAJRXM_cell_0_15')");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify step 1. 버튼이 나오게 된다.
-    //1. The button appears.
-    WebSquare.wUnit.addCommand("assert", "document.getElementsByTagName('img').length == 2", "true");
-    //Test step 2. 버튼을 클릭한다. 
-    //2. Click the button.
-    WebSquare.wUnit.addCommand("set", "scwin.clickImage()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. imageClickFunction 이 동작해서 '들어옴' 팝업이 생성된다. (20170320 엔진에서는 imageClickFunction 이 동작하지 않아서 팝업이 생성되지 않음)
-    //2. The imageClickFunction works to create a 'pop-up' pop-up. (ImageClickFunction does not work on the 20170320 engine, so no pop-ups are generated)
-    WebSquare.wUnit.addCommand("assert", "resultTest", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -675,9 +659,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 07-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 <w2:migration value="true"/>

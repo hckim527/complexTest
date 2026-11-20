@@ -19,9 +19,6 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>
@@ -331,7 +328,29 @@ scwin.onpageload2 = function() {
     		</xf:trigger>
     		<script ev:event="oncreated(options)" type="javascript"><![CDATA[
     		
-				/**
+				// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+/**
 				* //property handling
 				* $w.log("gridId:" + options.gridId);
 				* $w.log("fromColumName:" + options.fromColumName);
@@ -342,10 +361,10 @@ scwin.onpageload2 = function() {
 				* //event trigger
 				*/
 				var udcId 			= options.id;
-				var locFectchIptObj = WebSquare.wUnit.getObjById( udcId+"_iptLocFectch" );
-				var totFectchIptObj = WebSquare.wUnit.getObjById( udcId+"_iptTotFectch" );
-				var locFectchBtnObj = WebSquare.wUnit.getObjById( udcId+"_btnLocFetch" );
-				var totFectchBtnObj = WebSquare.wUnit.getObjById( udcId+"_btnTotalFetch" );
+				var locFectchIptObj = scwin.__getObj(udcId+"_iptLocFectch");
+				var totFectchIptObj = scwin.__getObj(udcId+"_iptTotFectch");
+				var locFectchBtnObj = scwin.__getObj(udcId+"_btnLocFetch");
+				var totFectchBtnObj = scwin.__getObj(udcId+"_btnTotalFetch");
 				
 				//초가화
 				udc_obj.initPaging = function(options){
@@ -373,7 +392,7 @@ scwin.onpageload2 = function() {
 					properties.wfmID		= "";
 
 					if(typeof scwin.$w !== "undefined"){
-						var grids = WebSquare.wUnit.getJq("div[id$='"+adjustGrdId+"']");
+						var grids = scwin.__getJq("div[id$='"+adjustGrdId+"']");
 						
 						for(var i=0; i<grids.length; i++){
 							var gridId = grids.get(i).id;
@@ -787,7 +806,7 @@ scwin.onpageload2 = function() {
 					
 						/******************DataList 존재여부 체크********************/
 
-						var reqDs = WebSquare.wUnit.getObjById( pId );
+						var reqDs = scwin.__getObj(pId);
 						
 						if(reqDs.getColumnIndex( "formPageColNm" ) < 0){
 						
@@ -972,7 +991,7 @@ scwin.onpageload2 = function() {
 								for(var i=0; i<resTempArr.length; i++){
 								
 									var resTemp = JSON.parse(resTempArr[i]);
-									var ds	= WebSquare.wUnit.getObjById( resTemp.id );
+									var ds	= scwin.__getObj(resTemp.id);
 									
 									var key = resTemp.key;
 									var resultJSON = eval("result."+key);
@@ -1006,7 +1025,7 @@ scwin.onpageload2 = function() {
 							}else{
 								for(var i=0; i<resTempArr.length; i++){
 									var resTemp = JSON.parse(resTempArr[i]);
-									var ds	= WebSquare.wUnit.getObjById( resTemp.id );
+									var ds	= scwin.__getObj(resTemp.id);
 									ds.setJSON([], true);
 									ds.reform();
 								}

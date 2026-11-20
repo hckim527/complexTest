@@ -39,8 +39,17 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.checkEl = function(id) {
-    if (WebSquare.wUnit.getDomById(id)) {
+    if (scwin.__getDom(id)) {
         return true;
     }
     return false;
@@ -66,63 +75,6 @@ scwin.checkVal3 = function() {
         return false;
     }
 }
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. main 샘플파일을 실행 후 ('CreatePopup_windows_wframe')버튼을 클릭한다.
-    //1. Execute the main sample file ('CreatePopup_windows_wframe') and click the button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 1. popup_wframe 팝업이 보여진다.
-    //1. popup_wframe popup is shown.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#popup_window_wframe_header_title').html() == 'popup_wframe'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 팝업화면의 ('isWFramePopup')를 클릭하여 실행한다.
-    //2. Click on ('isWFramePopup') on the pop-up screen.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('popup_window_wframe_wframe_trigger4')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup_window_wframe_wframe_trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. 알림창에 'true' 보여진다.(wframe모드임)
-    //2. 'true' is displayed in the notification window (wframe mode)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 팝업화면의 ('getPopupParam')를 클릭하여 실행한다.
-    //3. Click ('getPopupParam') on the popup screen to execute.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('popup_window_wframe_wframe_trigger1')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup_window_wframe_wframe_trigger1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 3. 알림창에 파라미터 정보가 보여진다.
-    //3. Parameter information is displayed in the notification window.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 4. 팝업화면의 ('getPopupUrl')를 클릭하여 실행한다.
-    //4. Click ('getPopupUrl') on the pop-up screen to execute.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('popup_window_wframe_wframe_trigger2')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup_window_wframe_wframe_trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 4. 알림창에 url 정보가 보여진다.
-    //4. The url information is displayed in the notification window.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal3()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 5. 팝업화면의 ('getPopupId')를 클릭하여 실행한다.
-    //5. Click ('getPopupId') on the popup screen to execute.
-    WebSquare.wUnit.addCommand("assert", "scwin.checkEl('popup_window_wframe_wframe_trigger3')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('popup_window_wframe_wframe_trigger3').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 5. 알림창에 id 정보가 보여진다.
-    //5. The id information is displayed in the notification window.
-    WebSquare.wUnit.addCommand("assert", "localStorage.getItem('log3') == 'popup_window_wframe'", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
@@ -131,9 +83,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 26-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

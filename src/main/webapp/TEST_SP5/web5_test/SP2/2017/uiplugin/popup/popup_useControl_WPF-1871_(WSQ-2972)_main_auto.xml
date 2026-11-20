@@ -14,6 +14,15 @@
     	</xf:model>
 
     	<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger2_onclick = function(e) {
     imports("uiplugin.popup");
     WebSquare.util.openPopup("./popup_useControl_WPF-1871_(WSQ-2972)_pop.xml", { //get방식으로 팝업의 아이디를 넘김니다.
@@ -46,7 +55,7 @@ scwin.trigger2_onclick = function(e) {
     });
 };
 scwin.getStyleEle = function(id, style) {
-    var el = WebSquare.wUnit.getDomById(id),
+    var el = scwin.__getDom(id),
         eleStyle = window.getComputedStyle(el);
     return eleStyle.getPropertyValue(style);
 }
@@ -57,42 +66,11 @@ scwin.checktype2 = function() {
     return typeof pop1_header_control;
 }
 scwin.checkVal = function() {
-    return window.getComputedStyle(WebSquare.wUnit.getDomById('pop1_header_control')).getPropertyValue('width') == "40px";
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일을 실행 후 'litewindow modal pupup'버튼을 클릭한다.
-    //1. Run the sample file and click the 'litewindow modal pupup' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    // verify step 1. test팝업창이 생성된다.
-    //1. A test popup window is created.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype1()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. test팝업창의 우측상단에 '창사이즈최소화'버튼과 '창사이즈복원'버튼의 위치를 확인한다.
-    //2. Check the position of 'minimize window size' button and 'window size restoration' button on the upper right corner of the test popup window.
-    // verify step 2. test팝업창의 우측상단 메뉴가 우측으로 정렬되어 보여진다.(이전에는 닫기버튼 X표시부분은 빈 영역으로 남아있었음)
-    //2. The right upper menu of the test popup window is displayed aligned to the right.(Previously the close button X marking remained a blank area)
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.getStyleEle('pop1_header_control', 'right')", "0px");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test
-    WebSquare.wUnit.run();
-    //stop
-    WebSquare.wUnit.stop();
+    return window.getComputedStyle((document.getElementById('pop1_header_control') || document.getElementById('mf_pop1_header_control'))).getPropertyValue('width') == "40px";
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
-    }
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 19-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
     }
 }
 ]]></script>

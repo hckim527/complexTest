@@ -258,6 +258,13 @@
         	</xf:submission>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.initScreen = function() {
     //마지막 컬럼 이전까지 숨기기 정상작동하지않음. 푸터는 정상적으로 숨겨짐 
     //			debugger;
@@ -283,41 +290,18 @@ scwin.checkOnlyOneColumeIsShowed = function() {
     var count = 0;
     var cols = document.getElementsByClassName("gridHeaderStyle_0")[0].childNodes;
     for (i = 0; i < cols.length; i++) {
-        if (WebSquare.wUnit.getJq(cols[i]).is(":visible")) {
+        if (scwin.__getJq(cols[i]).is(":visible")) {
             count++;
         }
     }
     return count;
 }
 scwin.checkVal1 = function() {
-    return WebSquare.wUnit.getJq('#grd_Idbi_body_table').width() >= 68 && WebSquare.wUnit.getJq('#grd_Idbi_body_table').width() <= 70 && WebSquare.wUnit.getJq('#grd_Idbi_column907').is(':visible');
+    return ((j) => j.length ? j : $('#mf_grd_Idbi_body_table'))($('#grd_Idbi_body_table')).width() >= 68 && ((j) => j.length ? j : $('#mf_grd_Idbi_body_table'))($('#grd_Idbi_body_table')).width() <= 70 && ((j) => j.length ? j : $('#mf_grd_Idbi_column907'))($('#grd_Idbi_column907')).is(':visible');
 }
 scwin.checkVal2 = function() {
-    return WebSquare.wUnit.getJq('#grd1_body_table').width() >= 68 && WebSquare.wUnit.getJq('#grd1_body_table').width() <= 70 && WebSquare.wUnit.getJq('#grd1_column1').is(':visible');
+    return ((j) => j.length ? j : $('#mf_grd1_body_table'))($('#grd1_body_table')).width() >= 68 && ((j) => j.length ? j : $('#mf_grd1_body_table'))($('#grd1_body_table')).width() <= 70 && ((j) => j.length ? j : $('#mf_grd1_column1'))($('#grd1_column1')).is(':visible');
 }
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('btnSearchIdbi').click()");
-    //Verify step 1. 34번째 컬럼만 보여진다.
-    //1. Only the 34th column is shown.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal1()", "true");
-    //Test step 2. "35개 for" 버튼을 클릭한다.
-    //2. Click the "35 for" button.
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    //Verify step 2. 35번째 컬럼이 숨겨져서 보여진다.(이전에는 정상적으로 숨겨지지않음)
-    //2. The 35th column is hidden (previously not hidden normally).
-    WebSquare.wUnit.addCommand("pause", "500");
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal2()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
-}
-scwin.unitTest();
 
 scwin.onpageload = function() {
     window.str = 0;

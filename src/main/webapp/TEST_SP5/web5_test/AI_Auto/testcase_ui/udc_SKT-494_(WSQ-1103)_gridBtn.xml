@@ -19,9 +19,6 @@ scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>
@@ -384,7 +381,29 @@ scwin.onpageload2 = function() {
             <xf:trigger class="btn_grd_exup" id="btnExcelUpload" style="" tabIndex="" toolTip="엑셀업로드"></xf:trigger>
             <xf:trigger class="btn_grd_tpdw" id="btnTempletDown" style="" tabIndex="" toolTip="템플릿다운로드"></xf:trigger>
             <script ev:event="oncreated(options)" type="javascript"><![CDATA[
-                /**
+                // 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+/**
                 * //property handling
                 * $w.log("id:" + options.id);
                 * $w.log("class:" + options.class);
@@ -418,7 +437,7 @@ scwin.onpageload2 = function() {
                         
 
                         if(typeof scwin.$w !== "undefined"){
-                            var grids = WebSquare.wUnit.getJq("div[id$='"+grdView+"']");
+                            var grids = scwin.__getJq("div[id$='"+grdView+"']");
                             for(var i=0; i<grids.length; i++){
                                 var gridId = grids.get(i).id;
                                 var temp = gridId.replace("_"+grdView,"");
@@ -435,19 +454,19 @@ scwin.onpageload2 = function() {
                             }
                         }
                         
-                        gridViewComp = WebSquare.wUnit.getObjById(grdView);
+                        gridViewComp = scwin.__getObj(grdView);
                         var dataListId = gridViewComp.getDataList();
                         if (typeof dataListId !== "undefined") {
-                            dataListComp = WebSquare.wUnit.getObjById(dataListId);
+                            dataListComp = scwin.__getObj(dataListId);
                         }
                     }
                     
-                    btnInsert = WebSquare.wUnit.getObjById(UDC_ID + "_btnInsert");
-                    btnDelete = WebSquare.wUnit.getObjById(UDC_ID + "_btnDelete");
-                    btnCopy = WebSquare.wUnit.getObjById(UDC_ID + "_btnCopy");
-                    btnExcelDown = WebSquare.wUnit.getObjById(UDC_ID + "_btnExcelDown");
-                    btnExcelUpload = WebSquare.wUnit.getObjById(UDC_ID + "_btnExcelUpload");
-                    btnTempletDown = WebSquare.wUnit.getObjById(UDC_ID + "_btnTempletDown");
+                    btnInsert = scwin.__getObj(UDC_ID + "_btnInsert");
+                    btnDelete = scwin.__getObj(UDC_ID + "_btnDelete");
+                    btnCopy = scwin.__getObj(UDC_ID + "_btnCopy");
+                    btnExcelDown = scwin.__getObj(UDC_ID + "_btnExcelDown");
+                    btnExcelUpload = scwin.__getObj(UDC_ID + "_btnExcelUpload");
+                    btnTempletDown = scwin.__getObj(UDC_ID + "_btnTempletDown");
 
                     btnInsert.bind("onclick", function(e) {
                         if ((typeof property.dataInsertFunction !== "undefined") && (typeof property.dataInsertFunction !== "")) {

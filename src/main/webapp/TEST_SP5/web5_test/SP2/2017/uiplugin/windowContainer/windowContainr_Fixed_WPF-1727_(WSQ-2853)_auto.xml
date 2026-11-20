@@ -47,6 +47,28 @@
 
         </style>
         <script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.createWindow = function() {};
 scwin.doInit = function() {
     this.createWindow();
@@ -64,17 +86,17 @@ scwin.trigger1_onclick = function(e) {
     var c_subName = "windowContainr_Fixed_WPF-1727_(WSQ-2853)_sub";
     var c_xmlName = ".xml";
     for (var i = 0; i < c_cnt; i++) {
-        WebSquare.wUnit.getObjById('windowContainer1').createWindow(c_subName + i, null, 'windowContainr_Fixed_WPF-1727_(WSQ-2853)_sub.xml', "", null, "existWindow", null, null);
+        scwin.__getObj('windowContainer1').createWindow(c_subName + i, null, 'windowContainr_Fixed_WPF-1727_(WSQ-2853)_sub.xml', "", null, "existWindow", null, null);
     }
 };
 scwin.trigger2_onclick = function(e) {
-    WebSquare.wUnit.getObjById('windowContainer1').fixWindow($p.id+'windowContainer1_subWindow2');
+    scwin.__getObj('windowContainer1').fixWindow($p.id+'windowContainer1_subWindow2');
 };
 scwin.trigger3_onclick = function(e) {
-    WebSquare.wUnit.getObjById('windowContainer1').unfixWindow($p.id+'windowContainer1_subWindow2');
+    scwin.__getObj('windowContainer1').unfixWindow($p.id+'windowContainer1_subWindow2');
 };
 scwin.trigger4_onclick = function(e) {
-    WebSquare.wUnit.getObjById('windowContainer1').createWindow('windowContainr_Fixed_WPF-1727_(WSQ-2853)_sub5', null, 'windowContainr_Fixed_WPF-1727_(WSQ-2853)_sub.xml', "", null, "newWindow", null, null, {
+    scwin.__getObj('windowContainer1').createWindow('windowContainr_Fixed_WPF-1727_(WSQ-2853)_sub5', null, 'windowContainr_Fixed_WPF-1727_(WSQ-2853)_sub.xml', "", null, "newWindow", null, null, {
         fixed: true
     });
 };
@@ -87,84 +109,31 @@ scwin.trigger5_onclick = function(e) {
     });
 };
 scwin.isFixed = function(id) {
-    return WebSquare.wUnit.getJq(WebSquare.wUnit.getObjById(id).children[0]).hasClass("w2windowContainer_nameLayer_fixOn")
+    return scwin.__getJq(scwin.__getObj(id).children[0]).hasClass("w2windowContainer_nameLayer_fixOn")
 }
 scwin.checktype1 = function() {
-    return typeof WebSquare.wUnit.getObjById('windowContainer1_subWindow0');
+    return typeof scwin.__getObj('windowContainer1_subWindow0');
 }
 scwin.checktype2 = function() {
-    return typeof WebSquare.wUnit.getObjById('windowContainer1_subWindow1');
+    return typeof scwin.__getObj('windowContainer1_subWindow1');
 }
 scwin.checktype3 = function() {
-    return typeof WebSquare.wUnit.getObjById('windowContainer1_subWindow2');
+    return typeof scwin.__getObj('windowContainer1_subWindow2');
 }
 scwin.checktype4 = function() {
-    return typeof WebSquare.wUnit.getObjById('windowContainer1_subWindow3');
+    return typeof scwin.__getObj('windowContainer1_subWindow3');
 }
 scwin.checktype5 = function() {
-    return typeof WebSquare.wUnit.getObjById('windowContainer1_subWindow4');
+    return typeof scwin.__getObj('windowContainer1_subWindow4');
 }
 scwin.checktype6 = function() {
-    return typeof WebSquare.wUnit.getObjById('windowContainer1_subWindow5');
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 브라우저에서 창 생성(init) 버튼을 클릭한다.
-    //1. In your browser, click the Generate (init) button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trigger1').click()");
-    // verify step 1. 0 부터 3까지 4개의 windowContainer 가 생성된다.
-    //1. Four windowContainers are created from 0 to 3.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype1()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype2()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype3()", "object");
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype4()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 2. 'sub2고정' 버튼을 클릭한다.
-    //2. Click the 'sub2 pin' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trigger2').click()");
-    // verify step 2. windowContainer sub2 가 고정된다.
-    //2. windowContainer sub2 is fixed.
-    WebSquare.wUnit.addCommand("assert", "scwin.isFixed('windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow2')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 3. 'sub2고정해제' 버튼을 클릭한다.
-    //3. Click the 'Unfreeze sub2' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trigger3').click()");
-    // verify step 3. windowContainer sub2 가 고정해제된다.
-    //3. windowContainer sub2 is unpinned.
-    WebSquare.wUnit.addCommand("assert", "scwin.isFixed('windowContainer1_nameLayer_'+$p.id+'windowContainer1_subWindow2')", "false");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 4. '고정 sub5 생성 (parameter type)' 버튼을 클릭한다.
-    //4. Click the 'Create a fixed sub5 (parameter type)' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trigger4').click()");
-    // verify step 4. 정상적으로 windowContainer sub5 가 createWindow 된다.
-    //4. The windowContainer sub5 is normally createdWindow.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype5()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 5. '고정 sub5 생성 (json type)' 버튼을 클릭한다.
-    //5. Click the 'Create a fixed sub5 (json type)' button.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getObjById('trigger5').click()");
-    // verify step 5. 정상적으로 windowContainer sub5 가 createWindow 된다.
-    //5. The windowContainer sub5 is normally createdWindow.
-    WebSquare.wUnit.addCommand("assert", "scwin.checktype6()", "object");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return typeof scwin.__getObj('windowContainer1_subWindow5');
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     scwin.doInit();
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 25-Jan-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

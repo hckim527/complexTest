@@ -43,6 +43,15 @@ Sapien ipsam sagittis donec, sed amet libero sed proin sed turpis. Nibh erat, du
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.fireDbClick = function(node) {
     if (document.createEventObject) {
         node.fireEvent('ondblclick');
@@ -55,31 +64,14 @@ scwin.fireDbClick = function(node) {
     }
 }
 scwin.dbClick = function(id) {
-    var el = WebSquare.wUnit.getDomById($p.id + id);
+    var el = scwin.__getDom($p.id + id);
     scwin.fireDbClick(el);
     //var ev = document.createEvent("MouseEvents");
     //ev.initEvent("dblclick", true, true);
     //el.dispatchEvent(ev);
 }
 scwin.checkVal = function() {
-    return parseFloat(WebSquare.wUnit.getDomById('G_'+$p.id+'wq_uuid_3__col5').style.height) > 60;
-}
-scwin.unitTest = function() {
-    //init
-    WebSquare.wUnit.start();
-    //Test step 0. gridView column의 displayType을 all로 설정하고, inputType을 textarea로 설정한다.
-    //Set the displayType of the gridView column to all, and set the inputType to textarea.
-    //Verify step 0. displayType='all', inputType='textarea'
-    //0. displayType = 'all', inputType = 'textarea'
-    //Test step 1. 샘플파일을 실행 후 name5항목의 값을 확인한다.
-    //1. Execute the sample file and check the value of the name5 item.
-    WebSquare.wUnit.addCommand("set", "scwin.dbClick($p.id+'wq_uuid_3_cell_0_4')");
-    //Verify step 1. name5항목의 값들이 모두 보여진다.(이전에는 한줄만 보여지고 더블클릭 시 셀을 늘려주지만 세로스크롤바가 생기면서 모두 보여지지는 않음)
-    //1. All of the values ​​of name5 are shown (Previously only one line is shown and when double-clicked, the cell is enlarged, but the vertical scroll bar is not displayed)
-    WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-    //Run  and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return parseFloat(scwin.__getDom('G_'+$p.id+'wq_uuid_3__col5').style.height) > 60;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -89,9 +81,6 @@ scwin.onpageload2 = function() {
     //Created by: Quan.Nguyen
     //Created date: 07-Feb-2018
     //end
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

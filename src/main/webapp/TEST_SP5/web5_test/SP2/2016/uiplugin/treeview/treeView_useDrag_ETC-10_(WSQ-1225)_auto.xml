@@ -49,6 +49,13 @@
             </w2:workflowCollection>
         </xf:model>
         <script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.treeview1_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {};
 scwin.treeview1_ondragover = function(dragNode, dropNode, dragControl, dropControl, e) {};
 scwin._checkErr = function() {
@@ -62,38 +69,13 @@ scwin.rgb2hex = function(rgb) {
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
 scwin._checkRgb = function(id, hexa) {
-    var rgb = WebSquare.wUnit.getJq("#" + id).css("color");
+    var rgb = scwin.__getJq("#" + id).css("color");
     var color;
     if (rgb.indexOf("rgb") != -1) {
         color = scwin.rgb2hex(rgb);
         return color == hexa;
     }
     return rgb == hexa;
-}
-scwin.unitTest = function() {
-    //Unit test
-    WebSquare.wUnit.start();
-    //Test step 1. Source 탭 또는 Property 탭에서 useDrag 를 확인한다.
-    //1. Check useDrag in the Source tab or Property tab.
-    //Verify 1. useDrag="true"
-    //Test step 2. 브라우저에서 트리뷰의 임의의 label 을 체크한다.
-    //2. Check any label in the tree view in the browser.
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById($p.id + 'treeview1_label_1').click()");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Verify 2. label 이 체크된다.(굵은표시로 변함)
-    //2. The label is checked (changed to bold)
-    WebSquare.wUnit.addCommand("assert", "scwin._checkRgb($p.id+'treeview1_label_1', '#383d41')", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 3. 로그 (Ctrl + 마우스 오른쪽) 을 확인한다.
-    //3. Check the log (Ctrl + right mouse).
-    //Verify 3. 에러로그가 생성되지 않는다. (그림참고)
-    //3. No error log is generated. (See illustration)
-    WebSquare.wUnit.addCommand("assert", "scwin._checkErr() == ''", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Run and Stop test
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -103,9 +85,6 @@ scwin.onpageload2 = function() {
     //Create buy Truong.Luu
     //Create date 09-Feb-2018
     //End unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     </head>

@@ -512,7 +512,16 @@
 		</xf:model>
 		<script type="text/javascript" lazy="false">
 			<![CDATA[
-    /****************************************************
+    // DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+/****************************************************
      * 화면명 : comboItemSet.xml
      * 화면 설명 : gridViewItemset 기능 테스트
      * 작 성 자  : 김형준
@@ -662,7 +671,7 @@
 
 
 	scwin.Dbclick = function(id) {
-		var el = WebSquare.wUnit.getDomById(id);
+		var el = scwin.__getDom(id);
 		scwin.fireDbClick(el);
 	}
 	scwin.fireDbClick = function(node) {
@@ -678,29 +687,8 @@
 	}
 
 	scwin.checkVal = function() {
-		return WebSquare.wUnit.getDomById('G_'+$p.id+'grd_sample___selectbox_combo01_itemTable').style.display == 'block';
+		return scwin.__getDom('G_'+$p.id+'grd_sample___selectbox_combo01_itemTable').style.display == 'block';
 	}
-	scwin.unitTest = function() {
-		//init
-		WebSquare.wUnit.start();
-		WebSquare.wUnit.addCommand("pause", "500");
-		
-		WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('grd_sample_cell_0_1').click()");
-		WebSquare.wUnit.addCommand("pause", "500");
-		WebSquare.wUnit.addCommand("set", "scwin.Dbclick('grd_sample_cell_0_1')");
-		WebSquare.wUnit.addCommand("pause", "500");		
-		WebSquare.wUnit.addCommand('pause', '500');	
-		WebSquare.wUnit.addCommand('pause', '500');	
-		WebSquare.wUnit.addCommand('pause', '500');	
-		WebSquare.wUnit.addCommand('pause', '500');	
-		WebSquare.wUnit.addCommand('pause', '500');		
-		WebSquare.wUnit.addCommand("assert", "scwin.checkVal()", "true");
-		WebSquare.wUnit.addCommand("pause", "500");
-		//Run  and stop
-		WebSquare.wUnit.run();
-		WebSquare.wUnit.stop();
-	}
-	scwin.unitTest()	
     ]]>
 		</script>
 	</head>

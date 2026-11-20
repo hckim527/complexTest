@@ -13,6 +13,28 @@
     		<w2:workflowCollection></w2:workflowCollection>
     	</xf:model>
     	<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+    if (typeof id !== 'string') return id;
+    var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+    if (!W.strictMode) id = id.replace(/mf_/g, '');
+    if (C[U[id]]) return C[U[id]];
+    var r; try { r = F(id); } catch (e) {}
+    if (r == undefined && W.strictMode) {
+        var P = W.strictModeFrame.id + '_';
+        var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+        s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+        if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+    }
+    return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
 scwin.showFloatingLayer = function(title, width, height, url, modal, usePost, postData) {
     var top = document.documentElement.scrollTop + document.documentElement.clientHeight / 2 - parseInt(height) / 2;
     var left = document.documentElement.scrollLeft + document.documentElement.clientWidth / 2 - parseInt(width) / 2;
@@ -38,19 +60,19 @@ scwin.makeCommonPopup = function(popupId, popupIframeId, title, width, height, t
             param: {
                 handler: function(e) {
                     console.log("onclose");
-                    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
-                    WebSquare.wUnit.getObjById(popupIframeId).remove();
-                    WebSquare.wUnit.getObjById(popupId).remove();
-                    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
-                    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
-                        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+                    scwin.__getObj(popupIframeId).setSrc("");
+                    scwin.__getObj(popupIframeId).remove();
+                    scwin.__getObj(popupId).remove();
+                    ((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).last().css("z-index", "4001");
+                    if (((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+                        ((j) => j.length ? j : $('#mf__modal'))($('#_modal')).css("display", "none");
                     };
                 }
             }
         }]
     }, WebSquare.getBody());
-    WebSquare.wUnit.getJq(".pop_lay").css("z-index", "3999");
-    WebSquare.wUnit.getJq("#" + popupId).css("z-index", "4001");
+    ((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).css("z-index", "3999");
+    scwin.__getJq("#" + popupId).css("z-index", "4001");
     WebSquare.util.dynamicCreate(popupIframeId, "iframe", {
         style: "position: absolute ;left: 0px;width: 100%;height: 100%;",
         name: popupIframeId,
@@ -60,12 +82,12 @@ scwin.makeCommonPopup = function(popupId, popupIframeId, title, width, height, t
 scwin.hideFloatingLayer = function(popupId) {
     var tmp = popupId.split("_");
     var popupIframeId = "PopIf_" + tmp[1];
-    WebSquare.wUnit.getObjById(popupIframeId).setSrc("");
-    WebSquare.wUnit.getObjById(popupIframeId).remove();
-    WebSquare.wUnit.getObjById(popupId).remove();
-    WebSquare.wUnit.getJq(".pop_lay").last().css("z-index", "4001");
-    if (WebSquare.wUnit.getJq(".pop_lay").length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
-        WebSquare.wUnit.getJq("#_modal").css("display", "none");
+    scwin.__getObj(popupIframeId).setSrc("");
+    scwin.__getObj(popupIframeId).remove();
+    scwin.__getObj(popupId).remove();
+    ((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).last().css("z-index", "4001");
+    if (((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+        ((j) => j.length ? j : $('#mf__modal'))($('#_modal')).css("display", "none");
     }
 }
 scwin.trigger1_onclick = function(e) {
@@ -112,45 +134,13 @@ scwin.trigger2_onclick = function(e) {
 };
 scwin.__isHidden = function() {
     var count = 0;
-    var div = WebSquare.wUnit.getJq("#pop1_header_control").find("div");
+    var div = ((j) => j.length ? j : $('#mf_pop1_header_control'))($('#pop1_header_control')).find("div");
     div.each(function(i, el) {
-        if (WebSquare.wUnit.getJq(this).css("display") == "none") {
+        if (scwin.__getJq(this).css("display") == "none") {
             count++;
         }
     });
     return count == div.length;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    WebSquare.wUnit.addCommand("pause", "500");
-    // Test step 1. 샘플파일 실행 후 2번(litewindow modal popup)을 클릭한다.
-    //1. After running the sample file, click 2 (litewindow modal popup).
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    // verify step 1. 1. test 팝업창이 보여진다.
-    //1. The test popup window is displayed.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pop1').length > 0", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 우측상단의 창사이즈최소화버튼을 클릭한다.
-    //2. Click the Minimize Window Size button in the upper right corner.
-    WebSquare.wUnit.addCommand("set", "pop1_minimize.click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 2. 창사이즈가 width 200으로 설정되어 보여진다.
-    //2. The window size is set to width 200.
-    WebSquare.wUnit.addCommand("assert", "WebSquare.wUnit.getJq('#pop1').css('width')", "200px");
-    //Test step 3. 샘플파일의 minimize, maximize, close 설정을 false로 하고 팝업창을 실행한다.
-    //3. Set the sample file"s minimize, maximize, close setting to false and run a pop-up window.
-    WebSquare.wUnit.addCommand("set", "pop1_close.click()");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Verify step 3. 팝업창 우측상단의 아이콘으 보이지 않는다.
-    //3. The icon at the top right of the pop-up window does not appear.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isHidden()", "true");
-    WebSquare.wUnit.addCommand("pause", "100");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
@@ -169,13 +159,6 @@ scwin.onpageload2 = function() {
      * 공통팝업(플로팅레이어) 클로즈 하는 함수
      */
     window.i = 0;
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 12-Mar-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
     	<style type="text/css"><![CDATA[

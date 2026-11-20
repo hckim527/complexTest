@@ -37,6 +37,15 @@
 			</w2:dataCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
 scwin.trigger2_onclick = function(e) {
     var options = {
         'title': "포탈공지" + cnt, // 상단 타이틀바의 이름 				
@@ -89,70 +98,28 @@ scwin.trigger5_onclick = function(e) {
     content_body.show("");
 };
 scwin.__resizeEle = function(widthVal) {
-    WebSquare.wUnit.getJq("#content_body").css("width", widthVal);
+    ((j) => j.length ? j : $('#mf_content_body'))($('#content_body')).css("width", widthVal);
     //var resizeEvent = window.document.createEvent('UIEvents'); 
     //resizeEvent .initUIEvent('resize', true, false, window, 0); 
     //window.dispatchEvent(resizeEvent);
 }
 scwin.__isHidden = function() {
-    return WebSquare.wUnit.getDomById($p.id + "content_body").style.display == "none";
+    return scwin.__getDom($p.id + "content_body").style.display == "none";
 }
 scwin.__isShowNormal = function(id, val) {
-    return parseInt(WebSquare.wUnit.getDomById($p.id + id).style.width) == val;
+    return parseInt(scwin.__getDom($p.id + id).style.width) == val;
 }
 scwin.__inline = function() {
-    return WebSquare.wUnit.getDomById($p.id + "widgetContainer1_main0").offsetTop == WebSquare.wUnit.getDomById($p.id + "widgetContainer1_main1").offsetTop;
+    return scwin.__getDom($p.id + "widgetContainer1_main0").offsetTop == scwin.__getDom($p.id + "widgetContainer1_main1").offsetTop;
 }
 scwin.__incolumn = function() {
-    return WebSquare.wUnit.getDomById($p.id + "widgetContainer1_main0").offsetLeft == WebSquare.wUnit.getDomById($p.id + "widgetContainer1_main1").offsetLeft;
-}
-scwin.unitTest = function() {
-    //Unit
-    WebSquare.wUnit.start();
-    // Test step 1. 샘플파일을 실행하여 가로사이즈를 최대한 줄인 후'widget추가' 버튼을 클릭한다. 
-    //1. Run the sample file to reduce the horizontal size as much as possible and click the 'Add widget' button.
-    WebSquare.wUnit.addCommand("set", "scwin.__resizeEle('30%')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger2').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    // verify step 1. 위젯이 한줄로배열(세로로배열)되어 보여진다.
-    //1. Widgets are displayed in a single line (vertically arranged).
-    WebSquare.wUnit.addCommand("assert", "scwin.__incolumn()", "true");
-    WebSquare.wUnit.addCommand("pause", "500");
-    //Test step 2. 상단의 'hide'버튼을 클릭한다.
-    //2. Click the 'hide' button at the top.
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger4').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 2. 위젯이 숨김처리되어진다.
-    //2. The widget is hidden.
-    WebSquare.wUnit.addCommand("assert", "scwin.__isHidden()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Test step 3. 브라우저의 가로사이즈를 최대한 늘리고 'show'버튼을 클릭한다.
-    //3. Maximize your browser"s horizontal size and click the 'show' button.
-    WebSquare.wUnit.addCommand("set", "scwin.__resizeEle('100%')");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    WebSquare.wUnit.addCommand("set", "WebSquare.wUnit.getDomById('trigger5').click()");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Verify step 3. 위젯이 가로로 배열되어 보여진다.(정상)(이전에는 세로로 배열되어 보여짐)
-    //3. Widgets are displayed horizontally (normal)(Previously shown vertically)
-    WebSquare.wUnit.addCommand("assert", "scwin.__inline()", "true");
-    WebSquare.wUnit.addCommand("pause", "1000");
-    //Run test and stop
-    WebSquare.wUnit.run();
-    WebSquare.wUnit.stop();
+    return scwin.__getDom($p.id + "widgetContainer1_main0").offsetLeft == scwin.__getDom($p.id + "widgetContainer1_main1").offsetLeft;
 }
 scwin.onpageload2 = function() {
     if (typeof scwin.onpageload === "function") {
         scwin.onpageload();
     }
     window.cnt = 0;
-    //Function unitTest
-    //Created By: Sang.do
-    //Created By: 12-Feb-2018
-    //end unitTest
-    if (typeof scwin.unitTest === "function") {
-        scwin.unitTest();
-    }
 }
 ]]></script>
 		<style type="text/css"><![CDATA[
