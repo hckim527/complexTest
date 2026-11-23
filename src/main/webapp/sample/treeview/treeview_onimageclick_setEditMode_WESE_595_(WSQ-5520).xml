@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="vector" repeatNode="data/table01" valueAttribute="value">
+					<w2:columnInfo>
+						<w2:column id="gong_code" name="gong_code" dataType="text"></w2:column>
+						<w2:column id="gong_depth" name="gong_depth" dataType="text"></w2:column>
+						<w2:column id="gong_nm" name="gong_nm" dataType="text"></w2:column>
+						<w2:column id="gover_type" name="gover_type" dataType="text"></w2:column>
+						<w2:column id="image" name="image" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data></w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<xf:submission id="submission1" ref="" target='data:json,[{"id":"dataList1"}]' action="/data/treeView_onimageclick_setEditMode_WESE_595_(WSQ-5520).json" method="post" mediatype="application/json" encoding="UTF-8" mode="asynchronous" ev:submitdone="scwin.submission1_submitdone"></xf:submission>
+		</xf:model>
+		<style type="text/css">
+			.aaa {
+				color : red;
+			}
+			.bbb {
+				background-color : red;
+				color : white;
+			}
+		</style>
+		<script type="javascript" lazy="false"><![CDATA[
+scwin.t_mod_onclick = function(e) {
+	treeview1.setEditMode(treeview1.getSelectedIndex());
+};
+scwin.t_get_onclick = function(e) {
+	$p.executeSubmission("submission1");
+};
+scwin.submission1_submitdone = function() {
+	treeview1.spanAll(true);
+};
+scwin.treeview1_onimageclick = function(value, nodeElem, index) {
+	console.log("treeview1_onimageclick", value, nodeElem, index)
+};
+scwin.checkVal = function() {
+	return (document.getElementById('treeview1_node_3') || document.getElementById('mf_treeview1_node_3')).innerText == '가설공사';
+};
+]]></script>
+	</head>
+	<body>
+		<w2:treeview id="treeview1" dataType="listed" renderType="virtual" style="position: relative;width:300px;height:460px;" lineShow="" tooltipGroupClass="false" refreshCheckboxModel="true"
+			labelonClickClass="bbb" labelclass="aaa" showCheckbox="true" dynamicAppend="true" falseValue="F" trueValue="T" checkAllChildNodes="true" ev:onimageclick="scwin.treeview1_onimageclick">
+			<w2:itemset nodeset="data:dataList1">
+				<w2:label ref="gong_nm"></w2:label>
+				<w2:value ref="gong_code"></w2:value>
+				<w2:depth ref="gong_depth"></w2:depth>
+				<w2:checkbox ref="gover_type"></w2:checkbox>
+				<w2:image ref="image"></w2:image>
+			</w2:itemset>
+		</w2:treeview>
+		<xf:trigger id="t_get" style="position: relative;height:30px;font-size:12px;width:100px;" ev:onclick="scwin.t_get_onclick" type="button">
+			<xf:label><![CDATA[조회]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="t_mod" style="position: relative;height:30px;font-size:12px;width:100px;" ev:onclick="scwin.t_mod_onclick" type="button">
+			<xf:label><![CDATA[편집모드]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

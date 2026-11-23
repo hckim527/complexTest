@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection />
+			<xf:submission id="submission1" ref='data:json,jsonData' target="data:json,dataList1" action="/test.json" method="post"
+				mediatype="application/json" encoding="UTF-8" mode="asynchronous">
+			</xf:submission>
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script lazy="false" type="text/javascript"><![CDATA[
+var jsonData = { "aa": "test" };
+
+scwin.onpageload = function() {
+	var submissionObj = {
+		"id": "submission2",
+		"ref": "data:json,dc_reqDataMap",
+		"target": "data:json,dc_resDataMap",
+		"action": "/data/sampleData.json",
+		"method": "post",
+		"mediatype": "application/json",
+		"encoding": "UTF-8",
+		"mode": "asynchronous",
+		"processMsg": "processing ~ ~ ~ ",
+	};
+	$p.createSubmission(submissionObj);
+
+	$p.getComponentById("submission1");
+	$p.getComponentById("submission2");
+};
+
+scwin.checkVal = function() {
+	return $p.getComponentById("submission2").singleMode == false;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+	</body>
+</html>

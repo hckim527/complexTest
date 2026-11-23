@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+						<w2:column id="depth" name="name3" dataType="text"></w2:column>
+						<w2:column id="folder" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+		var jsonData = [{
+			"label" : "label1",
+			"value" : "value1",
+			"depth" : 1,
+			"folder" : "false"
+		}, {
+			"label" : "label2",
+			"value" : "value2",
+			"depth" : 1,
+			"folder" : "true"
+		}, {
+			"label" : "label3",
+			"value" : "value3",
+			"depth" : 2,
+			"folder" : "true"
+		}, {
+			"label" : "label4",
+			"value" : "value4",
+			"depth" : 3,
+			"folder" : "true"
+		}, {
+			"label" : "label5b",
+			"value" : "value5b",
+			"depth" : 5,
+			"folder" : "true"
+		}, {
+			"label" : "label5",
+			"value" : "value5",
+			"depth" : 2,
+			"folder" : "false"
+		}, {
+			"label" : "label6",
+			"value" : "value6",
+			"depth" : 1,
+			"folder" : "false"
+		}];
+		dataList1.setJSON(jsonData);
+};
+scwin.trigger3_onclick = function(e) {
+	var selectedValue = treeView1.getSelectedValue();
+	window.chk_childNodes3 = treeView1.getChildNodes(selectedValue);
+};
+scwin.trigger4_onclick = function(e) {
+	var selectedValue = treeView1.getSelectedValue();
+	window.chk_childNodes4 = treeView1.getChildNodes(selectedValue, true);
+};
+scwin.checkVal1 = function() {
+	return window.chk_childNodes3.length == 4;
+};
+scwin.checkVal2 = function() {
+	return window.chk_childNodes4.length == 7;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:treeview id="treeView1" style="position:relative;width:318px;height:200px;" lineShow="" tooltipGroupClass="false" dataType="listed" renderType="virtual" showTreeDepth="4" dynamicAppend="true">
+			<w2:itemset nodeset="data:dataList1">
+				<w2:label ref="label"></w2:label>
+				<w2:value ref="value"></w2:value>
+				<w2:depth ref="depth"></w2:depth>
+				<w2:folder ref="folder"></w2:folder>
+			</w2:itemset>
+		</w2:treeview>
+		<xf:trigger type="button" id="trigger3" style="width:220px;height:20px;" ev:onclick="scwin.trigger3_onclick">
+			<xf:label><![CDATA[treeView1 getChildNodes]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger4" style="width:220px;height:20px;" ev:onclick="scwin.trigger4_onclick">
+			<xf:label><![CDATA[treeView1 getChildNodes hierarchy ]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

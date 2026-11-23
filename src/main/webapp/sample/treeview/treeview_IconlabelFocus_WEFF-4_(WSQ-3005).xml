@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="MENU_ID" name="name1" dataType="text"></w2:column>
+						<w2:column id="MENU_NM" name="name2" dataType="text"></w2:column>
+						<w2:column id="LEVEL_CNT" name="name3" dataType="text"></w2:column>
+						<w2:column id="CHECK_REF" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.fireMouseHover = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('onmouseover');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('mouseover', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.onmouseover == 'function') {
+		node.onmouseover();
+	}
+};
+scwin.__triggerMouseover = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireMouseHover(el);
+};
+scwin.__isPointer = function() {
+	return ((j) => j.length ? j : $('#mf_treeview1_icon_3'))($('#treeview1_icon_3')).css("cursor") == "pointer";
+};
+scwin.onpageload = function() {
+	// 원본 데이터(5325건) 그대로: menu1 1건 + [menu2-1, menu2, menu1-1, menu3, menu3-1 x117] x44
+	var row = function(id, level, chk) {
+		return { "MENU_ID": id, "MENU_NM": id, "LEVEL_CNT": level, "CHECK_REF": chk };
+	};
+	var jsonData = [row("menu1", "1", "false")];
+	for (var i = 0; i < 44; i++) {
+		jsonData.push(row("menu2-1", "2", "false"), row("menu2", "1", "true"), row("menu1-1", "2", "true"), row("menu3", "1", "false"));
+		for (var j = 0; j < 117; j++) {
+			jsonData.push(row("menu3-1", "2", "true"));
+		}
+	}
+	dataList1.setJSON(jsonData);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" style="height:223px;">
+			<xf:group id="" style="height:223px;display: inline-block">
+				<w2:textbox id="" style="position: relative;width: 150px;height: 23px;" label="basic"></w2:textbox>
+				<w2:treeview id="treeview1" dataType="listed" style="position: relative;width: 200px;height: 200px;"
+					lineShow="" useDrag="true" tooltipGroupClass="false" alwaysDraw="false" showTreeDepth="0" showCheckbox="true" dynamicAppend="true" defaultImage="down.png" expandedImage="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ">
+					<w2:itemset nodeset="data:dataList1">
+						<w2:label ref="MENU_ID"></w2:label>
+						<w2:value ref="MENU_NM"></w2:value>
+						<w2:depth ref="LEVEL_CNT"></w2:depth>
+					</w2:itemset>
+				</w2:treeview>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

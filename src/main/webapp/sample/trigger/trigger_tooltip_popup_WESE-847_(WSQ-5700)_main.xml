@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map" />
+			<w2:workflowCollection />
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.btn_openpopup_onclick = function(e) {
+	var opt = {
+		id: "popup_sample",
+		popupName: "samplePopup",
+		type: "wframePopup",
+		modal: true,
+		width: 450,
+		height: 350,
+		top: "200px",
+		left: "300px"
+	};
+	$p.openPopup("/sample/common_link/trigger_tooltip_popup_WESE-847_(WSQ-5700)_popup.xml", opt);
+};
+scwin.fireOver = function(node) {
+	window.evt = document.createEvent('MouseEvents');
+	evt.initEvent('mouseover', true, false);
+	node.dispatchEvent(evt);
+};
+scwin.mouseOverBehaviour = function(id) {
+	window.el = scwin.__getDom(id);
+	scwin.fireOver(el);
+};
+scwin.checkVal1 = function() {
+	return (document.getElementById('wq_uuid_0_balloonTip') || document.getElementById('mf_wq_uuid_0_balloonTip')).style.display == 'none';
+};
+]]></script>
+	</head>
+	<body>
+		<xf:trigger type="button" id="btn_openpopup" style="width:110px;height:33px;position:absolute;top:25px;left:26px;" ev:onclick="scwin.btn_openpopup_onclick">
+			<xf:label><![CDATA[팝업]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

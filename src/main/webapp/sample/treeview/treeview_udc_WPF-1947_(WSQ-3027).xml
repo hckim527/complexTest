@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="g_dc_menu_side">
+					<w2:columnInfo>
+						<w2:column id="clasId" dataType="text" />
+						<w2:column id="clasDepth" dataType="number" />
+						<w2:column id="pgmNm" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+scwin.__checkErr = function() {
+	return temp = WebSquare.logger.getErrorLog();
+};
+scwin.checkVal1 = function() {
+	return scwin.__getObj('g_ui_menu_side_label_1').innerText == 'test';
+};
+scwin.onpageload = function() {
+	var jsonData = [
+		{"clasId": "1001", "clasDepth": 2, "pgmNm": "test", "rowStatus": "R"},
+		{"clasId": "100102", "clasDepth": 3, "pgmNm": "test1", "rowStatus": "R"},
+		{"clasId": "100103", "clasDepth": 3, "pgmNm": "test2", "rowStatus": "R"},
+		{"clasId": "100107", "clasDepth": 3, "pgmNm": "test3", "rowStatus": "R"},
+		{"clasId": "100108", "clasDepth": 3, "pgmNm": "test4", "rowStatus": "R"},
+		{"clasId": "1003", "clasDepth": 2, "pgmNm": "test5", "rowStatus": "R"},
+		{"clasId": "100301", "clasDepth": 3, "pgmNm": "test6", "rowStatus": "R"}
+	];
+	g_dc_menu_side.setJSON(jsonData);
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+			.tabc_layout .content_body{border:1px solid red;}
+		]]></style>
+		<w2:inherit src="/sample/common_link/treeview_udc_WPF-1947_(WSQ-3027)_splitter.xml" />
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="wrap">
+			<xf:group class="header">
+				<xf:group class="head_box">
+					<xf:group class="logo" tagname="a">
+						<w2:attributes>
+							<w2:href>javascript:;</w2:href>
+						</w2:attributes>
+					</xf:group>
+				</xf:group>
+			</xf:group>
+			<w2:app_splitter position="240px" class="container">
+				<xf:group class="side">
+					<xf:group class="sidebox">
+						<xf:group class="aside_title">
+							<w2:textbox id="g_ui_menu_side_title" class="title" />
+						</xf:group>
+						<xf:group class="aside_tree">
+							<w2:treeview id="g_ui_menu_side" dataType="listed" showTreeDepth="10" class="tw_menu">
+								<w2:itemset nodeset="data:g_dc_menu_side">
+									<w2:label ref="pgmNm" />
+									<w2:value ref="clasId" />
+									<w2:depth ref="clasDepth" />
+								</w2:itemset>
+							</w2:treeview>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+			</w2:app_splitter>
+		</xf:group>
+	</body>
+</html>

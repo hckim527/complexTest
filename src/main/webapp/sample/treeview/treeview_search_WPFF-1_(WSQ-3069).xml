@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="MENU_ID" name="name1" dataType="text"></w2:column>
+						<w2:column id="MENU_NM" name="name2" dataType="text"></w2:column>
+						<w2:column id="LEVEL_CNT" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger2_onclick = function(e) {
+	var json = dataList1.getAllJSON();
+	json.forEach(function(o) {
+		o["MENU_NM"] = o["MENU_NM"].replace(/<([^>]+)>/gi, ""); // 태그제거
+	});
+	dataList1.setJSON(json);
+	treeview1.spanAll(true);
+	var word = input1.getValue();
+	var arr_idx = dataList1.getMatchedIndex("MENU_NM", word, false);
+	arr_idx.forEach(function(ix) {
+		var label = dataList1.getCellData(ix, "MENU_NM");
+		dataList1.setCellData(ix, "MENU_NM", label.replaceAll(word, "<span style='color:red'>" + word + "</span>"));
+	});
+};
+scwin.onpageload = function() {
+	dataList1.setJSON([
+		{"MENU_ID": "menu1", "MENU_NM": "menu1", "LEVEL_CNT": "1", "rowStatus": "R"},
+		{"MENU_ID": "menu1-1", "MENU_NM": "menu1-1", "LEVEL_CNT": "2", "rowStatus": "R"},
+		{"MENU_ID": "menu1-1-1", "MENU_NM": "menu1-1-1", "LEVEL_CNT": "3", "rowStatus": "R"},
+		{"MENU_ID": "menu1-1-2", "MENU_NM": "menu1-1-2", "LEVEL_CNT": "3", "rowStatus": "R"},
+		{"MENU_ID": "menu1-2", "MENU_NM": "menu1-2", "LEVEL_CNT": "2", "rowStatus": "R"},
+		{"MENU_ID": "menu1-2-1", "MENU_NM": "menu1-2-1", "LEVEL_CNT": "3", "rowStatus": "R"},
+		{"MENU_ID": "menu1-2-1-1", "MENU_NM": "menu1-2-1-1", "LEVEL_CNT": "4", "rowStatus": "R"},
+		{"MENU_ID": "menu1-2-1-2", "MENU_NM": "menu1-2-1-2", "LEVEL_CNT": "4", "rowStatus": "R"},
+		{"MENU_ID": "menu2", "MENU_NM": "menu2", "LEVEL_CNT": "1", "rowStatus": "R"},
+		{"MENU_ID": "menu2-1", "MENU_NM": "menu2-1", "LEVEL_CNT": "2", "rowStatus": "R"}
+	]);
+	treeview1.spanAll(true);
+	input1.setValue("menu1-1");
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:treeview id="treeview1" dataType="listed" lineShow="" renderType="virtual" style="position:absolute;width:200px;height:250px;left:54px;top:66px;"
+			tooltipGroupClass="false" checkboxDisabledFalseValue="" checkboxDisabledTrueValue="" showTreeDepth="1" escape="false">
+			<w2:itemset nodeset="data:dataList1">
+				<w2:label ref="MENU_NM"></w2:label>
+				<w2:value ref="MENU_ID"></w2:value>
+				<w2:depth ref="LEVEL_CNT"></w2:depth>
+			</w2:itemset>
+		</w2:treeview>
+		<xf:input id="input1" style="position: absolute ;left:58px;top:19px;width:111px;height:21px;"></xf:input>
+		<xf:trigger type="button" id="trigger2" style="position: absolute ;left:184px;top:19px;width:55px;height:23px;" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[검색]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

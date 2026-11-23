@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.btn1_onclick = function(e) {
+	tb1.setValue(ibx1.validate());
+};
+
+scwin.checkVal = function() {
+	return scwin.__getDom($p.id + 'tb1').innerText == 'true';
+};
+]]></script>
+	</head>
+	<body>
+		<w2:textbox label='displayFormat:#,###.#0&lt;br/&gt;byteCheckIgnoreChar=", ." &lt;br/&gt;maxByteLength="6"'
+			style="width:150px;height:55px;" id="">
+		</w2:textbox>
+		<xf:input byteCheckIgnoreChar=", ." dataType="text" displayFormat="#,###.#0" id="ibx1" maxByteLength="6"
+			style="position: relative;width: 144px;height: 21px;margin-bottom: 20px;margin-top:40px;" validator="checkNumber4">
+		</xf:input>
+		<xf:trigger type="button" style="width: 80px;height: 23px;margin-top:20px;margin-left:35px;" id="btn1"
+			ev:onclick="scwin.btn1_onclick">
+			<xf:label><![CDATA[검증]]></xf:label>
+		</xf:trigger>
+		<w2:textbox id="tb1" style="width: 150px;height: 23px;"></w2:textbox>
+	</body>
+</html>

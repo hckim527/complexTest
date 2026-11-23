@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="listData" baseNode="list" repeatNode="data" valueAttribute="">
+					<w2:columnInfo>
+						<w2:column id="depth" name="depth" dataType="text"></w2:column>
+						<w2:column id="label" name="label" dataType="text"></w2:column>
+						<w2:column id="value" name="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<depth><![CDATA[1]]></depth>
+							<label><![CDATA[메뉴1]]></label>
+							<value><![CDATA[menu1]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[2]]></depth>
+							<label><![CDATA[메뉴1-1]]></label>
+							<value><![CDATA[menu1-1]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[2]]></depth>
+							<label><![CDATA[메뉴1-2]]></label>
+							<value><![CDATA[menu1-2]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[3]]></depth>
+							<label><![CDATA[메뉴1-2-1]]></label>
+							<value><![CDATA[menu1-2-1]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[2]]></depth>
+							<label><![CDATA[메뉴1-3]]></label>
+							<value><![CDATA[menu1-3]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[1]]></depth>
+							<label><![CDATA[메뉴2]]></label>
+							<value><![CDATA[menu2]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[2]]></depth>
+							<label><![CDATA[메뉴2-1]]></label>
+							<value><![CDATA[menu2-1]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[1]]></depth>
+							<label><![CDATA[메뉴3]]></label>
+							<value><![CDATA[menu3]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[2]]></depth>
+							<label><![CDATA[메뉴3-1]]></label>
+							<value><![CDATA[menu3-1]]></value>
+						</w2:row>
+						<w2:row>
+							<depth><![CDATA[2]]></depth>
+							<label><![CDATA[메뉴3-2]]></label>
+							<value><![CDATA[menu3-2]]></value>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList id="destTree" baseNode="list" repeatNode="data" valueAttribute="">
+					<w2:columnInfo>
+						<w2:column id="depth" name="depth" dataType="text"></w2:column>
+						<w2:column id="label" name="label" dataType="text"></w2:column>
+						<w2:column id="value" name="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<depth><![CDATA[1]]></depth>
+							<label><![CDATA[즐겨찾기]]></label>
+							<value><![CDATA[menu0]]></value>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="javascript" lazy="false"><![CDATA[
+// render Type이 table인 경우 ondrop 이벤트에서 appendNode 가 정상 수행된다.
+scwin.ui_treeview2_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {
+	this.appendNode(dropNode, dragNode);
+};
+// render Type이 virtual인 경우 ondrop 이벤트에서 appendNode 가 수행되지 않는다.
+scwin.treeview2_ondrop = function(dragNode, dropNode, dragControl, dropControl, e) {
+	this.appendNode(dropNode, dragNode);
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group id="" style="overflow:hidden;width: 450px;">
+			<w2:treeview id="ui_treeview1" dataType="listed" showTreeDepth="" style="float:left;width: 210px;height: 300px;border: 1px solid #93A7B2;" lineShow="" useDrag="true"
+				hierarchy="true" showCheckbox="true" toggleEvent="onclick" checkAllChildNodes="true" renderType="table">
+				<w2:itemset nodeset="data:listData">
+					<w2:label ref="label"></w2:label>
+					<w2:value ref="value"></w2:value>
+					<w2:depth ref="depth"></w2:depth>
+				</w2:itemset>
+			</w2:treeview>
+			<w2:treeview id="ui_treeview2" dataType="listed" showTreeDepth="1" style="float:right;width: 210px;height: 300px;border: 1px solid #93A7B2;" lineShow="" useDrag="true"
+				showCheckbox="false" dynamicAppend="true" ev:ondrop="scwin.ui_treeview2_ondrop" renderType="table">
+				<w2:itemset nodeset="data:destTree">
+					<w2:label ref="label"></w2:label>
+					<w2:value ref="value"></w2:value>
+					<w2:depth ref="depth"></w2:depth>
+				</w2:itemset>
+			</w2:treeview>
+		</xf:group>
+		<xf:group id="" style="overflow:hidden;width: 450px;margin-top: 20px;">
+			<w2:treeview checkAllChildNodes="true" dataType="listed" hierarchy="true" id="treeview1" lineShow="" renderType="virtual" showCheckbox="true" showTreeDepth=""
+				style="float:left;width: 210px;height: 300px;border: 1px solid #93A7B2;" toggleEvent="onclick" useDrag="true">
+				<w2:itemset nodeset="data:listData">
+					<w2:label ref="label"></w2:label>
+					<w2:value ref="value"></w2:value>
+					<w2:depth ref="depth"></w2:depth>
+				</w2:itemset>
+			</w2:treeview>
+			<w2:treeview dataType="listed" dynamicAppend="true" id="treeview2" lineShow="" renderType="virtual" showCheckbox="false" showTreeDepth="1"
+				style="float:right;width: 210px;height: 300px;border: 1px solid #93A7B2;" useDrag="true" ev:ondrop="scwin.treeview2_ondrop">
+				<w2:itemset nodeset="data:destTree">
+					<w2:label ref="label"></w2:label>
+					<w2:value ref="value"></w2:value>
+					<w2:depth ref="depth"></w2:depth>
+				</w2:itemset>
+			</w2:treeview>
+		</xf:group>
+	</body>
+</html>

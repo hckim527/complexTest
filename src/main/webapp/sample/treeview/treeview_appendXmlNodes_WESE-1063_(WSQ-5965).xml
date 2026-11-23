@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	var jsonData = [
+		{"col1": "즐겨찾기", "col2": "1", "col3": "1"},
+		{"col1": "테스트1(즐겨찾기)", "col2": "2", "col3": "2"},
+		{"col1": "테스트2(즐겨찾기)", "col2": "3", "col3": "2"}
+	];
+	dataList1.setJSON(jsonData);
+};
+scwin.trigger1_onclick = function(e) {
+	var tmpStr = "<list>";
+	tmpStr += "<map>";
+	tmpStr += "<col1>테스트3(즐겨찾기)</col1>";
+	tmpStr += "<col2>4</col2>";
+	tmpStr += "<col3>2</col3>";
+	tmpStr += "</map>";
+	tmpStr += "</list>";
+	var tmpDoc = WebSquare.xml.parse(tmpStr);
+	var tmpDocArr = WebSquare.xml.findNodes(tmpDoc, "list/map");
+	var parentNode = treeview1.findNodeByValue("1");
+	treeview1.appendXmlNodes(parentNode, tmpDocArr);
+};
+scwin.checkVal1 = function() {
+	return (document.getElementById('treeview1_label_4') || document.getElementById('mf_treeview1_label_4')).innerText == '테스트3(즐겨찾기)';
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[추가]]></xf:label>
+		</xf:trigger>
+		<w2:treeview lineShow="" id="treeview1" dataType="listed" tooltipGroupClass="false" style="width: 200px;height: 200px;">
+			<w2:itemset nodeset="data:dataList1">
+				<w2:label ref="col1"></w2:label>
+				<w2:value ref="col2"></w2:value>
+				<w2:depth ref="col3"></w2:depth>
+			</w2:itemset>
+		</w2:treeview>
+	</body>
+</html>
