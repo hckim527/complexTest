@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<w2:MSA/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="map" id="dlt_Upload">
+					<w2:columnInfo>
+						<w2:column id="name" name="File Name" dataType="text"></w2:column>
+						<w2:column id="size" name="File Size" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<w2:layoutInfo/>
+		<w2:publicInfo method=""/>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.mpd_html5Type_ondone = function(data) {
+	alert("업로드가 완료되었습니다.");
+	txa_muliuploadDone.setValue(JSON.stringify(data, null, "\t"));
+};
+
+scwin.btn_saveMultiupload_onclick = function(e) {
+	if (mpd_html5Type.getFileCount() === 0) {
+		alert("업로드할 파일이 없습니다.");
+		return;
+	}
+	mpd_html5Type.startUpload();
+};
+
+scwin.multiUploadSelectDone = function() {
+	dlt_Upload.setJSON(mpd_html5Type.getFileInfos());
+};
+
+scwin.mpd_html5Type_onprogress = function(data) {
+	console.log(data);
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group class="titbox" id="">
+			<xf:group id="" style="position: relative; float: left;">
+				<xf:trigger class="btn_cm" id="ui_SelectFile" style="width:80px;" type="button">
+					<xf:label>파일 선택</xf:label>
+				</xf:trigger>
+				<w2:multiupload singleRequest="true" ev:ondone="scwin.mpd_html5Type_ondone" id="mpd_html5Type" maxcount="" maxsize="" mode="html5_transparent"
+					selectCallback="scwin.multiUploadSelectDone" style="position: absolute;left: 0px;top:0px;width:80px;height: 26px;cursor: pointer;z-index: 999;" uploadButton=""
+					ev:onprogress="scwin.mpd_html5Type_onprogress"></w2:multiupload>
+			</xf:group>
+			<xf:trigger class="btn_cm fr" ev:onclick="scwin.btn_saveMultiupload_onclick" id="btn_saveMultiupload" type="button">
+				<xf:label><![CDATA[전송]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:textarea class="mb_def" id="txa_muliuploadDone" spellcheck="false" style="width: 100%;height: 120px;"/>
+	</body>
+</html>

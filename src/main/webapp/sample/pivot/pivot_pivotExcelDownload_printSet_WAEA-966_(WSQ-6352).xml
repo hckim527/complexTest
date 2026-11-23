@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="region" name="지역" dataType="text"></w2:column>
+						<w2:column id="industry" name="업종" dataType="text"></w2:column>
+						<w2:column id="amount" name="금액" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<style type="text/css"><![CDATA[
+.guide-row { margin: 8px 0 16px 0; }
+]]></style>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	dataList1.setJSON([
+		{ region:"서울", industry:"제조",   amount:100 },
+		{ region:"서울", industry:"서비스", amount:30  },
+		{ region:"부산", industry:"제조",   amount:200 },
+		{ region:"부산", industry:"서비스", amount:70  }
+	]);
+};
+
+scwin.downloadObjectForm = function() {
+	pivotTable1.pivotExcelDownload({
+		fileName: "WAEA_966_headerFooter.xlsx",
+		printSet: {
+			header: { left: "농협은행", center: "월별 실적 집계", right: "대외비" },
+			footer: { center: "출력용 - 재배포 금지" }
+		}
+	});
+};
+
+scwin.downloadDefault = function() {
+	pivotTable1.pivotExcelDownload({
+		fileName: "WAEA_966_default.xlsx"
+	});
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:pivot id="pivotTable1" editablePivotMode="true" dataList="dataList1" style="position:relative;width:800px;height:400px;" aggregatorName="Sum"
+			showGrandTotal="true" rows="region" cols="industry" vals="amount" valuesAxis="row" renderMode="full" grandTotalName="총합계" valueDataType="number">
+			<w2:fieldInfo>
+				<w2:field id="region" name="지역" dataType="text"></w2:field>
+				<w2:field id="industry" name="업종" dataType="text"></w2:field>
+				<w2:field id="amount" name="금액" dataType="number"></w2:field>
+			</w2:fieldInfo>
+		</w2:pivot>
+		<div class="guide-row">
+			<xf:trigger id="btnObj" type="button" style="width:260px;height:25px;" ev:onclick="scwin.downloadObjectForm">
+				<xf:label>1) 머리글/바닥글 객체(left/center/right) 지정</xf:label>
+			</xf:trigger>
+		</div>
+		<div class="guide-row">
+			<xf:trigger id="btnDefault" type="button" style="width:260px;height:25px;" ev:onclick="scwin.downloadDefault">
+				<xf:label>3) 미지정 (기존 동작 확인)</xf:label>
+			</xf:trigger>
+		</div>
+	</body>
+</html>

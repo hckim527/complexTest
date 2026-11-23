@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ev="http://www.w3.org/2001/xml-events"
+      xmlns:w2="http://www.inswave.com/websquare"
+      xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+    <w2:type>DEFAULT</w2:type>
+    <w2:buildDate/>
+    <xf:model>
+        <xf:instance>
+            <data xmlns=""/>
+        </xf:instance>
+        <w2:dataCollection baseNode="map"/>
+        <w2:workflowCollection/>
+    </xf:model>
+    <script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+    scwin.log("[main] onpageload fired");
+};
+
+window.__pendingLog = window.__pendingLog || [];
+scwin.log = function(msg) {
+    var ts = new Date().toISOString().substring(11, 23);
+    var line = ts + "  " + msg;
+    var t = (typeof txa_log !== "undefined") ? txa_log : null;
+    if (t && typeof t.getValue === "function") {
+        if (window.__pendingLog.length) {
+            var pre = window.__pendingLog.join("\n") + "\n";
+            window.__pendingLog.length = 0;
+            t.setValue((t.getValue() || "") + pre);
+        }
+        t.setValue((t.getValue() || "") + line + "\n");
+    } else {
+        window.__pendingLog.push(line + "  (queued; txa_log not ready)");
+    }
+};
+]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+
+    <w2:tabControl id="tabControl_outer"
+                   style="width:1000px;height:420px;"
+                   useTabKeyOnly="false" useMoveNextTabFocus="false"
+                   useBackbridge="true" useConfirmMessage="false"
+                   confirmTrueAction="exist" confirmFalseAction="new"
+                   tabScroll="true">
+        <w2:tabs id="outer_tab1" label="Outer Tab 1 (중첩 안쪽)"
+                 style="width:200px;height:30px;" disabled="false"></w2:tabs>
+        <w2:tabs id="outer_tab2" label="Outer Tab 2 (단일 leaf)"
+                 style="width:200px;height:30px;" disabled="false"></w2:tabs>
+
+        <w2:content id="content_outer1" alwaysDraw="true" frameMode="wframe"
+                    style="height:380px;" src="/sample/common_link/tabControl_alwaysDraw_WAEA-861_(WSQ-6323)_middle.xml"></w2:content>
+        <w2:content id="content_outer2" alwaysDraw="true" frameMode="wframe"
+                    style="height:380px;" src="/sample/common_link/tabControl_alwaysDraw_WAEA-861_(WSQ-6323)_leaf_other.xml"></w2:content>
+    </w2:tabControl>
+
+    <w2:textarea id="txa_log" style="position:relative;width:1000px;height:200px;font-family:monospace;font-size:12px;"></w2:textarea>
+
+</body>
+</html>

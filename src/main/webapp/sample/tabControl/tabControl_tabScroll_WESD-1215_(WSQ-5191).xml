@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.fireOver = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('onmouseover');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('mouseover', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.onmouseover == 'function') {
+		node.onmouseover();
+	}
+};
+
+scwin.mouseOverBehaviour = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireOver(el);
+};
+
+scwin.checkVal = function() {
+	return (document.getElementById('tabControl1_tooltip') || document.getElementById('mf_tabControl1_tooltip')).style.display == 'block';
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+.w2tabcontrol_tooltip {
+	display : none;
+	position : absolute;
+	border:none;
+	background:#5c85d4;
+	padding:3px;
+	cursor : default;
+	color:#fff;
+	font-size:12px;
+	z-index : 5200;
+}
+]]></style>
+	</head>
+	<body>
+		<w2:textbox label='noUseTitle="true" useTitleTooltip="true" ' style="width:270px;height:23px;"></w2:textbox>
+		<w2:tabControl id="tabControl1" style="width: 500px;height: 200px;" tabScroll="true" closable="true" useAccessibilityMenu="true" noUseTitle="true" useTitleTooltip="true" useATagBtn="true">
+			<w2:tabs style="width:70px;height:30px;" id="tabs1" title="tab1" label="탭1"></w2:tabs>
+			<w2:tabs style="width:70px;height:30px" id="tabs2" label="탭2"></w2:tabs>
+			<w2:tabs style="width:70px;height:30px" id="tabs3" label="탭3"></w2:tabs>
+			<w2:tabs style="width:70px;height:30px" id="tabs4" useATagBtn="false" label="탭4"></w2:tabs>
+			<w2:content style="height:170px" id="content1"></w2:content>
+			<w2:content style="height:170px" id="content2"></w2:content>
+			<w2:content style="height:170px" id="content3"></w2:content>
+			<w2:content style="height:170px" id="content4"></w2:content>
+		</w2:tabControl>
+	</body>
+</html>

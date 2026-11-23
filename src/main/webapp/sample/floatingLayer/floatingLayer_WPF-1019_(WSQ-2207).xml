@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+	var j = $(q); if (j.length) return j;
+	var P = 'mf_', t = q.trim(), r = t.slice(1);
+	if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+	return $(t.slice(0, 1) + r);
+};
+scwin.showFloatingLayer = function(title, width, height, url, modal, usePost, postData) {
+	var top = document.documentElement.scrollTop + document.documentElement.clientHeight / 2 - parseInt(height) / 2;
+	var left = document.documentElement.scrollLeft + document.documentElement.clientWidth / 2 - parseInt(width) / 2;
+	var tmp = url.split("/");
+	tmp = tmp.reverse();
+	var filename = tmp[0];
+	var popupId = "Pop_" + filename.split(".")[0];
+	var popupIframeId = "PopIf_" + filename.split(".")[0]
+	scwin.makeCommonPopup(popupId, popupIframeId, title, width, height, top, left, modal == false ? false : true);
+	eval(popupId).show();
+	eval(popupIframeId).setSrc(url);
+};
+scwin.makeCommonPopup = function(popupId, popupIframeId, title, width, height, top, left, modal, idx) {
+	var scrolling = "auto";
+	WebSquare.util.dynamicCreate(popupId, "floatingLayer", {
+		fullContentArea: true,
+		style: "position: relative ;left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;display:none;z-index:4001",
+		useModal: modal,
+		className: "pop_lay",
+		title: title,
+		xmlEvents: [{
+			name: "onclose",
+			action: "script",
+			param: {
+				handler: function(e) {
+					scwin.__getObj(popupIframeId).setSrc("");
+					scwin.__getObj(popupIframeId).remove();
+					scwin.__getObj(popupId).remove();
+					((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).last().css("z-index", "4001");
+					if (((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).length == 0) { //마지막 팝업이 닫힐 경우에는 modal을 닫는다
+						((j) => j.length ? j : $('#mf__modal'))($('#_modal')).css("display", "none");
+					}
+				}
+			}
+		}]
+	}, WebSquare.getBody());
+	((j) => j.length ? j : $('.mf_pop_lay'))($('.pop_lay')).css("z-index", "3999");
+	scwin.__getJq("#" + popupId).css("z-index", "4001");
+	WebSquare.util.dynamicCreate(popupIframeId, "iframe", {
+		style: "position: relative ;left: 0px;width: 100%;height: 100%;",
+		name: popupIframeId,
+		scrolling: scrolling
+	}, eval(popupId + "_contents"));
+};
+]]></script>
+	</head>
+	<body>
+		<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 55px;top: 18px;width: 82px;height: 28px;">
+			<xf:label><![CDATA[팝업1 오픈]]></xf:label>
+			<script ev:event="onclick(e)" type="javascript"><![CDATA[
+				scwin.showFloatingLayer("Common Address", "500", "300", "/sample/common_link/floatingLayerWPF1019WSQ2207popup.xml", true);
+			]]></script>
+		</xf:trigger>
+	</body>
+</html>

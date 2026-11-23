@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	scwin.openMenu("udc1", "WESD_263_tmp01.xml", "010001");
+	scwin.openMenu("udc2", "sample/udc/multiupload/tmp02.xml", "010002");
+	scwin.openMenu("udc3", "sample/udc/multiupload/tmp02.xml", "010003");
+	scwin.openMenu("udc4", "sample/udc/multiupload/tmp02.xml", "010004");
+	scwin.openMenu("udc5", "sample/udc/multiupload/tmp02.xml", "010005");
+	scwin.openMenu("udc6", "sample/udc/multiupload/tmp02.xml", "010006");
+	scwin.openMenu("udc7", "sample/udc/multiupload/tmp02.xml", "010007");
+};
+
+scwin.openMenu = function(menuNm, url, menuCode) {
+	var tabObj = {
+		closable: true,
+		openAction: "exist",
+		label: menuNm
+	};
+	var contObj = {
+		frameMode: "wframePreload",
+		scope: true,
+		src: url,
+		alwaysDraw: false,
+		title: menuNm,
+		dataObject: {
+			type: "json",
+			name: "param",
+			data: {
+				menuNm: menuNm,
+				menuCode: menuCode,
+				favStatus: "T",
+				menuType: undefined
+			}
+		}
+	};
+	var tabComp = $w.getComponentById("mf_tabControl1");
+	tabComp.addTab(menuCode, tabObj, contObj);
+	if (tabComp.getSelectedTabID() !== menuCode) {
+		var tabIndex = tabComp.getTabIndex(menuCode);
+		if (tabIndex) {
+			tabComp.setSelectedTabIndex(tabIndex);
+		}
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="contents">
+			<w2:tabControl tabPosition="right" id="tabControl1" changeActiveTab="true" tabScrollAuto="true" style="width:300px;height:600px;" useTabKeyOnly="true" tabScroll="true"
+				closable="true" spaAutoDelay="1000" windowMaxNum="10" tabMove="true">
+			</w2:tabControl>
+		</xf:group>
+	</body>
+</html>

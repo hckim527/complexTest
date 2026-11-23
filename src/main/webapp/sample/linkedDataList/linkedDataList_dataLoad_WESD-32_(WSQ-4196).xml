@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="ds_Offics" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:linkedDataList bind="ds_Offics" id="ds_NewOffics">
+					<w2:condition type="filter"><![CDATA[]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+				<w2:linkedDataList bind="ds_Offics" id="ds_BeOffics">
+					<w2:condition type="filter"><![CDATA[]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	ds_NewOffics.setCondition("filter", "col1=='" + select11.getValue() + "'");
+	ds_BeOffics.setCondition("filter", "col1=='" + select11.getValue() + "'");
+	localStorage.removeItem("log1");
+};
+scwin.fn1 = function(data, formattedData, rowIdx, colIdx) {
+	localStorage.setItem("log1", ds_BeOffics.getRowCount());
+	return data + "_cst";
+};
+scwin.trigger1_onclick = function(e) {
+	var jsonData = [{
+			"col1": "a",
+			"col2": "aa",
+			"col3": "aaa"
+		},
+		{
+			"col1": "a",
+			"col2": "bb",
+			"col3": "ccc"
+		},
+		{
+			"col1": "b",
+			"col2": "aa",
+			"col3": "ccc"
+		},
+		{
+			"col1": "a",
+			"col2": "bb",
+			"col3": "aaa"
+		}
+	];
+	ds_Offics.setJSON(jsonData);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="" style="position: absolute ;left:33px;top:24px;width: 575px;height: 266px;" defaultCellHeight="20" dataList="data:ds_NewOffics">
+			<w2:caption id="caption2" value="this is a grid caption."></w2:caption>
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column7" value="name1" displayMode="label"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column5" value="name2" displayMode="label"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="column3" value="name3" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col1" value="" displayMode="label" customFormatter="scwin.fn1"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col2" value="" displayMode="label"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col3" value="" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:select1 id="select11" chooseOption="" style="position: absolute ;left: 626px;top: 48px;width: 202px;height: 64px;" submenuSize="auto"
+			allOption="" disabled="false" direction="auto" appearance="minimal" disabledClass="w2selectbox_disabled" ref="">
+			<xf:choices>
+				<xf:item>
+					<xf:label><![CDATA[col1_a]]></xf:label>
+					<xf:value><![CDATA[a]]></xf:value>
+				</xf:item>
+				<xf:item>
+					<xf:label><![CDATA[col1_b]]></xf:label>
+					<xf:value><![CDATA[b]]></xf:value>
+				</xf:item>
+			</xf:choices>
+		</xf:select1>
+		<xf:trigger type="button" style="position: absolute ;left: 645px;top: 166px;width: 164px;height: 116px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[setJSON]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

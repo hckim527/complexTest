@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>UDC</w2:type>
+		<w2:buildDate />
+		<w2:model></w2:model>
+	</head>
+	<body>
+		<xf:group id="" style="height:23px;" pluginName="udc_telNo" class="defaultClass">
+			<style type="text/css"><![CDATA[
+				.defaultClass {
+					display:inline-block;
+				}
+			]]></style>
+			<script ev:event="oncreated(options)" type="text/javascript"><![CDATA[
+				var readOnly = options.readOnly;
+				var ref = options.ref;
+				var dcomboDataList = options.dComboDataList;
+				var dcomboLabel = options.dComboLabel;
+				var dcomboValue = options.dComboValue;
+
+				if(readOnly) {
+					telNo1.setReadOnly(true);
+					telNo2.setReadOnly(true);
+					telNo3.setReadOnly(true);
+				}
+
+				udc_obj.fireTelChange = true;
+				udc_obj.setValue = function(telno) {
+					var oldValue = udc_obj.getValue();
+					var tel1 = telno.substr(0,3);
+					var offsetTel3 = telno.length-4;
+					var tel3 = telno.substr(offsetTel3);
+					var tel2 = telno.substr(3).replace(tel3,"");
+					udc_obj.fireTelChange = false;
+					telNo1.setValue(tel1);
+					telNo2.setValue(tel2);
+					telNo3.setValue(tel3);
+
+					if(oldValue != telno) {
+						udc_obj.trigger("onTelChange", udc_obj.getValue());
+					}
+					udc_obj.fireTelChange = true;
+				};
+
+				udc_obj.getValue = function() {
+					return telNo1.getValue() + telNo2.getValue() + telNo3.getValue();
+				};
+
+				udc_obj.setRef = function(ref) {
+					if(typeof ref == "string" && ref.length > 0) {
+						if( ! udc_obj.modelControl.isBinded() ) {
+							udc_obj.modelControl.useRef = true;
+						}
+						udc_obj.options.ref = ref;
+						udc_obj.modelControl.setRef( ref );
+						udc_obj.refresh();
+					}
+				};
+
+				udc_obj.refresh = function() {
+					if(udc_obj.modelControl.isBinded()){
+						var value = this.modelControl.getData();
+						udc_obj.setValue(value);
+					}
+				};
+
+				scwin.doInit = function() {
+					telNo1.setNodeSet(dcomboDataList, dcomboLabel, dcomboValue);
+					udc_obj.setRef(ref);
+				};
+
+				scwin.doInit();
+			]]></script>
+			<xf:select1 id="telNo1" disabledClass="w2selectbox_disabled" appearance="minimal" style="position: relative;width:71px;height:21px;float:left;"
+				direction="auto" chooseOption="true" displayMode="label" optionOrder="false" submenuSize="auto" chooseOptionLabel="-선택-">
+				<xf:choices></xf:choices>
+				<script ev:event="onchange" type="text/javascript"><![CDATA[
+					if(udc_obj.fireTelChange) {
+						udc_obj.trigger("onTelChange", udc_obj.getValue());
+					}
+				]]></script>
+			</xf:select1>
+			<w2:span id="" style="position: relative ;margin-left:5px;float:left;" label="-"></w2:span>
+			<xf:input id="telNo2" style="position:relative;height:21px;text-align:center;width:61px;margin-left:5px;float:left;" minByteLength="4"
+				dataType="number" maxlength="4" tabIndex="-1">
+				<script ev:event="onchange" type="text/javascript"><![CDATA[
+					if(udc_obj.fireTelChange) {
+						udc_obj.trigger("onTelChange", udc_obj.getValue());
+					}
+				]]></script>
+			</xf:input>
+			<w2:span id="" style="position: relative ;margin-left:5px;float:left;" label="-"></w2:span>
+			<xf:input id="telNo3" style="position:relative;height:21px;text-align:center;width:59px;margin-left:5px;float:left;" dataType="number"
+				maxlength="4" minByteLength="4" tabIndex="-1">
+				<script ev:event="onchange" type="text/javascript"><![CDATA[
+					if(udc_obj.fireTelChange) {
+						udc_obj.trigger("onTelChange", udc_obj.getValue());
+					}
+				]]></script>
+			</xf:input>
+			<xf:trigger type="button" style="margin-left:5px;width:31px;height:23px;float:left;" id="" tabIndex="-1">
+				<xf:label><![CDATA[검색]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>

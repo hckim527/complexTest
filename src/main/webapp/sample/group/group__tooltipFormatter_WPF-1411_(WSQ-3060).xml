@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance></xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.tooltipFormatter = function(compId) {
+	return "[[[[ " + compId + " ]]]]";
+};
+
+scwin.fireMouseHover = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('onmouseover');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('mouseover', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.onmouseover == 'function') {
+		node.onmouseover();
+	}
+};
+
+scwin.__triggerMouseover = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireMouseHover(el);
+};
+]]></script>
+	</head>
+	<body>
+		<w2:anchor id="anchor" style="position: absolute;width:251px;height:45px;left:214px;top:109px;border: 1px solid #000;" outerDiv="false"
+			toolTip="true" tooltipFormatter="scwin.tooltipFormatter">
+			<xf:label><![CDATA[Insert Text]]></xf:label>
+		</w2:anchor>
+		<w2:textbox label="textbox" id="textbox" style="position: absolute;width:255px;height:51px;left:214px;top:172px;border: 1px solid #000;"
+			toolTip="true" tooltipFormatter="scwin.tooltipFormatter">
+		</w2:textbox>
+		<xf:group id="grp" style="position: absolute;width:257px;height:200px;left:214px;top:248px;border: 1px solid #000;"
+			toolTip="true" tooltipFormatter="scwin.tooltipFormatter">
+			<w2:textbox id="innerTextbox" label="textbox" style="position: absolute;width:156px;height:51px;left:56px;top:74px;border: 1px solid #000;"
+				toolTip="true" tooltipFormatter="scwin.tooltipFormatter">
+			</w2:textbox>
+		</xf:group>
+	</body>
+</html>

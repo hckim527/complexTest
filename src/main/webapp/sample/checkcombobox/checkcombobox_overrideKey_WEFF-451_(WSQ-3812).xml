@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+scwin.onpageload = function() {
+	window.common = {};
+	common.nextTabFunction = function(compId) {
+		window.dest = common.findNextFocusedComp(compId);
+		while (dest != undefined) {
+			if (dest.getDisabled() !== true && dest.getReadOnly() !== true) {
+				dest.focus();
+				break;
+			}
+			dest = common.findNextFocusedComp(dest.id);
+		}
+	};
+	common.findNextFocusedComp = function(compId) {
+		window.dest = "";
+		window.source = scwin.__getObj(compId);
+		switch (source.getOriginalID()) {
+			case "selectbox1":
+				dest = "selectbox2";
+				break;
+			case "checkcombobox1":
+				dest = "trigger1";
+				break;
+		}
+		return WebSquare.util.getComponentById(dest, source.scope_id);
+	};
+	common.keyEventHandler = function() {
+		document.documentElement.addEventListener("keydown", function(e) {
+			window.keyCode = (e.charCode) ? e.charCode : e.keyCode;
+			window.elem = WebSquare.event.getTarget(e);
+			window.className = " " + elem.className + " ";
+			if (className.indexOf(" " + "w2selectbox" + " ") >= 0) {
+				if (keyCode === 40) {
+					window.selectbox = $p.getComponentById(elem.id);
+					selectbox.openSubLayer();
+					WebSquare.event.preventDefault(e);
+				}
+			} else if (className.indexOf(" " + "w2checkcombobox" + " ") >= 0) {
+				if (keyCode === 40) {
+					window.checkcomobobox = $p.getComponentById(elem.id);
+					checkcomobobox.openSubLayer();
+					WebSquare.event.preventDefault(e);
+				}
+			} else if (className.indexOf(" " + "w2table" + " ") >= 0) {
+				window.parentCompId = elem.id.slice(0, elem.id.length - 10);
+				window.parentComp = $p.getComponentById(parentCompId);
+				if (keyCode === 9 || keyCode === 13) {
+					parentComp.closeSubLayer();
+					common.nextTabFunction(parentCompId);
+					WebSquare.event.preventDefault(e);
+				}
+			}
+		});
+	};
+	var data2 = [];
+	for (var i = 0; i < 10; i++) {
+		for (var j = 0; j < 4; j++) {
+			data2.push(i * 4 + j);
+		}
+	}
+	dataList2.setData(data2);
+	common.keyEventHandler();
+};
+scwin._triggerKeyboardEvent = function(el, keyCode) {
+	var eventObj = document.createEventObject ?
+		document.createEventObject() : document.createEvent("Events");
+	if (eventObj.initEvent) {
+		eventObj.initEvent("keydown", true, true);
+	}
+	eventObj.keyCode = keyCode;
+	eventObj.which = keyCode;
+	el.dispatchEvent ? el.dispatchEvent(eventObj) : el.fireEvent("onkeydown", eventObj);
+};
+]]></script>
+		<w2:config>
+			<WebSquare>
+				<nextTabFunction value="common.nextTabFunction" />
+				<itemTable>
+					<overrideKey value="9,13" />
+				</itemTable>
+				<selectbox>
+					<overrideKey value="40" />
+					<keyMoveListSync value="true" />
+				</selectbox>
+				<checkcombobox>
+					<overrideKey value="40,187" />
+				</checkcombobox>
+			</WebSquare>
+		</w2:config>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group tagname="table" id="table2" style="width:600px;" class="w2tb">
+			<xf:group tagname="colgroup">
+				<xf:group style="width:25.00%;" tagname="col"></xf:group>
+				<xf:group style="width:25.00%" tagname="col"></xf:group>
+				<xf:group style="width:25.00%;" tagname="col"></xf:group>
+				<xf:group style="width:25.00%" tagname="col"></xf:group>
+			</xf:group>
+			<xf:group tagname="tr">
+				<xf:group class="w2tb_th" tagname="th">selectbox1</xf:group>
+				<xf:group class="w2tb_td" tagname="td">
+					<xf:select1 id="selectbox1" style="width:135px;height: 21px;" overrideKey="40" keyModeListSync="true">
+						<xf:choices>
+							<xf:itemset nodeset="data:dataList2">
+								<xf:label ref="col1"></xf:label>
+								<xf:value ref="col2"></xf:value>
+							</xf:itemset>
+						</xf:choices>
+					</xf:select1>
+				</xf:group>
+				<xf:group class="w2tb_th" tagname="th">selectbox2</xf:group>
+				<xf:group class="w2tb_td" tagname="td">
+					<xf:select1 id="selectbox2" style="width:135px;height: 21px;" overrideKey="40" keyModeListSync="true">
+						<xf:choices>
+							<xf:itemset nodeset="data:dataList2">
+								<xf:label ref="col1"></xf:label>
+								<xf:value ref="col2"></xf:value>
+							</xf:itemset>
+						</xf:choices>
+					</xf:select1>
+				</xf:group>
+			</xf:group>
+			<xf:group tagname="tr">
+				<xf:group class="w2tb_th" tagname="th">checkcombobox</xf:group>
+				<xf:group class="w2tb_td" tagname="td">
+					<xf:checkcombobox id="checkcombobox1" style="width:135px;height: 21px;" displayMode="label" overrideKey="40,187">
+						<xf:choices>
+							<xf:itemset nodeset="data:dataList2">
+								<xf:label ref="col1"></xf:label>
+								<xf:value ref="col2"></xf:value>
+							</xf:itemset>
+						</xf:choices>
+					</xf:checkcombobox>
+				</xf:group>
+				<xf:group class="w2tb_th" tagname="th"></xf:group>
+				<xf:group class="w2tb_td" tagname="td"></xf:group>
+			</xf:group>
+		</xf:group>
+		<xf:trigger type="button" id="trigger1" style="width:100px;height:32px;">
+		</xf:trigger>
+	</body>
+</html>

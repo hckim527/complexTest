@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+	var j = $(q); if (j.length) return j;
+	var P = 'mf_', t = q.trim(), r = t.slice(1);
+	if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+	return $(t.slice(0, 1) + r);
+};
+scwin.trigger3_onclick = function(e) {
+	var tabOpt = {
+		label: "New Add Tab",
+		closable: true
+	};
+	var contOpt = {
+		alwaysDraw: true,
+		wframe: true
+	};
+	var tabID = "addtab" + tabIndex;
+	tabOpt.addTabIndex = tabControlSample_selectbox.getValue();
+	tabOpt.label += " " + tabIndex;
+	tabControl1.addTab(tabID, tabOpt, contOpt);
+	tabIndex++;
+};
+scwin.__isAddTab = function(p) {
+	var li = ((j) => j.length ? j : $('#mf_tabControl1_tabhost li'))($('#tabControl1_tabhost li'));
+	var header = scwin.__getJq(li[p]).find("a").text();
+	return header == ("New Add Tab " + (tabIndex - 1));
+};
+scwin.onpageload = function() {
+	window.tabIndex = 1;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="position: relative;margin-top: 5px;">
+			<w2:textbox id="" label="*신규 Add Tab 함수" style="position: relative;width: 150px;display: inline-block;"></w2:textbox>
+			<xf:trigger ev:onclick="scwin.trigger3_onclick" id="trigger3" style="position: relative;width: 80px;height: 23px;" type="button">
+				<xf:label><![CDATA[Add Tab]]></xf:label>
+			</xf:trigger>
+			<xf:select1 appearance="minimal" direction="auto" disabled="false" disabledClass="w2selectbox_disabled" renderType="native" displayMode="label"
+				id="tabControlSample_selectbox" optionOrder="false" style="position: relative;width: 148px;height: 21px;" submenuSize="auto">
+				<xf:choices>
+					<xf:item>
+						<xf:label><![CDATA[Add Tab1]]></xf:label>
+						<xf:value><![CDATA[0]]></xf:value>
+					</xf:item>
+					<xf:item>
+						<xf:label><![CDATA[Add Tab2]]></xf:label>
+						<xf:value><![CDATA[1]]></xf:value>
+					</xf:item>
+					<xf:item>
+						<xf:label><![CDATA[Add Tab3]]></xf:label>
+						<xf:value><![CDATA[2]]></xf:value>
+					</xf:item>
+					<xf:item>
+						<xf:label><![CDATA[Add Tab4]]></xf:label>
+						<xf:value><![CDATA[3]]></xf:value>
+					</xf:item>
+					<xf:item>
+						<xf:label><![CDATA[Add Tab5]]></xf:label>
+						<xf:value><![CDATA[4]]></xf:value>
+					</xf:item>
+				</xf:choices>
+			</xf:select1>
+		</xf:group>
+		<w2:tabControl useTabKeyOnly="false" useMoveNextTabFocus="false" useBackbridge="true" useConfirmMessage="false"
+			confirmTrueAction="exist" confirmFalseAction="new" style="width: 1500px;height: 400px;padding-left:10px;" id="tabControl1"
+			tabScroll="true">
+			<w2:tabs label="Test1" closable="true" disabled="false" style="width:70px;height:30px;" id="tabs1"></w2:tabs>
+			<w2:tabs disabled="false" style="width:70px;height:30px" label="Test2" id="tabs2"></w2:tabs>
+			<w2:tabs id="tabs3" style="width:70px;height:30px" label="Test3" disabled="false"></w2:tabs>
+			<w2:content alwaysDraw="false" style="height:370px;" id="content1"></w2:content>
+			<w2:content alwaysDraw="false" style="height:270px;" id="content2"></w2:content>
+			<w2:content id="content3" style="height:370px" alwaysDraw="false"></w2:content>
+		</w2:tabControl>
+	</body>
+</html>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance></xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.tooltipFormatterFunc = function(compId, label) {
+	window.obj;
+	var tmpStr = "";
+	if (compId != $p.id + "group2") {
+		obj = $p.getComponentById(compId);
+		tmpStr = obj.getValue();
+	} else {
+		obj = textbox3;
+		tmpStr = obj.getValue();
+	}
+	return tmpStr;
+};
+
+scwin.fireOver = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('onmouseover');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('mouseover', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.onmouseover == 'function') {
+		node.onmouseover();
+	}
+};
+
+scwin.mouseOverBehaviour = function(id) {
+	var el = scwin.__getDom(id);
+	scwin.fireOver(el);
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+			.w2ballontip{z-index:20000;}
+		]]></style>
+	</head>
+	<body>
+		<xf:group id="" style="margin-top: 200px;margin-left:200px;">
+			<xf:group id="group1" style="border:1px solid red;width:400px;">
+				<w2:textbox id="textbox1" style="width: 150px;height: 23px;" toolTip="true" tooltipFormatter="scwin.tooltipFormatterFunc" label="group1 textbox tooltip"></w2:textbox>
+			</xf:group>
+			<xf:group id="group2" style="border:1px solid blue;width:400px;" toolTip="true" tooltipFormatter="scwin.tooltipFormatterFunc">
+				<w2:textbox id="textbox3" style="width: 150px;height: 23px;background: yellow;" toolTip="" value="aaaaaa" label="group2 group tooltip"></w2:textbox>
+			</xf:group>
+			<xf:group id="group3" style="border:1px solid blue;width:400px;" toolTip="group3_tooltip">
+				<w2:textbox id="textbox4" style="width: 150px;height: 23px;background: yellow;" toolTip="textbox4_tooltip" value="aaaaaa" label="group3 group tooltip"></w2:textbox>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

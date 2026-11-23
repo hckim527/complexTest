@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.editor1_onchange = function() {
+	var result = scwin.__getDom($p.id + 'result');
+	result.value += "onchange occured. \n";
+};
+
+scwin._checkvalue = function() {
+	return result.getValue().replace(/\r?\n/g, '');
+};
+
+scwin.checkVal = function() {
+	return scwin._checkvalue() == 'onchange occured. ';
+};
+]]></script>
+	</head>
+	<body>
+		<w2:editor id="editor1" enableOnChangeEvent='true' style="position: absolute;width: 500px;height: 300px;left:70px;top:55px;"
+			ev:onchange="scwin.editor1_onchange">
+		</w2:editor>
+		<xf:textarea id="result" style="position: absolute;width:300px;height:305px;left:620px;top:52px;"></xf:textarea>
+	</body>
+</html>

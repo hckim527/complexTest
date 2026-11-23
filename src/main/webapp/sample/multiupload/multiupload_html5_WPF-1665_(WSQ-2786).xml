@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text"></w2:column>
+						<w2:column id="name" name="FileName" dataType="text"></w2:column>
+						<w2:column id="displaySize" name="Size" dataType="text"></w2:column>
+						<w2:column id="size" name="Size2" dataType="text"></w2:column>
+						<w2:column id="Status" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.selectCallback = function(fileArr) {
+	console.log(fileArr);
+	WebSquare.logger.printLog(fileArr);
+	if (fileArr.length === 0) {
+		return;
+	}
+	var uploadFiles = [];
+	var dataList_name = "";
+	var dataList_size = "";
+	if (dataList1.getRowCount() + fileArr.length > h5_trans.options.maxcount) {
+		alert("[selectCallback] 업로드건수가 " + h5_trans.options.maxcount + "건으로 제한되어 있습니다.");
+		for (var i = 0, len = fileArr.length; i < len; i++) {
+			h5_trans.removeFile(fileArr[i].name);
+		}
+		return;
+	}
+	for (var i = 0; i < fileArr.length; i++) {
+		var isExist = false;
+		var file_name = fileArr[i].name;
+		var file_size = fileArr[i].size;
+		for (var j = 0; j < dataList1.getRowCount(); j++) {
+			dataList_name = dataList1.getCellData(j, "name");
+			dataList_size = dataList1.getCellData(j, "size");
+			if (dataList_name == file_name && dataList_size == file_size) {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) {
+			alert("[HTML5 selectCallback] 파일이 이미 있습니다. (" + file_name + ")");
+			h5_trans.removeFile(file_name);
+		} else {
+			var obj = {
+				name: file_name,
+				size: file_size
+			};
+			uploadFiles.push(obj);
+		}
+	}
+	dataList1.insertJSON(dataList1.getRowCount(), uploadFiles);
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+			* {font-family: tahoma}
+
+			.w2multiupload_uploader {
+				background-color:red;
+			}
+		]]></style>
+	</head>
+	<body>
+		<xf:group id="group2" style="padding:10px;">
+			<xf:group id="group1" style="overflow:hidden;margin-top:5px;">
+				<w2:multiupload maxcount="5" maxsize="100000" id="h5_trans" style="position:relative;height:34px;width:111px;float:left;" uploadButton="" mode="html5_transparent"
+					selectCallback="scwin.selectCallback">
+				</w2:multiupload>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

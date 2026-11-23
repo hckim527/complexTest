@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:config>
+			<WebSquare>
+				<pivot>
+					<noResultMessage value="데이터가 없음"/>
+					<noResultMessageStyle value="left:40%; width:20%; top:40%; border:1px solid #b3b3b3; color:#383d41; font-size:12px; padding:5px; text-align:center; background:#fafafa"/>
+				</pivot>
+			</WebSquare>
+		</w2:config>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dl_resultList" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="ratYear" name="해당년도" dataType="text"></w2:column>
+						<w2:column id="tacFicdCode" name="어종코드" dataType="text"></w2:column>
+						<w2:column id="totRatAmt" name="할당량" dataType="text"></w2:column>
+						<w2:column id="totReduAmt" name="어획량" dataType="text"></w2:column>
+						<w2:column id="reduRate" name="어획률" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+scwin.checkVal = function() {
+	return scwin.__getObj('pivotTable1_noresult').innerText == '데이터가 없음'
+}
+scwin.onpageload2 = function() {
+	pivotTable1.setFieldOption([{
+		"id": "ratYear",
+		"sortOrder": "2016년(총괄),2016년02월(A) (누계),2017년02월(B) (누계),증감(B-A)"
+	}]);
+	pivotTable1.setOption({
+		"rows": "tacFicdCode",
+		"cols": "ratYear",
+		"vals": "reduRate,totReduAmt,totRatAmt",
+		"valuesAxis": "col"
+	});
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2">
+		<xf:group id="" style="position: relative;padding: 20px;">
+			<xf:group id="group_1" style="position: relative;">
+				<w2:pivot id="pivotTable1" editablePivotMode="false" grandTotalName="구분" dataList="dl_resultList"
+					autoFit="allColumn" autoFitMinWidth="550" style="position: relative; height:600px;width:100%;left:0px;top:33px;"
+					showZero="true" valuesAxis="" hiddenHeaderList="hidden,row,col,val" noResultMessageVisible="true">
+					<w2:fieldInfo>
+						<w2:field id="ratYear" name="해당년도"></w2:field>
+						<w2:field id="tacFicdCode" name="어종"></w2:field>
+						<w2:field id="totRatAmt" name="할당량"></w2:field>
+						<w2:field id="reduRate" name="(%)"></w2:field>
+						<w2:field id="totReduAmt" name="어획량"></w2:field>
+					</w2:fieldInfo>
+				</w2:pivot>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text"></w2:column>
+						<w2:column id="name" name="FileName" dataType="text"></w2:column>
+						<w2:column id="displaySize" name="Size" dataType="text"></w2:column>
+						<w2:column id="Status" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	var filedragdom = filedrag.render;
+	filedragdom.addEventListener("dragover", scwin.fileDragHandler, false);
+	filedragdom.addEventListener("dragenter", scwin.fileDragHandler, false);
+	filedragdom.addEventListener("dragleave", scwin.fileDragHandler, false);
+	filedragdom.addEventListener("drop", scwin.fileDropHandler, false);
+};
+
+scwin.selectCallback = function(fileArr) {
+	console.log(fileArr);
+	var fileInfos = tobe.getFileInfos();
+	dataList1.setJSON(fileInfos);
+};
+
+scwin.fileDragHandler = function(e) {
+	WebSquare.event.stopEvent(e);
+	e.target.className = (e.type == "dragover" ? "hover" : "");
+};
+
+scwin.fileDropHandler = function(e) {
+	scwin.fileDragHandler(e);
+	tobe.dropFiles(e);
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+#filedrag {
+	display: block;
+	height: 50px;
+	padding: 10px;
+	font-weight: bold;
+	text-align: center;
+	color: #555;
+	border: 2px dashed #555;
+	border-radius: 7px;
+	cursor: default;
+	font-size: 20px;
+}
+
+#filedrag.hover {
+	color: #f00;
+	border: 2px solid red;
+}
+		]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="group2" style="padding:10px;">
+			<xf:group id="group1" style="overflow:hidden;margin-top:5px;">
+				<w2:multiupload maxcount="" id="tobe" maxsize="10000000" style="position:relative;height:34px;width:111px;float:left;background: red;" uploadButton=""
+					filter="한글파일:*.doc;*.hwp;*.docx" mode="html5_transparent" selectCallback="scwin.selectCallback">
+				</w2:multiupload>
+			</xf:group>
+		</xf:group>
+		<w2:textbox label="Drop files here !!" id="filedrag">
+		</w2:textbox>
+	</body>
+</html>

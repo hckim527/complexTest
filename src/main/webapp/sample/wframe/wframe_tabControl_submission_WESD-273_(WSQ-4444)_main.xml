@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+
+scwin.btn_search_onclick = function() {
+	$p.top().scwin.openMenu("테스트", "/sample/common_link/wframe_tabControl_submission_WESD-273_(WSQ-4444)_sub1.xml", "999999999");
+};
+
+scwin.openMenu = function(menuNm, url, menuCode) {
+	var tabObj = {
+		closable: true,
+		openAction: "exist",
+		label: menuNm
+	};
+	var contObj = {
+		frameMode: "wframePreload",
+		scope: true,
+		src: url,
+		alwaysDraw: false,
+		title: menuNm,
+		dataObject: {
+			type: "json",
+			name: "param",
+			data: {
+				menuNm: menuNm,
+				menuCode: menuCode,
+				favStatus: "T",
+				menuType: undefined
+			}
+		}
+	};
+	var tabComp = $w.getComponentById("tac1");
+	tabComp.addTab(menuCode, tabObj, contObj);
+	if (tabComp.getSelectedTabID() !== menuCode) {
+		var tabIndex = tabComp.getTabIndex(menuCode);
+		if (tabIndex) {
+			tabComp.setSelectedTabIndex(tabIndex);
+		}
+	}
+};
+
+scwin.btn_anchor2_onclick = function() {
+	scwin.__getObj('tac1_contents_999999999_body_wfm_wframe2').showProcessMessage("1111111");
+};
+
+scwin.btn_anchor3_onclick = function() {
+	scwin.__getObj('tac1_contents_999999999_body_wfm_wframe3').showProcessMessage("2222222");
+};
+]]></script>
+	</head>
+	<body>
+		<w2:anchor ev:onclick="scwin.btn_search_onclick" id="btn_search" outerDiv="true" style="left:0px;top:0px;margin-right: 5px;">
+			<xf:label><![CDATA[tab wframe 호출]]></xf:label>
+		</w2:anchor>
+		<w2:anchor ev:onclick="scwin.btn_anchor2_onclick" id="btn_anchor2" outerDiv="true" style="left:0px;top:0px;margin-right: 5px;">
+			<xf:label><![CDATA[--wframe 1번재--]]></xf:label>
+		</w2:anchor><w2:anchor ev:onclick="scwin.btn_anchor3_onclick" id="btn_anchor3" outerDiv="true" style="left:0px;top:0px;margin-right: 5px;">
+			<xf:label><![CDATA[--wframe 2번재--]]></xf:label>
+		</w2:anchor>
+		<w2:wframe style="width:800px;height:100px;border:1px solid red;"></w2:wframe>
+		<xf:group>
+			<w2:wframe style="width:100px;height:800px;float:left;border:1px solid red;"></w2:wframe>
+			<xf:group style="float:left;">
+				<w2:tabControl useTabKeyOnly="true" id="tac1" style="width:1300px;height:800px;"></w2:tabControl>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

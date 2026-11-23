@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlRateCondCode" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="code" name="name1" dataType="text"></w2:column>
+						<w2:column id="val" name="name2" dataType="text"></w2:column>
+						<w2:column id="nm" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	var jsonData1 = [
+		{ "code": "20P", "val": "20P", "nm": "20' CONTAINER PREMIUM SURCHARGE" },
+		{ "code": "ADA", "val": "ADA", "nm": "ADMIN FEE FOR A.E.S. ITN# RULE FAILURE" },
+		{ "code": "ADF", "val": "ADF", "nm": "ADMINSTRATION FEE" },
+		{ "code": "BUC", "val": "BUC", "nm": "BUNKER CHARGE" },
+		{ "code": "CAF", "val": "CAF", "nm": "CURRENCY ADJUSTMENT FACTOR" }
+	];
+	dlRateCondCode.setJSON(jsonData1);
+};
+scwin.trigger1_onclick = function(e) {
+	var jsonData2 = [
+		{ "col1": "", "col2": "", "col3": "XXX", "col4": "ADF" },
+		{ "col1": "", "col2": "", "col3": "YYY", "col4": "" },
+		{ "col1": "", "col2": "", "col3": "ZZZ", "col4": "" },
+		{ "col1": "", "col2": "", "col3": "", "col4": "BUC" }
+	];
+	dataList1.setJSON(jsonData2);
+};
+scwin.gridView1_onviewchange = function(info) {
+	$p.log("scwin.gridView1_onviewchange===[" + info.rowIndex + "][" + info.colIndex + "][" + info.oldValue + "][" + info.newValue + "]");
+};
+scwin.getErrorLog = function() {
+	var temp = WebSquare.logger.getLog();
+	return temp.indexOf('gridView1_onviewchange') != -1;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="gridView1" style="width: 500px;height: 150px;" defaultCellHeight="20" dataList="data:dataList1"
+			ev:onviewchange="scwin.gridView1_onviewchange" class="cm_grid" autoFit="allColumn" editModeEvent="onclick">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="70" inputType="text" id="column7" value="name1"></w2:column>
+					<w2:column width="70" inputType="text" id="column5" value="name2"></w2:column>
+					<w2:column width="70" inputType="text" id="column3" value="name3"></w2:column>
+					<w2:column width="70" inputType="text" id="column1" value="name4"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="70" inputType="text" id="col1" class="uppercase"></w2:column>
+					<w2:column width="70" inputType="text" id="col2" class="uppercase"></w2:column>
+					<w2:column id="col3" inputType="autoComplete" selectedData="false" caseSensitive="false" width="70" chooseOption="true" userData1="D"
+						class="uppercase" allOption="true" chooseOptionLabel="$blank" textAlign="center" noResult="useData">
+						<w2:choices>
+							<w2:gridViewItemset hideHeader="true" nodeset="data:dlRateCondCode" width="350px;" label="code" value="val" height="150px;">
+								<w2:item ref="code" style="width:20%;"></w2:item>
+								<w2:item ref="nm" style="width:80%; text-align:left;"></w2:item>
+							</w2:gridViewItemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column id="col4" inputType="autoComplete" selectedData="false" caseSensitive="false" width="70" chooseOption="true" userData1="D"
+						class="uppercase" chooseOptionLabel="$blank" textAlign="center" noResult="useData">
+						<w2:choices>
+							<w2:gridViewItemset hideHeader="true" nodeset="data:dlRateCondCode" width="350px;" label="code" value="val" height="150px;">
+								<w2:item ref="code" style="width:20%;"></w2:item>
+								<w2:item ref="nm" style="width:80%; text-align:left;"></w2:item>
+							</w2:gridViewItemset>
+						</w2:choices>
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[조회]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

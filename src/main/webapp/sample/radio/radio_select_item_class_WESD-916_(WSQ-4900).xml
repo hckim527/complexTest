@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_codeList" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="value" name="value" dataType="text"></w2:column>
+						<w2:column id="label" name="label" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dma_data">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<key1><![CDATA[3]]></key1>
+					</w2:data>
+				</w2:dataMap>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+		window.temp = 0;
+		var codeList = [
+			{ value : "1", label : "item1" },
+			{ value : "2", label : "item2" },
+			{ value : "3", label : "item3" },
+			{ value : "4", label : "item4" }
+		];
+		dlt_codeList.setJSON(codeList);
+	};
+
+	scwin.customFormatterSelectBox = function(itemArr) {
+		temp++;
+		var customArr = itemArr;
+		for (var i=0; i < itemArr.length; i++) {
+			if (((customArr[i].value === "1") || (customArr[i].value === "3")) && (!customArr[i]._isDraw)) {
+				customArr[i].label = "<div style='color: red'>" + itemArr[i].label + "</div>";
+				customArr[i]._isDraw = true;
+			}
+		}
+		return customArr;
+	};
+
+	scwin.checkVal = function() {
+		return temp == 1;
+	};
+	]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:select1 id="selectBox1" chooseOption="" style="width:221px;height:21px;" submenuSize="auto" allOption=""
+			disabled="false" direction="auto" appearance="minimal" disabledClass="w2selectbox_disabled" ref="data:dma_data.key1"
+			customFormatter="scwin.customFormatterSelectBox" escape="false">
+			<xf:choices>
+				<xf:itemset nodeset="data:dlt_codeList">
+					<xf:label ref="label"></xf:label>
+					<xf:value ref="value"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select1>
+	</body>
+</html>
