@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	$p.top().scwin.popupIdx = 0;
+};
+
+scwin.btn_openWFramePopup1_onclick = function(e) {
+	scwin.openPopup("wframePopup");
+};
+
+scwin.openPopup = function(type, cmodal) {
+	var modal = true;
+	if (sbx_modal.getValue() === "false") {
+		modal = false;
+	}
+	var popupName = (type + "_depth1__" + $p.top().scwin.popupIdx) || ("wframePopup" + $p.top().scwin.popupIdx);
+	if (modal === true) {
+		popupName += " (modal)";
+	} else {
+		popupName += " (modaless)";
+	}
+	if (WebSquare._xv !== "SP5") {
+		requires("uiplugin.popup");
+	}
+	var options = {
+		id: "popup" + $p.top().scwin.popupIdx,
+		type: type,
+		width: "580px",
+		height: "250px",
+		top: "700px",
+		left: "10px",
+		popupName: popupName,
+		modal: cmodal ? cmodal : modal,
+		useModalStack: true,
+		useModalDisable: false,
+		frameModal: 'frame',
+		processMsgFrame: true,
+		windowMoveType: "overflow",
+		resizable: true,
+		useMaximize: false,
+		status: true,
+		menubar: false,
+		scrollbars: false,
+		title: false
+	};
+	$p.openPopup("popup.xml", options);
+	$p.top().scwin.popupIdx++;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" style="padding:10px">
+			<xf:group style="width: 100%;height: 30px;margin-top:10px;" id="">
+				<xf:trigger type="button" style="width:140px;height:30px;" id="btn_openWFramePopup1" ev:onclick="scwin.btn_openWFramePopup1_onclick" tabIndex="">
+					<xf:label><![CDATA[WFrame Popup 오픈]]></xf:label>
+				</xf:trigger>
+				<xf:select1 id="sbx_modal" style="width: 100px;height: 21px;margin-left: 5px" appearance="minimal" labelWidthAuto="" tabIndex="0">
+					<xf:choices>
+						<xf:item>
+							<xf:label><![CDATA[modal]]></xf:label>
+							<xf:value><![CDATA[true]]></xf:value>
+						</xf:item>
+						<xf:item>
+							<xf:label><![CDATA[modaless]]></xf:label>
+							<xf:value><![CDATA[false]]></xf:value>
+						</xf:item>
+					</xf:choices>
+				</xf:select1>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

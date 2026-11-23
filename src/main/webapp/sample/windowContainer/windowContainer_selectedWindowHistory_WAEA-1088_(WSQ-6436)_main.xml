@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:workflowCollection>
+			</w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+		var CHILD = "/sample/common_link/windowContainer_selectedWindowHistory_WAEA-1088_(WSQ-6436)_child.xml";
+
+		scwin.opened = { windowContainer1: [], windowContainer2: [] };
+
+		scwin.getWC = function(wcId) {
+			return (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+		};
+
+		scwin.log = function(msg) {
+			var box = document.getElementById("logBox");
+			if (box) { box.value = msg + "\n" + box.value; }
+		};
+
+		scwin.safeSelectedWindowId = function(wc) {
+			try {
+				var v = wc.getSelectedWindowId();
+				return (typeof v === "undefined") ? "undefined" : v;
+			} catch (e) {
+				return "★ 예외발생(" + e.message + ") = 열린 탭의 id를 못 찾음";
+			}
+		};
+
+		scwin.makeWindows = function(wcId, count) {
+			var wc     = scwin.getWC(wcId);
+			var prefix = (wcId === "windowContainer1") ? "A" : "B";
+			for (var i = 1; i <= count; i++) {
+				var winId = prefix + "win" + i;
+				var title = prefix + "-창" + i;
+				wc.createWindow(title, null, CHILD, title, winId, "newWindow", "", "", "", {});
+				scwin.opened[wcId].push(winId);
+			}
+		};
+
+		scwin.btnMakeA_onclick = function() {
+			scwin.makeWindows("windowContainer1", 5);
+		};
+
+		scwin.btnMakeB_onclick = function() {
+			var wrap = document.getElementById("wrapB");
+			wrap.style.display = "none";
+			scwin.makeWindows("windowContainer2", 5);
+			wrap.style.display = "";
+		};
+
+		scwin.btnDiagB_onclick = function() {
+			var wc = windowContainer2;
+			var missing = [];
+			for (var i = 0; i < wc.windows.length; i++) {
+				var w = wc.windows[i];
+				if (wc.selectedWindowHistory.indexOf(w.id) === -1) { missing.push(w.windowId); }
+			}
+			scwin.log("  getSelectedWindowId() → " + scwin.safeSelectedWindowId(wc));
+			scwin.log("  history 누락 창 : " + (missing.length ? "[" + missing.join(", ") + "]" : "없음"));
+		};
+
+		scwin.btnSelectB_onclick = function() {
+			var wc     = windowContainer2;
+			var target = "Bwin2";
+			wc.createWindow("B-창2", null, CHILD, "B-창2", target, "selectWindow", "", "", "", {});
+			scwin.log("  getSelectedWindowId() → " + scwin.safeSelectedWindowId(wc));
+		};
+
+		scwin.btnClearLog_onclick = function() {
+			var box = document.getElementById("logBox");
+			if (box) { box.value = ""; }
+		};
+		]]></script>
+	</head>
+	<body>
+		<div style="padding:6px 10px;">
+			<xf:trigger type="button" id="btnMakeA" ev:onclick="scwin.btnMakeA_onclick" style="height:23px;margin-left:8px;">
+				<xf:label>A 창 5개 생성</xf:label>
+			</xf:trigger>
+		</div>
+		<w2:windowContainer id="windowContainer1"
+			useCloseButton="true"
+			useFixButton="true"
+			nameLayerMove="true"
+			windowMaxNum="30"
+			defaultWidth="260px" defaultHeight="140px"
+			style="position:relative;width:960px;height:230px;margin:0px 0px 10px 10px;border:solid 1px gray;"
+			frameMode="wframe">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+		<div style="padding:6px 10px;">
+			<xf:trigger type="button" id="btnMakeB" ev:onclick="scwin.btnMakeB_onclick" style="height:23px;margin-left:8px;">
+				<xf:label>B 창 5개 생성(숨김→표시)</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnDiagB" ev:onclick="scwin.btnDiagB_onclick" style="height:23px;">
+				<xf:label>B 진단</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnSelectB" ev:onclick="scwin.btnSelectB_onclick" style="height:23px;">
+				<xf:label>Bwin2 프로그램 선택 시도</xf:label>
+			</xf:trigger>
+		</div>
+		<div id="wrapB">
+			<w2:windowContainer id="windowContainer2"
+				useCloseButton="true"
+				useFixButton="true"
+				nameLayerMove="true"
+				windowMaxNum="30"
+				defaultWidth="260px" defaultHeight="140px"
+				style="position:relative;width:960px;height:230px;margin:0px 0px 10px 10px;border:solid 1px #c00;"
+				frameMode="wframe">
+				<w2:windowToolbar>
+					<w2:controlIconLayer>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+					</w2:controlIconLayer>
+					<w2:nameLayer></w2:nameLayer>
+					<w2:selectedNameLayer></w2:selectedNameLayer>
+				</w2:windowToolbar>
+			</w2:windowContainer>
+		</div>
+		<div style="padding:6px 10px;">
+			<xf:trigger type="button" id="btnClearLog" ev:onclick="scwin.btnClearLog_onclick" style="height:23px;">
+				<xf:label>로그 지우기</xf:label>
+			</xf:trigger>
+		</div>
+		<textarea id="logBox" readonly="readonly"
+			style="width:960px;height:230px;margin:0px 0px 10px 10px;font-family:Consolas,monospace;font-size:12px;line-height:1.5;"></textarea>
+	</body>
+</html>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<w2:MSA/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="ds_fix_work_list" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="fixYm" name="년월" dataType="text"></w2:column>
+						<w2:column id="atm" name="금액" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<w2:layoutInfo/>
+		<w2:publicInfo method=""/>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	var jsonData = [];
+	for (var i = 0; i < 42; i++) {
+		jsonData.push({ "fixYm": "2023" + ("0" + (i % 12 + 1)).slice(-2), "atm": String((i + 1) * 100000) });
+	}
+	ds_fix_work_list.setJSON(jsonData);
+};
+
+scwin.trigger1_onclick = function(e) {
+	const options = {
+		id: "exam_popup",
+		type: "wframePopup",
+		width: "400px",
+		height: "400px",
+		popupName: "WframePopup",
+		modal: true
+	};
+	$p.openPopup("/sample/common_link/wframe_processMsg_WAEA-699_(WSQ-6298)_sub.xml", options);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView scrollByColumnAdaptive="false" visibleRowNumFix="true" dataList="data:ds_fix_work_list" style="height:100%" readOnly="true" autoFit="allColumn" id="gr_work_pl" visibleRowNum="all">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column width="70" inputType="text" id="column30" value="년월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column44" value="금액" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column width="70" displayFormat="####/##" inputType="text" id="fixYm" displayMode="label"></w2:column>
+					<w2:column textAlign="right" dataType="number" width="70" displayFormat="#,###" inputType="text" id="atm" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[msg]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

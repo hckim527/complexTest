@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+	var j = $(q); if (j.length) return j;
+	var P = 'mf_', t = q.trim(), r = t.slice(1);
+	if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+	return $(t.slice(0, 1) + r);
+};
+
+scwin.onpageload = function() {
+	for (var i = 0; i < 7; i++) {
+		scwin.btn_createWin_onclick();
+	}
+};
+
+scwin.windowIdx = 0;
+scwin.btn_createWin_onclick = function(e) {
+	var windowId = "window" + scwin.windowIdx++;
+	var option = {
+		title : windowId,
+		src : "/sample/common_link/windowContainer_changeActiveWindow_WESE-200_(WSQ-5086)_sub.xml",
+		windowTitle : windowId,
+		windowId : windowId,
+		openAction : "existWindow",
+		frameMode : "wframe",
+		fixed : false,
+		defaultWidth : "700px",
+		defaultHeight : "700px",
+		closeAction : function(title) {
+			var closeFunc = windowContainer1.getWindow(windowContainer1.getSelectedWindowId()).scwin.onpageunload;
+			if (typeof closeFunc === "function") {
+				return closeFunc();
+			}
+		},
+		dataObject : {
+			type : "json",
+			name : "paramData",
+			data : {}
+		}
+	};
+	windowContainer1.createWindow(option);
+};
+
+scwin.checkVal = function() {
+	return scwin.__getJq('#windowContainer1_nameLayer_' + $p.id + 'windowContainer1_subWindow5').hasClass('w2windowContainer_selectedNameLayer');
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:windowContainer id="windowContainer1" controlIconPosition="allright" fixArrangeFullScreen="false" frameMode="wframe" style="position:relative;width:100%;height:600px;"
+			hideTitleOnMaximize="false" horizontalArrangeNum="2" sequentialArrangeColNum="2" sequentialArrangeRowNum="2"
+			spaInitCount="0" stopMinimizeOnNameLayer="true" stopToggleOnLast="false" toolbarPosition="top" tooltipDisplay="true"
+			tooltipGroupClass="false" useCloseButton="true" useControlIconTitle="false" useCustomMsg="false" useFixButton="false"
+			useNameContainer="true" useStatusMsg="false" verticalArrangeNum="2" windowAutoResize="false" windowMaxNum="30" changeActiveWindow="true"
+			windowMaximizeAll="false" windowTooltipDisplay="true" closeType="">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+	</body>
+</html>

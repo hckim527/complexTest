@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.count = 0;
+
+scwin.onpageload = function() {
+	var bFormatter = function() {
+		return [
+			{
+				'id' : 'custombtn',
+				'className' : 'w2widget_btnCustom w2widget_btnCustom1',
+				'isCustom' : true,
+				'isCustomDirection': 'left'
+			},
+			{
+				'id' : 'custombtn2',
+				'isCustom' : true,
+				'className' : 'w2widget_btnCustom w2widget_btnCustom2'
+			},
+			{
+				'id' : 'custombtn3',
+				'className' : 'w2widget_btnCustom3',
+				'isCustom' : true,
+				'isCustomDirection': 'left'
+			},
+			{'useDefault' : 'maximize'},
+			{'useDefault' : 'close'}
+		];
+	};
+
+	scwin.count++;
+	ui_wgc_main.addWidgets({
+		id : "widget" + scwin.count,
+		title : "위젯!!!" + scwin.count,
+		src : "/TEST_SP5/web5_test/SP2/2019/uiplugin/windowContainer/widget.xml",
+		scope : true,
+		x : 0,
+		y : 0,
+		unitWidth : 1,
+		unitHeight : 1,
+		buttonFormatter : bFormatter
+	});
+	scwin.count++;
+	ui_wgc_main.addWidgets({
+		id : "widget" + scwin.count,
+		title : "위젯위젯~~~~~~" + scwin.count,
+		src : "/TEST_SP5/web5_test/SP2/2019/uiplugin/windowContainer/widget.xml",
+		scope : true,
+		x : 1,
+		y : 0,
+		unitWidth : 1,
+		unitHeight : 1
+	});
+	scwin.count++;
+	ui_wgc_main.addWidgets({
+		id : "widget" + scwin.count,
+		title : "위젯" + scwin.count,
+		src : "/TEST_SP5/web5_test/SP2/2019/uiplugin/windowContainer/widget.xml",
+		scope : true,
+		x : 2,
+		y : 0,
+		unitWidth : 1,
+		unitHeight : 1,
+		buttonFormatter : bFormatter
+	});
+};
+
+scwin.checkVal = function(id) {
+	let check_tagName1 = scwin.__getDom(id).previousElementSibling.tagName;
+	let check_tagName2 = scwin.__getDom(id).nextElementSibling.tagName;
+
+	return check_tagName1 == 'STRONG' && check_tagName2 == 'BUTTON';
+};
+
+scwin.checkVal2 = function(id) {
+	let check_tagName1 = scwin.__getDom(id).previousElementSibling;
+	let check_tagName2 = scwin.__getDom(id).nextElementSibling.tagName;
+
+	return check_tagName1 === null && check_tagName2 == 'BUTTON';
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+.w2widget_btnCustom1{background-color:skyblue;}
+.w2widget_btnCustom2{background-color:coral;}
+.w2widget_btnCustom3{
+	width:15px;
+	height:15px;
+	background-color:gray;
+	display:inline-block;
+	margin-left:3px;
+}
+]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:widgetContainer cols="3" rows="3" unitHeightPixel="56" accessibility="true" unfixedTitleButtons="true" horizontalMargin="14"
+			verticalMargin="5" id="ui_wgc_main" minUnitWidth="1" mode="switch" params="false" processMsgFrame="true"
+			style="width:100%;height:400px;box-sizing:border-box;" threshold="500" widgetMove="true" widgetResize="true" preventMaximizeByTitle="false">
+		</w2:widgetContainer>
+	</body>
+</html>

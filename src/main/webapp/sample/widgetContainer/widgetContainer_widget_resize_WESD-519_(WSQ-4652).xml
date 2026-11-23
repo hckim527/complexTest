@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+	count++;
+	widgetContainer1.addWidgets({
+		id: "widget_" + count,
+		title: "위젯" + count,
+		src: "widget.xml",
+		scope: true,
+		x: 0,
+		y: 0,
+		unitWidth: 1,
+		unitHeight: 10,
+		minUnitWidth: 10,
+		minUnitHeight: 10,
+		minimized: false,
+		resized: false,
+	});
+};
+
+scwin.widgetContainer1_onwidgetresize = function(id, newRect, oldRect) {
+	if (newRect.unitHeight <= 2) {
+		widgetContainer1.resizeWidget(id, 4, 4, {
+			force: true
+		});
+	}
+};
+
+scwin.trigger6_onclick = function(e) {
+	widgetContainer1.enableWidgetResize(scwin.isResizable);
+	scwin.isResizable = !scwin.isResizable;
+};
+
+scwin.onpageload2 = function() {
+	window.count = 0;
+	scwin.isResizable = true;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2">
+		<xf:group style="position: absolute;width:637px;height:449px;float:left;">
+			<xf:group style="position: relative;height:40px;">
+				<xf:trigger id="trigger1" type="button" style="position: relative;height:25px;width:150px;float: left;" ev:onclick="scwin.trigger1_onclick">
+					<xf:label><![CDATA[addWidget]]></xf:label>
+				</xf:trigger>
+				<xf:trigger id="trigger6" type="button" style="width:202px;height:25px;position: relative;float:left;" ev:onclick="scwin.trigger6_onclick">
+					<xf:label><![CDATA[widgetContainer1 toggle resizeWidget]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+			<w2:widgetContainer id="widgetContainer1" cols="4" style="position: relative ;width:100%;height:100%;border:1px solid black;" preventMaximizeByTitle="true" horizontalMargin="30" verticalMargin="30"
+				unitHeightPixel="30" mode="pushpull" widgetMove="false" widgetResize="false" maxUnitHeight="355" maxUnitWidth="200" minUnitHeight="1" minUnitWidth="1"
+				ev:onwidgetresize="scwin.widgetContainer1_onwidgetresize">
+			</w2:widgetContainer>
+		</xf:group>
+	</body>
+</html>

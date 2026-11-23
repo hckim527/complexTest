@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.onpageload = function() {
+	var titles = ["Green", "Blue", "yellow", "red", "black"];
+	for (var i = 0; i < titles.length; i++) {
+		windowContainer1.createWindow({
+			"title": titles[i],
+			"src": "scheduleCalendar.xml",
+			"windowId": "window" + (i + 1),
+			"frameMode": "wframe"
+		});
+	}
+	$(".w2windowContainer_scrollLeftBtn").attr("title", "왼쪽 탭 이동");
+	$(".w2windowContainer_scrollRightBtn").attr("title", "오른쪽 탭 이동");
+	$(".w2windowContainer_controlIcon_windowList").attr("title", "탭 목록");
+	$(".w2windowContainer_controlIcon_closeAll").attr("title", "전체 탭 닫기");
+	$(".w2windowContainer_nameLayer_fixOff").attr("title", "탭 고정 핀");
+};
+
+scwin.fireOver = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('onmouseover');
+	} else if (document.createEvent) {
+		window.evt = document.createEvent('MouseEvents');
+		evt.initEvent('mouseover', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.onmouseover == 'function') {
+		node.onmouseover();
+	}
+};
+
+scwin.mouseOverBehaviour = function(id) {
+	window.el = scwin.__getDom(id);
+	scwin.fireOver(el);
+};
+
+scwin.checkVal1 = function() {
+	return (document.getElementById('windowContainer1_tooltip') || document.getElementById('mf_windowContainer1_tooltip')).style.display == 'block';
+};
+
+scwin.checkVal2 = function() {
+	return (document.getElementById('windowContainer1_right') || document.getElementById('mf_windowContainer1_right')).getAttribute('title') == '오른쪽 탭 이동';
+};
+
+scwin.checkVal3 = function() {
+	return (document.getElementById('windowContainer1_closeAll') || document.getElementById('mf_windowContainer1_closeAll')).getAttribute('title') == '전체 탭 닫기';
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:windowContainer sequentialArrangeColNum="2" verticalArrangeNum="2" controlIconPosition="allright" id="windowContainer1" useStatusMsg="true" hideTitleOnMaximize="false" spaInitCount="0" useNameContainer="true"
+			style="position: relative;width: 710px;height: 500px;border: solid black 2px;"
+			sequentialArrangeRowNum="2" fixArrangeFullScreen="false" windowAutoResize="true" windowMaxNum="5" useCloseButton="true"
+			stopMinimizeOnNameLayer="true" toolbarPosition="top" horizontalArrangeNum="2" windowTooltipDisplay="true" changeActiveWindow="true" useFixButton="true" useWindowScrollButton="true">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+	</body>
+</html>

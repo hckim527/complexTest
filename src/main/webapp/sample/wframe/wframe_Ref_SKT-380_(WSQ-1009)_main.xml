@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/SWING/lib/css/all.css" type="text/css"?>
+<?xml-stylesheet href="/SWING/lib/css/contents.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="cob_data" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[사과]]></col1>
+							<col2><![CDATA[01]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[바나나]]></col1>
+							<col2><![CDATA[02]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[멜론]]></col1>
+							<col2><![CDATA[03]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.checkEl = function(id1, id2) {
+	if (scwin.__getDom($p.id + id1)) {
+		return true;
+	} else if (scwin.__getDom($p.id + id2)) {
+		return true;
+	}
+	return false;
+};
+
+scwin.checktype1 = function() {
+	return typeof wfm1;
+};
+
+scwin.checktype2 = function() {
+	return typeof (document.getElementById('wfm1_selectbox1') || document.getElementById('mf_wfm1_selectbox1'));
+};
+
+// SKT-380: wframe(scope) 안 컴포넌트의 dataList 바인딩 - selectbox itemset 표시값 + input ref(dataList rowPosition 행 값). 2026-11
+scwin.checkBind = function() {
+	var w = $p.getComponentById('wfm1').getWindow();
+	var dl = w.$p.getComponentById('dst_ordsb0510030t01_out01');
+	dl.setJSON([{ svc_mgmt_num: 'SVC01' }]);
+	dl.setRowPosition(0);
+	return w.$p.getComponentById('selectbox1').getText() + '|' + w.$p.getComponentById('input1').getValue();
+};
+scwin.checktype3 = function() {
+	return typeof (document.getElementById('wfm1_input1') || document.getElementById('mf_wfm1_input1'));
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group class="cont_wrap type1" id="">
+			<w2:wframe id="wfm1" src="/sample/common_link/wframe_Ref_SKT-380_(WSQ-1009)_sub1.xml" scope="true"></w2:wframe>
+		</xf:group>
+	</body>
+</html>

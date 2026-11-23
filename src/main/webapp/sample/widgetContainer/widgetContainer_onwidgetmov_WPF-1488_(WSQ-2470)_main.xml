@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+	count++;
+	widgetContainer1.addWidgets({
+		id: "widget" + count,
+		title: "위젯" + count,
+		src: "/sample/common_link/widgetContainer_onwidgetmov_WPF-1488_(WSQ-2470)_sub.xml",
+		scope: true,
+		x: 0,
+		y: 0,
+		unitWidth: 200,
+		unitHeight: 225
+	});
+};
+
+scwin.widgetContainer1_onwidgetmove = function(id, newRect, oldRect) {
+	var logStr = "onwidgetmove [" + id + "]\n";
+	logStr += "newPos [x=" + newRect.x + ", y=" + newRect.y + ", unitWidth=" + newRect.unitWidth + ", unitHeight=" + newRect.unitHeight + "]\n";
+	logStr += "oldPos [x=" + oldRect.x + ", y=" + oldRect.y + ", unitWidth=" + oldRect.unitWidth + ", unitHeight=" + oldRect.unitHeight + "]\n";
+	textarea1.setValue(textarea1.getValue() + "\n" + logStr);
+};
+
+scwin.onpageload2 = function() {
+	window.count = 0;
+	scwin.trigger1_onclick();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2">
+		<xf:group id="group1" style="position: relative;width:850px;height:500px;">
+			<xf:group style="position: relative;height:70px;">
+				<xf:trigger id="trigger1" type="button" style="position: relative;height:25px;width:150px;float: left;margin-left:5px;" ev:onclick="scwin.trigger1_onclick">
+					<xf:label><![CDATA[addWidget]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+			<xf:group style="position:relative;width:850px;height:400px;">
+				<xf:group style="position:relative;width:400px;height:400px;float:left;">
+					<w2:widgetContainer id="widgetContainer1" style="position: relative ;width:400px;height:400px;border:1px solid black;" cols="400" unitHeightPixel="1" mode="pushpull" widgetMove="true"
+						ev:onwidgetmove="scwin.widgetContainer1_onwidgetmove">
+					</w2:widgetContainer>
+				</xf:group>
+				<xf:group style="position:relative;width:400px;height:400px;float:right;">
+					<w2:textarea id="textarea1" style="position:relative;width:300px;height:300px;"/>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

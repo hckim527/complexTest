@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkValue = function(log) {
+	if (log) {
+		return true;
+	}
+	return false;
+};
+
+scwin.checktype = function() {
+	return typeof log;
+};
+
+scwin.setVal = function() {
+	return scwin.checkValue(log);
+};
+
+scwin.checkVal = function() {
+	return WebSquare.logger.getLog().indexOf(String(log)) !== -1;
+};
+
+// SKT-310: wframe(scope) 의 getObjList 에 tabControl 안 wframe id 포함 여부 - 빠진 id 목록(없으면 ''). 2026-11
+scwin.missingTabWframes = function() {
+	return ['wfm_tab1', 'wfm_tab2_1', 'wfm_tab2_2', 'wfm_tab4'].filter(function(id) { return log.indexOf(id) === -1; }).join(',');
+};
+scwin.onpageload = function() {
+	WebSquare.logger.printLog(wfm_main.getObjList());
+	log = wfm_main.getObjList();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:wframe id="wfm_main" style="position: relative;width:629px;height:340px;" src="/sample/common_link/wframe_SKT-310_(WSQ-948)_tabControl01.xml" scope="true"></w2:wframe>
+	</body>
+</html>

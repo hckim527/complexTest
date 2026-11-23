@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<w2:MSA />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<w2:layoutInfo />
+		<w2:publicInfo method="" />
+		<script type="text/javascript"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.onpageload = function() {
+	widgetContainers.addWidgets([
+		{
+			id : "widget1",
+			title : "위젯1",
+			scope : true,
+			x : 0,
+			y : 0,
+			unitWidth : 1,
+			unitHeight : 1,
+			minimized : false,
+			src : "/TEST_SP5/web5_test/SP2/2019/uiplugin/windowContainer/widget.xml"
+		}
+	]);
+};
+
+scwin.fireDbClick = function(node) {
+	var evt = document.createEvent('MouseEvents');
+	evt.initEvent('dblclick', true, false);
+	node.dispatchEvent(evt);
+};
+
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom(id);
+	scwin.fireDbClick(el);
+};
+
+scwin.checkVal = function() {
+	return (document.getElementById('widgetContainers_widget1_title_btnMaximize') || document.getElementById('mf_widgetContainers_widget1_title_btnMaximize')).classList.contains("w2widget_btnMaximizeOn");
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+.w2widget{box-sizing:border-box;}
+]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:widgetContainer id="widgetContainers" widgetMove="true" minUnitWidth="1" async="false" minUnitHeight="1" maxUnitHeight="1" processMessage="test.."
+			params="false" widgetResize="true" maxUnitWidth="1" threshold="200" style="width:900px;height:450px;border: 1px solid #000000;" horizontalMargin="10"
+			verticalMargin="10" mode="switch" unitHeightPixel="150" cols="3" accessibility="true">
+		</w2:widgetContainer>
+	</body>
+</html>

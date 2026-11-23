@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 요소 조회(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+	var j = $(q); if (j.length) return j;
+	var P = 'mf_', t = q.trim(), r = t.slice(1);
+	if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+	return $(t.slice(0, 1) + r);
+};
+
+scwin.onpageload = function() {
+	ui_wframe.setSrc("/sample/common_link/wframe_.scheduleCalendar_setSRc_WPF-1743_(WSQ-3190)_sub.xml");
+};
+
+scwin.__isWidth = function() {
+	var el = $('td').find(".fc-widget-content");
+	for (var i = 0; i < el.length; i++) {
+		var el1 = scwin.__getJq(el)[i];
+		if (scwin.__getJq(el1).css("width") == "0px") {
+			return false;
+		}
+	}
+	return true;
+};
+
+// WPF-1743: setSrc 로 불러온 scheduleCalendar 에 CSS 적용(툴바 flex·날짜 칸 폭 > 0)
+scwin.checkCalendarCss = function() {
+	var bar = $(".fc-header-toolbar")[0];
+	var days = $(".fc-daygrid-day").toArray();
+	if (!bar || days.length == 0) {
+		return false;
+	}
+	if (getComputedStyle(bar).display != "flex") {
+		return false;
+	}
+	return days.every(function(d) {
+		return d.getBoundingClientRect().width > 0;
+	});
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:wframe style="width:826px;height:437px;" id="ui_wframe" src=""></w2:wframe>
+	</body>
+</html>

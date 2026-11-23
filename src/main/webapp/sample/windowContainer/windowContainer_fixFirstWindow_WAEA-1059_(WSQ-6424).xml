@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+		var CHILD = "windowContainer_child.xml";
+
+		scwin.opened   = { windowContainer1: [], windowContainer2: [] };
+		scwin.fixedIds = { windowContainer1: [], windowContainer2: [] };
+
+		scwin.log = function(msg) {
+			var box = document.getElementById("logBox");
+			if (box) { box.value = msg + "\n" + box.value; }
+		};
+
+		scwin.makeWindows = function(wcId, count, fixCount) {
+			var wc     = (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+			var prefix = (wcId === "windowContainer1") ? "A" : "B";
+
+			scwin.closeAll(wcId);
+
+			for (var i = 1; i <= count; i++) {
+				var winId  = prefix + "win" + i;
+				var isFix  = (i <= fixCount);
+				var title  = prefix + "-창" + i + (isFix ? " [고정]" : "");
+				wc.createWindow(title, null, CHILD, title, winId, "newWindow", "", "", "", { fixed: isFix });
+				scwin.opened[wcId].push(winId);
+				if (isFix) { scwin.fixedIds[wcId].push(winId); }
+			}
+			scwin.log("[" + wcId + "] 창 " + count + "개 생성 / 고정 대상 = [" + scwin.fixedIds[wcId].join(", ") + "]");
+		};
+
+		scwin.closeAll = function(wcId) {
+			var wc  = (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+			var ids = scwin.opened[wcId].slice();
+			for (var i = 0; i < ids.length; i++) {
+				wc.closeWindow(ids[i]);
+			}
+			scwin.opened[wcId]   = [];
+			scwin.fixedIds[wcId] = [];
+		};
+
+		scwin.windowContainer2_onbeforenamelayermove = function(info) {
+			var fixedIds = scwin.fixedIds.windowContainer2;
+
+			if (fixedIds.indexOf(info.startWindowID) > -1) {
+				scwin.log("[B/차단] 고정 창(" + info.startWindowID + ") 은 이동할 수 없습니다.");
+				return false;
+			}
+			if (fixedIds.indexOf(info.endWindowID) > -1) {
+				scwin.log("[B/차단] " + info.startWindowID + " → 고정 창(" + info.endWindowID
+					+ ") 자리로는 이동할 수 없습니다.");
+				return false;
+			}
+
+			scwin.log("[B/허용] " + info.startWindowID + "(" + info.startIndex + ") → "
+				+ info.endIndex + "번 자리 (교체 대상 : " + info.endWindowID + ")");
+		};
+
+		scwin.installFixGuard = function(wcId) {
+			var wc    = (wcId === "windowContainer1") ? windowContainer1 : windowContainer2;
+			var barId = wc.getID() + "_name";
+
+			var getBar = function() { return document.getElementById(barId); };
+
+			var fixedLayers = function() {
+				var bar = getBar();
+				if (!bar) { return []; }
+				return Array.prototype.slice.call(bar.children, 0, scwin.fixedIds[wcId].length);
+			};
+
+			var setPointerEvents = function(value) {
+				var arr = fixedLayers();
+				for (var i = 0; i < arr.length; i++) { arr[i].style.pointerEvents = value; }
+			};
+
+			document.addEventListener("pointerdown", function(e) {
+				var bar = getBar();
+				if (!bar) { return; }
+				var node = e.target, layer = null;
+				while (node && node !== bar) {
+					if (node.className && String(node.className).indexOf("w2windowContainer_nameLayer") > -1) {
+						layer = node;
+					}
+					node = node.parentNode;
+				}
+				if (node !== bar || layer == null) { return; }
+				if (fixedLayers().indexOf(layer) > -1) { return; }
+				setPointerEvents("none");
+			}, true);
+
+			var restore = function() { setPointerEvents(""); };
+			document.addEventListener("pointerup", restore, true);
+			document.addEventListener("mouseup",  restore, true);
+			document.addEventListener("touchend", restore, true);
+		};
+
+		scwin.btnMakeB1_onclick  = function() { scwin.makeWindows("windowContainer2", 6, 1); };
+		scwin.btnMakeB2_onclick  = function() { scwin.makeWindows("windowContainer2", 6, 2); };
+		scwin.btnCloseB_onclick  = function() { scwin.closeAll("windowContainer2"); scwin.log("[B] 전체 닫기"); };
+
+		scwin.onpageload = function() {
+			scwin.makeWindows("windowContainer1", 6, 1);
+			scwin.makeWindows("windowContainer2", 6, 1);
+			scwin.installFixGuard("windowContainer2");
+		};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<div style="margin:0 0 6px 10px;">
+			<xf:trigger type="button" id="btnMakeB1" ev:onclick="scwin.btnMakeB1_onclick" style="height:23px;margin:2px;">
+				<xf:label>B 창 6개(고정 1개)</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnMakeB2" ev:onclick="scwin.btnMakeB2_onclick" style="height:23px;margin:2px;">
+				<xf:label>B 창 6개(고정 2개)</xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btnCloseB" ev:onclick="scwin.btnCloseB_onclick" style="height:23px;margin:2px 12px 2px 2px;">
+				<xf:label>B 전체 닫기</xf:label>
+			</xf:trigger>
+
+		</div>
+
+		<textarea id="logBox" readonly="readonly"
+			style="width:990px;height:120px;margin:6px 0 0 10px;font-family:monospace;font-size:12px;color:#222;background:#f7f7f7;border:1px solid #ccc;"></textarea>
+
+		<div style="margin:14px 0 4px 10px;font-weight:bold;color:#c0392b;">
+			[A] 이벤트 미적용 — 핀(고정)만 꽂은 상태. 뒤 창을 맨 앞으로 끌면 A-창1 이 뒤로 밀립니다.
+		</div>
+		<w2:windowContainer id="windowContainer1"
+			windowMaxNum="30"
+			nameLayerMove="true"
+			useFixButton="true"
+			useCloseButton="true"
+			defaultWidth="260px"
+			defaultHeight="150px"
+			style="position:relative;width:990px;height:300px;margin:0px 0px 0px 10px;border:solid 1px gray;" frameMode="wframe">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+
+		<div style="margin:18px 0 4px 10px;font-weight:bold;color:#1a5fb4;">
+			[B] onbeforenamelayermove(취소) + 드래그 중 pointer-events 가드 — 고정 창은 드래그 도중에도 전혀 밀리지 않습니다.
+		</div>
+		<w2:windowContainer id="windowContainer2"
+			windowMaxNum="30"
+			nameLayerMove="true"
+			useFixButton="true"
+			useCloseButton="true"
+			defaultWidth="260px"
+			defaultHeight="150px"
+			ev:onbeforenamelayermove="scwin.windowContainer2_onbeforenamelayermove"
+			style="position:relative;width:990px;height:300px;margin:0px 0px 20px 10px;border:solid 1px gray;" frameMode="wframe">
+			<w2:windowToolbar>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+	</body>
+</html>

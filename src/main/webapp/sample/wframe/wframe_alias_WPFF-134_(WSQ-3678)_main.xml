@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" initRowPosition="0">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+					<w2:condition type="filter"><![CDATA[col1 >= ref('dataList1.col1')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+			<xf:submission id="submission1" target='data:json,["dataList1","dataMap1"]' action="/data/wframe_alias_WPFF-134_(WSQ-3678)_main.json" method="post" mediatype="application/json" encoding="UTF-8" mode="asynchronous">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	$p.executeSubmission("submission1");
+};
+
+// WPFF-134: 자식 wframe 의 alias 컴포넌트가 부모 원본(dataList1·dataMap1·linkedDataList1)을 참조
+scwin.checkAlias = function() {
+	var frame = $p.getComponentById("w1");
+	var aList = frame.getObj("ds_dataList1");
+	var aMap = frame.getObj("ds_dataMap1");
+	var aLinked = frame.getObj("ds_linkedDataList1");
+	var cell = document.getElementById($p.id + "w1_gridView1_cell_0_0");
+	if (!aList || !aMap || !aLinked || !cell) {
+		return false;
+	}
+	return aList.getObj() === dataList1 && dataList1.getRowCount() > 0
+		&& aList.getRowCount() == dataList1.getRowCount()
+		&& cell.innerText === String(dataList1.getCellData(0, "col1"))
+		&& aMap.get("key1") === dataMap1.get("key1") && dataMap1.get("key1") !== ""
+		&& aLinked.getRowCount() == linkedDataList1.getRowCount();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:wframe id="w1" style="position: relative;width:600px;height:300px;border:1px solid black;" src="/sample/common_link/wframe_alias_WPFF-134_(WSQ-3678)_sub.xml" scope="true"></w2:wframe>
+	</body>
+</html>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.onpageload = function() {
+	idx = 10;
+	var i = 0;
+	var options = {
+		title: (i+1)+"_"+(i+1),
+		iconUrl: null,
+		src: "window001.xml",
+		windowTitle: "windowTitle"+(i+1),
+		windowId: "windowId"+(i+1),
+		frameMode:"wframe",
+	};
+	windowContainer1.createWindow( options );
+	scwin.trigger1_onclick();
+	scwin.trigger1_onclick();
+	scwin.trigger1_onclick();
+};
+
+scwin.trigger1_onclick = function() {
+	var i = idx++;
+	var options = {
+		title: (i+1)+"_"+(i+1),
+		iconUrl: null,
+		src: "wincon_child.xml",
+		windowTitle: "windowTitle"+(i+1),
+		windowId: "windowId"+(i+1),
+		frameMode:"wframe",
+	};
+	windowContainer1.createWindow( options );
+};
+
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+};
+
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+};
+
+scwin.checkVal = function() {
+	return ((j) => j.length ? j : $('#mf_windowContainer1_subWindow3'))($('#windowContainer1_subWindow3')).offset().top > 205;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group>
+			<w2:textbox label="windowMaximizeAll=true includeMinimizeWindow=true" id="" style="width: 350px;height: 23px;"></w2:textbox>
+			<w2:windowContainer sequentialArrangeColNum="2" sequentialArrangeRowNum="2" fixArrangeFullScreen="false" useFixButton="false" useWindowScrollButton="true" windowScrollVisibleRowNum="3" minVisibleWindowPixel="20"
+				windowAutoResize="false" verticalArrangeNum="2" windowMaxNum="10" useCloseButton="true" toolbarPosition="top" useNameContainer="true" controlIconPosition="allright" autoArrange="true"
+				windowMaximizeAll="true" stopMinimizeOnNameLayer="true" id="windowContainer1" useStatusMsg="false" windowDragMove="true" dragResizableHeader="true" windowMoveType="overflow"
+				hideTitleOnMaximize="false" spaInitCount="0" stopToggleOnLast="true" closeType="noneFixedWindow" includeMinimizeWindow="true"
+				horizontalArrangeNum="2" useCustomMsg="false" useControlIconTitle="false" tooltipDisplay="true" tooltipGroupClass="false"
+				windowTooltipDisplay="false" style="position: relative;width: 640px;height: 400px;" frameMode="wframe" nameLayerMove="true"
+				processMsgFrame="true">
+				<w2:windowToolbar>
+					<w2:controlIconLayer>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+						<w2:controlIcon></w2:controlIcon>
+					</w2:controlIconLayer>
+					<w2:nameLayer></w2:nameLayer>
+					<w2:selectedNameLayer></w2:selectedNameLayer>
+				</w2:windowToolbar>
+			</w2:windowContainer>
+		</xf:group>
+	</body>
+</html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+
+scwin.init = function() {
+	widgetContainer.addWidgets([{
+			id: "widget1",
+			title: "위젯1",
+			src: "/sample/common_link/widgetContainer_Load_WP-3100_(WSQ-2542)_sub.xml",
+			scope: true,
+			x: 0,
+			y: 0,
+			unitWidth: 1,
+			unitHeight: 1
+		},
+		{
+			id: "widget2",
+			title: "위젯2",
+			src: "/sample/common_link/widgetContainer_Load_WP-3100_(WSQ-2542)_sub.xml",
+			scope: true,
+			x: 1,
+			y: 0,
+			unitWidth: 1,
+			unitHeight: 1
+		},
+		{
+			id: "widget3",
+			title: "위젯3",
+			src: "/sample/common_link/widgetContainer_Load_WP-3100_(WSQ-2542)_sub.xml",
+			scope: true,
+			x: 2,
+			y: 0,
+			unitWidth: 1,
+			unitHeight: 1
+		}
+	]);
+};
+
+scwin.onload = function() {
+	output.setValue(output.getValue() + '\n' + 'widgetContainer load complete');
+};
+
+scwin.onwidgetload = function(id) {
+	output.setValue(output.getValue() + '\n' + '[' + id + '] widget load complete');
+};
+
+scwin.checkValue = function() {
+	var str = scwin.__getObj($p.id+'output').getValue().trim();
+	st = str.replace(/\r?\n/g, "");
+	return st;
+};
+
+scwin.onpageload2 = function() {
+	scwin.init();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload2">
+		<w2:widgetContainer ev:onload="scwin.onload" ev:onwidgetload="scwin.onwidgetload" id="widgetContainer" widgetMove="true" minUnitWidth="1" cols="3" horizontalMargin="0"
+			verticalMargin="0" params="false" widgetResize="true" maxUnitWidth="1" threshold="null" mode="pushpull"
+			style="position: absolute;width:869px;height:495px;border: 1px solid #000000;" minUnitHeight="1" maxUnitHeight="1"
+			unitHeightPixel="300">
+		</w2:widgetContainer>
+		<xf:textarea id="output" style="position: absolute;width:300px;height:398px;left:890px;top:-1px;"></xf:textarea>
+	</body>
+</html>

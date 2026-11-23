@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_sample" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="SAMPLE_CD" name="샘플코드" dataType="text"></w2:column>
+						<w2:column id="SAMPLE_NM" name="샘플명" dataType="text"></w2:column>
+						<w2:column id="IS_USE" name="사용여부" dataType="text"></w2:column>
+						<w2:column id="CONTENT" name="샘플설명" dataType="text"></w2:column>
+						<w2:column id="NOTE" name="비고" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<SAMPLE_CD><![CDATA[001000000]]></SAMPLE_CD>
+							<SAMPLE_NM><![CDATA[샘플 A]]></SAMPLE_NM>
+							<IS_USE><![CDATA[Y]]></IS_USE>
+							<CONTENT><![CDATA[재현용 데이터 1]]></CONTENT>
+							<NOTE><![CDATA[]]></NOTE>
+						</w2:row>
+						<w2:row>
+							<SAMPLE_CD><![CDATA[002000000]]></SAMPLE_CD>
+							<SAMPLE_NM><![CDATA[샘플 B]]></SAMPLE_NM>
+							<IS_USE><![CDATA[Y]]></IS_USE>
+							<CONTENT><![CDATA[재현용 데이터 2]]></CONTENT>
+							<NOTE><![CDATA[]]></NOTE>
+						</w2:row>
+						<w2:row>
+							<SAMPLE_CD><![CDATA[003000000]]></SAMPLE_CD>
+							<SAMPLE_NM><![CDATA[샘플 C]]></SAMPLE_NM>
+							<IS_USE><![CDATA[N]]></IS_USE>
+							<CONTENT><![CDATA[재현용 데이터 3]]></CONTENT>
+							<NOTE><![CDATA[]]></NOTE>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	window.__errs = [];
+	window.addEventListener("error", function(e) {
+		window.__errs.push(e.message);
+		console.error("[UNCAUGHT] " + e.message);
+	});
+};
+
+scwin.btn_dl_xlsx_true_onclick = function() {
+	var label = "excel_dataList.xlsx / showProcess=true";
+	try {
+		WebSquare.util.multipleDataListDownload({
+			common : {
+				fileName : "excel_dataList.xlsx",
+				multipleSheet : true,
+				showProcess : true
+			},
+			excelInfo : [ {
+				dataListId : "dlt_sample",
+				sheetName : "첫번째 sheet",
+				startRowIndex : 3,
+				startColumnIndex : 0,
+				wframeId : $p.getFrameId()
+			} ]
+		});
+		console.log("[호출 성공] " + label);
+	} catch (e) {
+		console.error("[호출 실패] " + label + " → " + e.name + ": " + e.message);
+	}
+};
+
+scwin.btn_multiGridDwn_onclick = function() {
+	WebSquare.util.multipleExcelDownload({
+		common : {
+			fileName : "excel_multiGrid.xlsx",
+			multipleSheet : true
+		},
+		excelInfo : [ {
+			gridId : "grd_sample",
+			sheetName : "첫번째 sheet",
+			wframeId : $p.getFrameId()
+		} ]
+	});
+};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="sub_contents" id="grp_content" style="padding:10px;">
+			<xf:group id="" class="btnbox" style="margin-bottom:10px;">
+				<xf:trigger type="button" id="btn_multiGridDwn" class="btn_cm download" ev:onclick="scwin.btn_multiGridDwn_onclick">
+					<xf:label><![CDATA[멀티그리드뷰 엑셀다운로드 (정상)]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="btn_dl_xlsx_true" class="btn_cm download" ev:onclick="scwin.btn_dl_xlsx_true_onclick">
+					<xf:label><![CDATA[xlsx / showProcess=true]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+			<w2:gridView id="grd_sample" dataList="data:dlt_sample" style="height:300px;" autoFit="allColumn" rowNumVisible="true" keepDefaultColumnWidth="true">
+				<w2:header id="header1">
+					<w2:row id="row1">
+						<w2:column id="SAMPLE_CD" inputType="text" value="샘플코드" width="100"></w2:column>
+						<w2:column id="SAMPLE_NM" inputType="text" value="샘플명" width="200"></w2:column>
+						<w2:column id="IS_USE" inputType="text" value="사용여부" width="80"></w2:column>
+						<w2:column id="CONTENT" inputType="text" value="샘플설명" width="200"></w2:column>
+						<w2:column id="NOTE" inputType="text" value="비고" width="100"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1">
+					<w2:row id="row2">
+						<w2:column id="SAMPLE_CD" inputType="text" width="100"></w2:column>
+						<w2:column id="SAMPLE_NM" inputType="text" width="200" textAlign="left"></w2:column>
+						<w2:column id="IS_USE" inputType="text" width="80"></w2:column>
+						<w2:column id="CONTENT" inputType="text" width="200" textAlign="left"></w2:column>
+						<w2:column id="NOTE" inputType="text" width="100" textAlign="left"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+		</xf:group>
+	</body>
+</html>

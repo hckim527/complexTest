@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="udc_Multi_udc_grd1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="chk" name="name1" dataType="text"></w2:column>
+						<w2:column id="name" name="name2" dataType="text"></w2:column>
+						<w2:column id="displaySize" name="name3" dataType="text"></w2:column>
+						<w2:column id="size" name="name4" dataType="text"></w2:column>
+						<w2:column id="progress" name="name5" dataType="text"></w2:column>
+						<w2:column id="flashProgress" name="name6" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<w2:require src="/sample/common_link/wframe_scope_udc_API_WEFF-556_(WSQ-3934)_sub2.xml"></w2:require>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.udc_Multi_onDone = function(data) {
+	var dataList1 = window[udc_Multi.UDC_DLT_MPD_ID];
+	grp_iframe.clearChildren();
+	for (var i = 0; i < data.length; i++) {
+		for (var j = 0; j < dataList1.getTotalRow(); j++) {
+			if (dataList1.getCellData(j, "name") == data[i].localFile) {
+				dataList1.setCellData(j, "key", data[i].key);
+				dataList1.setCellData(j, "file", data[i].file);
+			}
+		}
+		WebSquare.util.dynamicCreate("iframe" + i, "iframe", {
+			style: "display:none;"
+		}, grp_iframe);
+	}
+};
+
+scwin.downLoadFile = function() {
+	var inx = 0;
+	var dataList1 = window[udc_Multi.UDC_DLT_MPD_ID];
+	for (var j = 0; j < dataList1.getTotalRow(); j++) {
+		if (dataList1.getCellData(j, "key")) {
+			var fileUrl = dataList1.getCellData(j, "key");
+			var fileName = dataList1.getCellData(j, "file");
+			var realFile = dataList1.getCellData(j, "name");
+			var url = "/keri/jsp/downLoadFile.jsp?fileUrl=" + fileUrl + "&fileName=" + fileName + "&realFile=" + realFile;
+			window["iframe" + inx].setSrc(url);
+			inx++;
+		}
+	}
+};
+
+scwin.btn_1_onclick = function(e) {
+	udc_Multi.getValue_1();
+};
+]]></script>
+		<w2:require src="/sample/common_link/wframe_scope_udc_API_WEFF-556_(WSQ-3934)_sub2.xml"></w2:require>
+		<w2:require src="/sample/common_link/wframe_scope_udc_API_WEFF-556_(WSQ-3934)_sub2.xml"></w2:require>
+	</head>
+	<body>
+		<xf:group class="contents" id="">
+			<xf:group class="content_bottom" id="group1">
+				<xf:group class="shbox" id="">
+					<xf:group class="defaultbox" id="grp_iframe" style="display: none;">
+						<w2:iframe src="" style="position: relative;width: 500px;height: 300px;" id=""></w2:iframe>
+						<w2:iframe id="" src="" style="position: relative;width: 500px;height: 300px;"></w2:iframe>
+					</xf:group>
+					<w2:udc_Multiupload accept=".png,.gif,.pdf,.ppt,.pptx,.doc" buttonPosition="TopRight" dragDropUseYn="true" ev:onDone="scwin.udc_Multi_onDone" id="udc_Multi" maxCount="10" maxSize="2" style="width: 600px;height: 250px;padding:10px;" uploadBtnUseYn="true" nextTabID="btn_1">
+					</w2:udc_Multiupload>
+					<xf:trigger type="button" style="width: 80px;height: 23px;" id="btn_1" ev:onclick="scwin.btn_1_onclick">
+						<xf:label><![CDATA[포커스포커스]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

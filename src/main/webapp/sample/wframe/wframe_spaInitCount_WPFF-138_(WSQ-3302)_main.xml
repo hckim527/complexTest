@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 요소 조회(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.test = function() {
+	$w.log("main" + "_initScript");
+};
+
+scwin.post1 = function() {
+	$w.log("main" + "_postScript1");
+};
+
+scwin.onpageload = function() {
+	scwin.guid = 0;
+};
+
+scwin.trigger2_onclick = function() {
+	scwin.guid++;
+	var tabNm = "wframe",
+		tabKey = "test_" + scwin.guid;
+	var tabOptions = {
+		label: tabNm,
+		closable: true,
+		openAction: "select"
+	};
+	var contentsOptions = {
+		wframe: true,
+		frameMode: "wframe",
+		src: "/sample/common_link/wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub.xml",
+		scope: true
+	};
+	var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+	if (ret) {
+		tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+	}
+};
+
+scwin.trigger3_onclick = function() {
+	var tabNm = "wframePreload",
+		tabKey = "test_" + scwin.guid++;
+	var tabOptions = {
+		label: tabNm,
+		closable: true,
+		openAction: "select"
+	};
+	var contentsOptions = {
+		frameMode: "wframePreload",
+		src: "/sample/common_link/wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub.xml",
+		scope: true
+	};
+	var ret = tabControl1.addTab(tabKey, tabOptions, contentsOptions);
+	if (ret) {
+		tabControl1.setSelectedTabIndex(tabControl1.getTabIndex(tabKey));
+	}
+};
+
+scwin.checkVal = function() {
+	var temp = scwin.__getDom($p.id + 'tabControl1_contents_test_1_body').className.includes('w2wframe');
+	return temp;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="group2" style="height:400px;">
+			<w2:tabControl id="tabControl1" style="width:622px;height:386px;" windowMaxNum="6" confirmTrueAction="exist" useConfirmMessage="false" confirmFalseAction="new" useTabKeyOnly="true" useMoveNextTabFocus="false" alwaysDraw="false" spaInitCount="4">
+				<w2:tabs id="tabs1" style="width:70px;height:30px;" label=""></w2:tabs>
+				<w2:tabs id="tabs2" style="width:70px;height:30px" label=""></w2:tabs>
+				<w2:content postScript="scwin.post1();" id="content1" frameMode="wframePreload" scope="true" style="height:356px;" initScript="if(scwin.test){scwin.test();}" src="/sample/common_link/wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub_tab.xml" alwaysDraw="true"></w2:content>
+				<w2:content postScript="scwin.post1();" id="content2" frameMode="wframePreload" scope="true" style="height:356px" initScript="if(scwin.test){scwin.test();}" src="/sample/common_link/wframe_spaInitCount_WPFF-138_(WSQ-3302)_sub.xml" alwaysDraw="false"></w2:content>
+			</w2:tabControl>
+		</xf:group>
+		<xf:group id="group1" style="height:45px;">
+			<xf:trigger id="trigger2" style="height:40px;width:200px;" ev:onclick="scwin.trigger2_onclick" type="button">
+				<xf:label>addTab(wframe)</xf:label>
+			</xf:trigger>
+			<xf:trigger id="trigger3" style="height:40px;width:200px;" ev:onclick="scwin.trigger3_onclick" type="button">
+				<xf:label>addTab(wframePreload)</xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>

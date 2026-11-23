@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:aliasDataList id="ds_dataList1" scope="/dataList2" />
+				<w2:aliasDataList id="ds_dataList2" scope="/dataList2" />
+				<w2:aliasDataMap id="ds_dataMap1" scope="/dataMap2" />
+				<w2:aliasDataMap id="ds_dataMap2" scope="/dataMap2" />
+				<w2:aliasLinkedDataList id="ds_linkedDataList1" scope="/linkedDataList2" />
+				<w2:aliasLinkedDataList id="ds_linkedDataList2" scope="/linkedDataList2" />
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" initRowPosition="0">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map" initRowPosition="0">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="key2" name="name2" dataType="text"></w2:key>
+						<w2:key id="key3" name="name3" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:dataMap baseNode="map" id="dataMap2">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="key2" name="name2" dataType="text"></w2:key>
+						<w2:key id="key3" name="name3" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+					<w2:condition type="filter"><![CDATA[col1 >= ref('dataList1.col1')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+				<w2:linkedDataList id="linkedDataList2" bind="dataList2">
+					<w2:condition type="filter"><![CDATA[]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+			<xf:submission id="submission1" ref="" target='data:json,["dataList1","dataMap1","dataList2","dataMap2"]' action="/data/wframe_alias_WESE-1066_(WSQ-5980)_sub.json" method="post"
+				mediatype="application/json" encoding="UTF-8" mode="asynchronous">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.test = function() {
+	$w.log(scwin.$w.getFrameId() + "_initScript");
+};
+
+scwin.test2 = function() {
+	$w.log(scwin.$w.getFrameId() + "_initScript2");
+};
+
+scwin.post1 = function() {
+	$w.log(scwin.$w.getFrameId() + "_postScript1");
+};
+
+scwin.post2 = function() {
+	$w.log(scwin.$w.getFrameId() + "_postScript2");
+};
+
+scwin.onpageload = function() {
+	setScope_src_dataList_inut.setValue("ds_dataList1");
+	setScope_dest_dataList_inut.setValue("dataList1");
+	setScope_src_dataMap_inut.setValue("ds_dataMap1");
+	setScope_dest_dataMap_inut.setValue("dataMap1");
+	setScope_src_linkedDataList_inut.setValue("ds_linkedDataList1");
+	setScope_dest_linkedDataList_inut.setValue("linkedDataList1");
+
+	setScopeByObj_src_dataList_inut.setValue("ds_dataList1");
+	setScopeByObj_dest_dataList_inut.setValue("$p.top().dataList1");
+	setScopeByObj_src_dataMap_inut.setValue("ds_dataMap1");
+	setScopeByObj_dest_dataMap_inut.setValue("$p.top().dataMap1");
+	setScopeByObj_src_linkedDataList_inut.setValue("ds_linkedDataList1");
+	setScopeByObj_dest_linkedDataList_inut.setValue("$p.top().linkedDataList1");
+
+	$p.executeSubmission("submission1");
+};
+
+scwin.trigger_dataList_setScope_onclick = function(e) {
+	var src = setScope_src_dataList_inut.getValue();
+	var dest = setScope_dest_dataList_inut.getValue();
+	$p.getComponentById(src).setScope("../" + dest);
+};
+
+scwin.trigger_dataMap_setScope_onclick = function(e) {
+	var src = setScope_src_dataMap_inut.getValue();
+	var dest = setScope_dest_dataMap_inut.getValue();
+	$p.getComponentById(src).setScope("../" + dest);
+};
+
+scwin.trigger_linkedDataList_setScope_onclick = function(e) {
+	var src = setScope_src_linkedDataList_inut.getValue();
+	var dest = setScope_dest_linkedDataList_inut.getValue();
+	$p.getComponentById(src).setScope("../" + dest);
+};
+
+scwin.trigger_dataList_setScopeByObj_onclick = function(e) {
+	var src = setScopeByObj_src_dataList_inut.getValue();
+	$p.getComponentById(src).setScopeByObj($p.top().dataList1);
+};
+
+scwin.trigger_dataMap_setScopeByObj_onclick = function(e) {
+	var src = setScopeByObj_src_dataMap_inut.getValue();
+	$p.getComponentById(src).setScopeByObj($p.top().dataMap1);
+};
+
+scwin.trigger_linkedDataList_setScopeByObj_onclick = function(e) {
+	var src = setScopeByObj_src_linkedDataList_inut.getValue();
+	$p.getComponentById(src).setScopeByObj($p.top().linkedDataList1);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group>
+			<xf:input id="setScope_src_dataList_inut" style="width:140px;height:21px;"></xf:input>
+			<xf:input id="setScope_dest_dataList_inut" style="width:120px;height:21px;"></xf:input>
+			<xf:trigger id="trigger_dataList_setScope" type="button" style="width:60px;height:25px;" ev:onclick="scwin.trigger_dataList_setScope_onclick">
+				<xf:label><![CDATA[실행]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group>
+			<xf:input id="setScope_src_dataMap_inut" style="width:140px;height:21px;"></xf:input>
+			<xf:input id="setScope_dest_dataMap_inut" style="width:120px;height:21px;"></xf:input>
+			<xf:trigger id="trigger_dataMap_setScope" type="button" style="width:60px;height:25px;" ev:onclick="scwin.trigger_dataMap_setScope_onclick">
+				<xf:label><![CDATA[실행]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group>
+			<xf:input id="setScope_src_linkedDataList_inut" style="width:140px;height:21px;"></xf:input>
+			<xf:input id="setScope_dest_linkedDataList_inut" style="width:120px;height:21px;"></xf:input>
+			<xf:trigger id="trigger_linkedDataList_setScope" type="button" style="width:60px;height:25px;" ev:onclick="scwin.trigger_linkedDataList_setScope_onclick">
+				<xf:label><![CDATA[실행]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group>
+			<xf:input id="setScopeByObj_src_dataList_inut" style="width:140px;height:21px;"></xf:input>
+			<xf:input id="setScopeByObj_dest_dataList_inut" style="width:120px;height:21px;"></xf:input>
+			<xf:trigger id="trigger_dataList_setScopeByObj" type="button" style="width:60px;height:25px;" ev:onclick="scwin.trigger_dataList_setScopeByObj_onclick">
+				<xf:label><![CDATA[실행]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group>
+			<xf:input id="setScopeByObj_src_dataMap_inut" style="width:140px;height:21px;"></xf:input>
+			<xf:input id="setScopeByObj_dest_dataMap_inut" style="width:120px;height:21px;"></xf:input>
+			<xf:trigger id="trigger_dataMap_setScopeByObj" type="button" style="width:60px;height:25px;" ev:onclick="scwin.trigger_dataMap_setScopeByObj_onclick">
+				<xf:label><![CDATA[실행]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group>
+			<xf:input id="setScopeByObj_src_linkedDataList_inut" style="width:140px;height:21px;"></xf:input>
+			<xf:input id="setScopeByObj_dest_linkedDataList_inut" style="width:120px;height:21px;"></xf:input>
+			<xf:trigger id="trigger_linkedDataList_setScopeByObj" type="button" style="width:60px;height:25px;" ev:onclick="scwin.trigger_linkedDataList_setScopeByObj_onclick">
+				<xf:label><![CDATA[실행]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<xf:group>
+			<xf:input id="input_gridView1" style="margin-right:10px;height:25px;width:150px;margin-left:10px;" adjustMaxLength="false" ref="data:ds_dataList1.col1"></xf:input>
+			<xf:input id="input_dataMap1" style="margin-right:10px;height:25px;width:150px;margin-left:10px;" adjustMaxLength="false" ref="data:ds_dataMap1.key1"></xf:input>
+			<xf:select1 id="selectbox1" appearance="minimal" style="margin-right:10px;height:25px;width:150px;margin-left:10px;" chooseOption="" allOption="" displayMode="label" optionOrder="false" ref="data:dataMap1.key1">
+				<xf:choices>
+					<xf:itemset nodeset="data:ds_linkedDataList1">
+						<xf:label ref="col1"></xf:label>
+						<xf:value ref="col1"></xf:value>
+					</xf:itemset>
+				</xf:choices>
+			</xf:select1>
+		</xf:group>
+	</body>
+</html>
