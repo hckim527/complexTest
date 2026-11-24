@@ -37,8 +37,33 @@ scwin.onpageload = function() {
 	};
 	$p.createSubmission(submissionObj);
 
+	// singleMode:true — 단일 target 은 응답 최상위 ID 래퍼 없이 바인딩(기본값 false 와 대조)
+	$p.createSubmission({
+		"id": "submission3",
+		"ref": "data:json,dataList1",
+		"target": "data:json,dataList1",
+		"action": "/data/singleMode_WSQ-5351_single.json",
+		"method": "post",
+		"mediatype": "application/json",
+		"encoding": "UTF-8",
+		"mode": "asynchronous",
+		"singleMode": true
+	});
+
 	$p.getComponentById("submission1");
 	$p.getComponentById("submission2");
+};
+
+scwin.runSingle = function() {
+	$p.executeSubmission("submission3");
+};
+
+scwin.getSingleModes = function() {
+	return [$p.getComponentById("submission1").singleMode, $p.getComponentById("submission2").singleMode, $p.getComponentById("submission3").singleMode];
+};
+
+scwin.getRows = function() {
+	return JSON.stringify($p.getComponentById("dataList1").getAllJSON());
 };
 
 scwin.checkVal = function() {

@@ -5,11 +5,14 @@
 		<w2:buildDate/>
 		<xf:model/>
 		<script type="text/javascript" lazy="false"><![CDATA[
+// onwindowtabclick 호출 기록(생성 중 호출 대비 미리 선언, 생성 후 초기화)
+scwin.tabLog = [];
+
 scwin.onpageload = function() {
 	requires("uiplugin.popup");
 	scwin.createWindowTest("aaa");
 	scwin.createWindowTest("bbb");
-	localStorage.removeItem('window.log1');
+	scwin.tabLog = [];
 };
 
 scwin.createWindowTest = function(title) {
@@ -17,7 +20,7 @@ scwin.createWindowTest = function(title) {
 };
 
 scwin.wc1_onwindowtabclick = function(oldWindowId, newWindowId) {
-	localStorage.setItem("window.log1", this.id + " onwindowtabclick event");
+	scwin.tabLog.push({ id: this.id, oldWindowId: oldWindowId, newWindowId: newWindowId });
 };
 ]]></script>
 	</head>

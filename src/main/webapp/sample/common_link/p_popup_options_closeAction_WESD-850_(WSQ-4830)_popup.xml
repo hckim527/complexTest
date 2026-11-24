@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap id="dma_user_info" baseNode="map">
+					<w2:keyInfo>
+						<w2:key id="usrId" name="사용자ID" dataType="number"></w2:key>
+						<w2:key id="usrNm" name="사용자이름" dataType="number"></w2:key>
+						<w2:key id="usrAge" name="나이" dataType="text"></w2:key>
+						<w2:key id="note" name="비고" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	scwin.popupID = $p.getParameter("popupID");
+	scwin.popInfo = $p.getParameter("popInfo");
+	if (typeof scwin.popInfo.detail != "undefined") {
+		dma_user_info.setJSON(scwin.popInfo.detail);
+	}
+};
+scwin.btn_close_onclick = function() {
+	scwin.closePopup(scwin.popupID);
+};
+scwin.closePopup = function(popId) {
+	console.log("scwin.closePopup");
+	$p.closePopup(popId, {
+		popupTest: "test!!!!"
+	});
+	if (scwin.popInfo.userCallBack != null && (scwin.popInfo.userCallBack != $p.id) &&
+		scwin.popInfo.userCallBack.length > 0 && (scwin.popInfo.userCallBack.length != scwin.popInfo.frameId.length)) {
+		eval(scwin.popInfo.userCallBack)("");
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:input id="ibx_usrId" ref="data:dma_user_info.usrId" style="height:24px;width:150px;"></xf:input>
+		<xf:input id="ibx_usrNm" ref="data:dma_user_info.usrNm" style="height:24px;"></xf:input>
+		<xf:input id="ibx_usrAge" ref="data:dma_user_info.usrAge" style="height:24px;"></xf:input>
+		<xf:input id="ibx_note" ref="data:dma_user_info.note" style="height:24px;"></xf:input>
+		<w2:anchor id="btn_close" style="margin-left: 10px;" ev:onclick="scwin.btn_close_onclick" class="btn_tcm" outerDiv="">
+			<xf:label><![CDATA[닫기]]></xf:label>
+		</w2:anchor>
+	</body>
+</html>

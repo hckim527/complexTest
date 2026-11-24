@@ -5,7 +5,7 @@
 		<w2:buildDate/>
 		<xf:model>
 			<w2:dataCollection baseNode="map">
-				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" ev:oncelldatachange="scwin.dataList1_oncelldatachange">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" ev:oncelldatachange="scwin.dataList1_oncelldatachange" ev:onbeforecelldatachange="scwin.dataList1_onbeforecelldatachange">
 					<w2:columnInfo>
 						<w2:column id="col1" name="name1" dataType="text"></w2:column>
 						<w2:column id="col2" name="name2" dataType="text"></w2:column>
@@ -16,10 +16,14 @@
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
 scwin.dataList1_oncelldatachange = function(info) {
-	localStorage.setItem('log', dataList1.getID() + "_oncelldatachange");
+	window.skt382Log.push(dataList1.getID() + "_oncelldatachange:" + info.newValue);
+};
+scwin.dataList1_onbeforecelldatachange = function(info) {
+	window.skt382Log.push(dataList1.getID() + "_onbeforecelldatachange:" + info.newValue);
 };
 
 scwin.onpageload = function() {
+	window.skt382Log = [];
 	dataList1.insertRow(0);
 };
 ]]></script>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_memberList" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="id" name="아이디" dataType="text"></w2:column>
+						<w2:column id="name" name="성명" dataType="text"></w2:column>
+						<w2:column id="tel" name="연락처" dataType="text"></w2:column>
+						<w2:column id="region" name="지역" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<id><![CDATA[P0001]]></id>
+							<name><![CDATA[홍길동]]></name>
+							<tel><![CDATA[010-2323-4323]]></tel>
+							<region><![CDATA[서울]]></region>
+						</w2:row>
+						<w2:row>
+							<id><![CDATA[P0002]]></id>
+							<name><![CDATA[허균]]></name>
+							<tel><![CDATA[010-2444-2312]]></tel>
+							<region><![CDATA[인천]]></region>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+
+scwin.ibx_openPopup_onclick = function(e) {
+	requires("uiplugin.popup");
+	var paramData = {
+		parentPopupId: "",
+		rowData: scwin.__getObj('dlt_memberList').getRowJSON(0)
+	};
+	var dataObj = {
+		type: "json",
+		data: paramData,
+		name: "paramData"
+	};
+	var opts = {
+		"id": "popup_wframe1",
+		"type": "window",
+		"width": "700px",
+		"height": "250px",
+		"top": 150,
+		"left": 150,
+		"popupName": "Popup1",
+		"modal": false,
+		"useIFrame": true,
+		"dataObject": dataObj,
+		"title": "focusTest",
+		"useControl": true,
+		"controls": {
+			"minimize": true,
+			"maximize": true,
+			"close": true
+		},
+		"foldOnMinimized": true,
+		"frameMode": "wframe"
+	};
+	$w.openPopup("/sample/common_link/p_popup_modal_false_WEFF-397_(WSQ-3743)_wframe1.xml", opts);
+};
+
+scwin.getZIndex = function() {
+	return parseInt(popup_wframe1.getStyle("z-index")) <= parseInt(popup_wframe2.getStyle("z-index"));
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group style="height:136px;padding:10px;" id="">
+			<xf:trigger type="button" style="width: 80px;height: 23px;margin-top:5px;margin-left:5px;" id="ibx_openPopup" ev:onclick="scwin.ibx_openPopup_onclick">
+				<xf:label><![CDATA[팝업 오픈]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>

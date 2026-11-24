@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_layer_onclick = function() {
+	var popParam = {
+		type: "json",
+		name: "popInfo",
+		data: {
+			detail: {
+				"usrId": "hong",
+				usrNm: "홍길동",
+				usrAge: "19",
+				usrSex: "M",
+				note: "나는 홍길동 이다"
+			}
+		}
+	};
+	var obj = {
+		id: "layerPopup",
+		title: "layer popup",
+		url: "/sample/common_link/p_popup_options_closeAction_WESD-850_(WSQ-4830)_popup.xml",
+		width: 740,
+		height: 254,
+		modal: false,
+		popupParam: popParam
+	};
+	scwin.openCommonPopup(obj, "scwin.layerCallback");
+};
+scwin.layerCallback = function() {
+	console.log("scwin.layerCallback...");
+};
+scwin.openCommonPopup = function(popObj, objCallBack) {
+	var id = popObj.id;
+	var width = popObj.width;
+	var height = popObj.height;
+	popObj.popupParam.data.id = id;
+	popObj.popupParam.data.type = "json";
+	popObj.popupParam.data.mode = "W";
+	popObj.popupParam.data.frameId = $p.id;
+	popObj.popupParam.data.userCallBack = $p.id + objCallBack;
+	var brWidth = window.innerWidth;
+	var brHeight = window.innerHeight;
+	var left = ((brWidth / 2) - (width / 2)) + (window.pageXOffset || document.body.scrollLeft);
+	var top = ((brHeight / 2) - (height / 2)) + (window.pageYOffset || document.body.scrollTop);
+	var popupOptions = {
+		"id": id,
+		"type": "wframePopup",
+		"width": width + "px",
+		"height": height + "px",
+		"top": top,
+		"left": left,
+		"className": "",
+		"popupName": popObj.title,
+		"modal": popObj.modal,
+		"useIFrame": true,
+		"dataObject": popObj.popupParam,
+		"alwaysOnTop": false,
+		"useModalStack": true,
+		"resizable": true,
+		"useMaximize": true,
+		"closeAction": scwin.closeAction
+	};
+	$p.openPopup(popObj.url, popupOptions);
+};
+scwin.closeAction = function(id, info) {
+	if (!info.isCloseButtonClick) {
+		return true;
+	}
+	console.log("scwin.closeAction...");
+	return true;
+};
+]]></script>
+	</head>
+	<body>
+		<w2:anchor id="btn_layer" ev:onclick="scwin.btn_layer_onclick" class="btn_tcm" outerDiv="">
+			<xf:label><![CDATA[layer popup]]></xf:label>
+		</w2:anchor>
+	</body>
+</html>

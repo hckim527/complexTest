@@ -17,7 +17,8 @@ scwin.onpageload = function() {
 };
 
 scwin.windowContainer1_onwindowsplit = function(info, mouseX, mouseY) {
-	localStorage.setItem('log', 'windowContainer1_onwindowsplit');
+	// 호출 기록(횟수·인자) — 판정용
+	scwin.splitLog.push({ windowId: info && info.windowId, title: info && info.title, src: info && info.src, x: mouseX, y: mouseY });
 	return true; // true 리턴시 해당 윈도우 닫힘.
 };
 
@@ -55,10 +56,10 @@ scwin.openMenu = function(menuNm, url, menuCode) {
 };
 
 scwin.checkVal = function() {
-	return localStorage.getItem('log') == 'windowContainer1_onwindowsplit';
+	return scwin.splitLog.length == 1;
 };
 
-localStorage.removeItem("log");
+scwin.splitLog = [];
 ]]></script>
 	</head>
 	<body ev:onpageload="scwin.onpageload">

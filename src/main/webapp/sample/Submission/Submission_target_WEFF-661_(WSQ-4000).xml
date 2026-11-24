@@ -36,6 +36,10 @@
 			<xf:submission id="submission1" ref='data:json,{"id":"dtm_VO","key":"dtm_VO"}' target='data:json,{"id":"dtm_data","key":"result.patient"}'
 				action="/data/submission_target_WEFF-661_(WSQ-4000).json" method="post" mediatype="application/json" encoding="UTF-8" mode="asynchronous">
 			</xf:submission>
+			<!-- dataList target 계층 key(요건 재현방법 dtl_data) -->
+			<xf:submission id="submission2" ref='data:json,{"id":"dtm_VO","key":"dtm_VO"}' target='data:json,{"id":"dtl_data","key":"result.patient"}'
+				action="/data/submission_target_WEFF-661_(WSQ-4000).json" method="post" mediatype="application/json" encoding="UTF-8" mode="asynchronous">
+			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
 scwin.onpageload = function() {
@@ -47,6 +51,11 @@ scwin.onpageload = function() {
 	};
 	dtm_VO.setJSON(jsonData);
 	scwin.$w.executeSubmission(submission1);
+	scwin.$w.executeSubmission(submission2);
+};
+
+scwin.getList = function() {
+	return JSON.stringify([dtl_data.getRowCount(), dtl_data.getCellData(0, "patNm"), dtl_data.getCellData(0, "patBday")]);
 };
 ]]></script>
 	</head>

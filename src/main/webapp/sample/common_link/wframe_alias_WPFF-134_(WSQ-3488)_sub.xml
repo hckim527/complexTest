@@ -39,6 +39,11 @@
 						<w2:key id="key3" name="name3" dataType="text"></w2:key>
 					</w2:keyInfo>
 				</w2:dataMap>
+				<!-- setScope test(요건 API): selectbox_src 값(col2)과 col3 이 같은 행 = 바꿀 대상 alias 이름 -->
+				<w2:linkedDataList id="linkedDataList1" bind="dataList1">
+					<w2:condition type="filter"><![CDATA[col3 == val('selectbox_src')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
 			</w2:dataCollection>
 			<w2:workflowCollection></w2:workflowCollection>
 			<xf:submission id="submission1" target='data:json,["dataList1","dataMap1","dataList2","dataMap2"]' action="/data/wframe_alias_WPFF-134_(WSQ-3488)_sub.json" method="post"
@@ -71,6 +76,12 @@ scwin.onpageload = function() {
 	}
 	$p.executeSubmission("submission1");
 	trigger_removeFrame.setValue($p.getFrameId() + "삭제");
+};
+
+scwin.trigger_setScope_onclick = function() {
+	var src = selectbox_src.getText();
+	var dest = selectbox_dest.getText();
+	$p.getComponentById(src).setScope("../" + dest.slice(3));
 };
 ]]></script>
 	</head>
@@ -128,6 +139,18 @@ scwin.onpageload = function() {
 							</xf:itemset>
 						</xf:choices>
 					</xf:select1>
+					<w2:textbox label=".setScope" id="" style="position: relative;width: 60px;height: 25px;display:inline-block;"></w2:textbox>
+					<xf:select1 appearance="minimal" chooseOption="" id="selectbox_dest" style="margin-right:10px;height:25px;width:100px;margin-left:10px;" displayMode="label" optionOrder="false" allOption="" ref="">
+						<xf:choices>
+							<xf:itemset nodeset="data:linkedDataList1">
+								<xf:label ref="col1"></xf:label>
+								<xf:value ref="col2"></xf:value>
+							</xf:itemset>
+						</xf:choices>
+					</xf:select1>
+					<xf:trigger id="trigger_setScope" style="width:60px;height:25px;" type="button" ev:onclick="scwin.trigger_setScope_onclick">
+						<xf:label><![CDATA[실행]]></xf:label>
+					</xf:trigger>
 				</xf:group>
 			</xf:group>
 			<xf:group tagname="tr">

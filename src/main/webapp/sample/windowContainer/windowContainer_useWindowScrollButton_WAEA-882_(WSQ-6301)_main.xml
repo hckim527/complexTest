@@ -17,11 +17,19 @@ scwin.onpageload = function() {
 	windowContainer1.createWindow("win2", null, "windowContainer_useWindowScrollButton_WAEA-882_sub.xml", "Window 2", "win2", "existWindow");
 };
 
+// WAEA-882: 목록 표시 직전 발생(호출 시점 목록 표시 여부 기록), scwin.cancelList=true 면 false 반환 → 목록 표시 취소
+scwin.cancelList = false;
 scwin.windowContainer1_onbeforewindowscrollbuttonclick = function() {
+	var list = document.getElementById(windowContainer1.id + "_windows_list");
 	scwin.eventLog.push({
-		index: scwin.eventLog.length + 1
+		index: scwin.eventLog.length + 1,
+		listShown: !!(list && list.style.display === "block"),
+		cancel: scwin.cancelList
 	});
 	console.log("onbeforewindowscrollbuttonclick", scwin.eventLog.length);
+	if (scwin.cancelList) {
+		return false;
+	}
 };
 ]]></script>
 	</head>

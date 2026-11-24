@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="label" name="label"></w2:column>
+						<w2:column dataType="text" id="series" name="series"></w2:column>
+						<w2:column dataType="text" id="value" name="value"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="submission1" ref='data:json,{"id":"dataList1","action":"updated"}' target="data:json,dataList1"
+				action="/TEST_SP5/web5_test/AI_Auto/testcase_ui/wFrame_Scope_fwRealtimeChartCsv_WEFF-313_(WSQ-3773).jsp" method="post" mediatype="application/json"
+				encoding="UTF-8" mode="asynchronous" processMsg="" ev:submitdone="scwin.submission1_submitdone">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	WebSquare.util.setTimeout(function() {
+		selectbox2.setSelectedIndex(2);
+	}, {
+		delay: 200
+	});
+};
+
+scwin.submission1_submitdone = function(e) {
+	dataList1.setData([]);
+	dataList1.setData([]);
+	dataList1.setData(e.responseText.split(","));
+};
+
+scwin.cmdOperate1_onclick = function(e) {
+	fch_realtime.stopUpdate();
+};
+
+scwin.selectbox2_onviewchange = function(info) {
+	fch_realtime.changeType(selectbox2.getValue());
+};
+
+scwin.btnStart_onclick = function(e) {
+	scwin.$w.executeSubmission("submission1");
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+.tit { float:left; padding: 4px 0 2px 0px; height: 15px; line-height: 14px; font-weight: bold;}
+]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" class="sub_contents">
+			<xf:group class="dfbox" id="" style="padding-top:10px;">
+				<xf:group class="fl" id="" style="width: 250px;margin:10px;height: 21px;">
+					<w2:textbox class="tit" id="" label="차트타입변경"></w2:textbox>
+					<xf:select1 appearance="minimal" chooseOption="true" chooseOptionLabel="- 선택없음 - " class="fl " displayMode="label" id="selectbox2" optionOrder="false" ref=""
+						selectedData="true" style="height: 21px;width: 122px;margin-left: 5px;" textAlign="left" ev:onviewchange="scwin.selectbox2_onviewchange">
+						<xf:choices>
+							<xf:item>
+								<xf:label><![CDATA[realtimecolumn]]></xf:label>
+								<xf:value><![CDATA[realtimecolumn]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[realtimeline]]></xf:label>
+								<xf:value><![CDATA[realtimeline]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[realtimearea]]></xf:label>
+								<xf:value><![CDATA[realtimearea]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[realtimestackedarea]]></xf:label>
+								<xf:value><![CDATA[realtimestackedarea]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[realtimestackedcolumn]]></xf:label>
+								<xf:value><![CDATA[realtimestackedcolumn]]></xf:value>
+							</xf:item>
+							<xf:item>
+								<xf:label><![CDATA[realtimelinedy]]></xf:label>
+								<xf:value><![CDATA[realtimelinedy]]></xf:value>
+							</xf:item>
+						</xf:choices>
+					</xf:select1>
+				</xf:group>
+				<xf:group class="fr" id="">
+					<xf:trigger class="btn_cm" ev:onclick="scwin.btnStart_onclick" id="btnStart" type="button">
+						<xf:label><![CDATA[시작]]></xf:label>
+					</xf:trigger>
+					<xf:trigger class="btn_cm" id="cmdOperate1" type="button" ev:onclick="scwin.cmdOperate1_onclick">
+						<xf:label><![CDATA[중지]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+		<w2:fwRealtimeChart ref="data:dataList1" labelNode="label" refreshInterval="0.1" chartType="realtimeline" timeformat="HH:mm:ss"
+			style="height: 450px;left:0px;top:0px;" valueNode="value" id="fch_realtime" seriesNode="series" submissionId='submission1'>
+		</w2:fwRealtimeChart>
+	</body>
+</html>

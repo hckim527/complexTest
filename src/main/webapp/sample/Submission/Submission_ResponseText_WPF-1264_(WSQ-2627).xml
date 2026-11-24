@@ -17,10 +17,17 @@
 			</w2:dataCollection>
 			<w2:workflowCollection></w2:workflowCollection>
 			<xf:submission id="submission1" target="data:json,dataMap1" action="/data/subMission_ResponseText_WPF-1264_(WSQ-2627).json" method="post"
-				mediatype="application/json" encoding="UTF-8" mode="asynchronous">
+				mediatype="application/json" encoding="UTF-8" mode="asynchronous" ev:submitdone="scwin.submission1_submitdone" ev:submiterror="scwin.submission1_submiterror">
 			</xf:submission>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.subLog = [];
+scwin.submission1_submitdone = function(e) {
+	scwin.subLog.push("done:" + e.responseStatusCode + ":" + JSON.stringify(e.responseText));
+};
+scwin.submission1_submiterror = function(e) {
+	scwin.subLog.push("error:" + e.responseStatusCode);
+};
 scwin.trigger1_onclick = function(e) {
 	scwin.$w.executeSubmission("submission1");
 };
