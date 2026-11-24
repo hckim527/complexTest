@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map"
+					ev:oninsertrow="scwin.dataList1_oninsertrow">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.init = function() {
+	var jsonData1 = [{
+			"col1": "1111",
+			"col2": "AAAA"
+		},
+		{
+			"col1": "2222",
+			"col2": "BBBB"
+		}
+	];
+	dataList2.setJSON(jsonData1);
+	var jsonData = [{
+			"col2": "bbbb1",
+			"col3": "cccc1",
+			"col4": "dddd1"
+		},
+		{
+			"col2": "bbbb2",
+			"col3": "cccc2",
+			"col4": "dddd2"
+		},
+		{
+			"col2": "bbbb3",
+			"col3": "cccc3",
+			"col4": "dddd3"
+		},
+		{
+			"col2": "bbbb4",
+			"col3": "cccc4",
+			"col4": "dddd4"
+		}
+	];
+	dataList1.setJSON(jsonData);
+	dataList1.setCellData(0, "col1", "AAAA");
+	dataList1.setCellData(1, "col1", "AAAA");
+	dataList1.setCellData(2, "col1", "BBBB");
+	dataList1.setCellData(3, "col1", "BBBB");
+}
+scwin.fn1 = function(val) {
+	return "val=" + val;;
+}
+scwin.fn2 = function(label) {
+	return "label=" + label;
+}
+scwin.onpageload = function() {
+	scwin.init()
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" id="gridView1" style="position: relative;width: 580px;height: 200px;" useShiftKey="true">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column displayMode="label" id="column7" inputType="text" style="height:20px" value="name1"
+						width="120">
+					</w2:column>
+					<w2:column displayMode="label" id="column5" inputType="text" style="height:20px" value="name2"
+						width="120">
+					</w2:column>
+					<w2:column displayMode="label" id="column3" inputType="text" style="height:20px" value="name3"
+						width="120">
+					</w2:column>
+					<w2:column displayMode="label" id="column1" inputType="text" style="height:20px" value="name4"
+						width="120">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" id="col1" inputType="select" style="height:20px" width="70"
+						embeddedInput="" ref="" chooseOptionLabel="">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column displayMode="label" id="col2" inputType="text" style="height:20px" width="70">
+					</w2:column>
+					<w2:column displayMode="label" id="col3" inputType="text" style="height:20px" width="70">
+					</w2:column>
+					<w2:column displayMode="label" id="col4" inputType="text" style="height:20px" width="70">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:subTotal id="subTotal1" targetColumnID="col1">
+				<w2:row id="row3">
+					<w2:column id="column11" width="70" inputType="expression" displayMode="label" expression="scwin.fn1(targetColValue()) + '_' + scwin.fn2(targetColLabel())"></w2:column>
+					<w2:column id="column10" width="70" inputType="text" displayMode="label"></w2:column>
+					<w2:column id="column9" width="70" inputType="text" displayMode="label"></w2:column>
+					<w2:column id="column8" width="70" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:subTotal>
+		</w2:gridView>
+		<!-- 요건(WSQ-2963/2973 필수점검): checkcombobox·autoComplete 대상 컬럼도 targetColLabel() 이 label 반환 -->
+		<w2:gridView dataList="dataList1" id="gridView2" style="position: relative;width: 580px;height: 200px;" useShiftKey="true">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column displayMode="label" id="column7" inputType="text" style="height:20px" value="checkcombobox" width="120"></w2:column>
+					<w2:column displayMode="label" id="column5" inputType="text" style="height:20px" value="name2" width="120"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" id="col1" inputType="checkcombobox" style="height:20px" width="120">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column displayMode="label" id="col2" inputType="text" style="height:20px" width="120"></w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:subTotal id="subTotal1" targetColumnID="col1">
+				<w2:row id="row3">
+					<w2:column id="ccbSub1" width="120" inputType="expression" displayMode="label" expression="scwin.fn1(targetColValue()) + '_' + scwin.fn2(targetColLabel())"></w2:column>
+					<w2:column id="ccbSub1_2" width="120" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:subTotal>
+		</w2:gridView>
+		<w2:gridView dataList="dataList1" id="gridView3" style="position: relative;width: 580px;height: 200px;" useShiftKey="true">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column displayMode="label" id="column7" inputType="text" style="height:20px" value="autoComplete" width="120"></w2:column>
+					<w2:column displayMode="label" id="column5" inputType="text" style="height:20px" value="name2" width="120"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" id="col1" inputType="autoComplete" style="height:20px" width="120">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column displayMode="label" id="col2" inputType="text" style="height:20px" width="120"></w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:subTotal id="subTotal1" targetColumnID="col1">
+				<w2:row id="row3">
+					<w2:column id="acSub1" width="120" inputType="expression" displayMode="label" expression="scwin.fn1(targetColValue()) + '_' + scwin.fn2(targetColLabel())"></w2:column>
+					<w2:column id="acSub1_2" width="120" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:subTotal>
+		</w2:gridView>
+	</body>
+</html>
+ 

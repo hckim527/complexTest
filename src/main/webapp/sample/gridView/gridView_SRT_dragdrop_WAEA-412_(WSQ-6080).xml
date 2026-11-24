@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.dataListId = "dataList1";
+scwin.dayCnt = 31;
+scwin.extraColNum = 5 + 6;
+scwin.oneDayCol = ['pdiaDvChar', 'ndDno', 'totWrkTnum', 'pdiaNoView', 'repTrn1No', 'repTrn2No', 'pjt2PdiaNo', 'gwkTm', 'loiwTm'];
+
+scwin.onpageload = function() {
+    scwin.createDataList1();
+    scwin.loadData();
+    scwin.createGridView1_detail();
+};
+
+scwin.createDataList1 = function() {
+    var dayCnt = scwin.dayCnt;
+    var colInfo = [{
+        "dataType": "text",
+        "id": "diaPosiCd"
+    }, {
+        "dataType": "text",
+        "id": "empNm"
+    }, {
+        "dataType": "text",
+        "id": "epno"
+    }, {
+        "dataType": "number",
+        "id": "holidayGwkTm"
+    }, {
+        "dataType": "number",
+        "id": "totalGwkTm"
+    }, {
+        "dataType": "text",
+        "id": "b_dynamic2"
+    }, {
+        "dataType": "text",
+        "id": "b_dynamic3"
+    }, {
+        "dataType": "text",
+        "id": "b_dynamic4"
+    }, {
+        "dataType": "text",
+        "id": "b_dynamic6"
+    }, {
+        "dataType": "text",
+        "id": "b_dynamic7"
+    }, {
+        "dataType": "text",
+        "id": "b_dynamic8"
+    }];
+    for (var i = 1; i <= dayCnt; i++) {
+        for (var j = 0; j < scwin.oneDayCol.length; j++) {
+            colInfo.push({
+                "dataType": "text",
+                "id": i + "_" + scwin.oneDayCol[j]
+            })
+        }
+    }
+    var opt = {
+        "type": "dataList",
+        "id": scwin.dataListId,
+        "option": {
+            "baseNode": "list",
+            "repeatNode": "map"
+        },
+        "columnInfo": colInfo
+    };
+    $p.data.create(opt);
+}
+
+
+// 원본 txt(72행) 대신 3행 생성 (focusMergeUnit 3행 단위 포커스 판정에 데이터 값 무관)
+scwin.loadData = function() {
+    var rows = [];
+    for (var i = 0; i < 3; i++) {
+        var r = { diaPosiCd: "00" + i, empNm: "EMP" + i, epno: "95038" + i, holidayGwkTm: 9, totalGwkTm: 600 };
+        for (var d = 1; d <= scwin.dayCnt; d++) {
+            r[d + "_ndDno"] = "1";
+            r[d + "_totWrkTnum"] = "60";
+        }
+        rows.push(r);
+    }
+    $p.getComponentById(scwin.dataListId).setJSON(rows);
+};
+
+scwin.getCommonGridOptions = function() {
+    return ' rowNumVisible="true" rowNumHeaderValue="No." rowMouseOver="false" drawTypeX="hybrid" fixedColumnScrollHidden="true" fixedColumnNoMove="true" useShiftKey="true" ctrlShiftKey="true" focusMerge="true" dataDragDropCell="true" dataDragScrollFix="true" showLastRow="true"';
+};
+
+scwin.createGridView1_detail = function() {
+    var dataListObj = $p.getComponentById(scwin.dataListId);
+    var col = dataListObj.getColumnCount();
+    var totalCol = col - scwin.extraColNum;
+    var totalHeaderCol = totalCol / scwin.oneDayCol.length;
+    var oneBodyCol = totalHeaderCol * 3;
+    var gridColWidth = 70;
+    var gridXML = [];
+    gridXML.push('<w2:gridView xmlns="http://www.w3.org/1999/xhtml" xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" id="' + "gridView1" + '" rowNumWidth="60" style="height:429px;" dataList="data:dataList1" fixedColumn="1" fixedRightColumn="2" readOnly="true" contextMenu="true" focusMergeUnit="3,3"' + scwin.getCommonGridOptions() + '>');
+    gridXML.push('<w2:header style="background-color:#e4e7eb;" id="header1">');
+    gridXML.push('<w2:row id="row1">');
+    gridXML.push('<w2:column width="70" fixColumnWidth="true" inputType="text" style="background-color:#e4e7eb;" id="columnEmpInfo" value="승무원"/>');
+    for (var i = 0; i < totalHeaderCol; i++) {
+        gridXML.push('<w2:column width="' + gridColWidth + '" inputType="text" style="background-color:#e4e7eb;" id="column' + i + '" value="' + (i + 1) + '" displayMode="label" colSpan="3"/>');
+    }
+    gridXML.push('<w2:column width="70" inputType="text" style="background-color:#e4e7eb;" id="columnOffdDdFlg" value="휴일" displayMode="label" />');
+    gridXML.push('<w2:column width="70" inputType="text" style="background-color:#e4e7eb;" id="columnGwkTm" value="근무시간" displayMode="label" />');
+    gridXML.push('</w2:row>');
+    gridXML.push('</w2:header>');
+    gridXML.push('<w2:gBody id="gBody1">');
+    gridXML.push('<w2:row id="rowB1">');
+    gridXML.push('<w2:column width="70" inputType="text" id="epno" displayMode="label"></w2:column>');
+    for (var i = 0; i < oneBodyCol; i++) {
+        var idx = scwin.oneDayCol.length * Math.floor(i / 3) + (i % 3);
+        var dateKey = dataListObj.getColumnID(idx + scwin.extraColNum);
+        gridXML.push('<w2:column width="' + gridColWidth + '" inputType="text" id="' + dateKey + '" displayMode="label"/>');
+    }
+    gridXML.push('<w2:column rowSpan="3" width="70" inputType="text" style="background-color : #ADD8E6;" id="holidayGwkTm" displayMode="label"></w2:column>');
+    gridXML.push('<w2:column rowSpan="3" width="70" inputType="text" style="background-color : #ADD8E6;" id="totalGwkTm" displayMode="label" customFormatter="scwin.customFormatterTotalGwkTm"></w2:column>');
+    gridXML.push('</w2:row>');
+    gridXML.push('<w2:row id="rowB2">');
+    gridXML.push('<w2:column width="70" inputType="text" id="empNm" displayMode="label"></w2:column>');
+    for (var i = 0; i < oneBodyCol; i++) {
+        var idx = scwin.oneDayCol.length * Math.floor(i / 3) + (i % 3) + 3;
+        var dateKey = dataListObj.getColumnID(idx + scwin.extraColNum);
+        gridXML.push('<w2:column width="' + gridColWidth + '" inputType="text" id="' + dateKey + '" displayMode="label"/>');
+    }
+    gridXML.push('</w2:row>');
+    gridXML.push('<w2:row id="rowB3">');
+    gridXML.push('<w2:column width="70" inputType="text" id="diaPosiCd" displayMode="label"></w2:column>');
+    for (var i = 0; i < oneBodyCol; i++) {
+        var idx = scwin.oneDayCol.length * Math.floor(i / 3) + (i % 3) + 6;
+        var dateKey = dataListObj.getColumnID(idx + scwin.extraColNum);
+        gridXML.push('<w2:column width="' + gridColWidth + '" inputType="text" id="' + dateKey + '" displayMode="label"/>');
+    }
+    gridXML.push('</w2:row>');
+    gridXML.push('</w2:gBody>');
+    gridXML.push('<w2:footer id="footer1">');
+    gridXML.push('<w2:row id="row5">');
+    gridXML.push('<w2:column displayMode="label" id="ft1_epno" inputType="text" width="70"></w2:column>');
+    for (var i = 0; i < totalHeaderCol; i++) {
+        var dateKey = dataListObj.getColumnID((i * scwin.oneDayCol.length) + scwin.extraColNum);
+        gridXML.push('<w2:column colSpan="3" width="' + gridColWidth + '" inputType="expression" id="ft1_' + dateKey + '" displayMode="label" expression="custom(scwin.gridView1_footerCustomFormatter, &quot;' + dateKey + '&quot;)"></w2:column>');
+    }
+    gridXML.push('<w2:column width="70" inputType="expression" id="ft1_holidayGwkTm" displayMode="label" rowSpan="2" expression="SUM(&quot;' + "holidayGwkTm" + '&quot;)"></w2:column>');
+    gridXML.push('<w2:column width="70" inputType="expression" id="ft1_totalGwkTm" displayMode="label" rowSpan="2" expression="scwin.customFormatterTotalGwkTm(SUM(&quot;' + "totalGwkTm" + '&quot;))"></w2:column>');
+    gridXML.push('</w2:row>');
+    gridXML.push('<w2:row id="row6">');
+    gridXML.push('<w2:column displayMode="label" id="ft2_epno" inputType="text" width="70"></w2:column>');
+    for (var i = 0; i < totalHeaderCol; i++) {
+        var dateKey = dataListObj.getColumnID((i * scwin.oneDayCol.length) + scwin.extraColNum);
+        gridXML.push('<w2:column colSpan="3" width="' + gridColWidth + '" inputType="expression" id="ft2_' + dateKey + '" displayMode="label" expression="custom(scwin.gridView1_footerCustomFormatter2, &quot;' + dateKey + '&quot;)"></w2:column>');
+    }
+    gridXML.push('</w2:row>');
+    gridXML.push('</w2:footer>');
+    gridXML.push('</w2:gridView>');
+    var gridStr = gridXML.join(" ");
+    gridView1.setGridStyle(gridStr);
+}
+
+
+scwin.gridView1_footerCustomFormatter = function(dataArray, dataType, colId) {
+    var dataList = $p.getComponentById(scwin.dataListId);
+    return scwin.footerCustomFormatter(dataList, colId);
+};
+
+scwin.gridView1_footerCustomFormatter2 = function(dataArray, dataType, colId) {
+    var dataList = $p.getComponentById(scwin.dataListId);
+    return scwin.footerCustomFormatter2(dataList, colId);
+};
+
+scwin.footerCustomFormatter = function(dataList, colId) {
+    try {
+        var targetColId = colId.slice(0, colId.indexOf("_") + 1) + "ndDno";
+        // colId.slice(0, colId.indexOf("_") + 1) 를 실행하면 각 column에서 날짜 부분만 가져온다. 
+        // 여기에 "ndDno"을 더하면 "1_ndDno"와 같이 각 날짜의 ndDno 컬럼을 조회할 수 있다.
+        var rowCnt = dataList.getRowCount();
+        var count = 0;
+        for (var i = 0; i < rowCnt; i++) {
+            var ndDnoValue = Number(dataList.getCellData(i, targetColId));
+            if (ndDnoValue > 0) {
+                count++;
+            }
+        }
+        return count;
+    } catch (error) {
+        return "";
+    }
+};
+
+scwin.footerCustomFormatter2 = function(dataList, colId) {
+    try {
+        var targetColId = colId.slice(0, colId.indexOf("_") + 1) + "totWrkTnum";
+        var rowCnt = dataList.getRowCount();
+        var sum = 0;
+        for (var i = 0; i < rowCnt; i++) {
+            var totWrkTnumValue = Number(dataList.getCellData(i, targetColId));
+            if (!isNaN(totWrkTnumValue)) {
+                sum += totWrkTnumValue;
+            }
+        }
+        return scwin.customFormatterTotalGwkTm(sum);
+    } catch (error) {
+        return "";
+    }
+};
+
+scwin.customFormatterTotalGwkTm = function(a, b, r, c) {
+    try {
+        var hours = Math.floor(a / 60);
+        var minutes = a % 60;
+        return `${hours}:${minutes.toString().padStart(2, '0')}`;
+    } catch (e) {
+        return "";
+    }
+};
+
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="gridView1"></w2:gridView>
+	</body>
+</html>

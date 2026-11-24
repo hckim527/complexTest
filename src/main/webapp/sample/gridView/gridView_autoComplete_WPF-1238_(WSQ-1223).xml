@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="col1" name="name1"/>
+						<w2:column dataType="text" id="col2" name="name2"/>
+						<w2:column dataType="text" id="col3" name="name3"/>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" id="dl_auto" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="value" name="value"/>
+						<w2:column dataType="text" id="label" name="label"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+	var j = $(q); if (j.length) return j;
+	var P = 'mf_', t = q.trim(), r = t.slice(1);
+	if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+	return $(t.slice(0, 1) + r);
+};
+scwin.dbClick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+scwin.checkEL = function(id) {
+	if (scwin.__getJq(id).css("display") == "block") {
+		return true;
+	}
+	return false;
+}
+scwin.isIE = function() {
+	var myNav = navigator.userAgent.toLowerCase();
+	return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
+scwin.__isCheck = function() {
+	if (scwin.isIE() && (scwin.isIE() == 11)) {
+		return ((j) => j.length ? j : $('#G_mf_gridView1___autoComplete_2_col2_col2_itemTable'))($('#G_gridView1___autoComplete_2_col2_col2_itemTable')).css("display") == "block";
+	}
+	return true;
+}
+scwin.checkVal = function() {
+	return scwin.__getJq('#G_'+$p.id+'gridView1___autoComplete_2_col2_col2_label').text() == '1';
+}
+scwin.onpageload = function() {
+	window.jsonData = [{
+		"value": "1",
+		"label": "1"
+	}, {
+		"value": "2",
+		"label": "2"
+	}];
+	dl_auto.setJSON(jsonData);
+	window.jsonData2 = [{
+		"col1": "a1",
+		"col2": "1"
+	}, {
+		"col1": "a2",
+		"col2": "1"
+	}, {
+		"col1": "a3",
+		"col2": "1"
+	}];
+	dataList1.setJSON(jsonData2);
+	gridView1.setCellReadOnly(2, 1, false);
+	//Create by Truong.Luu
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" disabledFontColor="" fixedColumnWithHidden="true" id="gridView1" keyMoveEditMode="true" moveKeyEditMode="true" readOnlyBackgroundColor="skyblue" style="position: absolute ;left:14px;bottom:30px;width:532px;height:110px;" useShiftKey="true">
+			<w2:header id="header1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" id="column9" inputType="text" style="height:20px" value="name1" width="70">
+					</w2:column>
+					<w2:column displayMode="label" id="column7" inputType="text" style="height:20px" value="name2" width="70">
+					</w2:column>
+					<w2:column displayMode="label" id="column3" inputType="text" style="height:20px" value="name3" width="70">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+					<w2:column displayMode="label" id="col1" inputType="text" style="height:20px" width="70"/>
+					<w2:column displayMode="label" id="col2" inputType="autoComplete" readOnly="true" style="height:20px" textAlign="left" width="70">
+						<w2:choices>
+							<w2:itemset nodeset="data:dl_auto">
+								<w2:label ref="label"/>
+								<w2:value ref="value"/>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column displayMode="label" id="col3" inputType="text" style="height:20px" width="70"/>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+   </body>
+</html> 

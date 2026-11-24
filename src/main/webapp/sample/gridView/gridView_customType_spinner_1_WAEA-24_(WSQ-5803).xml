@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dlt_exam" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="inputType" name="입력 유형"></w2:column>
+						<w2:column dataType="text" id="customType" name="동적 유형"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<inputType><![CDATA[spinner]]></inputType>
+							<customType><![CDATA[12]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[button]]></inputType>
+							<customType><![CDATA[button]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[autoComplete]]></inputType>
+							<customType><![CDATA[03]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[calendar]]></inputType>
+							<customType><![CDATA[20241231]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[checkbox]]></inputType>
+							<customType><![CDATA[Y]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[checkcombobox]]></inputType>
+							<customType><![CDATA[03]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[link]]></inputType>
+							<customType><![CDATA[link]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[secret]]></inputType>
+							<customType><![CDATA[secret]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[select]]></inputType>
+							<customType><![CDATA[03]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[text]]></inputType>
+							<customType><![CDATA[text]]></customType>
+						</w2:row>
+						<w2:row>
+							<inputType><![CDATA[textarea]]></inputType>
+							<customType><![CDATA[textarea]]></customType>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList baseNode="list" id="dlt_code" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="code" name="코드"></w2:column>
+						<w2:column dataType="text" id="codeName" name="코드명"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<code><![CDATA[01]]></code>
+							<codeName><![CDATA[Apple]]></codeName>
+						</w2:row>
+						<w2:row>
+							<code><![CDATA[02]]></code>
+							<codeName><![CDATA[Apricot]]></codeName>
+						</w2:row>
+						<w2:row>
+							<code><![CDATA[03]]></code>
+							<codeName><![CDATA[Banana]]></codeName>
+						</w2:row>
+						<w2:row>
+							<code><![CDATA[04]]></code>
+							<codeName><![CDATA[Blueberry]]></codeName>
+						</w2:row>
+						<w2:row>
+							<codeName><![CDATA[Blackberry]]></codeName>
+							<code><![CDATA[05]]></code>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+/**
+ * GridView 'grd_exam1'의 'customType' 컬럼의 'typeGetter' 속성에 설정된 메소드
+ * 동적으로 셀의 'inputType'을 설정
+ */
+scwin.getCustomType = function (info) {
+	let rowIndex = info.rowIndex;
+	let colIndex = info.colIndex;
+	let returnInfo = {
+		options: {
+			readOnly: "false",
+			viewType: "default",
+			chooseOption: "false"
+		}
+	};
+
+	let _inputType = dlt_exam.getCellData(rowIndex, "inputType");
+
+	switch (_inputType) {
+		case "autoComplete":
+			returnInfo.itemSet = {
+				nodeset: "data:dlt_code",
+				label: "codeName",
+				value: "code"
+			};
+			returnInfo.options.viewType = "icon";
+			returnInfo.options.chooseOption = "true";
+			break;
+		case "button":
+			break;
+		case "calendar":
+			returnInfo.options.viewType = "icon";
+			break;
+		case "checkbox":
+			returnInfo.options.checkboxLabel = "checkbox";
+			returnInfo.options.valueType = "other";
+			returnInfo.options.trueValue = "Y";
+			returnInfo.options.falseValue = "N";
+			break;
+		case "checkcombobox":
+			returnInfo.itemSet = {
+				nodeset: "data:dlt_code",
+				label: "codeName",
+				value: "code"
+			};
+			returnInfo.options.viewType = "icon";
+			returnInfo.options.chooseOption = "true";
+			break;
+		case "link":
+			break;
+		case "secret":
+			break;
+		case "select":
+			returnInfo.itemSet = {
+				nodeset: "data:dlt_code",
+				label: "codeName",
+				value: "code"
+			};
+			returnInfo.options.viewType = "icon";
+			returnInfo.options.chooseOption = "true";
+			break;
+		case "spinner":
+			returnInfo.options.viewType = "icon";
+			break;
+		case "textarea":
+			break;
+		case "text":
+		default:
+			break;
+	}
+
+	returnInfo.id = "dynamic_" + _inputType + "_" + rowIndex + "_" + colIndex;
+	returnInfo.inputType = _inputType;
+
+	return returnInfo;
+};
+
+/**
+ * GridView 'grd_exam1'의 'onafteredit' 이벤트 핸들러. 
+ * 셀 입력 후 발생
+ */
+scwin.grd_exam1_onafteredit = function (row, col, value) {
+	let colId = this.getColumnID(col);
+
+	if (colId != "inputType") { return; }
+
+	let cellData = "";
+	switch (value) {
+		case "autoComplete":
+			cellData = "03";
+			break;
+		case "button":
+			cellData = "button";
+			break;
+		case "calendar":
+			cellData = "20241231";
+			break;
+		case "checkbox":
+			cellData = "Y";
+			break;
+		case "checkcombobox":
+			cellData = "03";
+			break;
+		case "link":
+			cellData = "link";
+			break;
+		case "secret":
+			cellData = "secret";
+			break;
+		case "select":
+			cellData = "03";
+			break;
+		case "spinner":
+			cellData = "12";
+			break;
+		case "textarea":
+			cellData = "textarea";
+			break;
+		case "text":
+		default:
+			cellData = "text";
+			break;
+	}
+
+	dlt_exam.setCellData(row, "customType", cellData);
+};
+
+// spinner → 다른 유형으로 바뀐 셀에 spinner 증감 버튼 class 가 남지 않아야 함
+scwin.checkVal = function() {
+	var td = document.getElementById('grd_exam1_cell_0_1') || document.getElementById('mf_grd_exam1_cell_0_1');
+	return !td.classList.contains('gridBodyDefault_spinner');
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group class="sub_contents">
+			<xf:group class="gvwbox" style="max-width: 400px;">
+				<w2:gridView oddEvenColorDisplay="false" rowNumVisible="true" rowNumHeaderValue="No" defaultCellHeight="37"
+					focusMode="row" autoFit="allColumn" id="grd_exam1" tooltipDisplayColumn="INFO" class="gvw" ignoreToggleOnDisabled="false"
+					editModeEvent="onclick" scrollByColumnAdaptive="false" rowNumStatusUniqueId="true" summaryAuto="false"
+					useShiftKey="true" tooltipDisplay="true" fixedColumnWithHidden="true" dataList="data:dlt_exam" ignoreCellClick="false"
+					style="height:150px;" ev:onafteredit="scwin.grd_exam1_onafteredit" visibleRowNum="all" autoFitMinWidth="300">
+					<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+					<w2:header id="header1">
+						<w2:row id="row1">
+							<w2:column width="150" inputType="text" id="column7" value="InputType" blockSelect="false" displayMode="label"></w2:column>
+							<w2:column toolTip="병역여부에 따른 Custom Input Type" width="120" inputType="text" id="column5" value="CustomType" blockSelect="false" displayMode="label"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1">
+						<w2:row id="row2">
+							<w2:column viewType="icon" width="150" inputType="select" id="inputType" blockSelect="false" displayMode="label">
+								<w2:choices>
+									<w2:item>
+										<w2:label><![CDATA[spinner]]></w2:label>
+										<w2:value><![CDATA[spinner]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[text]]></w2:label>
+										<w2:value><![CDATA[text]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[link]]></w2:label>
+										<w2:value><![CDATA[link]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[checkbox]]></w2:label>
+										<w2:value><![CDATA[checkbox]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[button]]></w2:label>
+										<w2:value><![CDATA[button]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[radio]]></w2:label>
+										<w2:value><![CDATA[radio]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[select]]></w2:label>
+										<w2:value><![CDATA[select]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[calendar]]></w2:label>
+										<w2:value><![CDATA[calendar]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[textarea]]></w2:label>
+										<w2:value><![CDATA[textarea]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[checkcombobox]]></w2:label>
+										<w2:value><![CDATA[checkcombobox]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[autoComplete]]></w2:label>
+										<w2:value><![CDATA[autoComplete]]></w2:value>
+									</w2:item>
+									<w2:item>
+										<w2:label><![CDATA[secret]]></w2:label>
+										<w2:value><![CDATA[secret]]></w2:value>
+									</w2:item>
+								</w2:choices>
+							</w2:column>
+							<w2:column falseValue="0" typeGetter="scwin.getCustomType" trueValue="$blank" valueType="other" width="120" inputType="custom" id="customType" blockSelect="false" displayMode="label"></w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

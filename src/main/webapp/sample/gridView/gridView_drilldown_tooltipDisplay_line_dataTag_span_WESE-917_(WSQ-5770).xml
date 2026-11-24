@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="nameDis" name="name1" dataType="text"></w2:column>
+						<w2:column id="levelCnt" name="name2" dataType="text"></w2:column>
+						<w2:column id="menuId" name="name3" dataType="text"></w2:column>
+						<w2:column id="cnt" name="name4" dataType="text"></w2:column>
+						<w2:column id="proName" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="javascript"><![CDATA[
+// 1·8번째 Row 는 긴 메뉴명(셀 넘침 → 툴팁 대상)
+var longId = new Array(17).join("menuId1"), longNm = new Array(22).join("가입관리1");
+var rows = [["1", longId, longNm], ["2", "menuId2", "가입관리2"], ["3", "menuId3", "가입관리3"], ["4", "menuId4", "가입관리4"],
+	["1", "menuId1", "유지관리"], ["2", "menuId2", "유지관리2"], ["2", "menuId3", "유지관리3"]];
+rows = rows.concat(rows);
+dataList1.setJSON(rows.map(function (r) { return { "levelCnt": r[0], "menuId": r[1], "cnt": "11", "nameDis": r[2], "proName": "Program1" }; }));
+
+scwin.checkVal = function() {
+	var tooltipElement = document.getElementById('listGrid_tooltip') || document.getElementById('mf_listGrid_tooltip');
+	return !!tooltipElement && tooltipElement.style.display == 'block';
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+.drill_sell nobr div:nth-child(1){background:red;}
+.drill_sell nobr div:nth-child(2){background:blue;}
+.drill_sell nobr div:nth-child(3){background:olive;}
+.drill_sell nobr div:nth-child(4){background:orange;}
+]]></style>
+	</head>
+	<body>
+		<w2:gridView autoFit="allColumn" class="cm_grid" fixedColumnWithHidden="true" id="listGrid" rowNumHeaderValue="순번" rowNumVisible="true" rowNumWidth="40" scrollByColumn="false" style="min-height:250px;" useShiftKey="true" dataList="dataList1" tooltipDisplay="true" dataTag="span">
+			<w2:header id="header1">
+				<w2:row id="row2">
+					<w2:column id="column21" inputType="text" style="height:25px;" value="레벨" width="50"></w2:column>
+					<w2:column id="column19" inputType="text" style="height:25px;" value="메뉴ID" width="100"></w2:column>
+					<w2:column id="column23" inputType="text" style="height:25px;" value="순서" width="70"></w2:column>
+					<w2:column id="column17" inputType="text" style="height:25px;" value="메뉴명" width="200"></w2:column>
+					<w2:column id="column15" inputType="text" style="height:25px;" value="프로그램명" width="200"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+					<w2:column id="levelCnt" inputType="text" style="height:25px;" width="50"></w2:column>
+					<w2:column id="menuId" inputType="text" style="height:25px;" width="100"></w2:column>
+					<w2:column id="cnt" inputType="text" style="height:25px" width="70"></w2:column>
+					<w2:column id="nameDis" inputType="drilldown" style="height:25px;" width="200" depthColumn="levelCnt" showDepth="4" depthType="line" textAlign="left" class="drill_sell"></w2:column>
+					<w2:column id="proName" inputType="text" style="height:25px;" width="200"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

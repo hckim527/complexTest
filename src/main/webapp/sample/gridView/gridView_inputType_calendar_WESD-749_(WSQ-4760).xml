@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_out" saveRemovedData="true" ev:oncelldatachange="scwin.dlt_out_oncelldatachange">
+					<w2:columnInfo>
+						<w2:column id="aplcBegYmd" name="적용시작일" dataType="text"></w2:column>
+						<w2:column id="aplcEndYmd" name="적용종료일" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	dlt_out.setJSON([{ "aplcBegYmd": "20251210", "aplcEndYmd": "20251220" }]);
+	// 종료일은 시작일 이전 선택 불가, 시작일은 종료일 이후 선택 불가
+	gridList.setDisableBeforeDate("aplcEndYmd", dlt_out.getCellData(0, "aplcBegYmd"));
+	gridList.setDisableAfterDate("aplcBegYmd", dlt_out.getCellData(0, "aplcEndYmd"));
+};
+scwin.dlt_out_oncelldatachange = function(info) {
+	if (info.colID == "aplcBegYmd") {
+		gridList.setDisableBeforeDate("aplcEndYmd", info.newValue);
+	} else if (info.colID == "aplcEndYmd") {
+		gridList.setDisableAfterDate("aplcBegYmd", info.newValue);
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dlt_out" defaultCellHeight="20" editModeEvent="onclick" id="gridList" style="width:300px;height:100px;">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="140" inputType="text" style="height:20px" id="column9" value="시작일" displayMode="label"></w2:column>
+					<w2:column width="140" inputType="text" style="height:20px" id="column10" value="종료일" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="140" inputType="calendar" style="height:20px" id="aplcBegYmd" displayMode="label"></w2:column>
+					<w2:column width="140" inputType="calendar" style="height:20px" id="aplcEndYmd" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

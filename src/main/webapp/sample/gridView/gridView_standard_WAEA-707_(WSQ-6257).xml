@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" removeDummyRowStatus="true" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="bigDecimal"></w2:column>
+						<w2:column id="col3" name="name3" dataType="bigDecimal" length="15.2"></w2:column>
+						<w2:column id="col4" name="name4" dataType="bigDecimal"></w2:column>
+						<w2:column id="col5" name="name5" dataType="bigDecimal" length="15.2"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function () {
+	// col2: footer 합계 11,111,111,111.22 (백억 자리 이상 소수점 연산)
+	var tmpJSON = [
+		{ "col1": "1", "col2": "0.00", "col3": "1234567890123.45", "col4": "300000000.55", "col5": "1234567890123.45" },
+		{ "col1": "1", "col2": "0.00", "col3": "9999999999999.99", "col4": "200000000.33", "col5": "9999999999999.99" },
+		{ "col1": "1", "col2": "11111111111.22", "col3": "123.45", "col4": "150000000.77", "col5": "123.45" }
+	];
+	dataList1.setJSON(tmpJSON);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dataList1" id="gridView1" style="position:absolute;top:41px;left:60px;width:1260px;height:250px;">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column displayMode="label" id="column15" inputType="checkbox" value="name1" width="70" disabled="true"></w2:column>
+					<w2:column displayMode="label" id="column14" inputType="text" value="금액(col2)" width="150"></w2:column>
+					<w2:column displayMode="label" id="column13" inputType="text" value="bigDecimal 15.2(col3)" width="150"></w2:column>
+					<w2:column displayMode="label" id="column12" inputType="text" value="금액noEmbed(col4)" width="150"></w2:column>
+					<w2:column displayMode="label" id="column11" inputType="text" value="BD 15.2 noEmbed(col5)" width="150"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" id="col1" inputType="checkbox" width="70" embeddedInput="true" disabled="true"></w2:column>
+					<w2:column displayMode="label" editModeEvent="onclick" embeddedInput="true" id="col2" inputType="text" width="150" colMerge="false" displayFormat="#,###.00" dataType="number"></w2:column>
+					<w2:column displayMode="label" id="col3" inputType="text" width="150" colMerge="false" embeddedInput="true" displayFormat="#,###.00" dataType="number"></w2:column>
+					<w2:column displayMode="label" id="col4" inputType="text" width="150" colMerge="false" maxLength="9.3" dataType="bigDecimal" embeddedInput="true"></w2:column>
+					<w2:column displayMode="label" id="col5" inputType="text" width="150" colMerge="false" displayFormat="#,###.00"></w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer id="footer1">
+				<w2:row id="row3">
+					<w2:column width="70" inputType="text" id="column30" displayMode="label"></w2:column>
+					<w2:column width="150" inputType="expression" id="column29" displayMode="label" expression="sum('col2')" displayFormat="#,###.00" dataType="bigDecimal"></w2:column>
+					<w2:column width="150" inputType="expression" id="column28" displayMode="label" expression="sum('col3')" displayFormat="#,###.00" dataType="bigDecimal"></w2:column>
+					<w2:column width="150" inputType="expression" id="column27" displayMode="label" expression="sum('col4')" dataType="bigDecimal" maxLength="9.3"></w2:column>
+					<w2:column width="150" inputType="expression" id="column26" displayMode="label" expression="sum('col5')" displayFormat="#,###.00"></w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+	</body>
+</html>

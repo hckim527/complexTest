@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="ds_cal10_1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="Col0" dataType="text" name="Col0"/>
+						<w2:column id="Col1" dataType="text" name="Col1"/>
+						<w2:column id="Col2" dataType="text" name="Col2"/>
+						<w2:column id="Col3" dataType="text" name="Col3"/>
+						<w2:column id="Col4" dataType="text" name="Col4"/>
+						<w2:column id="Col5" dataType="text" name="Col5"/>
+						<w2:column id="Col6" dataType="text" name="Col6"/>
+						<w2:column id="Col7" dataType="text" name="Col7"/>
+						<w2:column id="Col8" dataType="text" name="Col8"/>
+						<w2:column id="Col9" dataType="text" name="Col9"/>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="ds_cal10_2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="Col0" dataType="text" name="Col0"/>
+						<w2:column id="Col1" dataType="text" name="Col1"/>
+						<w2:column id="Col2" dataType="text" name="Col2"/>
+						<w2:column id="Col3" dataType="text" name="Col3"/>
+						<w2:column id="Col4" dataType="text" name="Col4"/>
+						<w2:column id="Col5" dataType="text" name="Col5"/>
+						<w2:column id="Col6" dataType="text" name="Col6"/>
+						<w2:column id="Col7" dataType="text" name="Col7"/>
+						<w2:column id="Col8" dataType="text" name="Col8"/>
+						<w2:column id="Col9" dataType="text" name="Col9"/>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="ds_cal10_3" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="Col0" dataType="text" name="Col0"/>
+						<w2:column id="Col1" dataType="text" name="Col1"/>
+						<w2:column id="Col2" dataType="text" name="Col2"/>
+						<w2:column id="Col3" dataType="text" name="Col3"/>
+						<w2:column id="Col4" dataType="text" name="Col4"/>
+						<w2:column id="Col5" dataType="text" name="Col5"/>
+						<w2:column id="Col6" dataType="text" name="Col6"/>
+						<w2:column id="Col7" dataType="text" name="Col7"/>
+						<w2:column id="Col8" dataType="text" name="Col8"/>
+						<w2:column id="Col9" dataType="text" name="Col9"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+/*
+ * [WSQ-6051] WAEA-357 removeRow 반복 호출 성능 개선 확인 (원본: WAEA-357 Jira 첨부 WAEA_357.xml)
+ * - btn_st(start) : 10컬럼 dataList 100 / 1,000 / 10,000 행을 removeRow(0) 반복으로 전부 삭제
+ * - 요건(Jira 댓글) : 첨부 샘플 맨 위 버튼 기준 1만건 3.5초 → 1.3초로 단축
+ * - 판정 : checkBeforeTime ~ checkAfterTime 경과(btn_st 클릭 전체) <= scwin._limitMs
+ *          시간은 performance.now() 로 잰다(분·초 계산은 정시 경계에서 틀어짐).
+ */
+scwin._limitMs = 2000;
+scwin._beforeTime = null;
+scwin._afterTime = null;
+scwin.checkBeforeTime = function() {
+	scwin._beforeTime = performance.now();
+	scwin._afterTime = null;
+};
+scwin.checkAfterTime = function() {
+	scwin._afterTime = performance.now();
+	tbx_elapsed.setValue("btn_st 경과 : " + scwin.getElapsedTime() + " ms (기준 " + scwin._limitMs + " ms 이하)");
+};
+scwin.getElapsedTime = function() {
+	if (scwin._beforeTime === null || scwin._afterTime === null) {
+		return -1;
+	}
+	return Math.round(scwin._afterTime - scwin._beforeTime);
+};
+scwin.compareTime = function() {
+	var elapsed = scwin.getElapsedTime();
+	var rowCnt = ds_cal10_1.getRowCount() + ds_cal10_2.getRowCount() + ds_cal10_3.getRowCount();
+	// 경과시간 기준 + 실제로 1만1천1백 행이 모두 지워졌는지
+	return elapsed >= 0 && elapsed <= scwin._limitMs && rowCnt === 0;
+};
+
+scwin.onpageload = function() {
+	scwin.setData(ds_cal10_1, 100);
+	scwin.setData(ds_cal10_2, 1000);
+	scwin.setData(ds_cal10_3, 10000);
+	// 상태값이 섞인 Row 삭제(핫픽스 수정 대상 경로)
+	for (var i = 0; i < 100; i += 7) {
+		ds_cal10_1._setRowStatus(i, "U");
+	}
+	for (var i = 0; i < 100; i += 13) {
+		ds_cal10_1._setCellStatus(i, 0, "U");
+	}
+	ds_cal10_1._setCellStatus(93, 0, "U");
+};
+
+scwin.btn_st_onclick = function(e) {
+	scwin.deleteRowTest(ds_cal10_1, "tc_10_100");
+	scwin.deleteRowTest(ds_cal10_2, "tc_10_1000");
+	scwin.deleteRowTest(ds_cal10_3, "tc_10_10000");
+};
+
+scwin.setData = function(ds, row_cnt) {
+	var jsonData = [];
+	for (var i = 0; i < row_cnt; i++) {
+		var colData = {};
+		for (var j = 0; j < 10; j++) {
+			colData["Col" + j] = i + "_" + j;
+		}
+		jsonData.push(colData);
+	}
+	ds.setJSON(jsonData);
+};
+
+scwin.deleteRowTest = function(ds, tbxId) {
+	ds.setBroadcast(false);
+	var nStartTime = new Date().getTime();
+	var row_cnt = ds.getRowCount();
+	for (var i = 0; i < row_cnt; i++) {
+		ds.removeRow(0);
+	}
+	$p.getComponentById(tbxId).setValue((new Date().getTime() - nStartTime) / 1000);
+	ds.setBroadcast(true, true);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+	<xf:group id="benchmarkTest" style="position:relative;width:1024px;height:340px;">
+		<xf:trigger id="btn_st" style="position:absolute;left:6px;top:29px;width:105px;height:20px;" ev:onclick="scwin.btn_st_onclick">
+			<xf:label><![CDATA[start]]></xf:label>
+		</xf:trigger>
+		<w2:textbox id="tc_10_100" style="position:absolute;left:636px;top:30px;width:95px;height:24px;border:1px solid black;" label=""/>
+		<w2:textbox id="tc_10_1000" style="position:absolute;left:732px;top:30px;width:95px;height:24px;border:1px solid black;" label=""/>
+		<w2:textbox id="tc_10_10000" style="position:absolute;left:828px;top:30px;width:95px;height:24px;border:1px solid black;" label=""/>
+		<w2:textbox id="tbx_elapsed" style="position:absolute;left:120px;top:30px;width:500px;height:24px;" label=""/>
+		<w2:gridView id="grd_10_1" dataList="data:ds_cal10_1" style="position:absolute;left:0px;top:60px;width:331px;height:260px;" rowNumVisible="true" rowNumWidth="20px">
+			<w2:header id="header1">
+				<w2:row id="hrow1">
+					<w2:column width="70" inputType="text" id="h0" value="Col0" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h1" value="Col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h2" value="Col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h3" value="Col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h4" value="Col4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h5" value="Col5" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h6" value="Col6" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h7" value="Col7" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h8" value="Col8" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h9" value="Col9" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="brow1">
+					<w2:column width="70" inputType="text" id="Col0" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col5" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col6" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col7" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col8" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col9" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:gridView id="grd_10_2" dataList="data:ds_cal10_2" style="position:absolute;left:347px;top:60px;width:331px;height:260px;" rowNumVisible="true" rowNumWidth="20px">
+			<w2:header id="header2">
+				<w2:row id="hrow2">
+					<w2:column width="70" inputType="text" id="h0" value="Col0" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h1" value="Col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h2" value="Col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h3" value="Col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h4" value="Col4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h5" value="Col5" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h6" value="Col6" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h7" value="Col7" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h8" value="Col8" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h9" value="Col9" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="brow2">
+					<w2:column width="70" inputType="text" id="Col0" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col5" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col6" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col7" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col8" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col9" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:gridView id="grd_10_3" dataList="data:ds_cal10_3" style="position:absolute;left:694px;top:60px;width:331px;height:260px;" rowNumVisible="true" rowNumWidth="20px">
+			<w2:header id="header3">
+				<w2:row id="hrow3">
+					<w2:column width="70" inputType="text" id="h0" value="Col0" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h1" value="Col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h2" value="Col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h3" value="Col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h4" value="Col4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h5" value="Col5" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h6" value="Col6" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h7" value="Col7" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h8" value="Col8" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="h9" value="Col9" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody3">
+				<w2:row id="brow3">
+					<w2:column width="70" inputType="text" id="Col0" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col5" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col6" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col7" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col8" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="Col9" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</xf:group>
+	</body>
+</html>

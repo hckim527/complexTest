@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dataList1" repeatNode="map"
+					saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="col2" name="name2"></w2:column>
+						<w2:column dataType="text" id="col3" name="name3"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+
+				<w2:dataList baseNode="list" id="sel_sample" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="LABEL" name="name1"></w2:column>
+						<w2:column dataType="text" id="VALUE" name="name2"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<VALUE><![CDATA[1]]></VALUE>
+							<LABEL><![CDATA[축구]]></LABEL>
+						</w2:row>
+						<w2:row>
+							<VALUE><![CDATA[2]]></VALUE>
+							<LABEL><![CDATA[농구]]></LABEL>
+						</w2:row>
+						<w2:row>
+							<VALUE><![CDATA[3]]></VALUE>
+							<LABEL><![CDATA[야구]]></LABEL>
+						</w2:row>
+						<w2:row>
+							<VALUE><![CDATA[4]]></VALUE>
+							<LABEL><![CDATA[배구]]></LABEL>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+			<xf:submission id="submission1" ref="data:json,dataList1" target="data:json,dataList1" action="/data/gridView_custom_select_WESD-1459_(WSQ-5428).json" method="post" mediatype="application/json" encoding="UTF-8"
+				instance="" replace="" errorHandler="" customHandler="" mode="asynchronous" processMsg="" ev:submitdone="scwin.submission1_submitdone" abortTrigger="">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	$p.executeSubmission("submission1");
+};
+scwin.fn_CreateDynamicInputType = function() {
+	var info = {
+		inputType : "select",
+		options : {
+			selectedData : true,
+			viewType : "icon",
+			chooseOption : true,
+			chooseOptionLabel : "정상"
+		},
+		itemSet : {
+			nodeset : "data:sel_sample",
+			label : "LABEL",
+			value : "VALUE"
+		}
+	};
+	var total = dataList1.getTotalRow();
+	grd.setCellInputType(total - 4, "col2", info);
+	grd.setCellInputType(total - 3, "col2", info);
+	grd.setCellInputType(total - 2, "col2", info);
+};
+scwin.submission1_submitdone = function(e) {
+	scwin.fn_CreateDynamicInputType();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="grd" autoFit="allColumn" checkAllType="false" visibleRowNum="5" class="" dataList="data:dataList1"
+			defaultCellHeight="40" evenRowBackgroundColor="#fff" readOnly="false" rowMouseOver="false"
+			rowMouseOverColor="#fff" scrollByColumn="false" scrollByColumnAdaptive="false" style="height:200px;"
+			tooltipDisplay="true" autoFitMinWidth="1200" setCellInputTypeCustom="true">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column blockSelect="false" displayMode="label" id="column3" inputType="text" value="name2" width="100"></w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="column1" inputType="text" value="name3" width="100"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column blockSelect="false" displayMode="label" id="col2" inputType="custom" width="100"></w2:column>
+					<w2:column blockSelect="false" displayMode="label" id="col3" inputType="text" width="100"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

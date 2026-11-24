@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.strNameSpace = 'xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events"';
+
+scwin.onpageload = async function () {
+	// itemSet 바인딩용 DataList (autoComplete 아이템 : col1=라벨, col2=값)
+	let strItem = '';
+	strItem += '<w2:dataList ' + scwin.strNameSpace + ' id="dlt_item" baseNode="list" repeatNode="map">';
+	strItem += '<w2:columnInfo>';
+	strItem += '<w2:column id="col1" name="col1" dataType="text"></w2:column>';
+	strItem += '<w2:column id="col2" name="col2" dataType="text"></w2:column>';
+	strItem += '</w2:columnInfo>';
+	strItem += '<w2:data use="true"></w2:data>';
+	strItem += '</w2:dataList>';
+	$p.data.create(strItem);
+	dlt_item.setJSON([
+		{ "col1": "서울", "col2": "01" },
+		{ "col1": "부산", "col2": "02" },
+		{ "col1": "대구", "col2": "03" },
+		{ "col1": "광주", "col2": "04" }
+	], false);
+
+	let strBind = '';
+	strBind += '<w2:dataList ' + scwin.strNameSpace + ' id="dlt_bind" baseNode="list" repeatNode="map">';
+	strBind += '<w2:columnInfo>';
+	strBind += '<w2:column id="col1" name="col1" dataType="text"></w2:column>';
+	strBind += '<w2:column id="col2" name="col2" dataType="text"></w2:column>';
+	strBind += '</w2:columnInfo>';
+	strBind += '<w2:data use="true"></w2:data>';
+	strBind += '</w2:dataList>';
+	$p.data.create(strBind);
+	dlt_bind.setJSON([
+		{ "col1": "01", "col2": "메모A" },
+		{ "col1": "02", "col2": "메모B" },
+		{ "col1": "03", "col2": "메모C" }
+	], false);
+
+	// col1 = autoComplete(itemSet 바인딩), col2 = text
+	let itemset = '<w2:choices><w2:itemset nodeset="data:dlt_item"><w2:label ref="col1"></w2:label><w2:value ref="col2"></w2:value></w2:itemset></w2:choices>';
+	let strGrid = '';
+	strGrid += '<w2:gridView ' + scwin.strNameSpace + ' checkAllType="false" editable="true" dataList="data:dlt_bind" id="grid1" style="width:520px;height:170px;">';
+	strGrid += '<w2:header id="header1">';
+	strGrid += '<w2:row id="hrow1">';
+	strGrid += '<w2:column width="260" inputType="text" id="hcol1" value="col1 (autoComplete)"></w2:column>';
+	strGrid += '<w2:column width="*" inputType="text" id="hcol2" value="col2 (text)"></w2:column>';
+	strGrid += '</w2:row>';
+	strGrid += '</w2:header>';
+	strGrid += '<w2:gBody id="gBody1">';
+	strGrid += '<w2:row id="brow1">';
+	strGrid += '<w2:column width="260" inputType="autoComplete" id="col1" dataList="col1">' + itemset + '</w2:column>';
+	strGrid += '<w2:column width="*" inputType="text" id="col2" dataList="col2"></w2:column>';
+	strGrid += '</w2:row>';
+	strGrid += '</w2:gBody>';
+	strGrid += '</w2:gridView>';
+
+	scwin.grid1 = await $p.dynamicCreate("grid1", "gridView", strGrid, grp_comp);
+};
+
+scwin.btn_fail_onclick = async function () {
+	scwin.grid1.setColumnDisableEdit(0, false);
+};
+
+scwin.btn_true_onclick = async function (e) {
+	scwin.grid1.setColumnDisableEdit(0, true);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="grp_main" style="padding:16px;">
+			<xf:group id="grp_comp" style="margin:14px 0;"></xf:group>
+			<xf:group id="" style="display:flex; gap:8px; margin:8px 0;">
+				<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_fail_onclick" id="btn_fail" label="setColumnDisableEdit(0,false)"></w2:button>
+				<w2:button class="tc_btn_basic" ev:onclick="scwin.btn_true_onclick" id="button1" label="setColumnDisableEdit(0,true)"></w2:button>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

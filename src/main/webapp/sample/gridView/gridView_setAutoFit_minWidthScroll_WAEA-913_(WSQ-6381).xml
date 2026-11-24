@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.getNameSpace = function () {
+	return 'xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms"';
+};
+
+scwin.getGridJSON = function () {
+	return [
+		{ col1: "A1", col2: "B1", col3: "C1", col4: "D1" },
+		{ col1: "A2", col2: "B2", col3: "C2", col4: "D2" },
+		{ col1: "A3", col2: "B3", col3: "C3", col4: "D3" },
+		{ col1: "A4", col2: "B4", col3: "C4", col4: "D4" }
+	];
+};
+
+scwin.createGridDataList = function (dlId) {
+	$p.data.create({
+		type: "dataList",
+		id: dlId,
+		option: { baseNode: "list", repeatNode: "map" },
+		columnInfo: [
+			{ id: "col1", dataType: "text" },
+			{ id: "col2", dataType: "text" },
+			{ id: "col3", dataType: "text" },
+			{ id: "col4", dataType: "text" }
+		]
+	});
+	var dl = $p.getComponentById(dlId);
+	dl.setJSON(scwin.getGridJSON());
+	return dl;
+};
+
+// 각 컬럼 100px(합 400) < 그리드 500px, allColumn + minWidth 800 으로 내부 너비 확장
+scwin.buildGridTarget = function (dlId, extraAttr) {
+	var ns = scwin.getNameSpace();
+	var s = '';
+	s += '<w2:gridView ' + ns + ' ' + (extraAttr || '') + ' checkAllType="false" id="" dataList="data:' + dlId + '" style="width:500px;height:160px;">';
+	s += '<w2:caption style="" id="cap" value="grid"></w2:caption>';
+	s += '<w2:header style="" id="hdr">';
+	s += '<w2:row style="" id="hrow">';
+	s += '<w2:column width="100" inputType="text" id="column1" value="col1"></w2:column>';
+	s += '<w2:column width="100" inputType="text" id="column2" value="col2"></w2:column>';
+	s += '<w2:column width="100" inputType="text" id="column3" value="col3"></w2:column>';
+	s += '<w2:column width="100" inputType="text" id="column4" value="col4"></w2:column>';
+	s += '</w2:row>';
+	s += '</w2:header>';
+	s += '<w2:gBody style="" id="gbd">';
+	s += '<w2:row style="" id="brow">';
+	s += '<w2:column width="100" inputType="text" id="col1" value=""></w2:column>';
+	s += '<w2:column width="100" inputType="text" id="col2" value=""></w2:column>';
+	s += '<w2:column width="100" inputType="text" id="col3" value=""></w2:column>';
+	s += '<w2:column width="100" inputType="text" id="col4" value=""></w2:column>';
+	s += '</w2:row>';
+	s += '</w2:gBody>';
+	s += '</w2:gridView>';
+	return s;
+};
+
+scwin.onpageload = async function () {
+	// 대조군 target_prop : autoFit="allColumn" autoFitMinWidth="800" 속성으로 생성
+	scwin.createGridDataList("dlt_prop");
+	var strProp = scwin.buildGridTarget("dlt_prop", 'autoFit="allColumn" autoFitMinWidth="800"');
+	scwin.target_prop = await $p.dynamicCreate("target_prop", "gridView", strProp, grp_grid_prop);
+
+	// 판정 target_method : 속성 없이 생성 후 setAutoFit 호출
+	scwin.createGridDataList("dlt_method");
+	var strMethod = scwin.buildGridTarget("dlt_method", '');
+	scwin.target_method = await $p.dynamicCreate("target_method", "gridView", strMethod, grp_grid_method);
+
+	scwin.target_method.setAutoFit({ type: "allColumn", minWidth: 800 });
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="padding: 10px;" id="grp_root">
+			<xf:group style="display:flex; gap:20px; margin-top:10px;" id="grp_compare">
+				<xf:group id="grp_col_prop">
+					<xf:group id="grp_grid_prop" style="margin-top:5px;"></xf:group>
+				</xf:group>
+				<xf:group id="grp_col_method">
+					<xf:group id="grp_grid_method" style="margin-top:5px;"></xf:group>
+				</xf:group>
+			</xf:group>
+			<xf:group style="margin-top:10px;" id="grp_buttons"></xf:group>
+		</xf:group>
+	</body>
+</html>

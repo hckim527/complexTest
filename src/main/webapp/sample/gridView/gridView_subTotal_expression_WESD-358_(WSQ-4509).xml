@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"/>
+						<w2:column id="emno" name="name2" dataType="text"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	var jsonData = [
+		"사원", 1, "사원", 2, "사원", 3,
+		"선임", 4, "선임", 5, "선임", 6,
+		"책임", 7, "책임", 8, "책임", 9
+	];
+	dataList1.setData(jsonData);
+};
+scwin.trigger1_onclick = function(e) {
+	var options = {
+		rowNumVisible: true,
+		useSubTotal: true,
+		removeColumns: "0",
+		fileName: "excel_emp_grd.xlsx",
+		type: 1
+	};
+	grd.advancedExcelDownload(options);
+};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="grd" style="width:504px;height:224px;" defaultCellHeight="20" dataList="data:dataList1">
+			<w2:caption id="caption1" value="this is a grid caption."/>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column removeBorderStyle="false" width="185" inputType="text" style="height:20px" id="column2" value="직책" displayMode="label"/>
+					<w2:column removeBorderStyle="false" width="162" inputType="text" style="height:20px" id="column1" value="사번" displayMode="label"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column removeBorderStyle="false" width="185" inputType="text" style="height:20px" id="col1" displayMode="label"/>
+					<w2:column removeBorderStyle="false" width="162" inputType="text" style="height:20px" id="emno" displayMode="label"/>
+				</w2:row>
+			</w2:gBody>
+			<w2:subTotal targetColumnID="col1" id="subTotal1">
+				<w2:row id="row3">
+					<w2:column removeBorderStyle="false" width="185" inputType="text" style="height:20px" id="column6" displayMode="label"/>
+					<w2:column removeBorderStyle="false" width="162" inputType="expression" style="height:20px" id="column5" displayMode="label" expression="sum('emno')"/>
+				</w2:row>
+			</w2:subTotal>
+		</w2:gridView>
+		<xf:trigger type="button" style="width:156px;height:23px;margin-right:30px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[type = 1 (정상)]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

@@ -14,10 +14,18 @@ scwin.onpageload = function() {
 	gen_test.insertChild();
 	gen_test.insertChild();
 	gen_test.insertChild();
+	gen_noEscape.insertChild();
 };
 
 scwin.checkVal = function() {
-	return (document.getElementById('wq_uuid_5') || document.getElementById('mf_wq_uuid_5')).innerText == '가나다<br/>가나다';
+	var spans = (document.getElementById('gen_test') || document.getElementById('mf_gen_test')).querySelectorAll('span');
+	return spans.length == 3 && spans[1].innerText == '가나다<br/>가나다';
+};
+
+scwin.checkVal2 = function() {
+	var outer = document.getElementById('span_noEscape') || document.getElementById('mf_span_noEscape');
+	var gen = document.getElementById('gen_noEscape_0_span_genNoEscape') || document.getElementById('mf_gen_noEscape_0_span_genNoEscape');
+	return outer.querySelectorAll('br').length == 1 && gen.querySelectorAll('br').length == 1 && gen.innerText == outer.innerText && gen.innerText.indexOf('&lt;') < 0;
 };
 ]]></script>
 	</head>
@@ -25,6 +33,10 @@ scwin.checkVal = function() {
 		<w2:span id="" label="가나다&lt;br/&gt;가나다"></w2:span>
 		<w2:generator style="position: relative;width: 200px;height: 100px;" id="gen_test">
 			<w2:span id="" label="가나다&lt;br/&gt;가나다"></w2:span>
+		</w2:generator>
+		<w2:span id="span_noEscape" label="가나다&lt;br/&gt;가나다" escape="false"></w2:span>
+		<w2:generator style="position: relative;width: 200px;height: 100px;" id="gen_noEscape">
+			<w2:span id="span_genNoEscape" label="가나다&lt;br/&gt;가나다" escape="false"></w2:span>
 		</w2:generator>
 	</body>
 </html>

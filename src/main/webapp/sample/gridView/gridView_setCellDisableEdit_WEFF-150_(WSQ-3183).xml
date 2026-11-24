@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns="">
+					<response>
+						<RES_DEPT_COMBO>
+							<vector result='4'>
+								<data vectorkey='0' type='Document'>
+									<COMBO>
+										<DEPTNO value='0'/>
+										<DNAME value='ACCOUNTING'/>
+									</COMBO>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<COMBO>
+										<DEPTNO value='10'/>
+										<DNAME value='OPERATIONS'/>
+									</COMBO>
+								</data>
+								<data vectorkey='2' type='Document'>
+									<COMBO>
+										<DEPTNO value='20'/>
+										<DNAME value='RESEARCH'/>
+									</COMBO>
+								</data>
+								<data vectorkey='3' type='Document'>
+									<COMBO>
+										<DEPTNO value='30'/>
+										<DNAME value='SALES'/>
+									</COMBO>
+								</data>
+								<data vectorkey='4' type='Document'>
+									<COMBO>
+										<DEPTNO value='40'/>
+										<DNAME value='TEST'/>
+									</COMBO>
+								</data>
+							</vector>
+						</RES_DEPT_COMBO>
+
+						<RES_SELECT_EMP_LIST>
+							<vector result='15'>
+								<data vectorkey='0' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='0' />
+										<DEPTNO value='10' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='7' />
+										<DEPTNO value='20' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='6' />
+										<DEPTNO value='30' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='6' />
+										<DEPTNO value='30' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='6' />
+										<DEPTNO value='30' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='6' />
+										<DEPTNO value='30' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='6' />
+										<DEPTNO value='30' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='6' />
+										<DEPTNO value='30' />
+									</TB_EMP0001_S002>
+								</data>
+								<data vectorkey='1' type='Document'>
+									<TB_EMP0001_S002>
+										<INPUTTYPE value='6' />
+										<DEPTNO value='30' />
+									</TB_EMP0001_S002>
+								</data>
+							</vector>
+						</RES_SELECT_EMP_LIST>
+					</response>
+				</data>
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.getType = function(info) {
+	var rowIndex = info.rowIndex;
+	var colIndex = info.colIndex;
+	var colID = info.colID;
+	var instanceIndex = rowIndex + 1;
+	var inputType = WebSquare.ModelUtil.getInstanceValue("response/RES_SELECT_EMP_LIST/vector/data[" + instanceIndex + "]/TB_EMP0001_S002/INPUTTYPE/@value")
+	var inputType = scwin.convertData(inputType);
+	var returnInfo;
+	switch (inputType) {
+		case "select":
+			returnInfo = {
+				id: "dynamic_select_" + rowIndex + "_" + colIndex,
+				inputType: "select",
+				options: {
+					selectedData: "false",
+					viewType: "icon"
+				},
+				itemSet: {
+					nodeset: "response/RES_DEPT_COMBO/vector/data/COMBO",
+					label: "DNAME/@value",
+					value: "DEPTNO/@value"
+				}
+			}
+			break;
+		case "autoComplete":
+			returnInfo = {
+				id: "dynamic_autoComplete_" + rowIndex + "_" + colIndex,
+				inputType: "autoComplete",
+				options: {
+					selectedData: "false",
+					viewType: "icon"
+				},
+				itemSet: {
+					nodeset: "response/RES_DEPT_COMBO/vector/data/COMBO",
+					label: "DNAME/@value",
+					value: "DEPTNO/@value"
+				}
+			}
+			break;
+	}
+	return returnInfo;
+}
+scwin.convertData = function(data) {
+	data = parseInt(data);
+	switch (data) {
+		case 0:
+			return "select";
+		case 6:
+			return "select";
+		case 7:
+			return "autoComplete";
+	}
+}
+scwin.onpageload = function() {
+	window.onoff = false;
+};
+scwin.trigger4_onclick = function() {
+	if (onoff == false) {
+		grid1.setCellDisableEdit(1, 0, true);
+		onoff = true;
+	} else {
+		grid1.setCellDisableEdit(1, 0, false);
+		onoff = false;
+	}
+};
+]]></script>
+		<style>
+			.cell1 { background-color : red};
+		</style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:grid
+			style="position:relative;width:337px;height:200px;"
+			rowNumStyle=""
+			tooltipStyle="vertical-align:middle;word-wrap:break-word" dynamicInputType="true" setCellInputTypeCustom="true"
+			id="grid1" focusMode="row" class="grid" repeatNode="data/TB_EMP0001_S002" baseNode="vector"
+			valueNode="value" readOnly="false" editModeEvent="onclick" ref="response/RES_SELECT_EMP_LIST/vector">
+			<w2:header style="height:20px" columnStyle="" id="header2"
+				width="2338">
+				<w2:row>
+					<w2:column inputType="text" valueType="binary"
+						style="height:20px" id="column1" width="200" value="text">
+					</w2:column>
+					<w2:column inputType="text" valueType="binary" useFilter="true"
+						style="height:20px" id="column2" width="200" value="text">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody style="height:20px" columnStyle="" id="gBody2"
+				width="2338">
+				<w2:row>
+					<w2:column id="DEPTNO" inputType="custom" disabledClass="cell1"></w2:column>
+					<w2:column id="INPUTTYPE" inputType="text" hidden="true"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:grid>
+		<xf:trigger type="button" id="trigger2"
+			style="position:relative;width:183px;height:28px;">
+			<xf:label>change to AutoComplete</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+				var returnInfo2 = {
+								inputType : "autoComplete",
+								options : {
+									selectedData : "true",
+									viewType: "icon",
+									noResult: "useData"
+								},
+								itemSet : {
+									nodeset: "response/RES_DEPT_COMBO/vector/data/COMBO",
+									label: "DNAME/@value",
+									value: "DEPTNO/@value"
+								},
+								value : 0
+							}
+				grid1.setCellInputType(1, 0, returnInfo2)
+			]]></script>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger4" ev:onclick="scwin.trigger4_onclick"
+			style="position:relative;width:183px;height:28px;">
+			<xf:label>setCellDisableEdit() toggle</xf:label>
+		</xf:trigger>
+	</body>
+</html>

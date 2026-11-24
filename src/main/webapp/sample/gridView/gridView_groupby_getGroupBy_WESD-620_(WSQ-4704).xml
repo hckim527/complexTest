@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dl_listMain" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="cliName" name="광고주" dataType="text"></w2:column>
+						<w2:column id="brnchName" name="신탁지사" dataType="text"></w2:column>
+						<w2:column id="opCnt" name="회수" dataType="number"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<cliName><![CDATA[A광고]]></cliName>
+							<brnchName><![CDATA[서울]]></brnchName>
+							<opCnt><![CDATA[1]]></opCnt>
+						</w2:row>
+						<w2:row>
+							<cliName><![CDATA[A광고]]></cliName>
+							<brnchName><![CDATA[부산]]></brnchName>
+							<opCnt><![CDATA[2]]></opCnt>
+						</w2:row>
+						<w2:row>
+							<cliName><![CDATA[B광고]]></cliName>
+							<brnchName><![CDATA[서울]]></brnchName>
+							<opCnt><![CDATA[3]]></opCnt>
+						</w2:row>
+						<w2:row>
+							<cliName><![CDATA[B광고]]></cliName>
+							<brnchName><![CDATA[서울]]></brnchName>
+							<opCnt><![CDATA[4]]></opCnt>
+						</w2:row>
+						<w2:row>
+							<cliName><![CDATA[C광고]]></cliName>
+							<brnchName><![CDATA[부산]]></brnchName>
+							<opCnt><![CDATA[5]]></opCnt>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.grd_TrdStat_ongroupby = function(options) {
+	options.closeGroup = true;
+	options.groupbyHeader = [{
+		colSpan: "3",
+		inputType: "expression",
+		expression: " toggle() + depthStr() + ' [ ' + count() + ' 건 ] ' ",
+		align: "left"
+	}];
+	options.groupbyFooter = [{
+		colSpan: "2"
+	}, {
+		colSpan: "1",
+		inputType: "expression",
+		expression: "SUM('opCnt')",
+		align: "right"
+	}];
+	grd_TrdStat.groupby(options);
+};
+scwin.trigger1_onclick = function() {
+	grd_TrdStat.clearGroupby();
+};
+scwin.trigger2_onclick = function() {
+	scwin._groupData = grd_TrdStat.getGroupbyData();
+};
+scwin.trigger3_onclick = function() {
+	grd_TrdStat.groupby(scwin._groupData);
+};
+]]></script>
+	</head>
+	<body>
+		<w2:gridView id="grd_TrdStat" dataList="dl_listMain" style="width:500px;height:300px;" groupbyZone="true" ev:ongroupby="scwin.grd_TrdStat_ongroupby"
+			groupbyZoneMessage="컬럼 헤더를 여기로 끌어놓으시면 컬럼별로 그룹핑됩니다." defaultCellHeight="20">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="col_cliName" inputType="text" width="150" displayMode="label" value="광고주" />
+					<w2:column id="col_brnchName" inputType="text" width="100" displayMode="label" value="신탁지사" />
+					<w2:column id="col_opCnt" inputType="text" width="80" displayMode="label" value="회수" />
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="cliName" inputType="text" width="150" displayMode="label" />
+					<w2:column id="brnchName" inputType="text" width="100" displayMode="label" />
+					<w2:column id="opCnt" inputType="text" width="80" displayMode="label" />
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="width:120px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[clearGroupby()]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="width:120px;height:23px;" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[getGroupbyData()]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger3" style="width:120px;height:23px;" ev:onclick="scwin.trigger3_onclick">
+			<xf:label><![CDATA[groupby(data)]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

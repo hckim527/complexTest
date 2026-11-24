@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	output_input.setValue("");
+};
+
+scwin.input1_oneditinput = function(info, e) {
+	var logStr = "[" + new Date().toLocaleTimeString() + "."
+			   + ("000" + (new Date().getMilliseconds())).slice(-3) + "] "
+			   + "keyCode=" + info.keyCode
+			   + ", data=" + JSON.stringify(e.data)
+			   + ", isComposing=" + e.isComposing
+			   + ", oldValue=\"" + info.oldValue + "\""
+			   + ", newValue=\"" + info.newValue + "\"";
+	var prev = output_input.getValue() || "";
+	output_input.setValue(prev + logStr + "\n");
+};
+
+scwin.trigger_clear_onclick = function() {
+	input1.setValue("");
+	output_input.setValue("");
+	input1.focus();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="margin:20px;">
+			<xf:input id="input1" style="width:300px;height:28px;"
+				ev:oneditinput="scwin.input1_oneditinput" />
+			<xf:trigger id="trigger1" ev:onclick="scwin.trigger_clear_onclick">
+				<xf:label>Clear</xf:label>
+			</xf:trigger>
+			<br/><br/>
+			<xf:group style="display:block;width:100%;margin-bottom:12px;">
+				<xf:textarea id="output_input"
+					style="width:100%;height:240px;font-family:monospace;font-size:11px;"/>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

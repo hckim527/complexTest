@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+
+scwin.gridView1_onrightbuttonclick = function(row, col) {
+	WebSquare.logger.printLog("gridView1_onrightbuttonclick call");
+};
+
+scwin.fireOver = function(node) {
+	var evt = document.createEvent('MouseEvents');
+	evt.initEvent('mouseover', true, false);
+	node.dispatchEvent(evt);
+};
+
+scwin.rightClick = function(id) {
+	var node = scwin.__getDom($p.id + id);
+	var evt = document.createEvent('MouseEvents');
+	evt.initEvent('contextmenu', true, false);
+	node.dispatchEvent(evt);
+};
+
+scwin.mouseOverBehaviour = function(id) {
+	scwin.fireOver(scwin.__getDom($p.id + id));
+};
+
+scwin.checkVal = function(id) {
+	return scwin.__getDom($p.id + id) ? true : false;
+};
+
+scwin.checkLog = function(text) {
+	return WebSquare.logger.getLog().indexOf(text) >= 0;
+};
+
+scwin.onpageload = function() {
+	dataList1.setJSON([
+		{"col1": "aaaa1", "col2": "bbbb1", "col3": "cccc1", "col4": "dddd1"},
+		{"col1": "aaaa2", "col2": "bbbb2", "col3": "cccc2", "col4": "dddd2"},
+		{"col1": "aaaa3", "col2": "bbbb3", "col3": "cccc3", "col4": "dddd3"},
+		{"col1": "aaaa4", "col2": "bbbb4", "col3": "cccc4", "col4": "dddd4"}
+	]);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dataList1" defaultCellHeight="20" id="gridView1" style="position:relative;width:500px;height:150px;" useShiftKey="true" ev:onrightbuttonclick="scwin.gridView1_onrightbuttonclick">
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column id="column9" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+					<w2:column id="column7" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+					<w2:column id="column5" inputType="text" width="70" value="name3" displayMode="label"></w2:column>
+					<w2:column id="column3" width="70" inputType="text" value="name4" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column id="col1" inputType="textImage" width="70" displayMode="label" imageSrc="/img/icon_F.png" viewType="icon" readOnly="true"></w2:column>
+					<w2:column id="col2" inputType="text" width="70" displayMode="label" readOnly="true"></w2:column>
+					<w2:column id="col3" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column id="col4" width="70" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

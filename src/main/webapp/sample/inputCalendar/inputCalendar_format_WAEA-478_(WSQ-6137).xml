@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="key2" name="name2" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<key1><![CDATA[2025-12-11]]></key1>
+						<key2><![CDATA[2025-12-12]]></key2>
+					</w2:data>
+				</w2:dataMap>
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection />
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	var jsonData = [{"col1":"2025-12-24"},{"col1":"2025-12-25"}];
+	dataList1.setJSON(jsonData);
+};
+
+scwin.iptCal1_onviewchange = function(info) {
+	txt1.setValue(dataMap1.get("key1"));
+};
+
+scwin.iptCal2_onviewchange = function(info) {
+	txt2.setValue(dataMap1.get("key2"));
+};
+
+scwin.gridView1_onviewchange = function(info) {
+	textbox2.setValue(dataList1.getCellData(0, "col1"));
+};
+
+scwin.iptCal1_customModelFormatter = function(value) {
+	value = value + "";
+	var arr = [];
+	arr.push(value.substring(0, 4));
+	arr.push(value.substring(4, 6));
+	arr.push(value.substring(6, 8));
+	return arr.join('-');
+};
+
+scwin.iptCal1_customModelUnformatter = function(value) {
+	var valueStr = value.replace(/\D/g, "");
+	return valueStr;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:textbox style="width:150px;height:23px;" id="txt1" label=""></w2:textbox>
+		<w2:inputCalendar saveFormattedValue="true" ref="data:dataMap1.key1" style="width:150px;height:23px;" editPlaceholderChar="_"
+			customModelUnformatter="scwin.iptCal1_customModelUnformatter" customModelFormatter="scwin.iptCal1_customModelFormatter" id="iptCal1"
+			ev:onviewchange="scwin.iptCal1_onviewchange">
+		</w2:inputCalendar>
+		<w2:textbox style="width:150px;height:23px;" id="txt2" label=""></w2:textbox>
+		<w2:inputCalendar saveFormattedValue="true" ref="data:dataMap1.key2" style="width:150px;height:23px;" useEditFormat="true" editPlaceholderChar="_"
+			customModelUnformatter="scwin.iptCal1_customModelUnformatter" customModelFormatter="scwin.iptCal1_customModelFormatter" id="iptCal2"
+			ev:onviewchange="scwin.iptCal2_onviewchange">
+		</w2:inputCalendar>
+		<w2:textbox style="width:150px;height:23px;" id="textbox2" label=""></w2:textbox>
+		<w2:gridView defaultCellHeight="20" id="gridView1" style="width:500px;height:150px;" dataList="data:dataList1" ev:onviewchange="scwin.gridView1_onviewchange">
+			<w2:header style="" id="header2">
+				<w2:row style="" id="row3">
+					<w2:column width="120" inputType="text" style="" id="column7" value="name1" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody style="" id="gBody2">
+				<w2:row style="" id="row4">
+					<w2:column width="120" inputType="calendar" style="" id="col1" value="" viewType="icon" saveFormattedValue="true" displayMode="label"
+						customModelUnformatter="scwin.iptCal1_customModelUnformatter" customModelFormatter="scwin.iptCal1_customModelFormatter">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

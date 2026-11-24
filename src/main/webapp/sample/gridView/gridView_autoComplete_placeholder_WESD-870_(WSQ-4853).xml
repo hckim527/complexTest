@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+						<w2:column id="col6" name="name6" dataType="text"></w2:column>
+						<w2:column id="col7" name="name7" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
+	// 첫 Row 는 빈 값, 이후 data_i_j (30 Row × 7 Column)
+	var data = [];
+	var data2 = [];
+	for (var i = 0; i < 30; i++) {
+		var testStr = "data_" + i + "_";
+		for (var j = 0; j < 7; j++) {
+			data.push(i === 0 ? "" : testStr + j);
+		}
+		data2.push(testStr + 0);
+		data2.push(testStr + 0);
+	}
+	data2.push("");
+	data2.push("");
+	dataList2.setData(data2);
+	dataList1.setData(data);
+};
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom(id);
+	scwin.fireDbClick(el);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="" style="width:780px;height:269px;" checkAllType="false" defaultCellHeight="20" dataList="data:dataList1">
+			<w2:header id="header3">
+				<w2:row id="row5">
+					<w2:column width="90" inputType="text" style="height:20px" id="column13" value="autoComplete"></w2:column>
+					<w2:column width="90" inputType="text" style="height:20px" id="column12" value="text"></w2:column>
+					<w2:column width="90" inputType="text" style="height:20px" id="column11" value="textarea"></w2:column>
+					<w2:column width="90" inputType="text" style="height:20px" id="column10" value="calendar"></w2:column>
+					<w2:column width="90" inputType="text" style="height:20px" id="column9" value="spinner"></w2:column>
+					<w2:column width="150" inputType="text" style="height:20px" id="column8" value="secret"></w2:column>
+					<w2:column width="150" inputType="text" style="height:20px" id="column7" value="textImage"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody3">
+				<w2:row id="row6">
+					<w2:column width="70" inputType="autoComplete" style="height:20px" id="col1" placeholder="placeholder test">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="col2" placeholder="placeholder test"></w2:column>
+					<w2:column width="70" inputType="textarea" style="height:20px" id="col3" placeholder="placeholder test"></w2:column>
+					<w2:column width="70" inputType="calendar" style="height:20px" id="col4" placeholder="placeholder test"></w2:column>
+					<w2:column width="70" inputType="spinner" style="height:20px" id="col5" placeholder="placeholder test"></w2:column>
+					<w2:column width="70" inputType="secret" style="height:20px" id="col6" placeholder="placeholder test"></w2:column>
+					<w2:column width="70" inputType="textImage" style="height:20px" id="col7" placeholder="placeholder test" imageSrc="icon_C.gif" viewType="icon"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

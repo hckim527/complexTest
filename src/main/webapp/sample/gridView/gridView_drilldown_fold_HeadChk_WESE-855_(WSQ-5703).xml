@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="chk" name="체크" dataType="text"></w2:column>
+						<w2:column id="menu" name="메뉴" dataType="text"></w2:column>
+						<w2:column id="depthNo" name="depth" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	var rows = [["aaa", 1], ["bbb", 2], ["ccc", 3], ["ddd", 3], ["fff", 2], ["ggg", 1], ["hhh", 2], ["iii", 2], ["jjj", 3]];
+	dataList1.setJSON(rows.map(function (r) { return { "chk": "2", "menu": r[0], "depthNo": r[1] }; }));
+};
+
+scwin.trigger1_onclick = function(e) {
+	gridView1.checkAll("chk", true);
+};
+
+scwin.checkVal1 = function() {
+	return (document.getElementById('gridView1_cell_1_1') || document.getElementById('mf_gridView1_cell_1_1')).innerText == '  bbb'; // 들여쓰기=&nbsp; 2개
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="gridView1" ignoreToggleOnDisabled="false" syncScroll="false" useShiftKey="true"
+			style="position: absolute;left: 38px;top: 54px;width:323px;height:195px;" scrollByColumn="false" defaultCellHeight="20"
+			scrollByColumnAdaptive="false" summaryAuto="false" summaryOnlyAuto="false" applyAllColumnStyle="false" dataList="data:dataList1"
+			ignoreCellClick="false" tooltipDisplay="true" drilldownRealRowIndexAll="true">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="70" inputType="checkbox" id="column5" value="체크" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column3" value="메뉴" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column1" value="depth" blockSelect="false" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="70" inputType="checkbox" id="chk" blockSelect="false" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="drilldown" id="menu" blockSelect="false" displayMode="label" showDepth="1" depthColumn="depthNo"></w2:column>
+					<w2:column width="70" inputType="text" id="depthNo" blockSelect="false" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" style="position: absolute;width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[checkall]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

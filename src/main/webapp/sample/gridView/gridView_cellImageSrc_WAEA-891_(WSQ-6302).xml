@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_task" baseNode="list" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="status" name="status" dataType="text"></w2:column>
+						<w2:column id="embedded" name="embedded" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<status><![CDATA[Ready]]></status>
+							<embedded><![CDATA[Ready]]></embedded>
+						</w2:row>
+						<w2:row>
+							<status><![CDATA[Review]]></status>
+							<embedded><![CDATA[Review]]></embedded>
+						</w2:row>
+						<w2:row>
+							<status><![CDATA[Done]]></status>
+							<embedded><![CDATA[Done]]></embedded>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+// 셀 단위 이미지 API: setCellImageSrc / getCellImageSrc / removeCellImageSrc (컬럼 기본 imageSrc = icon_D)
+
+// ① 0행 status 만 icon_C
+scwin.case1 = function () {
+	gridView1.setCellImageSrc(0, "status", "/img/gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_C.gif");
+};
+
+// ③ 빈 문자열 = 1행 status 이미지 숨김
+scwin.case3 = function () {
+	gridView1.setCellImageSrc(1, "status", "");
+};
+
+// ④ 0행 status 컬럼 기본(icon_D) 복귀
+scwin.case4 = function () {
+	gridView1.removeCellImageSrc(0, "status");
+};
+
+// ⑥ embeddedInput 컬럼 0행 즉시 갱신 icon_U
+scwin.case6 = function () {
+	gridView1.setCellImageSrc(0, "embedded", "/img/gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_U.gif");
+};
+]]></script>
+	</head>
+	<body>
+		<w2:gridView id="gridView1" dataList="data:dlt_task" style="width:720px;height:180px;">
+			<w2:header id="header1">
+				<w2:row id="headerRow1">
+					<w2:column id="hd_status" inputType="text" value="Status" width="180"></w2:column>
+					<w2:column id="hd_embedded" inputType="text" value="Embedded" width="180"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="bodyRow1">
+					<w2:column id="status" inputType="textImage" displayMode="label" viewType="icon"
+						imageSrc="/img/gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_D.gif" imageWidth="16" imageHeight="16" width="180"></w2:column>
+					<w2:column id="embedded" inputType="textImage" displayMode="label" embeddedInput="true"
+						imageSrc="/img/gridView_cellImageSrc_WAEA-891_WSQ-6302_icon_D.gif" imageWidth="16" imageHeight="16" width="180"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:group style="margin:10px 0;">
+			<xf:trigger id="b1" type="button" ev:onclick="scwin.case1" style="width:330px;height:26px;margin:2px;">
+				<xf:label><![CDATA[① 0행 status 변경 (icon_C) - 해당 셀만]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="b3" type="button" ev:onclick="scwin.case3" style="width:330px;height:26px;margin:2px;">
+				<xf:label><![CDATA[③ 1행 status = "" (이미지 숨김)]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="b4" type="button" ev:onclick="scwin.case4" style="width:330px;height:26px;margin:2px;">
+				<xf:label><![CDATA[④ removeCellImageSrc(0,'status') (기본 복귀)]]></xf:label>
+			</xf:trigger>
+			<xf:trigger id="b6" type="button" ev:onclick="scwin.case6" style="width:330px;height:26px;margin:2px;">
+				<xf:label><![CDATA[⑥ 0행 embedded 변경 (즉시 갱신 / v2)]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>

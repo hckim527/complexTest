@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<!-- Jira 적용 기능: customFormatter(getJSON 시)·customUnformatter(setJSON 시) -->
+				<w2:dataMap baseNode="map" id="dataMap2" customFormatter="scwin.formatter" customUnformatter="scwin.unformatter">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn2_onclick = function(e) {
+	var formattedVal = ipt1.getFormattedValue();
+	dataMap1.set("key1", formattedVal);
+	window.al = dataMap1.get("key1");
+};
+scwin.formatter = function(self, json) {
+	var v = json["key1"] || "";
+	if (v.length == 8) {
+		json["key1"] = v.substr(0, 4) + "-" + v.substr(4, 2) + "-" + v.substr(6, 2);
+	}
+	return json;
+};
+scwin.unformatter = function(self, json) {
+	json["key1"] = (json["key1"] || "").replace(/-/g, "");
+	return json;
+};
+scwin.onpageload = function() {
+	ipt1.setValue("20160530");
+	window.al = "";
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:inputCalendar id="ipt1" style="position:absolute;left:84px;top:59px;width:201px;height:36px;" ref="data:dataMap1.key1">
+		</w2:inputCalendar>
+		<w2:inputCalendar id="ipt2" style="position:absolute;left:84px;top:159px;width:201px;height:36px;" ref="data:dataMap2.key1">
+		</w2:inputCalendar>
+		<xf:trigger id="btn2" style="position:absolute;left:304px;top:108px;width:147px;height:31px;" type="button" ev:onclick="scwin.btn2_onclick">
+			<xf:label><![CDATA[formatted 값 ]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

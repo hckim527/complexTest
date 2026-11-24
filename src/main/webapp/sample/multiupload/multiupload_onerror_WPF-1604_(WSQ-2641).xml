@@ -66,6 +66,13 @@ scwin.selectCallback = function(fileArr) {
 	}
 	dataList1.insertJSON(dataList1.getRowCount(), uploadFiles);
 };
+
+// fireEventOnError="true" multiupload 의 onerror 이벤트 기록(에러 타입)
+scwin.errTypes = [];
+
+scwin.h5_err_onerror = function(data) {
+	scwin.errTypes.push(data.type);
+};
 ]]></script>
 		<style type="text/css"><![CDATA[
 			* {font-family: tahoma}
@@ -80,6 +87,9 @@ scwin.selectCallback = function(fileArr) {
 			<xf:group id="group1" style="overflow:hidden;margin-top:5px;">
 				<w2:multiupload maxcount="5" maxsize="100000" id="h5_trans" style="position:relative;height:34px;width:111px;float:left;" uploadButton="" mode="html5_transparent"
 					selectCallback="scwin.selectCallback">
+				</w2:multiupload>
+				<w2:multiupload maxcount="2" maxsize="1" id="h5_err" style="position:relative;height:34px;width:111px;float:left;margin-left:10px;" uploadButton="" mode="html5_transparent"
+					fireEventOnError="true" ev:onerror="scwin.h5_err_onerror">
 				</w2:multiupload>
 			</xf:group>
 		</xf:group>

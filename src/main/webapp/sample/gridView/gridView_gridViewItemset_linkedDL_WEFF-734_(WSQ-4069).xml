@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlList" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="polIntrKey" name="name1" dataType="text"></w2:column>
+						<w2:column id="podIntrKey" name="name2" dataType="text"></w2:column>
+						<w2:column id="polCallOrd" name="name3" dataType="text"></w2:column>
+						<w2:column id="podCallOrd" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlCode" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="intrKey" name="name1" dataType="text"></w2:column>
+						<w2:column id="vvdCd" name="name2" dataType="text"></w2:column>
+						<w2:column id="polPodFlg" name="name3" dataType="text"></w2:column>
+						<w2:column id="portCd" name="name4" dataType="text"></w2:column>
+						<w2:column id="portCallOrd" name="name5" dataType="text"></w2:column>
+						<w2:column id="tmnlCd" name="name6" dataType="text"></w2:column>
+						<w2:column id="fcltyCd" name="name7" dataType="text"></w2:column>
+						<w2:column id="rowStatus" name="name8" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:linkedDataList bind="dlCode" id="ldlCode">
+					<w2:condition type="filter"><![CDATA[intrKey==ref('dlList.polIntrKey')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]>
+					</w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
+	scwin.dlCodeData = [{
+			"intrKey": "AAA11001ELKRPUS",
+			"vvdCd": "AAA11001E",
+			"polPodFlg": "L",
+			"portCd": "KRPUS",
+			"portCallOrd": "1",
+			"tmnlCd": "KRPUSHNH",
+			"fcltyCd": "HNH",
+			"rowStatus": "R"
+		},
+		{
+			"intrKey": "AAA11001ELKRPUS",
+			"vvdCd": "AAA11001E",
+			"polPodFlg": "L",
+			"portCd": "KRPUS",
+			"portCallOrd": "2",
+			"tmnlCd": "KRPUS001",
+			"fcltyCd": "001",
+			"rowStatus": "R"
+		},
+		{
+			"intrKey": "AAA11001EDUSLGB",
+			"vvdCd": "AAA11001E",
+			"polPodFlg": "D",
+			"portCd": "USLGB",
+			"portCallOrd": "3",
+			"tmnlCd": "USLGB901",
+			"fcltyCd": "901",
+			"rowStatus": "R"
+		},
+		{
+			"intrKey": "AAA11001EDUSLGB",
+			"vvdCd": "AAA11001E",
+			"polPodFlg": "D",
+			"portCd": "USLGB",
+			"portCallOrd": "4",
+			"tmnlCd": "USLGBEIW",
+			"fcltyCd": "EIW",
+			"rowStatus": "R"
+		}
+	];
+	scwin.dlListData = [
+		{
+			"polIntrKey": "AAA11001ELKRPUS",
+			"podIntrKey": "AAA11001EDUSLGB",
+			"polCallOrd": "2",
+			"podCallOrd": "2",
+			"rowStatus": "C"
+		},
+		{
+			"polIntrKey": "AAA11001ELKRPUS",
+			"podIntrKey": "AAA11001EDUSLGB",
+			"polCallOrd": "1",
+			"podCallOrd": "2",
+			"rowStatus": "C"
+		}
+	];
+	dlCode.setJSON(scwin.dlCodeData);
+};
+scwin.trigger1_onclick = function(e) {
+	dlList.setJSON(scwin.dlListData);
+};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="wrap" id="">
+			<w2:gridView id="gvGridList1" style="width: 100%;height: 200px;" dataList="data:dlList" autoFit="" rowStatusVisible="true" class="cm_grid edit">
+				<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+				<w2:header id="header1">
+					<w2:row id="row3">
+						<w2:column removeBorderStyle="false" width="200" inputType="text" id="column1" value="Pol Key" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="200" inputType="text" id="column3" value="Pod Key" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="300" inputType="text" id="column5" value="polCallOrd" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="300" inputType="text" id="column7" value="podCallOrd(dataList)" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody style="height:20px" id="gBody1">
+					<w2:row id="row2">
+						<w2:column removeBorderStyle="false" width="200" inputType="text" id="polIntrKey" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="200" inputType="text" id="podIntrKey" displayMode="label"></w2:column>
+						<w2:column width="300" inputType="autoComplete" id="polCallOrd" noResult="useData" selectedData="false">
+							<w2:choices>
+								<w2:gridViewItemset hideHeader="" rowMouseOver="" nodeset="data:ldlCode" width="" selectedRowColor="" label="portCallOrd" visibleRowNum="" autoFit="allColumn" value="portCallOrd" rowMouseOverColor="" height="100px">
+									<w2:item ref="portCallOrd" hidden="" header="APPLICATION CODE" headerStyle=""></w2:item>
+									<w2:item ref="tmnlCd" hidden="" header="MESSAGE ID" headerStyle=""></w2:item>
+								</w2:gridViewItemset>
+							</w2:choices></w2:column>
+						<!-- WEFF-734: dataList 직접 바인드 autoComplete(요건 "dataList, linkedDataList 둘 다 발생") -->
+						<w2:column width="300" inputType="autoComplete" id="podCallOrd" noResult="useData" selectedData="false">
+							<w2:choices>
+								<w2:gridViewItemset hideHeader="" rowMouseOver="" nodeset="data:dlCode" width="" selectedRowColor="" label="portCallOrd" visibleRowNum="" autoFit="allColumn" value="portCallOrd" rowMouseOverColor="" height="100px">
+									<w2:item ref="portCallOrd" hidden="" header="APPLICATION CODE" headerStyle=""></w2:item>
+									<w2:item ref="tmnlCd" hidden="" header="MESSAGE ID" headerStyle=""></w2:item>
+								</w2:gridViewItemset>
+							</w2:choices>
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+		</xf:group>
+		<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[setJSON]]>
+			</xf:label>
+		</xf:trigger>
+	</body>
+</html>

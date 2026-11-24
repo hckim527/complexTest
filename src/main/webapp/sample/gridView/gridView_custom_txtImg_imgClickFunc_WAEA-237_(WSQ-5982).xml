@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="[gridView] gridView inputType이 custom인 typeGetter 속성 샘플">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="s_checkbox" length="1" dataType="number" />
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="bondBsnsClCd" length="3" dataType="text" />
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<w2:layoutInfo></w2:layoutInfo>
+		<w2:publicInfo method=""></w2:publicInfo>
+		<script type="javascript" lazy="false"><![CDATA[
+scwin.getType = function(info) {
+	var rowIdx = info.rowIndex;
+	var colIdx = info.colIndex;
+	var status = grd_result_file.getRowStatus(rowIdx);
+	var result = {};
+	result.id = "random_" + status + "_" + rowIdx + "_" + colIdx;
+	result.inputType = "textImage";
+	if (status == "C") {
+		result.options = {viewType: "icon", imageSrc: "/img/gridView_custom_txtImg_imgClickFunc_WAEA-237_(WSQ-5982).svg", imageWidth: "26", imageHeight: "26", imageClickFunction: "scwin.ff_CustSearchPop(" + info.rowIndex + ")"};
+		grd_result_file.setCellClass(rowIdx, colIdx, "req");
+	} else {
+		result.options = {};
+	}
+	grd_result_file.setReadOnly("cell", rowIdx, colIdx, true);
+	return result;
+};
+
+scwin.ff_CustSearchPop = async function(nRow) {
+	window.checkLog = "scwin.ff_CustSearchPop event...." + nRow;
+};
+
+scwin.onpageload = function() {
+	window.checkLog = "";
+};
+
+scwin.trigger1_onclick = function(e) {
+	var nRow = dataList1.insertRow();
+	dataList1.setCellData(nRow, "s_checkbox", "1");
+	dataList1.setCellData(nRow, "bondBsnsClCd", "301");
+};
+
+scwin.checkVal1 = function() {
+	return window.checkLog == "";
+};
+
+scwin.initCheckVal = function() {
+	window.checkLog = "";
+};
+
+scwin.checkVal2 = function() {
+	return window.checkLog == "scwin.ff_CustSearchPop event....0";
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[추가]]></xf:label>
+		</xf:trigger>
+		<w2:gridView dataList="dataList1" id="grd_result_file" style="position: absolute;width: 500px;height: 600px;">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column2" inputType="text" width="70" value="name1"></w2:column>
+					<w2:column id="column5" inputType="text" width="70" value="name1"></w2:column>
+					<w2:column id="column3" inputType="text" width="70" value="name2"></w2:column>
+					<w2:column id="column1" width="70" inputType="text" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" width="20" inputType="checkbox" id="s_checkbox" checkboxLabel="선택" />
+					<w2:column id="col1" inputType="custom" width="70" typeGetter="scwin.getType" readOnly="true"></w2:column>
+					<w2:column id="col2" inputType="text" width="70" readOnly="true"></w2:column>
+					<w2:column id="col3" width="70" inputType="text" readOnly="true"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

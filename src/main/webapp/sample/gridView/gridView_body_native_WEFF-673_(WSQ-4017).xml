@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="parentRow" name="name5" dataType="text"></w2:column>
+						<w2:column id="column23" name="column23" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	var data = [];
+	for (var i = 0; i < 20; i++) {
+		for (var j = 0; j < 5; j++) {
+			data.push(i + "_" + j);
+		}
+		data.push("");
+	}
+	dataList1.setData(data);
+	// 감추거나 보여줄 cell의 rowIndex 목록을 위한 임시 dataList
+	var data2 = [];
+	var rowCnt = dataList1.getRowCount();
+	for (var i = 0; i < rowCnt; i++) {
+		data2.push(i);
+		data2.push(i);
+	}
+	dataList2.setData(data2);
+	scwin.refreshCellVisible();
+};
+scwin.refreshCellVisible = function() {
+	var rowCnt = dataList1.getRowCount();
+	for (var i = 0; i < rowCnt; i++) {
+		var txt = dataList1.getCellData(i, "column23");
+		grd_test1.setCellVisible(i, "column23", txt.trim() != "");
+	}
+}
+scwin.trigger1_onclick = function(e) {
+	var visibleRowArr = checkcombobox1.getValueArray();
+	for (var i = 0; i < visibleRowArr.length; i++) {
+		grd_test1.setCellVisible(visibleRowArr[i], "column23", true);
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView tooltipDisplay="true" dataList="data:dataList1" style="width:450px;height: 300px;" id="grd_test1" defaultCellHeight="20" rowNumVisible="true" focusMode="row">
+			<w2:header id="header2">
+				<w2:row id="row4">
+					<w2:column width="70" inputType="text" id="column12" value="name1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column10" value="name2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column8" value="name3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column6" value="name4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column4" value="name5" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row5">
+					<w2:column width="70" inputType="text" id="col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="col4" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="parentRow" displayMode="label"></w2:column>
+				</w2:row>
+				<w2:row id="row6">
+					<w2:column colSpan="5" width="70" inputType="text" id="column23" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:group id="" style="height:30px;">
+			<xf:checkcombobox id="checkcombobox1" displayAllOptionLabel="false" appearance="minimal" style="width: 148px;height: 21px;" direction="auto" displayMode="label" submenuSize="auto">
+				<xf:choices>
+					<xf:itemset nodeset="data:dataList2">
+						<xf:label ref="col1"></xf:label>
+						<xf:value ref="col2"></xf:value>
+					</xf:itemset>
+				</xf:choices>
+			</xf:checkcombobox>
+			<xf:trigger id="trigger1" style="width:178px;height:30px;" ev:onclick="scwin.trigger1_onclick" type="button">
+				<xf:label><![CDATA[setCellVisible(true)]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+	</body>
+</html>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="col1" name="Continent"></w2:column>
+						<w2:column dataType="text" id="col2" name="Country"></w2:column>
+						<w2:column dataType="text" id="col3" name="Item"></w2:column>
+						<w2:column dataType="number" id="col4" name="Quantity"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+		var json = [
+			{"col1" : "Asia", "col2" : "Korea", "col3" : "TV", "col4" : "400"},
+			{"col1" : "Asia", "col2" : "Korea", "col3" : "Freezer", "col4" : "400"},
+			{"col1" : "Asia", "col2" : "Korea", "col3" : "Washer", "col4" : "400"},
+			{"col1" : "Asia", "col2" : "China", "col3" : "TV", "col4" : "400"},
+			{"col1" : "Asia", "col2" : "China", "col3" : "Freezer", "col4" : "400"},
+			{"col1" : "Asia", "col2" : "China", "col3" : "Washer", "col4" : "400"},
+			{"col1" : "Asia", "col2" : "Japan", "col3" : "TV", "col4" : "823"},
+			{"col1" : "Asia", "col2" : "Japan", "col3" : "Freezer", "col4" : "288"},
+			{"col1" : "Asia", "col2" : "Japan", "col3" : "Washer", "col4" : "325"},
+			{"col1" : "Europe", "col2" : "Germany", "col3" : "TV", "col4" : "823"},
+			{"col1" : "Europe", "col2" : "Germany", "col3" : "Freezer", "col4" : "288"},
+			{"col1" : "Europe", "col2" : "Germany", "col3" : "Washer", "col4" : "325"},
+			{"col1" : "Europe", "col2" : "France", "col3" : "TV", "col4" : "823"},
+			{"col1" : "Europe", "col2" : "France", "col3" : "Freezer", "col4" : "288"},
+			{"col1" : "Europe", "col2" : "France", "col3" : "Washer", "col4" : "325"},
+			{"col1" : "Europe", "col2" : "Denmark", "col3" : "TV", "col4" : "823"},
+			{"col1" : "Europe", "col2" : "Denmark", "col3" : "Freezer", "col4" : "288"},
+			{"col1" : "Europe", "col2" : "Denmark", "col3" : "Washer", "col4" : "325"},
+			{"col1" : "Americas", "col2" : "Canada", "col3" : "TV", "col4" : "823"},
+			{"col1" : "Americas", "col2" : "Canada", "col3" : "Freezer", "col4" : "288"},
+			{"col1" : "Americas", "col2" : "Canada", "col3" : "Washer", "col4" : "325"},
+			{"col1" : "Americas", "col2" : "USA", "col3" : "TV", "col4" : "823"},
+			{"col1" : "Americas", "col2" : "USA", "col3" : "Freezer", "col4" : "288"},
+			{"col1" : "Americas", "col2" : "USA", "col3" : "Washer", "col4" : "325"},
+			{"col1" : "Americas", "col2" : "Mexico", "col3" : "TV", "col4" : "823"},
+			{"col1" : "Americas", "col2" : "Mexico", "col3" : "Freezer", "col4" : "288"},
+			{"col1" : "Americas", "col2" : "Mexico", "col3" : "Washer", "col4" : "325"}
+			];
+		dataList1.setJSON(json);
+	};
+scwin.gridView1_ongroupby = function(options) {
+	options.groupbyHeader = [{ inputType: 'expression', expression: 'toggle() + depthStr() + "    [ " + count() + " Cases ]  "', align: 'left', colSpan:4 }];
+	options.closeGroup = true;
+	options.groupbyFooter = {
+		depth_0 : [ {colSpan:3, value: "(1) Maximum Value", align: "right"}, { inputType: 'expression', expression:'MAX("col4")'} ],
+		depth_1: [ {colSpan:3, value: "(2) Maximum Value", align: "right"}, { inputType: 'expression', expression:'MAX("col4")'} ],
+		depth_2: [ {colSpan:3, value: "(3) Maximum Value", align: "right"}, { inputType: 'expression', expression:'MAX("col4")'} ]
+	};
+	gridView1.groupby(options);
+};
+scwin.gridView1_oncellclick = function(row,col,colId) {
+	window.row_click = row;
+};
+scwin.gridView1_oncontextopen = function(rowIndex,colIndex,focusedCell,info) {
+	window.rowIndex_oncontextopen = rowIndex;
+};
+scwin.gridView1_onrightbuttonclick = function(row,col) {
+	window.row_rightbtn = row;
+};
+scwin.checkVal2 = function() {
+	return window.row_click == 1;
+};
+scwin.checkVal3 = function() {
+	const check1 = window.rowIndex_oncontextopen == 1;
+	const check2 = window.row_rightbtn == 1;
+	return check1 && check2;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="gridView1" style="width: 500px;height: 450px;margin: 50px;margin-top: 40px;margin-left: 200px;"
+			groupbyDisplayRowIndex="true" checkAllType="false" defaultCellHeight="20" dataList="data:dataList1" autoFit="allColumn" visibleRowNum="15" groupbyZone="true" ev:ongroupby="scwin.gridView1_ongroupby" groupbyZoneMessage="" contextMenu="true" contextMenuAltClick="true" ev:oncellclick="scwin.gridView1_oncellclick" ev:oncontextopen="scwin.gridView1_oncontextopen" ev:onrightbuttonclick="scwin.gridView1_onrightbuttonclick">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="70" inputType="text" style="height:20px" id="column4" value="Continent" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="column3" value="Country" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="column2" value="Item" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="column1" value="Quantity" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="70" inputType="text" style="height:20px" id="col1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="col2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="col3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="col4" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+	dataList1.clearFilter();
+};
+scwin.trigger2_onclick = function(e) {
+	scwin.tempFilter = dataList1.getFilterList();
+	log = "저장완료";
+};
+scwin.trigger3_onclick = function(e) {
+	for (var i = 0; i < scwin.tempFilter.length; i++) {
+		dataList1.setColumnFilter(scwin.tempFilter[i]);
+		log1 = "불러오기완료";
+	}
+};
+scwin.onpageload = function() {
+	window.data = [];
+	for (var i = 0; i < 20 * 3; i++) {
+		data.push(i);
+	}
+	dataList1.setData(data);
+	scwin.tempFilter = [];
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload"><xf:group id="" style="height:400px;width:800px;"><xf:group id="" style="height:350px;width:500px;float:left;">
+		<w2:gridView dataList="dataList1" id="" autoFit="allColumn" style="position: relative;width:423px;height:265px;" useShiftKey="true" useFilterList="true" defaultCellHeight="20" fixedColumnWithHidden="true">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column5" inputType="text" width="70" useFilter="true" value="name1"></w2:column>
+					<w2:column id="column3" inputType="text" width="70" useFilter="true" value="name2"></w2:column>
+					<w2:column id="column1" width="70" inputType="text" useFilter="true" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="col1" inputType="text" width="70"></w2:column>
+					<w2:column id="col2" inputType="text" width="70"></w2:column>
+					<w2:column id="col3" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger id="trigger1" style="position: relative;width:153px;height:54px;" ev:onclick="scwin.trigger1_onclick" type="button">
+			<xf:label><![CDATA[filter_clear]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="trigger2" style="position: relative;width:153px;height:54px;" ev:onclick="scwin.trigger2_onclick" type="button">
+			<xf:label><![CDATA[filter_save]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="trigger3" style="position: relative;width:153px;height:54px;" ev:onclick="scwin.trigger3_onclick" type="button">
+			<xf:label><![CDATA[filter_load]]></xf:label>
+		</xf:trigger>
+	</xf:group></xf:group></body>
+</html>
+ 

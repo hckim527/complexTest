@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="a" name="customFormatter" dataType="text"></w2:column>
+						<w2:column id="b" name="escapeFormatter" dataType="text"></w2:column>
+						<w2:column id="c" name="c" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_customFormatter = function(data, displaydata, rowIdx, colIdx) {
+	if (data == "a1") {
+		gridView1.setCellColor(rowIdx, 0, "red");
+		return data + "_red";
+	} else {
+		return data;
+	}
+};
+scwin.fn_escapeFormatter = function(data, rowIdx, colIdx) {
+	if (data == "b1" || data == "b4") {
+		gridView1.setCellColor(rowIdx, colIdx, "red");
+		return data + "_red";
+	} else {
+		return data;
+	}
+};
+
+scwin.onpageload = function() {
+	window.jsonData = [{
+			"a": "a1",
+			"b": "b1",
+			"c": "c1"
+		}, {
+			"a": "a2",
+			"b": "b2",
+			"c": "c2"
+		},
+		{
+			"a": "a1",
+			"b": "b3",
+			"c": "c3"
+		}, {
+			"a": "a1",
+			"b": "b4",
+			"c": "c4"
+		},
+		{
+			"a": "a3",
+			"b": "b5",
+			"c": "c5"
+		}, {
+			"a": "a1",
+			"b": "b6",
+			"c": "c6"
+		}
+	];
+	dataList1.setJSON(jsonData);
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" id="gridView1" style="position:absolute;left:35px;top:63px;width:469px;height:201px;" fixedColumnWithHidden="true" useShiftKey="false" rowNumVisible="true">
+			<w2:header id="header1">
+				<w2:row id="row2">
+					<w2:column id="column9" style="height:20px" inputType="text" width="120" displayMode="label" value="customFormatter"></w2:column>
+					<w2:column id="column7" style="height:20px" inputType="text" width="120" displayMode="label" value="escapeFormatter"></w2:column>
+					<w2:column id="column3" style="height:20px" width="120" inputType="text" displayMode="label" value="c"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+					<w2:column id="a" style="height:20px" inputType="text" width="35" displayMode="label" customFormatter="scwin.fn_customFormatter"></w2:column>
+					<w2:column id="b" style="height:20px" inputType="text" width="120" displayMode="label" escapeFormatter="scwin.fn_escapeFormatter"></w2:column>
+					<w2:column id="c" style="height:20px" width="120" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

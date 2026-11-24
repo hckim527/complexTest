@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+		var data1 = [];
+		for (var i = 0; i < 20; i++) {
+			data1.push(i);
+			data1.push(i);
+			data1.push(i % 2);
+			data1.push(i % 3 ? true : false);
+		}
+		dataList1.setData(data1);
+	};
+
+	scwin.trigger_exec_onclick = function(e) {
+		selectbox1.setEnableColumn("col3");
+	};
+
+	scwin.checkVal = function() {
+		return document.getElementsByClassName('w2selectbox_item_disabled').length != 0;
+	};
+	]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:select1 disabledClass="w2selectbox_disabled" id="selectbox1" appearance="minimal" style="width:226px;height:55px;" direction="auto"
+			chooseOption="true" allOption="true" submenuSize="auto">
+			<xf:choices>
+				<xf:itemset nodeset="data:dataList1">
+					<xf:label ref="col1"></xf:label>
+					<xf:value ref="col2"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select1>
+		<xf:trigger type="button" id="trigger_exec" style="width: 100px;height: 32px;font-size:16pt;" ev:onclick="scwin.trigger_exec_onclick">
+			<xf:label><![CDATA[execute]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

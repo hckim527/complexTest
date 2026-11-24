@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="albumId" name="albumId" dataType="text"></w2:column>
+						<w2:column id="id" name="id" dataType="text"></w2:column>
+						<w2:column id="title" name="title" dataType="text"></w2:column>
+						<w2:column id="url" name="url" dataType="text"></w2:column>
+						<w2:column id="thumbnailUrl" name="thumbnailUrl" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+// 공통 submission 실행 (mode / withCredentials 케이스별)
+scwin.runCase = function (caseId, opt) {
+	try { $p.removeSubmission(caseId); } catch (e) {}
+	var tmpOpt = {
+		id: caseId,
+		target: "data:json,dataList1",
+		action: "gridView_submission_create_WAEA-860_(WSQ-6322).json",
+		mediatype: "application/json"
+	};
+	for (var k in opt) { tmpOpt[k] = opt[k]; }
+	$p.createSubmission(tmpOpt);
+	$p.executeSubmission(caseId);
+};
+
+scwin.btnSyncTrue_onclick = function () {
+	scwin.runCase("caseSyncTrue", { mode: "synchronous", withCredentials: "true" });
+};
+scwin.btnAsyncTrue_onclick = function () {
+	scwin.runCase("caseAsyncTrue", { mode: "asynchronous", withCredentials: "true" });
+};
+scwin.btnSyncFalse_onclick = function () {
+	scwin.runCase("caseSyncFalse", { mode: "synchronous", withCredentials: "false" });
+};
+scwin.btnSyncNone_onclick = function () {
+	scwin.runCase("caseSyncNone", { mode: "synchronous" });
+};
+]]></script>
+	</head>
+	<body>
+		<xf:trigger id="btnSyncTrue" type="button" ev:onclick="scwin.btnSyncTrue_onclick" style="width:280px;height:26px;margin:2px;">
+			<xf:label><![CDATA[1) 동기 + withCredentials true (기대 true)]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="btnAsyncTrue" type="button" ev:onclick="scwin.btnAsyncTrue_onclick" style="width:280px;height:26px;margin:2px;">
+			<xf:label><![CDATA[2) 비동기 + withCredentials true (기대 true)]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="btnSyncFalse" type="button" ev:onclick="scwin.btnSyncFalse_onclick" style="width:280px;height:26px;margin:2px;">
+			<xf:label><![CDATA[3) 동기 + withCredentials false (기대 false)]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="btnSyncNone" type="button" ev:onclick="scwin.btnSyncNone_onclick" style="width:280px;height:26px;margin:2px;">
+			<xf:label><![CDATA[4) 동기 + 미지정 (기대 false)]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

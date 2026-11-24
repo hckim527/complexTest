@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="gridview 높이를 동적으로 제어">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dlt_dataList1" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="name" name="name1" dataType="text"></w2:column>
+						<w2:column id="age" name="name2" dataType="text"></w2:column>
+						<w2:column id="hobby" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<w2:layoutInfo/>
+		<w2:publicInfo method=""/>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	const rowJSON = [];
+	for (let i = 1; i <= 40; i++) {
+		rowJSON.push({ name: "홍길동_" + String(i).padStart(2, "0"), age: 24, hobby: "독서" });
+	}
+	dlt_dataList1.setJSON(rowJSON);
+};
+
+scwin.btn_button1_onclick = function(e) {
+	grd_gridView1.setGridSize("359px", "140px");
+};
+
+scwin.btn_button2_onclick = function(e) {
+	grd_gridView1.setGridSize("359px", "502px");
+};
+
+scwin.checkVal = function() {
+	const dataLayer = (document.getElementById('mf_grd_gridView1_dataLayer') || document.getElementById('grd_gridView1_dataLayer')).offsetHeight;
+	const innerTable = (document.getElementById('mf_grd_gridView1_body_table') || document.getElementById('grd_gridView1_body_table')).offsetHeight;
+	const layout = 30;
+	return dataLayer - layout < innerTable;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView checkAllType="false" defaultCellHeight="20" id="grd_gridView1" style="width:359px;height:502px;margin: 20px;"
+			dataList="data:dlt_dataList1" autoFit="allColumn">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="70" inputType="text" id="column3" value="name1" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column2" value="name2" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column1" value="name3" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="70" inputType="text" id="name" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="age" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="hobby" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:button style="margin:20px;width:150px;height:60px;" id="btn_button1" label="요약" ev:onclick="scwin.btn_button1_onclick"></w2:button>
+		<w2:button style="margin-left: 20px;margin:20px;width:150px;height:60px;" id="btn_button2" label="전체" ev:onclick="scwin.btn_button2_onclick"></w2:button>
+	</body>
+</html>

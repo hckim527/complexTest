@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList3" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="javascript" lazy="false"><![CDATA[ 
+scwin.getType = function ( info ) {
+				
+                var rowIndex = info.rowIndex;
+                var colIndex = info.colIndex;
+                var returnInfo;
+                
+
+                if(dataList1.getCellData(rowIndex, "col2") == 1){
+                	returnInfo = {
+		                id : "dynamic_text_" + rowIndex + "_" + colIndex,
+						inputType : "text"
+					};
+                }else if(dataList1.getCellData(rowIndex, "col2") == 2){
+                	returnInfo = {
+		                id : "dynamic_text_" + rowIndex + "_" + colIndex,
+						inputType : "text"
+					};                
+                }else if(dataList1.getCellData(rowIndex, "col2") == 3 || dataList1.getCellData(rowIndex, "col2") == 4){
+                	returnInfo = {
+		                id : "dynamic_select_" + rowIndex + "_" + colIndex,
+						inputType : "select",
+						options : {
+							viewType: "icon"
+						},
+						itemSet : {
+							nodeset : "data:dataList3",
+							label : "col1",
+							value : "col2"
+						}
+					};
+                } else {
+					returnInfo = {
+		                id : "dynamic_text_" + rowIndex + "_" + colIndex,
+						inputType : "text",
+						options : {
+						}
+					};
+					
+					
+                }
+
+				
+                return returnInfo;
+                
+			};
+	
+	scwin.onpageload = function() {
+		
+		var jsonData = [{"col2":"1"},{"col2":"2"},{"col2":"3"},{"col2":"4"}];
+	    dataList1.setJSON( jsonData );
+
+		var jsonData2 = [{"col1":"a1","col2":"a1"},{"col1":"a2","col2":"a2"},{"col1":"a3","col2":"a3"}];
+	    dataList2.setJSON( jsonData2 );
+	    	
+	    var jsonData3 = [{"col1":"b1","col2":"b1"},{"col1":"b2","col2":"b2"},{"col1":"b3","col2":"b3"}];
+	    dataList3.setJSON( jsonData3 );
+	    
+	};
+	
+	scwin.checkVal = function() {
+		return ((j) => j.length ? j : $('#mf_grd_dynamic_text_1_0'))($('#grd_dynamic_text_1_0')).hasClass('w2input_focus');
+	}
+	]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" id="grd" setEmptyStringSortableOnSort="true"
+			style="width: 500px;height: 200px;" fixedColumnWithHidden="true" useShiftKey="true"
+			sortable="true" captionAuto="true" fixedColumnNoMove="true"
+			focusFlow="linear" focusMode="both"
+			focusMove="false" keyMoveEditMode="true" rowNumVisible="true" senseReader="true"
+			titleAuto="true" autoFit="none" captionTitle="Filter" readOnly="false"
+			scrollFocus="true" summaryAuto="true" focusImage="true">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column5" inputType="text" width="100" value="name1"></w2:column>
+					<w2:column id="column3" inputType="text" width="70" value="name2"></w2:column>
+					<w2:column id="column1" width="70" inputType="text" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="col1" inputType="custom" width="100" typeGetter="scwin.getType" embeddedInput="true"></w2:column>
+					<w2:column id="col2" inputType="text" width="70"></w2:column>
+					<w2:column id="col3" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<!-- WSQ-5020 focusMode="none" 조건(colSpan 스크립트 오류) -->
+		<w2:gridView dataList="dataList1" id="grd2" setEmptyStringSortableOnSort="true"
+			style="width: 500px;height: 200px;" fixedColumnWithHidden="true" useShiftKey="true"
+			sortable="true" captionAuto="true" fixedColumnNoMove="true"
+			focusFlow="linear" focusMode="none"
+			focusMove="false" keyMoveEditMode="true" rowNumVisible="true" senseReader="true"
+			titleAuto="true" autoFit="none" captionTitle="Filter" readOnly="false"
+			scrollFocus="true" summaryAuto="true" focusImage="true">
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column id="column6" inputType="text" width="100" value="name1"></w2:column>
+					<w2:column id="column4" inputType="text" width="70" value="name2"></w2:column>
+					<w2:column id="column2" width="70" inputType="text" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column id="col1" inputType="custom" width="100" typeGetter="scwin.getType" embeddedInput="true"></w2:column>
+					<w2:column id="col2" inputType="text" width="70"></w2:column>
+					<w2:column id="col3" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

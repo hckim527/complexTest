@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row></w2:row>
+						<w2:row></w2:row>
+						<w2:row>
+							<col1><![CDATA[11]]></col1>
+							<col2><![CDATA[22]]></col2>
+							<col3><![CDATA[33]]></col3>
+							<col4><![CDATA[44]]></col4>
+						</w2:row>
+						<w2:row></w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:textbox label='그리드 뷰 cell의 dataType="float" 일 경우 포커스가 깜빡거릴 때 ESC로 포커스가 빠지지 않는 현상&lt;br/&gt;float : 데이터 없을경우 esc안됨, 데이터 있고 블록시 esc 안됨, 데이터 있고 포커스시 esc 됨.&lt;br/&gt;number : 데이터 없을경우 esc됨, 데이터 있고 블록시 esc 됨, 데이터 있고 포커스시 esc 됨.&lt;br/&gt;text : 데이터 없을경우 esc됨, 데이터 있고 블록시 esc 됨, 데이터 있고 포커스시 esc 됨.&lt;br/&gt;' style="height: 100px;" id="" escape="false"></w2:textbox>
+		<w2:gridView id="" style="width: 500px;height: 150px;" scrollByColumn="false" defaultCellHeight="20"  scrollByColumnAdaptive="false" dataList="data:dataList1">
+			<w2:caption id="caption2" value="this is a grid caption."></w2:caption>
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px;" id="column9" value="float" displayMode="label"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px;" id="column7" value="number" displayMode="label"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" style="height:20px;" id="column5" value="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col1" displayMode="label" dataType="float"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col2" displayMode="label" dataType="number"></w2:column>
+					<w2:column removeBorderStyle="false" width="70" inputType="text" id="col3" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+						<w2:column id="a" name="a" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:linkedDataList id="linkedDataList1" bind="dataList2">
+					<w2:condition type="filter"><![CDATA[ a == 'a']]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+	var temp = [{
+		"col1": "aa",
+		"col2": "bb",
+		"col3": "a2"
+	}];
+	dataList1.setJSON(temp);
+};
+scwin.onpageload = function() {
+	window.jsonData = [{
+		"label": "a1",
+		"value": "a1",
+		"a": "a"
+	}, {
+		"label": "a2",
+		"value": "a2",
+		"a": "a"
+	}, {
+		"label": "b1",
+		"value": "b1",
+		"a": "b"
+	}, {
+		"label": "a3",
+		"value": "a3",
+		"a": "a"
+	}];
+	dataList2.setJSON(jsonData);
+	window.temp = [{
+		"col1": "1",
+		"col2": "2",
+		"col3": "a1"
+	}];
+	dataList1.setJSON(temp);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" id="" style="position: absolute ;left:24px;top:82px;width: 504px;height: 235px;" useShiftKey="true">
+			<w2:header id="header1">
+				<w2:row id="row2">
+					<w2:column id="column11" style="height:20px" inputType="text" width="70" displayMode="label"
+						value="name1">
+					</w2:column>
+					<w2:column id="column9" style="height:20px" inputType="text" width="70" displayMode="label"
+						value="name2">
+					</w2:column>
+					<w2:column id="column7" style="height:20px" inputType="text" width="70" displayMode="label"
+						value="name3">
+					</w2:column>
+					<w2:column id="column3" style="height:20px" width="70" inputType="text" displayMode="label"
+						value="name4">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+					<w2:column id="col1" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column id="col2" style="height:20px" inputType="text" width="70" displayMode="label"></w2:column>
+					<w2:column id="col3" style="height:20px" inputType="select" width="70" displayMode="label">
+						<w2:choices>
+							<w2:itemset nodeset="data:linkedDataList1">
+								<w2:label ref="label"></w2:label>
+								<w2:value ref="value"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column id="col4" style="height:20px" width="70" inputType="text" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:checkcombobox appearance="minimal" direction="auto" id="checkcombobox1"
+			style="position: absolute ;left:128px;top:26px;width: 189px;height: 29px;" displayMode="label" displayAllOptionLabel="false" disabled="false" submenuSize="auto">
+			<xf:choices>
+				<xf:itemset nodeset="data:linkedDataList1">
+					<xf:label ref="label"></xf:label>
+					<xf:value ref="value"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:checkcombobox>
+		<xf:trigger type="button" id="trigger1" style="position: absolute ;left: 369px;top: 27px;width:138px;height:41px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[gridView&#xA;dataList1.setJSON]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>
+ 

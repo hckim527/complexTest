@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" repeatNode="map" keepFilter="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.makeDataList = function(id, obj) {
+	if ($p.getComponentById(id)) {
+		$p.data.remove(id);
+	}
+	$p.data.create({
+		"id": id,
+		"type": "dataList",
+		"option": {
+			"useData": false
+		},
+		"columnInfo": obj
+	});
+};
+// JSON 첫 행의 키로 dataList·gridView(customFilterBox·groupbyFilterBox) 를 다시 구성
+scwin.setColumnID = function(obj) {
+	var columnArr = [];
+	var gridHeader = "",
+		gridBody = "";
+	for (var k in obj[0]) {
+		columnArr.push({ "id": k, "dataType": "text" });
+		gridHeader += '<w2:column id="' + 'h' + k + '" style="height:20px" inputType="text" width="70" value="' + k + '" useFilter="true"></w2:column>';
+		gridBody += '<w2:column id="' + k + '" style="height:20px" inputType="text" width="70"></w2:column>';
+	}
+	scwin.makeDataList("dataList1", columnArr);
+	var gridStr = '<w2:gridView xmlns:w2="http://www.inswave.com/websquare" xmlns:ev="http://www.w3.org/2001/xml-events" dataList="dataList1" id="gridView1" style="width: 500px;height: 350px;" useShiftKey="false" autoFit="allColumn" groupbyZone="true" groupbyFilterBox="true" customFilterBox="true">' +
+		'<w2:header id="header1">' +
+		'<w2:row id="row1">' +
+		gridHeader +
+		'</w2:row>' +
+		'</w2:header>' +
+		'<w2:gBody id="gBody1">' +
+		'<w2:row id="row2">' +
+		gridBody +
+		'</w2:row>' +
+		'</w2:gBody>' +
+		'</w2:gridView>';
+	gridView1.setGridStyle(WebSquare.xml.parse(gridStr, true));
+	dataList1.setJSON(obj);
+};
+scwin.__checkErr = function() {
+	return WebSquare.logger.getErrorLog();
+};
+scwin.onpageload = function() {
+	window.jsonData1 = [
+		{ "col0": "0", "col1": "test", "col2": "test", "col3": "test" },
+		{ "col0": "1", "col1": "test", "col2": "test", "col3": "test" }
+	];
+	window.jsonData2 = [
+		{ "data0": "000", "data1": "AAA", "data2": "aaa", "data3": "aaa", "data4": "aaa", "data5": "aaa", "data6": "aaa", "data7": "aaa", "data8": "aaa", "data9": "aaa" }
+	];
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="dataList1" id="gridView1" style="width:489px;height:100px;" useShiftKey="false">
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column id="column5" style="height:20px" width="70" inputType="text" value="name1"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column id="col1" style="height:20px" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="width: 80px;height: 23px;float : left;">
+			<xf:label><![CDATA[1]]></xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+				scwin.setColumnID(jsonData1);
+			]]></script>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="width: 80px;height: 23px;">
+			<xf:label><![CDATA[2]]></xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+				scwin.setColumnID(jsonData2);
+			]]></script>
+		</xf:trigger>
+	</body>
+</html>

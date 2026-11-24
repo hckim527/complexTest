@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
+	var jsonData = [{
+		"col1": "label1",
+		"col2": "value1"
+	}, {
+		"col1": "label2",
+		"col2": "value2"
+	}, {
+		"col1": "label3",
+		"col2": "value3"
+	}, {
+		"col1": "label4",
+		"col2": "value4"
+	}, {
+		"col1": "label5",
+		"col2": "value5"
+	}];
+	dataList1.setJSON(jsonData);
+	var jsonData = [{
+			"col1": "aaa",
+			"col2": "value1",
+			"col3": "value1",
+			"col4": "111"
+		},
+		{
+			"col1": "bbb",
+			"col2": "value2",
+			"col3": "value2",
+			"col4": "222"
+		}
+	];
+	dataList2.setJSON(jsonData);
+	//헤더에 displayFormat이 설정되어있는 경우 셀 수정 혹은 추가 등 데이터가 변하면 헤더가 기본값으로 돌아감.
+	gridView1.setHeaderValue("column3", "1000000", true);
+};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom(id);
+	scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dataList2" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1" style="width: 100%;height: 150px;" autoFit="allColumn">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column1" removeBorderStyle="false" style="height:20px;" width="70" inputType="text" value="name1" displayMode="label"></w2:column>
+					<w2:column id="column7" removeBorderStyle="false" style="height:20px;" inputType="text" width="114" value="autoComplete" displayMode="label"></w2:column>
+					<w2:column id="column5" removeBorderStyle="false" style="height:20px;" inputType="text" width="107" value="selectbox" displayMode="label"></w2:column>
+					<w2:column id="column3" removeBorderStyle="false" style="height:20px;" inputType="text" width="70" value="1999" displayMode="label" dataType="number" displayFormat="#,###" defaultValue=""></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="col1" removeBorderStyle="false" width="70" inputType="text" displayMode="label"></w2:column>
+					<w2:column id="col2" removeBorderStyle="false" inputType="autoComplete" width="114" displayMode="label" allOption="" chooseOption="" ref="" viewType="icon">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList1">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices></w2:column>
+					<w2:column id="col3" removeBorderStyle="false" inputType="select" width="107" displayMode="label" allOption="" chooseOption="" ref="" viewType="icon">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList1">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices></w2:column>
+					<w2:column id="col4" removeBorderStyle="false" inputType="text" width="70" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

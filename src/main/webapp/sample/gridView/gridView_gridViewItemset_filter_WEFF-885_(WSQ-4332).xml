@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlVslSkd">
+					<w2:columnInfo>
+						<w2:column id="podCd" name="Pod Code" dataType="text"></w2:column>
+						<w2:column id="podCallOrd" name="Pod Calling Order" dataType="text"></w2:column>
+						<w2:column id="podIntrKey" name="podIntrKey" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlVvdLocCallSeq">
+					<w2:columnInfo>
+						<w2:column id="intrKey" name="intrKey" dataType="text"></w2:column>
+						<w2:column id="polPodFlg" name="Pol Pod Flag" dataType="text"></w2:column>
+						<w2:column id="portCallOrd" name="Port Calling Order" dataType="number"></w2:column>
+						<w2:column id="fcltyCd" name="Facility Code" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:linkedDataList bind="dlVvdLocCallSeq" id="ldlPodCallTmlCd">
+					<w2:condition type="filter"><![CDATA[intrKey==ref('dlVslSkd.podIntrKey') || polPodFlg=='X']]></w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	dlVvdLocCallSeq.setJSON([
+		{ "intrKey": "X", "polPodFlg": "X", "portCallOrd": "3", "fcltyCd": "" },
+		{ "intrKey": "JDIN0013ELNLRTM", "polPodFlg": "L", "portCallOrd": 1, "fcltyCd": "NLRTMECT" },
+		{ "intrKey": "HHST0022EDKRPUS", "polPodFlg": "D", "portCallOrd": 1, "fcltyCd": "KRPUSPNC" },
+		{ "intrKey": "JDIN0013EDCNYTN", "polPodFlg": "D", "portCallOrd": 1, "fcltyCd": "CNYTNYTN" },
+		{ "intrKey": "JDIN0013ELBEANR", "polPodFlg": "L", "portCallOrd": 1, "fcltyCd": "BEANRHNN" },
+		{ "intrKey": "JDIN0013EDCNYTN", "polPodFlg": "D", "portCallOrd": 2, "fcltyCd": "CNYTNYTN" }
+	]);
+	dlVslSkd.setJSON([
+		{ "podCd": "CNYTN", "podCallOrd": "2", "podIntrKey": "JDIN0013EDCNYTN" },
+		{ "podCd": "KRPUS", "podCallOrd": "1", "podIntrKey": "HHST0022EDKRPUS" }
+	]);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dlVslSkd" id="grvVslSkdList" rowNumVisible="true" rowStatusVisible="true" sortable="false" style="height:220px;width:400px;" visibleRowNum="7" editModeEvent="onclick">
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column displayMode="label" id="column18" inputType="text" style="height:28px;" value="Pod" width="94"></w2:column>
+					<w2:column displayMode="label" id="column37" inputType="text" style="height:28px;" value="Call&lt;br/&gt;Seq." width="56"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column displayMode="label" id="podCd" inputType="text" readOnly="true" width="94" style="height:20px;"></w2:column>
+					<w2:column displayMode="label" id="podCallOrd" inputType="select" selectedData="false" width="56" style="height:20px;">
+						<w2:choices>
+							<w2:gridViewItemset height="109px" hideHeader="false" label="portCallOrd" nodeset="data:ldlPodCallTmlCd" value="portCallOrd" visibleRowNum="3" width="200px">
+								<w2:item header="Seq." ref="portCallOrd" style="width:35px;"></w2:item>
+								<w2:item header="Terminal" ref="fcltyCd" style="text-align:left"></w2:item>
+							</w2:gridViewItemset>
+						</w2:choices>
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	// col1: 1,2,1,1,2 반복 25건
+	var jsonData = [];
+	for (var i = 0; i < 25; i++) jsonData.push({"col1": ["1","2","1","1","2"][i % 5]});
+	dataList1.setJSON(jsonData);
+	$p.data.setBroadcast(false);
+	for (var i = 0; i < gridView1.getRowCount(); i++) {
+		var obj;
+		if (dataList1.getCellData(i, "col1") == 1) {
+			obj = {inputType : "calendar", options : {viewType : "icon", calendarValueType : "yearMonth", displayFormat : "yyyy", dataType : "date"}};
+		} else {
+			obj = {inputType : "link", options : {displayFormatter: "scwin.getUserCsNo"}};
+		}
+		gridView1.setCellInputType(i, "col2", obj);
+	}
+	$p.data.setBroadcast(true);
+};
+scwin.getUserCsNo = function(a,b,c,d) {
+	return "formatter"+a;
+};
+scwin.button1_onclick = function(e) {
+	grp1.show("");
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+		.br {border-right:1px solid red;}
+		]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" style="width:110px;height: 23px;" id="trigger3" ev:onclick="scwin.button1_onclick">
+			<xf:label><![CDATA[show]]></xf:label>
+		</xf:trigger>
+		<xf:group id="grp1" style="display:none;">
+			<w2:gridView dataList="data:dataList1" defaultCellHeight="20" accessibility="true" senseReader="true" focusMove="false"
+				keyMoveEditMode="true" captionAuto="true" autoResizeEmbeddedInput="true" sortHeaderDiv="true" scrollFocus="true" titleAuto="true"
+				applyScopeHeaders="true" setCellInputTypeCustom="true" id="gridView1" style="width: 500px;height: 150px;" useShiftKey="true">
+				<w2:header id="header1">
+					<w2:row id="row1">
+						<w2:column id="column5" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+						<w2:column id="column3" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+						<w2:column id="column1" width="70" inputType="text" value="name3" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1">
+					<w2:row id="row2">
+						<w2:column id="col1" width="70" inputType="text" displayMode="label"></w2:column>
+						<w2:column id="col2" class="br" inputType="custom" width="70" displayMode="label"></w2:column>
+						<w2:column id="col3" width="70" inputType="text" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+		</xf:group>
+	</body>
+</html>

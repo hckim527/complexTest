@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
+	// A~E 5행 묶음 9회(45행)
+	var arr = [];
+	for (var i = 0; i < 45; i++) {
+		var k = "ABCDE".charAt(i % 5);
+		arr.push({ col1: k, col2: k + "1", col3: k + "2", col4: k + "3", col5: k + "4" });
+	}
+	dataList1.setJSON(arr);
+};
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="width:638px;height:621px;" id="">
+			<xf:group style="width:611px;height:100px;" id="">
+			</xf:group>
+			<xf:group style="width:611px;height:200px;" id="">
+				<w2:gridView id="gridView1" style="width: 600px;height: 150px;left:50px;" defaultCellHeight="20" searchFilter="true" noSortInit="true"
+					dataList="data:dataList1" sortable="true" useFilterList="true" useFilterListSync="" showSortableUseFilter="true">
+					<w2:header id="header1">
+						<w2:row id="row1">
+							<w2:column width="120" inputType="text" style="height:20px" id="column6" value="COL1" useFilter="true"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="column5" value="COL2" useFilter="true"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="column4" value="COL3" useFilter="true"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="column3" value="COL4" useFilter="true"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="column2" value="COL5" useFilter="true"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1">
+						<w2:row id="row2">
+							<w2:column width="120" inputType="text" style="height:20px" id="col1"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="col2"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="col3"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="col4"></w2:column>
+							<w2:column width="120" inputType="text" style="height:20px" id="col5"></w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

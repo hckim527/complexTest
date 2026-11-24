@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlTmpList1">
+					<w2:columnInfo>
+						<w2:column id="col101" name="col101" dataType="text"></w2:column>
+						<w2:column id="col102" name="col102" dataType="text"></w2:column>
+						<w2:column id="col103" name="col103" dataType="text"></w2:column>
+						<w2:column id="col104" name="col104" dataType="text"></w2:column>
+						<w2:column id="col105" name="col105" dataType="text"></w2:column>
+						<w2:column id="col106" name="col106" dataType="text"></w2:column>
+						<w2:column id="col107" name="col107" dataType="text"></w2:column>
+						<w2:column id="col108" name="col108" dataType="text"></w2:column>
+						<w2:column id="col109" name="col109" dataType="text"></w2:column>
+						<w2:column id="col110" name="col110" dataType="text"></w2:column>
+						<w2:column id="col111" name="col111" dataType="text"></w2:column>
+						<w2:column id="col112" name="col112" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" id="dlPopCobList2" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="polCd" name="polCd"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="false"></w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+    var j = $(q); if (j.length) return j;
+    var P = 'mf_', t = q.trim(), r = t.slice(1);
+    if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+    return $(t.slice(0, 1) + r);
+};
+scwin.onpageload = function() {
+	dlTmpList1.setJSON([{ "col101": "링크", "col102": "1", "col103": "버튼", "col104": "", "col105": "1", "col106": "02", "col107": "20190116", "col108": "테스트 입니다.", "col109": "테스트", "col110": "02 03", "col111": "123", "col112": "01" }]);
+	dlTmpList1.insertRow(1);
+	dlTmpList1.insertRow(2);
+};
+scwin.dynamicSubmission = function(option, req) {
+    var submissionObj = option;
+    $p.createSubmission(submissionObj);
+    $p.executeSubmission("submission2", req);
+};
+scwin.gridView1_onbeforeedit = function(row, col, value) {
+	if (col == 5 || col == 6) {
+		var reqData = {
+			"CommonData": { appCd: "DOC", chk1: "N", chk2: "N", chk3: "N", mnuNo: "0000002939", pgmNo: "", screenId: "UIDOC0042?uiMode=C", searchId: "", tjUrl: "/UDOC0042/searchPolCdList.do?locale=ko" },
+			"dmSearchLoop": { "svcLoopCd": "PS2", "skdDirCd": "W" }
+		};
+		var subOpt = {
+			id: "submission2",
+			target: "data:json,{'id':'dlPopCobList2','key':'dlPopCobList'}",
+			mode: "asyncronous",
+			action: "/data/gridView_submission_selectbox_WEFF-772_(WSQ-4113).json",
+			method: "post",
+			mediatype: "application/json",
+			encoding: "UTF-8"
+		};
+		scwin.dynamicSubmission(subOpt, reqData);
+	}
+};
+scwin.checkVal1 = function() {
+    var select_width = scwin.__getJq(scwin.__getDom($p.id + 'gridView1_cell_1_5')).width();
+    var select_table_width = parseInt(scwin.__getDom('G_'+$p.id+'gridView1___selectbox_col106_itemTable').style.width) + 5;
+    return select_table_width > select_width
+}
+scwin.checkVal2 = function() {
+    var select_width = scwin.__getJq(scwin.__getDom($p.id + 'gridView1_cell_1_5')).width();
+    var select_table_width = parseInt(scwin.__getDom('G_'+$p.id+'gridView1___autoComplete_1_col112_col112_itemTable').style.width) + 5;
+    return select_table_width > select_width
+}
+]]></script>
+		</head>
+		<body ev:onpageload="scwin.onpageload">
+			<xf:group class="wrap" id="">
+				<w2:gridView autoFit="allColumn" class="cm_grid edit" dataList="data:dlTmpList1"
+					id="gridView1" rowStatusVisible="true" style="width: 100%;height: 200px;" editModeEvent="onclick" editModeEventIcon="onclick" dataDragSelect="true" keyMoveEditMode="true" ev:onbeforeedit="scwin.gridView1_onbeforeedit">
+					<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+					<w2:header id="header1">
+						<w2:row id="row1">
+							<w2:column colSpan="7" id="hCol1" inputType="text" rowSpan="" style="height:27px;" value="edit" width="220"></w2:column>
+						</w2:row>
+						<w2:row id="row3">
+							<w2:column id="hCol101" inputType="text" style="height:20px;" value="link" width="70"></w2:column>
+							<w2:column id="hCol102" inputType="text" style="height:20px;" value="checkbox" width="70"></w2:column>
+							<w2:column id="hCol103" inputType="text" style="height:20px;" value="button" width="70"></w2:column>
+							<w2:column id="hCol104" inputType="image" style="height:20px;" value="image" width="70"></w2:column>
+							<w2:column id="hCol105" inputType="text" style="height:20px;" value="radio" width="70"></w2:column>
+							<w2:column id="hCol106" inputType="text" style="height:20px;" value="select" width="220"></w2:column>
+							<w2:column id="hCol107" inputType="text" style="height:20px;" value="autoComplete" width="220"></w2:column>
+						</w2:row>
+					</w2:header>
+					<w2:gBody id="gBody1" style="height:20px">
+						<w2:row id="row2">
+							<w2:column id="col101" inputType="link" style="height:20px" width="70"></w2:column>
+							<w2:column id="col102" inputType="checkbox" style="height:20px" width="70"></w2:column>
+							<w2:column id="col103" inputType="button" style="height:20px" width="70"></w2:column>
+							<w2:column id="col104" imageSrc="/NP2020/com/images/comm/ico_grid_file.png" inputType="image" style="height:20px"
+								width="70">
+							</w2:column>
+							<w2:column id="col105" inputType="radio" style="height:20px" width="70"></w2:column>
+							<w2:column chooseOption="true" chooseOptionLabel="-선택-" id="col106" inputType="select"
+								style="height:20px" width="220" viewTypeIconImage="true" viewType="icon">
+								<w2:choices>
+									<w2:itemset nodeset="data:dlPopCobList2">
+										<w2:label ref="polCd"></w2:label>
+										<w2:value ref="polCd"></w2:value>
+									</w2:itemset>
+								</w2:choices>
+							</w2:column>
+							<w2:column chooseOption="true" chooseOptionLabel="-선택-" id="col112" inputType="autoComplete"
+								style="height:20px" width="220" viewTypeIconImage="true" viewType="icon">
+								<w2:choices>
+									<w2:itemset nodeset="data:dlPopCobList2">
+										<w2:label ref="polCd"></w2:label>
+										<w2:value ref="polCd"></w2:value>
+									</w2:itemset>
+								</w2:choices>
+							</w2:column>
+						</w2:row>
+					</w2:gBody>
+				</w2:gridView>
+			</xf:group>
+		</body>
+	</html> 

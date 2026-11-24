@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+	gv.advancedExcelUpload({
+		"useMaxByteLength": true
+	});
+};
+scwin.trigger2_onclick = function(e) {
+	tb1.setValue(WebSquare.xml.serialize(dataList1.getAllXML()).replaceAll("><", ">\n<"));
+	tb2.setValue(WebSquare.xml.serialize(gv.getAllDisplayXML()).replaceAll("><", ">\n<"));
+};
+]]></script>
+	</head>
+	<body>
+		<w2:gridView id="gv" syncScroll="false" style="position: absolute;width:500px;height:318px;left:200px;top:285px;margin-top:-15px;" defaultCellHeight="20" dataList="data:dataList1" rowNumVisible="true" rowNumWidth="30" rowStatusVisible="true" rowStatusWidth="30">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column removeBorderStyle="false" width="130" inputType="text" id="column1" value="name1" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" id="col1" inputType="text" style="height:25px;" width="130" displayFormatter="common.maskTin" maxByteLength="12" ignoreChar="-" applyFormat="all" useMaxLength="true"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:textarea id="tb1" style="position: absolute;width:525px;height:148px;left:730px;top:270px;"></xf:textarea>
+		<xf:textarea id="tb2" style="position: absolute;width:525px;height:148px;left:730px;top:435px;"></xf:textarea>
+		<xf:trigger type="button" style="position: absolute;width: 80px;height: 23px;left:730px;top:235px;" id="trigger2" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[확인]]></xf:label>
+		</xf:trigger>
+		<xf:trigger id="trigger1" style="position: absolute;width: 80px;height: 23px;left:202px;top:240px;" type="button" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[업로드]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dma_field">
+					<w2:keyInfo>
+						<w2:key dataType="text" id="FIELD_ID" name="학번"></w2:key>
+						<w2:key dataType="text" id="FIELD_NM" name="성명(한글)"></w2:key>
+						<w2:key id="TERM" name="name3" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:dataList baseNode="list" id="dl_32" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="GUBUN1" name="대"></w2:column>
+						<w2:column dataType="text" id="GUBUN2" name="중"></w2:column>
+						<w2:column dataType="text" id="GUBUN3" name="소"></w2:column>
+						<w2:column dataType="text" id="SPARKLINE" name="추세"></w2:column>
+						<w2:column dataType="text" id="M01" name="1월"></w2:column>
+						<w2:column dataType="text" id="M02" name="2월"></w2:column>
+						<w2:column dataType="text" id="M03" name="3월"></w2:column>
+						<w2:column dataType="text" id="M04" name="4월"></w2:column>
+						<w2:column dataType="text" id="M05" name="5월"></w2:column>
+						<w2:column dataType="text" id="M06" name="6월"></w2:column>
+						<w2:column dataType="text" id="M07" name="7월"></w2:column>
+						<w2:column dataType="text" id="M08" name="8월"></w2:column>
+						<w2:column dataType="text" id="M09" name="9월"></w2:column>
+						<w2:column dataType="text" id="M10" name="10월"></w2:column>
+						<w2:column dataType="text" id="M11" name="11월"></w2:column>
+						<w2:column dataType="text" id="M12" name="12월"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<xf:submission action="/data/gridView_groupby_WEFF-514_(WSQ-3888).json" encoding="UTF-8"
+				ev:submitdone="scwin.sbm_search_submitdone" id="sbm_search" mediatype="application/json" method="post"
+				mode="asynchronous" processMsg="" ref="data:json,dma_field" target="data:json,dl_32">
+			</xf:submission>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_sch_onclick = function(e) {
+	$p.executeSubmission(sbm_search);
+};
+scwin.sbm_search_submitdone = function(e) {
+	var _options = {
+		closeGroup: false
+	};
+	scwin.setGridGroupby(_options);
+};
+// depth 별 소계(합계) groupbyHeader : 라벨(colSpan 3)·추세·M01~M12·TOTAL SUM
+scwin.makeGroupbyHeader = function(depthIdx, className) {
+	var header = [{
+			align: 'left',
+			colSpan: '3',
+			inputType: 'expression',
+			expression: 'toggle()+ depthStr().split("-")[' + depthIdx + '] + "합계"',
+			className: className
+		},
+		{
+			inputType: 'expression',
+			className: 'spark',
+			expression: ""
+		}
+	];
+	var cols = ['M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M09', 'M10', 'M11', 'M12', 'TOTAL'];
+	for (var i = 0; i < cols.length; i++) {
+		header.push({
+			align: 'right',
+			inputType: 'expression',
+			expression: "SUM('" + cols[i] + "')",
+			displayFormat: '#,###'
+		});
+	}
+	return header;
+};
+scwin.setGridGroupby = function(_options) {
+	var options = {
+		closeGroup: _options.closeGroup,
+		hideFooter: true,
+		sortIndex: [0, 1],
+		sortOrder: [1, 1, 1],
+		groupbyHeader: {
+			depth_0: scwin.makeGroupbyHeader(0, 'grpDepth0'),
+			depth_1: scwin.makeGroupbyHeader(1, '')
+		}
+	};
+	gridView1.groupby(options);
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+		.w2grid .grpDepth1{padding-left:20px;}
+		.w2grid .grpDepth2{padding-left:35px;}
+		.w2grid .grpDepth3{padding-left:75px;}
+		]]></style>
+	</head>
+	<body>
+		<xf:group id="" style="overflow:hidden;">
+			<xf:trigger class="btn_cm ico_search" id="btn_sch" type="button" ev:onclick="scwin.btn_sch_onclick">
+				<xf:label><![CDATA[조회]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<w2:gridView class="wq_gvw" copyOption="display" dataDragSelect="true" dataList="data:dl_32"
+			defaultCellHeight="30" fixedColumnWithHidden="true" focusFlow="" focusMode="" id="gridView1"
+			rowNumHeaderValue="No" rowNumVisible="true" rowNumWidth="50" rowStatusHeaderValue="Status" rowStatusWidth="50"
+			style="height:500px;margin-top:5px;" useShiftKey="true"
+			sortable="true" useFilterList="true" useFilterListSync="true" showSortableUseFilter="true" showSortableImage="true" fixedColumn="3" fixedRightColumn="1" groupbyZone="true" groupbyZoneHeight="" sortEvent="onclick" contextMenu="true">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="100" inputType="text" id="column31" value="대" displayMode="label" useFilter="true" autoFitFilterList="true" sortable="true"></w2:column>
+					<w2:column width="100" inputType="text" id="column29" value="중" displayMode="label" useFilter="true" autoFitFilterList="true" hideCustomFilter="true" sortable="true"></w2:column>
+					<w2:column width="100" inputType="text" id="column27" value="소" displayMode="label" useFilter="true" autoFitFilterList="true" hideCustomFilter="true" sortable="true"></w2:column>
+					<w2:column width="70" inputType="text" id="column25" value="추세" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column23" value="1월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column21" value="2월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column19" value="3월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column17" value="4월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column15" value="5월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column13" value="6월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column11" value="7월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column9" value="8월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column7" value="9월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column5" value="10월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column3" value="11월" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="column1" value="12월" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="100" inputType="text" id="GUBUN1" displayMode="label"></w2:column>
+					<w2:column width="100" inputType="text" id="GUBUN2" displayMode="label"></w2:column>
+					<w2:column width="100" inputType="text" id="GUBUN3" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="SPARKLINE" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M01" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M02" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M03" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M04" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M05" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M06" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M07" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M08" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M09" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M10" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M11" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" id="M12" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

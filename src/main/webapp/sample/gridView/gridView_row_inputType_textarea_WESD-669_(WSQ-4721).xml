@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="orderList" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="mprscRefMatr" name="참조사항" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	var data = [];
+	var multiLine = "";
+	for (var a = 0; a < 16; a++) {
+		multiLine += "aaaaaaaaaaaaaaaaabbbbbbbbbbbcccccccccccc\n";
+	}
+	for (var i = 0; i < 20; i++) {
+		// 소수 번째(i+2) 행만 여러 줄 → 행 높이가 제각각
+		data.push({ col1: String(i + 1), col2: "A" + (i + 1), col3: "B" + (i + 1), mprscRefMatr: scwin.isPrime(i + 2) ? multiLine : "" });
+	}
+	orderList.setJSON(data);
+};
+
+scwin.isPrime = function(num) {
+	for (var i = 2; i < num; i++) {
+		if (num % i === 0) {
+			return false;
+		}
+	}
+	return num > 1;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="grd_orderList" dataList="data:orderList" drawType="native" autoFit="allColumn" defaultCellHeight="16" style="height:480px;width:100%;">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="70" inputType="text" id="column1" value="name1"></w2:column>
+					<w2:column width="70" inputType="text" id="column2" value="name2"></w2:column>
+					<w2:column width="70" inputType="text" id="column3" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="70" inputType="text" id="col1"></w2:column>
+					<w2:column width="70" inputType="text" id="col2"></w2:column>
+					<w2:column width="70" inputType="text" id="col3"></w2:column>
+				</w2:row>
+				<w2:row id="extRow">
+					<w2:column width="210" inputType="textarea" id="mprscRefMatr" colSpan="3" displayType="all" style="height:0px;"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

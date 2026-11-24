@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" removeDummyRowStatus="true" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="colA" name="colA" dataType="number"/>
+						<w2:column id="colB" name="colB" dataType="number"/>
+						<w2:column id="colC" name="colC" dataType="number"/>
+						<w2:column id="colD" name="colD" dataType="number"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// === [Case 1] displayFormatter 결과: 2,002.5 (콤마 + 소수점 6자리 절단) ===
+scwin.fmt_case1 = function (data) {
+	return WebSquare.text.formatCurrency(data, "#,###.######");
+};
+
+// === [Case 2] displayFormatter 결과: "1234567.05" 고정 문자열 ===
+scwin.fmt_case2 = function (data) {
+	return "1234567.05";
+};
+
+scwin.onpageload = function () {
+	var tmpJSON = [
+		{ "colA": "2002.5",    "colB": "2002.5",    "colC": "2002.5",    "colD": "2002.5" },
+		{ "colA": "2002.5",    "colB": "2002.5",    "colC": "2002.5",    "colD": "2002.5" }
+	];
+	dataList1.setJSON(tmpJSON);
+};
+
+// advancedExcelDownload — type 미지정 (기본값 1: displayFormat 적용)
+scwin.dl_default_onclick = function (e) {
+	gridView1.advancedExcelDownload({ fileName: "case_default.xlsx" });
+};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView defaultCellHeight="22" id="gridView1" style="position:absolute;top:75px;left:14px;width:780px;height:120px;" dataList="data:dataList1">
+			<w2:caption id="caption1" value="displayFormatter vs displayFormat — 엑셀 다운로드 재현"/>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="190" inputType="text" style="height:22px" id="head_A" value="[A] formatter only" displayMode="label"/>
+					<w2:column width="190" inputType="text" style="height:22px" id="head_B" value="[B] format only" displayMode="label"/>
+					<w2:column width="200" inputType="text" style="height:22px" id="head_C" value="[C] case1 둘 다" displayMode="label"/>
+					<w2:column width="200" inputType="text" style="height:22px" id="head_D" value="[D] case2 둘 다 (str)" displayMode="label"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="190" inputType="text" style="height:22px" id="colA" displayMode="label" displayFormatter="scwin.fmt_case1"/>
+					<w2:column width="190" inputType="text" style="height:22px" id="colB" displayMode="label" displayFormat="####.000"/>
+					<w2:column width="200" inputType="text" style="height:22px" id="colC" displayMode="label" displayFormatter="scwin.fmt_case1" displayFormat="####.000"/>
+					<w2:column width="200" inputType="text" style="height:22px" id="colD" displayMode="label" displayFormatter="scwin.fmt_case2" displayFormat="#,###.000"/>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trg_default" style="position:absolute;top:210px;left:14px;width:200px;height:26px;" ev:onclick="scwin.dl_default_onclick">
+			<xf:label><![CDATA[advExcel (default = type 1)]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

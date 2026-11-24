@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dlt_select" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="code" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거)
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+// col1 에서 고른 inputType 으로 col2(custom) Cell 을 동적 변경
+scwin.grd_onviewchange = function(info) {
+	grd.setCellInputType(info.rowIndex, "col2", { inputType: info.newValue });
+};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	var evt = document.createEvent('MouseEvents');
+	evt.initEvent('dblclick', true, false);
+	el.dispatchEvent(evt);
+};
+scwin.onpageload = function() {
+	// 목록 5번째(index 4) = textarea
+	dlt_select.setJSON([
+		{ "label": "input", "code": "input" },
+		{ "label": "calendar", "code": "calendar" },
+		{ "label": "checkbox", "code": "checkbox" },
+		{ "label": "select", "code": "select" },
+		{ "label": "textarea", "code": "textarea" },
+		{ "label": "radio", "code": "radio" }
+	]);
+	var arr = [];
+	for (var i = 0; i < 5; i++) {
+		arr.push({ col2: "bb", col3: "cc" });
+	}
+	dataList1.setJSON(arr);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dataList1" defaultCellHeight="20" setCellInputTypeCustom="true" id="grd" style="width: 500px;height: 150px;" useShiftKey="true" ev:onviewchange="scwin.grd_onviewchange">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column5" inputType="text" width="98" value="inputType 선택" displayMode="label"></w2:column>
+					<w2:column id="column3" inputType="text" width="69" value="custom" displayMode="label"></w2:column>
+					<w2:column id="column1" width="70" inputType="text" value="textarea" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="col1" inputType="select" width="98" displayMode="label">
+						<w2:choices>
+							<w2:itemset nodeset="data:dlt_select">
+								<w2:label ref="label"></w2:label>
+								<w2:value ref="code"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column id="col2" inputType="custom" width="69" displayMode="label"></w2:column>
+					<w2:column id="col3" width="70" inputType="textarea" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

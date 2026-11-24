@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList2" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[CODE1]]></col1>
+							<col2><![CDATA[CODE1]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[CODE2]]></col1>
+							<col2><![CDATA[CODE2]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	// 0 Row: 목록(dataList2)에 없는 값 / 1 Row: 목록에 있는 값
+	dataList1.setJSON([{"col1" : "1111", "col2" : "2222", "col3" : "3333"}, {"col1" : "CODE1", "col2" : "CODE2", "col3" : "CODE1"}]);
+	window.checkdata = dataList1.getAllJSON();
+};
+
+scwin.checkVal1 = function() {
+	return (document.getElementById('gridView1_cell_0_1') || document.getElementById('mf_gridView1_cell_0_1')).innerText == '2222';
+};
+
+scwin.checkVal2 = function() {
+	return window.checkdata[0].col2 == '2222';
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView defaultCellHeight="20" id="gridView1" style="width: 500px;height: 150px;" dataList="data:dataList1">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="140" inputType="text" id="column1" value="selectedData=false" displayMode="label"></w2:column>
+					<w2:column width="140" inputType="text" id="column2" value="valueNotInList=keepValue" displayMode="label"></w2:column>
+					<w2:column width="140" inputType="text" id="column3" value="미설정(기본)" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="140" inputType="select" id="col1" displayMode="label" selectedData="false">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column width="140" inputType="select" id="col2" displayMode="label" valueNotInList="keepValue">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column width="140" inputType="select" id="col3" displayMode="label">
+						<w2:choices>
+							<w2:itemset nodeset="data:dataList2">
+								<w2:label ref="col1"></w2:label>
+								<w2:value ref="col2"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

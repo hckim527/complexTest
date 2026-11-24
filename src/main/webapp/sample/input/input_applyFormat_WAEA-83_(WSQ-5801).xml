@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="WAEA_82">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+// 커서를 맨 앞으로 이동
+scwin.setSimulate2 = function () {
+	const inputElement = (document.getElementById('input1') || document.getElementById('mf_input1'));
+	if (inputElement) {
+		inputElement.setSelectionRange(0, 0); // 커서를 맨 앞으로 이동
+	}
+};
+// Delete 시뮬레이션 및 커서 위치 확인
+scwin.setSimulate3 = function () {
+	var retVal;
+	const inputElement = (document.getElementById('input1') || document.getElementById('mf_input1'));
+	if (inputElement) {
+		// 현재 커서 위치를 가져옴
+		const initialCursorPosition = inputElement.selectionStart;
+		if (initialCursorPosition !== null) {
+			// 커서 위치의 값을 삭제
+			inputElement.value =
+				inputElement.value.slice(0, initialCursorPosition) +
+				inputElement.value.slice(initialCursorPosition + 1);
+			// 삭제 후 커서 위치 유지
+			inputElement.setSelectionRange(initialCursorPosition, initialCursorPosition);
+			// input 이벤트 트리거
+			const inputEvent = new Event('input', { bubbles: true });
+			inputElement.dispatchEvent(inputEvent);
+			// 삭제 후 커서 위치를 가져옴
+			const finalCursorPosition = inputElement.selectionStart;
+			// 커서 위치가 같은지 확인
+			if (initialCursorPosition === finalCursorPosition) {
+				retVal = true;
+			} else {
+				retVal = false;
+			}
+			return retVal;
+		}
+	}
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group tagname="table" style="width:100%;" class="w2tb">
+			<xf:group tagname="colgroup">
+				<xf:group tagname="col" style="width:25.00%;"></xf:group>
+				<xf:group tagname="col" style="width:75.00%"></xf:group>
+			</xf:group>
+			<xf:group tagname="tr">
+				<xf:group tagname="th" class="w2tb_th">WAEA_83 (allowChar="0-9")</xf:group>
+				<xf:group tagname="td" class="w2tb_td">
+					<xf:input dataType="number"
+						style="width:203px;height:23px;" applyFormat="all" id="input1" allowChar="0-9" displayFormat="#,###" accessibility="true" validateOnInput="true">
+					</xf:input>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

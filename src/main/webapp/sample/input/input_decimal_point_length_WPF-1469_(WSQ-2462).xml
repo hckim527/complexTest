@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+
+scwin.checkVal = function() {
+	return scwin.__getObj("wq_uuid_4").getValue() == '12.34';
+};
+]]></script>
+	</head>
+	<body>
+		<w2:textbox label="maxByteLength1" id="" style="position: relative;width: 150px;height: 23px;"></w2:textbox>
+		<xf:input id="" style="position: relative;width: 144px;height: 21px;margin-bottom: 20px;" maxByteLength="4" dataType="text" byteCheckIgnoreChar="."></xf:input>
+		<w2:textbox id="" label="maxByteLength2" style="position: relative;width: 150px;height: 23px;"></w2:textbox>
+		<xf:input id="" style="position: relative;width: 144px;height: 21px;margin-bottom: 20px;" maxByteLength="4" dataType="number" byteCheckIgnoreCharType="number"
+			byteCheckIgnoreChar=".">
+		</xf:input>
+	</body>
+</html>

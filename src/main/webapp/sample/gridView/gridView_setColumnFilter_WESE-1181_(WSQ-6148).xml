@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dsMainList" saveRemovedData="true" ev:onrowpositionchange="scwin.dsMainList_onrowpositionchange">
+					<w2:columnInfo>
+						<w2:column id="id" name="id" dataType="text"></w2:column>
+						<w2:column id="no" name="번호" dataType="number" length="" encYN="false"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dsSubList" saveRemovedData="true" getMatchedFromAllData="true">
+					<w2:columnInfo>
+						<w2:column id="id" name="id" dataType="text"></w2:column>
+						<w2:column id="no" name="번호" dataType="number"></w2:column>
+						<w2:column id="chk" name="선택" dataType="text"></w2:column>
+						<w2:column id="new" name="신규" dataType="text"></w2:column>
+						<w2:column id="amt" name="금액" dataType="number" defaultValue="0" length=""></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true"></w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="javascript" lazy="false"><![CDATA[
+scwin.objMainJSON = [
+	{"id": "1", "no": 1},
+	{"id": "2", "no": 2},
+];
+
+scwin.objSubJSON = [
+	{"id": "1", "no": 1, "new": "N", "amt": 200000},
+	{"id": "2", "no": 1, "new": "N", "amt": 200000},
+	{"id": "3", "no": 1, "new": "N", "amt": 200000},
+	{"id": "4", "no": 2, "new": "N", "amt": 200000},
+	{"id": "5", "no": 2, "new": "N", "amt": 200000},
+	{"id": "6", "no": 2, "new": "N", "amt": 200000},
+	{"id": "7", "no": 2, "new": "Y", "amt": 300000},
+	{"id": "8", "no": 2, "new": "Y", "amt": 300000},
+	{"id": "9", "no": 2, "new": "Y", "amt": 300000},
+	{"id": "10", "no": 2, "new": "Y", "amt": 300000},
+	{"id": "11", "no": 2, "new": "Y", "amt": 300000},
+];
+
+scwin.onpageload = function() {
+	dsMainList.setJSON(scwin.objMainJSON);
+	dsSubList.setJSON(scwin.objSubJSON);
+};
+
+// 그리드 inputType getter : new=Y 면 checkbox, 아니면 text(readOnly)
+scwin.fnGetType = function(info) {
+	let objReturnInfo;
+	switch (info.colID) {
+		case "chk" :
+			let sInputType, bReadOnly;
+			const sNew = dsSubList.getCellData(info.rowIndex, "new");
+			if (sNew != "Y") {
+				sInputType = "text";
+				bReadOnly = true;
+			}
+			else {
+				sInputType = "checkbox";
+				bReadOnly = false;
+			}
+			objReturnInfo = {
+				id : "dynamic_" + sInputType + "_" + info.rowIndex + "_" + info.colIndex,
+				inputType : sInputType,
+				options : {
+					readOnly: bReadOnly
+				},
+			};
+			break;
+		default:
+			break;
+	}
+	return objReturnInfo;
+};
+
+scwin.dsMainList_onrowpositionchange = function(info) {
+	const nRow = dsMainList.getRowPosition();
+	dsSubList.clearFilter();
+	dsSubList.setColumnFilter({
+		type: "row",
+		colIndex: "no",
+		key: dsMainList.getCellData(nRow, "no"),
+		condition: "and",
+		exactMatch: true,
+	});
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload" style="height: 100%">
+		<w2:gridView dataList="data:dsMainList" editModeEvent="onclick" focusMode="row" id="grdMain" rowNumHeaderValue="No." rowNumVisible="true" rowStatusHeaderValue="상태" style="height: 200px;" useShiftKey="true" visibleRowNum="3" visibleRowNumFix="true" excludeDeletedRows="true" readOnly="true" syncRowPositionOption="style">
+			<w2:header id="header1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" fixColumnWidth="true" id="column16" inputType="text" value="번호" width="60"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+					<w2:column displayMode="label" fixColumnWidth="true" id="no" inputType="text" width="60"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:gridView dataList="data:dsSubList" editModeEvent="onclick" excludeDeletedRows="true" focusMode="row" id="grdSub" rowNumHeaderValue="No." rowStatusHeaderValue="상태" style="height: 100%;" useShiftKey="true" visibleRowNum="7" visibleRowNumFix="true" useFilterList="true" useFilterListSync="true" readOnlyPriority="column" rowNumVisible="true">
+			<w2:header id="header1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" fixColumnWidth="true" id="column16" inputType="checkbox" width="40"></w2:column>
+					<w2:column width="170" inputType="text" id="column33" value="금액" displayMode="label" fixColumnWidth="true"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+					<w2:column displayMode="label" fixColumnWidth="true" id="chk" inputType="custom" width="40" typeGetter="scwin.fnGetType" dataType="text" readOnly="false"></w2:column>
+					<w2:column width="170" inputType="text" id="amt" displayMode="label" fixColumnWidth="true" textAlign="right" dataType="number" adjustMaxLength="true" maxLength="12" displayFormat="#,###"></w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer id="footer1">
+				<w2:row id="row6">
+					<w2:column colSpan="1" displayMode="label" fixColumnWidth="true" id="column23" inputType="text" rowSpan="" value="합계" width="460"></w2:column>
+					<w2:column width="170" inputType="expression" id="thfqReqAmtSum" displayMode="label" textAlign="right" expression="sum('thfqReqAmt')" displayFormatter="com.formatComma"></w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+	</body>
+</html>

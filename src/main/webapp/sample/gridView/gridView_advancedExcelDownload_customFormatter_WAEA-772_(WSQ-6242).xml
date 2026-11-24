@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1">
+					<w2:columnInfo>
+						<w2:column id="ID"     name="ID"     dataType="text"/>
+						<w2:column id="Name"   name="Name"   dataType="text"/>
+						<w2:column id="Status" name="Status" dataType="text"/>
+						<w2:column id="Amount" name="Amount" dataType="number"/>
+						<w2:column id="Marked" name="Marked" dataType="text"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<script type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	var TOTAL = 500;
+	var statusArr = ["OK", "NG", "HOLD"];
+	var json = [];
+	for (var i = 0; i < TOTAL; i++) {
+		var status = statusArr[i % 3];
+		json.push({
+			ID: "R" + (10000 + i),
+			Name: "사용자_" + (i + 1),
+			Status: status,
+			Amount: (i % 7 === 0) ? 500000 : (1000000 + i * 1000),
+			Marked: "",
+			rowStatus: "R"
+		});
+	}
+	dataList1.setJSON(json);
+};
+
+// Status 컬럼 - 값에 따라 셀 color / backgroundColor 를 설정 (스타일 side effect)
+scwin.statusCustomFormatter = function(data, formattedData, rowIndex, colIndex) {
+	if (data === "NG") {
+		gridView1.setCellColor(rowIndex, "Status", "#ffffff");
+		gridView1.setCellBackgroundColor(rowIndex, "Status", "#e74c3c");
+	} else if (data === "OK") {
+		gridView1.setCellColor(rowIndex, "Status", "#ffffff");
+		gridView1.setCellBackgroundColor(rowIndex, "Status", "#27ae60");
+	} else if (data === "HOLD") {
+		gridView1.setCellColor(rowIndex, "Status", "#000000");
+		gridView1.setCellBackgroundColor(rowIndex, "Status", "#f1c40f");
+	}
+	return formattedData;
+};
+
+// Amount 컬럼 - 100만원 미만은 경고색 (스타일 side effect)
+scwin.amountCustomFormatter = function(data, formattedData, rowIndex, colIndex) {
+	if (Number(data) < 1000000) {
+		gridView1.setCellBackgroundColor(rowIndex, "Amount", "#fdecea");
+		gridView1.setCellColor(rowIndex, "Amount", "#c0392b");
+	}
+	return formattedData;
+};
+
+// Marked 컬럼 - 반환값을 강제로 변경. 원본은 "" 인데 customFormatter 가 호출되면 "[ROW_###]" 문자열이 들어감.
+// 엑셀 파일에서 이 값이 빠져 있는 행 = customFormatter 미호출 행.
+scwin.markedCustomFormatter = function(data, formattedData, rowIndex, colIndex) {
+	var num = (typeof rowIndex === "number" ? rowIndex : 0) + 1;
+	var padded = ("000" + num).slice(-3);
+	return "[ROW_" + padded + "]";
+};
+
+// [버그 재현] type:"0" 단독 다운로드
+//   - type:0 은 _getExcelRealData 경로로 흘러 엑셀 export 중에는 customFormatter 가 호출되지 않음.
+//   - 화면에 이미 렌더된 행은 페이지 로드 당시 setInnerHTML → customFormatter 가 실행되며
+//     cellStyleArr 에 스타일이 기록되어 있어 엑셀에 반영됨.
+//   - virtual scroll 로 아직 한 번도 그려지지 않은 행은 cellStyleArr 이 비어 있어 엑셀에 스타일이 빠짐.
+scwin.trigger_excelType0_onclick = function() {
+	var options = {
+		fileName: "meritz_customFormatter_type0.xlsx",
+		type: "0",
+		useStyle: "true",
+		setFontSize: "true",
+		rowsByN: "10000"
+	};
+	gridView1.advancedExcelDownload(options);
+};
+
+// [비교용] type:"1" 다운로드 (_getExcelDisplayData 경로이므로 전 행 customFormatter 호출됨)
+scwin.trigger_excelType1_onclick = function() {
+	var options = {
+		fileName: "meritz_customFormatter_type1.xlsx",
+		type: "1",
+		useStyle: "true",
+		setFontSize: "true",
+		rowsByN: "10000"
+	};
+	gridView1.advancedExcelDownload(options);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="margin:20px;">
+			<xf:trigger id="trigger1" ev:onclick="scwin.trigger_excelType0_onclick">
+				<xf:label>엑셀 다운로드 (type:0)</xf:label>
+			</xf:trigger>
+			<xf:trigger id="trigger2" ev:onclick="scwin.trigger_excelType1_onclick">
+				<xf:label>엑셀 다운로드 (type:1)</xf:label>
+			</xf:trigger>
+		</xf:group>
+		<w2:gridView id="gridView1" style="width:900px;height:260px;margin:20px;"
+			dataList="data:dataList1" visibleRowNum="10" rowNumVisible="true"
+			defaultCellHeight="22" autoFit="allColumn">
+			<w2:caption id="caption1" value="meritz customFormatter + advancedExcelDownload (virtual scroll) 재현"/>
+			<w2:header id="header1">
+				<w2:row id="hrow1">
+					<w2:column id="h_ID"     width="100" inputType="text" value="ID"       displayMode="label"/>
+					<w2:column id="h_Name"   width="140" inputType="text" value="이름"     displayMode="label"/>
+					<w2:column id="h_Status" width="120" inputType="text" value="상태"     displayMode="label"/>
+					<w2:column id="h_Amount" width="160" inputType="text" value="금액"     displayMode="label"/>
+					<w2:column id="h_Marked" width="160" inputType="text" value="Marked"   displayMode="label"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="brow1">
+					<w2:column id="ID"     width="100" inputType="text" displayMode="label"/>
+					<w2:column id="Name"   width="140" inputType="text" displayMode="label"/>
+					<w2:column id="Status" width="120" inputType="text" displayMode="label"
+						customFormatter="scwin.statusCustomFormatter"/>
+					<w2:column id="Amount" width="160" inputType="text" displayMode="label"
+						displayFormat="#,###" customFormatter="scwin.amountCustomFormatter"/>
+					<w2:column id="Marked" width="160" inputType="text" displayMode="label"
+						customFormatter="scwin.markedCustomFormatter"/>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

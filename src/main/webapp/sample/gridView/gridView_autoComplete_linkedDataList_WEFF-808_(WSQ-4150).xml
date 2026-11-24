@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlPrcCtrtCvrgRt" saveRemovedData="true">
+						<w2:columnInfo>
+								<w2:column id="col1" name="name1" dataType="text"></w2:column>
+								<w2:column id="frtTpCd" name="frtTpCd" dataType="text"></w2:column>
+								<w2:column id="ctrtCgoTpCd" name="ctrtCgoTpCd" dataType="text"></w2:column>
+								<w2:column id="col4" name="name4" dataType="text"></w2:column>
+								<w2:column id="col5" name="name5" dataType="text"></w2:column>
+						</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlGvPrcFrtTpCd" saveRemovedData="true">
+						<w2:columnInfo>
+								<w2:column id="frtTpCd" name="frtTpCd" dataType="text"></w2:column>
+								<w2:column id="frtTpDesc" name="frtTpDesc" dataType="text"></w2:column>
+								<w2:column id="frtTpGrpCd" name="frtTpGrpCd" dataType="text"></w2:column>
+								<w2:column id="ctrtUseFlg" name="ctrtUseFlg" dataType="text"></w2:column>
+						</w2:columnInfo>
+				</w2:dataList>
+				<w2:linkedDataList bind="dlGvPrcFrtTpCd" id="ldlGvPrcFrtTpCd">
+						<w2:condition type="filter"><![CDATA[]]></w2:condition>
+						<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	dlGvPrcFrtTpCd.setJSON([
+		{ "frtTpCd": "20", "frtTpDesc": "20ft Container", "frtTpGrpCd": "E", "ctrtUseFlg": "BB" },
+		{ "frtTpCd": "40", "frtTpDesc": "40ft, 40HC & 45HC Container", "frtTpGrpCd": "E", "ctrtUseFlg": "BB" },
+		{ "frtTpCd": "BL", "frtTpDesc": "B/L", "frtTpGrpCd": "B", "ctrtUseFlg": "Y" },
+		{ "frtTpCd": "BX", "frtTpDesc": "BOX", "frtTpGrpCd": "P", "ctrtUseFlg": "Y" },
+		{ "frtTpCd": "DC20", "frtTpDesc": "20ft Dry Container", "frtTpGrpCd": "E", "ctrtUseFlg": "Y" },
+		{ "frtTpCd": "DC40", "frtTpDesc": "40ft Dry Container", "frtTpGrpCd": "E", "ctrtUseFlg": "Y" },
+		{ "frtTpCd": "DC45", "frtTpDesc": "45ft High Cube Dry Container", "frtTpGrpCd": "E", "ctrtUseFlg": "Y" },
+		{ "frtTpCd": "RF20", "frtTpDesc": "20ft Reefer Container", "frtTpGrpCd": "E", "ctrtUseFlg": "Y" }
+	]);
+	ldlGvPrcFrtTpCd.setCondition("filter", "ctrtUseFlg=='Y' || ctrtUseFlg==ref('dlPrcCtrtCvrgRt.ctrtCgoTpCd')");
+};
+// 행추가 후 그리드 DataList 에 setCellData(결함 재현 동작, 첨부 샘플 주석 부분)
+scwin.trigger1_onclick = function(e) {
+	var idx = dlPrcCtrtCvrgRt.insertRow();
+	dlPrcCtrtCvrgRt.setCellData(idx, "frtTpCd", "DC40");
+};
+scwin.getErrorLog = function() {
+	return WebSquare.logger.getErrorLog();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="gridView1" style="width:800px;height:300px;" defaultCellHeight="20"
+				dataList="data:dlPrcCtrtCvrgRt" autoFit="allColumn">
+				<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+				<w2:header id="header1">
+						<w2:row id="row1">
+								<w2:column width="70" inputType="text" id="column9" value="name1"
+										displayMode="label">
+								</w2:column>
+								<w2:column width="70" inputType="text" id="column7" value="name2"
+										displayMode="label">
+								</w2:column>
+								<w2:column width="70" inputType="text" id="column5" value="name3"
+										displayMode="label">
+								</w2:column>
+								<w2:column width="70" inputType="text" id="column3" value="name4"
+										displayMode="label">
+								</w2:column>
+								<w2:column width="70" inputType="text" id="column1" value="name5"
+										displayMode="label">
+								</w2:column>
+						</w2:row>
+				</w2:header>
+				<w2:gBody id="gBody1">
+						<w2:row id="row2">
+								<w2:column width="70" inputType="text" id="col1"
+										displayMode="label">
+								</w2:column>
+								<w2:column width="70" inputType="autoComplete" id="frtTpCd"
+										displayMode="label">
+										<w2:choices>
+												<w2:gridViewItemset hideHeader="true" nodeset="data:ldlGvPrcFrtTpCd" width="400px"
+														label="frtTpCd" visibleRowNum="10" value="frtTpCd" height="200px">
+														<w2:item ref="frtTpCd" header="Freight Type" style="width:20%;"></w2:item>
+														<w2:item ref="frtTpDesc" header="Freight Type Desc" style="width:80%; text-align:left;"></w2:item>
+												</w2:gridViewItemset>
+										</w2:choices>
+								</w2:column>
+								<w2:column width="70" inputType="text" id="ctrtCgoTpCd"
+										displayMode="label">
+								</w2:column>
+								<w2:column width="70" inputType="text" id="col4"
+										displayMode="label">
+								</w2:column>
+								<w2:column width="70" inputType="text" id="col5"
+										displayMode="label">
+								</w2:column>
+						</w2:row>
+				</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" style="width: 80px;height: 23px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+				<xf:label><![CDATA[행추가]]></xf:label>
+		</xf:trigger>
+	</body>
+</html> 

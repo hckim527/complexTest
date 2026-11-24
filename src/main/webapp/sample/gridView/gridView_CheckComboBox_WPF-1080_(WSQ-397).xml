@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/css/gridView_CheckComboBox_WPF-1080_(WSQ-397)_form.css" type="text/css"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dc_reg" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="SEL" name="SEL" dataType="text"></w2:column>
+						<w2:column id="PROCESS_MAIN_AGNT_CD" name="PROCESS_MAIN_AGNT_CD" dataType="text"></w2:column>
+						<w2:column id="SALES_LV4_MBR_ID" name="SALES_LV4_MBR_ID" dataType="text"></w2:column>
+						<w2:column id="STATUS" name="STATUS" dataType="text" value="R"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dc_agnt" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="MBR_ID" name="MBR_ID" dataType="text"></w2:column>
+						<w2:column id="MBR_NM" name="MBR_NM" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dc_lv4mbr" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="HRCY_LV2_MBR_ID" name="HRCY_LV2_MBR_ID" dataType="text"></w2:column>
+						<w2:column id="MBR_ID" name="MBR_ID" dataType="text"></w2:column>
+						<w2:column id="MBR_NM" name="MBR_NM" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:linkedDataList id="lk_lv4mbr" bind="dc_lv4mbr">
+					<w2:condition type="filter"><![CDATA[HRCY_LV2_MBR_ID==ref('data:dc_reg.PROCESS_MAIN_AGNT_CD')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]></w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+		</xf:model>
+
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+// 컴포넌트·전역 이름 조회(엔진 캐시 → 이름 그대로 실행 → mf_ 접두사 붙여 다시, 없으면 받은 id 문자열 반환). 2026-11
+scwin.__getObj = function(id) {
+	if (typeof id !== 'string') return id;
+	var W = WebSquare, C = W.idCache, U = W.idToUUID, F = function(k) { return new Function('return ' + k)(); };
+	if (!W.strictMode) id = id.replace(/mf_/g, '');
+	if (C[U[id]]) return C[U[id]];
+	var r; try { r = F(id); } catch (e) {}
+	if (r == undefined && W.strictMode) {
+		var P = W.strictModeFrame.id + '_';
+		var s = id.slice(0, 2) === 'G_' ? 'G_' + P + id.slice(2) : (id.slice(0, P.length) !== P ? P + id : id);
+		s = s.replace(new RegExp('(' + P + '){2,}', 'g'), P);
+		if (C[U[s]]) r = C[U[s]]; else { try { r = F(s); } catch (e) { r = id; } }
+	}
+	return r == undefined ? id : r;
+};
+scwin.grdReg_onviewchange = function(info) {
+	if (grdReg.getColumnID(info.colIndex) == "PROCESS_MAIN_AGNT_CD") {
+		if (info.newValue == "ALL" || info.newValue == "") {
+			dc_reg.setCellData(info.rowIndex, "SALES_LV4_MBR_ID", "");
+			grdReg.setDisabled("cell", info.rowIndex, "SALES_LV4_MBR_ID", true);
+			grdReg.setDisabled("cell", info.rowIndex, "PROMO_EVT_STORE_QTY", true);
+		} else {
+			grdReg.setDisabled("cell", info.rowIndex, "SALES_LV4_MBR_ID", false);
+			grdReg.setDisabled("cell", info.rowIndex, "PROMO_EVT_STORE_QTY", false);
+		}
+	}
+};
+scwin.btnInsert_onclick = function(e) {
+	var row = 0;
+	if (dc_reg.getRowCount() >= 0) {
+		row = dc_reg.getRowCount();
+	} else {
+		row = grdReg.getRealRowIndex(grdReg.getFocusedRowIndex()) + 1;
+	}
+	dc_reg.insertRow(row);
+	dc_reg.setCellData(row, "REGIST_BY", obj.userId);
+	dc_reg.setCellData(row, "REGIST_NM", obj.userNm);
+	dc_reg.setCellData(row, "STATUS", "C");
+	scwin.cellReadOnly(row);
+};
+scwin.cellReadOnly = function(row) {
+	grdReg.setDisabled("cell", row, "PROCESS_MAIN_AGNT_CD", false);
+};
+scwin.__numRowAdded = function(num) {
+	var tr = ((j) => j.length ? j : $('#mf_grdReg_body_tbody tr'))($('#grdReg_body_tbody tr')).not(".w2grid_hidedRow");
+	return tr.length == num;
+}
+scwin.__selectedVal = function(id, val) {
+	return scwin.__getDom(id).innerText == val;
+}
+scwin.__triggerDbclick = function(id) {
+	var node = scwin.__getDom($p.id + id);
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+scwin.setVal = function() {
+	scwin.__getObj('grdReg_cell_0_1').click();
+}
+scwin.setVal2 = function() {
+	return scwin.__numRowAdded(2) == true;
+}
+scwin.setVal3 = function() {
+	return scwin.__selectedVal('grdReg_cell_0_1', 'KA사업');
+}
+scwin.setVal4 = function() {
+	scwin.__triggerDbclick('grdReg_cell_0_2');
+}
+scwin.setVal5 = function() {
+	return scwin.__selectedVal('grdReg_cell_0_2', 'Hyper/SSM팀');
+}
+scwin.setVal6 = function() {
+	return scwin.__selectedVal('grdReg_cell_0_1', '수도권남부SU');
+}
+scwin.setVal7 = function() {
+	scwin.__triggerDbclick('grdReg_cell_0_2');
+}
+scwin.setVal8 = function() {
+	return scwin.__selectedVal('grdReg_cell_0_2', '강서SO');
+}
+scwin.onpageload = function() {
+	window.obj = new Object();
+	obj.userId = "";
+	obj.userNm = "";
+	dc_agnt.setJSON([{
+		"MBR_ID": "ALL",
+		"MBR_NM": "본사(전점포)",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S1500",
+		"MBR_NM": "KA사업",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S1100",
+		"MBR_NM": "수도권남부SU",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S1200",
+		"MBR_NM": "수도권북부SU",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S1300",
+		"MBR_NM": "서부SU ",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S1400",
+		"MBR_NM": "영남SU ",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S1600",
+		"MBR_NM": "특수채널사업부",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S2100",
+		"MBR_NM": "치즈사업부",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S2200",
+		"MBR_NM": "상하목장사업부",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S2300",
+		"MBR_NM": "페레로사업부",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S3100",
+		"MBR_NM": "수도권남부MC",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S3200",
+		"MBR_NM": "수도권북부MC",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S3300",
+		"MBR_NM": "서부MC",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S3400",
+		"MBR_NM": "영남MC",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S3500",
+		"MBR_NM": "영양식사업",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S4100",
+		"MBR_NM": "FS사업",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S5100",
+		"MBR_NM": "해외사업",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "S6100",
+		"MBR_NM": "기타",
+		"rowStatus": "R"
+	},
+	{
+		"MBR_ID": "ZZZZZZ",
+		"MBR_NM": "기타_사업부",
+		"rowStatus": "R"
+	}]);
+
+	dc_lv4mbr.setJSON([
+		{
+			"HRCY_LV2_MBR_ID": "S1100",
+			"MBR_ID": "103",
+			"MBR_NM": "강남SO",
+			"rowStatus": "R"
+		},
+		{
+			"HRCY_LV2_MBR_ID": "S1100",
+			"MBR_ID": "104",
+			"MBR_NM": "강서SO",
+			"rowStatus": "R"
+		},
+		{
+			"HRCY_LV2_MBR_ID": "S1100",
+			"MBR_ID": "106",
+			"MBR_NM": "수원SO",
+			"rowStatus": "R"
+		},
+		{
+			"HRCY_LV2_MBR_ID": "S1100",
+			"MBR_ID": "130",
+			"MBR_NM": "수도권남부KA팀",
+			"rowStatus": "R"
+		},
+		{
+			"HRCY_LV2_MBR_ID": "S1500",
+			"MBR_ID": "204",
+			"MBR_NM": "Hyper/SSM팀",
+			"rowStatus": "R"
+		},
+		{
+			"HRCY_LV2_MBR_ID": "S1500",
+			"MBR_ID": "203",
+			"MBR_NM": "CVS/DEP팀",
+			"rowStatus": "R"
+		}
+	]);
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+	<xf:group id="wrap">
+		<xf:group id="" style="height: calc(100% - 33px);">
+				<xf:group id="" class="">
+					<xf:group id="" class="adminSearchBlock clearfix SearchBlock01">
+						<xf:group id="" class="adminSearch">
+							<xf:trigger type="button" id="btnInsert" class="btnInsert" ev:onclick="scwin.btnInsert_onclick">
+								<xf:label>행추가</xf:label>
+							</xf:trigger>
+						</xf:group>
+					</xf:group>
+				</xf:group>
+				<xf:group id="" class="gridViewWrap">
+	   				<w2:gridView id="grdReg" dataList="dc_reg" style="position:relative;height:500px;" class="planGrid"
+						fixedColumnWithHidden="true" showMessageOnPaste="true"
+						oddEvenColorDisplay="false" tooltipDisplay="true"
+						disabledBackgroundColor="#f4f4f6"
+						useShiftKey="true"
+						dataDragSelect="true"
+						unformatOnPaste="true"
+						ev:onviewchange="scwin.grdReg_onviewchange"
+						plainText="true" backgroundColorMode="always"
+						>
+						<w2:header id="">
+							<w2:row id="">
+								<w2:column id="igh001" style="height:20px;" inputType="text" value="선택" width="70px" rowSpan="2"></w2:column>
+								<w2:column id="igh006" style="height:20px;" inputType="text" value="&lt;font style='vertical-align:middle;' size='5' color='#cc0000'&gt;*&lt;/font&gt;결산 처리 유형" colSpan="2"></w2:column>
+							</w2:row>
+							<w2:row id="">
+								<w2:column id="igh030" style="height:20px;" inputType="text" value="&lt;font style='vertical-align:middle;' size='5' color='#cc0000'&gt;*&lt;/font&gt;처리주체" width="150px"></w2:column>
+								<w2:column id="igh031" style="height:20px;" inputType="text" value="SO/KA 팀" width="150px"></w2:column>
+							</w2:row>
+						</w2:header>
+						<w2:gBody id="">
+							<w2:row id="">
+								<w2:column id="SEL" textAlign="center" style="height:20px;" inputType="checkbox" importFormatter="setUserExp" valueType="other" trueValue="Y" falseValue="N"></w2:column>
+								<w2:column id="PROCESS_MAIN_AGNT_CD" disabled="true" dataType="own" inputType="select" chooseOption="true" chooseOptionLabel="선택">
+									<w2:choices>
+										<w2:itemset nodeset="data:dc_agnt">
+											<w2:label ref="MBR_NM"></w2:label>
+											<w2:value ref="MBR_ID"></w2:value>
+										</w2:itemset>
+									</w2:choices>
+								</w2:column>
+								<w2:column id="SALES_LV4_MBR_ID" disabled="true" displayMode="label" separator="," inputType="checkcombobox">
+									<w2:choices>
+										<w2:itemset nodeset="data:lk_lv4mbr">
+											<w2:label ref="MBR_NM"></w2:label>
+											<w2:value ref="MBR_ID"></w2:value>
+										</w2:itemset>
+									</w2:choices>
+								</w2:column>
+							</w2:row>
+						</w2:gBody>
+					</w2:gridView>
+				</xf:group>
+			</xf:group>
+	</xf:group>
+	</body>
+</html>

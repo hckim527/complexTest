@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dlt_select" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="code" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="sel_sample" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+    var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+    var r = d(id); if (r) return r;
+    var s = dd(P + id); r = d(s); if (r) return r;
+    var g = s.indexOf('G_');
+    if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+    return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
+	// 값 변경 시 col2의 inputType을 동적으로 변경한다.
+	var gvItem = function() { return [{ ref: "label", header: "LABEL" }, { ref: "value", header: "VALUE" }, { ref: "col3", header: "COL3" }]; };
+	scwin.inputTypeCustomObj = {
+		calendar: { inputType: "calendar" },
+		radio: { inputType: "radio" },
+		checkbox: { inputType: "checkbox" },
+		input: { inputType: "text" },
+		select: {
+			inputType: "select",
+			options: { viewType: "default" },
+			itemSet: { nodeset: "data:sel_sample", label: "col1", value: "col2" }
+		},
+		autoComplete: {
+			inputType: "autoComplete",
+			options: { viewType: "default" },
+			itemSet: { nodeset: "data:sel_sample", label: "col1", value: "col2" }
+		},
+		select_gridViewItemset: {
+			inputType: "select",
+			nodeset: "data:dataList2",
+			label: "label",
+			value: "value",
+			item: gvItem(),
+			itemTableType: "gridViewItemset",
+			width: "330",
+			visibleRowNum: "3",
+			rowNumVisible: "true",
+			hideHeader: "true"
+		},
+		autoComplete_gridViewItemset: {
+			inputType: "autoComplete",
+			nodeset: "data:dataList2",
+			label: "label",
+			value: "value",
+			item: gvItem(),
+			itemTableType: "gridViewItemset",
+			width: "330",
+			visibleRowNum: "3",
+			rowNumVisible: "true",
+			hideHeader: "true"
+		},
+		checkcombobox_gridViewItemset: {
+			inputType: "checkcombobox",
+			nodeset: "data:dataList2",
+			label: "label",
+			value: "value",
+			item: [{ inputType: "checkbox", ref: "col3", header: "COL3" }, { ref: "label", header: "LABEL" }, { ref: "value", header: "VALUE" }],
+			itemTableType: "gridViewItemset",
+			width: "170",
+			visibleRowNum: "3",
+			rowNumVisible: "true",
+			checkColumn: "0"
+		}
+	};
+	scwin.init();
+};
+scwin.init = function() {
+	var types = ["select_gridViewItemset", "autoComplete_gridViewItemset", "checkcombobox_gridViewItemset", "autoComplete", "input", "calendar", "checkbox", "select", "radio"];
+	dlt_select.setJSON(types.map(function(t) { return { "label": t, "code": t }; }));
+	sel_sample.setJSON([
+		{ "col1": "축구", "col2": "1" },
+		{ "col1": "농구", "col2": "2" },
+		{ "col1": "야구", "col2": "3" },
+		{ "col1": "배구", "col2": "4" }
+	]);
+	var arr = [];
+	for (var i = 0; i < 5; i++) {
+		arr.push(new Array);
+	}
+	dataList1.setJSON(arr);
+	var dl_json = [];
+	for (var j = 1; j <= 5; j++) {
+		dl_json.push({ "label": "라벨" + j, "value": "값" + j, "col3": "" });
+	}
+	dataList2.setJSON(dl_json);
+};
+scwin.grd_onviewchange = function(info) {
+	var inputType = info.newValue;
+	var obj = scwin.inputTypeCustomObj[inputType];
+	if (obj) {
+		grd.setCellInputType(info.rowIndex, "col2", obj);
+	}
+};
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dataList1" defaultCellHeight="" setCellInputTypeCustom="true"
+			id="grd" style="width: 500px;height: 150px;"
+			useShiftKey="true" ev:onviewchange="scwin.grd_onviewchange">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column5" inputType="text" width="70" value="name1" displayMode="label"></w2:column>
+					<w2:column id="column3" inputType="text" width="70" value="name2" displayMode="label"></w2:column>
+					<w2:column id="column1" width="70" inputType="text" value="name3" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="col1" inputType="select" width="70" displayMode="label">
+						<w2:choices>
+							<w2:itemset nodeset="data:dlt_select">
+								<w2:label ref="label"></w2:label>
+								<w2:value ref="code"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column id="col2" inputType="custom" width="70" displayMode="label"></w2:column>
+					<w2:column id="col3" width="70" inputType="custom" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

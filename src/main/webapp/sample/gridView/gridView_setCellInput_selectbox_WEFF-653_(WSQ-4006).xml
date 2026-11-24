@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlList" saveRemovedData="true" initRowPosition="0">
+					<w2:columnInfo>
+						<w2:column id="col1" name="vvd" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" id="dlCode" repeatNode="map" initRowPosition="">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="code" name="code"></w2:column>
+						<w2:column id="value" name="value" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	dlCode.setJSON([{ "code": "one", "value": "1" }, { "code": "two", "value": "2" }]);
+};
+scwin.btnAddRow_onclick = function() {
+	dlList.insertRow(0);
+	var selInfo = {
+		inputType: "select",
+		options: {
+			selectedData: "true",
+			viewType: "icon",
+			chooseOption: "true",
+			chooseOptionLabel: "- 선택 -"
+		},
+		itemSet: {
+			nodeset: "data:dlCode",
+			label: "code",
+			value: "value"
+		}
+	};
+	gvGridList1.setCellInputType(0, "col1", selInfo);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="wrap" id="">
+			<xf:trigger type="button" style="width: 80px;height: 23px;" id="btnAddRow" ev:onclick="scwin.btnAddRow_onclick">
+				<xf:label><![CDATA[add row]]></xf:label>
+			</xf:trigger>
+			<w2:gridView id="gvGridList1" style="width: 100%;height: 200px;" dataList="data:dlList" autoFit="none" rowStatusVisible="true"
+				class="cm_grid edit"
+				dynamic="true" setCellInputTypeCustom="true">
+				<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+				<w2:header id="header1">
+					<w2:row id="row3">
+						<w2:column width="180" inputType="text" style="height:20px;" id="column10"
+							value="inputType=&quot;custom&quot;&lt;br/&gt;setCellInputType =&gt; selecct&lt;br/&gt;(chooseOption = 'true')" displayMode="label">
+						</w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody style="height:20px" id="gBody1">
+					<w2:row id="row2">
+						<w2:column width="180" inputType="custom" id="col1"
+							displayMode="label" chooseOption="" chooseOptionLabel="">
+						</w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+		</xf:group>
+	</body>
+</html> 

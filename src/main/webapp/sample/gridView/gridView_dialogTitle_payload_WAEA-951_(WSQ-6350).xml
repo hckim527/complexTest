@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="col1" dataType="text"/>
+						<w2:column id="col2" name="col2" dataType="text"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+// core.excelDownload 를 가로채 payload 만 검사(실제 다운로드 없음)
+scwin.TITLE = "NH Gear's <Dialog> & Title\nLine2";
+
+scwin.onpageload = function() {
+	dataList1.setJSON([
+		{ col1: "A001", col2: "NongHyup" },
+		{ col1: "A002", col2: "Gear" }
+	]);
+	scwin.log("WAEA-951 dialogTitle payload 검증");
+};
+
+scwin.log = function(msg) {
+	var t = new Date();
+	var ts = ("0" + t.getHours()).slice(-2) + ":" + ("0" + t.getMinutes()).slice(-2) + ":" + ("0" + t.getSeconds()).slice(-2);
+	txa_log.setValue(txa_log.getValue() + "[" + ts + "] " + msg + "\n");
+};
+scwin.logRaw = function(msg) {
+	txa_log.setValue(txa_log.getValue() + "    " + msg + "\n");
+};
+
+scwin.hasHashkey = function(payload, hashkey) {
+	return new RegExp("hashkey=['\"]" + hashkey + "['\"]").test(String(payload || ""));
+};
+
+scwin.capture = function(fn) {
+	var captured = null;
+	var core = WebSquare.core;
+	var original = core.excelDownload;
+	var hooked = false;
+	core.excelDownload = function(action, data) {
+		hooked = true;
+		captured = (data && typeof data.join === "function") ? data.join("") : String(data || "");
+		return data;
+	};
+	try {
+		fn();
+	} finally {
+		core.excelDownload = original;
+	}
+	return { hooked: hooked, payload: captured };
+};
+
+scwin.report = function(label, payload, expectDialogTitle, hooked) {
+	scwin.log(label);
+	if (hooked === false) {
+		scwin.logRaw("FAIL : core.excelDownload 을 타지 않음.");
+		return;
+	}
+	payload = String(payload || "");
+	scwin.logRaw("payloadLength = " + payload.length);
+	if (payload.length === 0) {
+		return;
+	}
+	scwin.logRaw("hasDialogTitle = " + scwin.hasHashkey(payload, "dialogTitle") + "  (기대: " + expectDialogTitle + ")");
+};
+
+scwin.btn_grid_with_onclick = function() {
+	var r = scwin.capture(function() {
+		gridView1.advancedExcelDownload({
+			fileName: "WAEA_951_dialogTitle.xlsx",
+			extension: "xlsx",
+			showProcess: false,
+			useXHR: "true",
+			dialogTitle: scwin.TITLE
+		});
+	});
+	scwin.report("① GridView advancedExcelDownload + dialogTitle 지정", r.payload, true, r.hooked);
+};
+
+scwin.btn_grid_without_onclick = function() {
+	var r = scwin.capture(function() {
+		gridView1.advancedExcelDownload({
+			fileName: "WAEA_951_no_dialogTitle.xlsx",
+			extension: "xlsx",
+			showProcess: false,
+			useXHR: "true"
+		});
+	});
+	scwin.report("② GridView advancedExcelDownload + dialogTitle 미지정", r.payload, false, r.hooked);
+};
+
+scwin.btn_datalist_onclick = function() {
+	try {
+		var sendArray = WebSquare.util.sendDataList(dataList1, {
+			fileName: "WAEA_951_dataList_dialogTitle.xlsx",
+			sheetName: "sheet1",
+			dialogTitle: scwin.TITLE
+		}, [], "");
+		scwin.report("④ DataList sendDataList + dialogTitle 지정", sendArray.join(""), true, true);
+	} catch (e) {
+		scwin.log("④ DataList sendDataList + dialogTitle 지정");
+		scwin.logRaw("ERROR : " + e.message);
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="padding:8px;">
+			<xf:trigger type="button" id="btn_grid_with" ev:onclick="scwin.btn_grid_with_onclick" style="width:230px;height:28px;margin:2px;">
+				<xf:label><![CDATA[① Grid + dialogTitle 지정]]></xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btn_grid_without" ev:onclick="scwin.btn_grid_without_onclick" style="width:230px;height:28px;margin:2px;">
+				<xf:label><![CDATA[② Grid + 미지정 (하위호환)]]></xf:label>
+			</xf:trigger>
+			<xf:trigger type="button" id="btn_datalist" ev:onclick="scwin.btn_datalist_onclick" style="width:230px;height:28px;margin:2px;">
+				<xf:label><![CDATA[④ DataList sendDataList]]></xf:label>
+			</xf:trigger>
+		</xf:group>
+		<w2:gridView id="gridView1" dataList="data:dataList1" style="width:400px;height:120px;margin:8px;" defaultCellHeight="20">
+			<w2:header id="header1">
+				<w2:row id="hrow1">
+					<w2:column id="hcol1" width="120" value="Code" displayMode="label"/>
+					<w2:column id="hcol2" width="160" value="Name" displayMode="label"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="brow1">
+					<w2:column id="col1" width="120" displayMode="label"/>
+					<w2:column id="col2" width="160" displayMode="label"/>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<w2:textarea id="txa_log" readOnly="true" style="width:760px;height:280px;margin:8px;font-family:monospace;font-size:12px;background:#1e1e1e;color:#0f0;"/>
+	</body>
+</html>

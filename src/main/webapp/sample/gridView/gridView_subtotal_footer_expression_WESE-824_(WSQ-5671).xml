@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+	<w2:type>COMPONENT</w2:type>
+	<w2:buildDate />
+	<w2:MSA />
+	<xf:model>
+		<w2:dataCollection baseNode="map">
+		<w2:dataList baseNode="list" repeatNode="map" id="dlt_survey" saveRemovedData="true">
+			<w2:columnInfo>
+				<w2:column id="rownum" name="순번" dataType="number"></w2:column>
+				<w2:column id="teamName" name="소속" dataType="text"></w2:column>
+				<w2:column id="masterCode" name="마스터코드" dataType="text"></w2:column>
+				<w2:column id="proCount" name="행사수" dataType="number"></w2:column>
+				<w2:column id="resCount" name="출발인원" dataType="number"></w2:column>
+				<w2:column id="answerCount" name="응답인원" dataType="number"></w2:column>
+				<w2:column id="answerSatisfaction" name="상품만족도(1~5)" dataType="number"></w2:column>
+				<w2:column id="answerRecommend" name="상품추천(1~5)" dataType="number"></w2:column>
+				<w2:column id="answerRate" name="응답률" dataType="number"></w2:column>
+				<w2:column id="sumSatisfaction" name="만족도합계(행사단위)" dataType="number"></w2:column>
+				<w2:column id="sumRecommend" name="추천합계(행사단위)" dataType="number"></w2:column>
+			</w2:columnInfo>
+			<w2:data use="true">
+				<w2:row>
+				</w2:row>
+				<w2:row>
+				</w2:row>
+				<w2:row>
+				</w2:row>
+				<w2:row>
+					<answerRate><![CDATA[5]]></answerRate>
+				</w2:row>
+				<w2:row>
+				</w2:row>
+				<w2:row>
+				</w2:row>
+			</w2:data>
+		</w2:dataList>
+		<w2:dataList baseNode="list" repeatNode="map" id="dlt_rawExcel" saveRemovedData="true">
+			<w2:columnInfo>
+				<w2:column id="teamName" name=" 소속" dataType="text"></w2:column>
+				<w2:column id="managerName" name="담당자명" dataType="text"></w2:column>
+				<w2:column id="resCode" name="예약코드" dataType="text"></w2:column>
+				<w2:column id="proCode" name="행사코드" dataType="text"></w2:column>
+				<w2:column id="proName" name="행사명" dataType="text"></w2:column>
+				<w2:column id="depDate" name="출발일" dataType="text"></w2:column>
+				<w2:column id="depTransCode" name=" 출발편항공사코드" dataType="text"></w2:column>
+				<w2:column id="cusName" name="고객명" dataType="text"></w2:column>
+				<w2:column id="gender" name=" 성별" dataType="text"></w2:column>
+				<w2:column id="age" name="만나이" dataType="text"></w2:column>
+				<w2:column id="totalPrice" name=" 판매가" dataType="text"></w2:column>
+				<w2:column id="answerRoom" name=" 숙소점수" dataType="number"></w2:column>
+				<w2:column id="answerCar" name="차량점수" dataType="number"></w2:column>
+				<w2:column id="answerFood" name=" 식사점수" dataType="number"></w2:column>
+				<w2:column id="answerGuide" name="가이드점수" dataType="number"></w2:column>
+				<w2:column id="answerLeader" name=" 인솔자점수" dataType="number"></w2:column>
+				<w2:column id="answerSchedule" name=" 일정점수" dataType="number"></w2:column>
+				<w2:column id="answerShopping" name=" 쇼핑점수" dataType="number"></w2:column>
+				<w2:column id="answerOption" name=" 선택관광점수" dataType="number"></w2:column>
+				<w2:column id="expynY" name=" 유의사항Y" dataType="number"></w2:column>
+				<w2:column id="expynN" name=" 유의사항N" dataType="number"></w2:column>
+				<w2:column id="answerRecommend" name="상품추천점수" dataType="number"></w2:column>
+				<w2:column id="answerSatisfaction" name="상품만족도점수" dataType="number"></w2:column>
+				<w2:column id="detailAvg" name="세부평균" dataType="number"></w2:column>
+				<w2:column id="answerOpinion" name="고객의견" dataType="text"></w2:column>
+			</w2:columnInfo>
+			<w2:data use="true">
+				<w2:row></w2:row>
+				<w2:row></w2:row>
+				<w2:row></w2:row>
+				<w2:row>
+					<answerGuide><![CDATA[5]]></answerGuide>
+				</w2:row>
+				<w2:row></w2:row>
+				<w2:row></w2:row>
+			</w2:data>
+		</w2:dataList>
+		</w2:dataCollection>
+	</xf:model>
+	<w2:layoutInfo />
+	<w2:publicInfo method="" />
+	<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+};
+/**------------------------------------------------------------------
+ * 합계 표기(값이 없을때 0으로 표기)
+ * 초기값 오류 처리를 위해 function 으로 처리한다.
+ * (원본 com.util.isEmpty 공통 모듈 대신 같은 의미의 빈값 확인)
+ */
+scwin.isEmpty = function (v) {
+	return v === undefined || v === null || v === "";
+};
+scwin.userExpZero = function (col1) {
+	if (scwin.isEmpty(col1)) {
+		return 0;
+	} else {
+		return col1;
+	}
+};
+/**------------------------------------------------------------------
+ * 점수 합계 표기
+ */
+scwin.userExpCol = function (col1, col2) {
+	if (scwin.isEmpty(col1) || scwin.isEmpty(col2)) {
+		return 0;
+	} else {
+		return col1/col2;
+	}
+};
+scwin.checkVal1 = function() {
+	return document.getElementsByTagName('nobr')[78].innerText == '5.0%';
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+	<xf:group class="sub_contents" id="">
+		<xf:group class="box list" id="">
+		<xf:group class="gvwbox list view" id="">
+			<w2:gridView autoFit="allColumn" autoFitMinWidth="1240" class="wq_gvw" dataList="data:dlt_survey" defaultCellHeight="50"
+			fixedColumnWithHidden="true" id="grd_survey" keepDefaultColumnWidth="true"
+			readOnly="true" rowStatusHeaderValue="상태" rowStatusWidth="50"
+			selectedCellColor="#f2f8ff" sortable="true" style="height:585px;" useShiftKey="true" showSortableImage="true"
+			sortHeaderDiv="true" showSortableUseFilter="true" sortEvent="onclick" visibleRowNum="10" useFilterList="true">
+			<w2:header id="header1">
+				<w2:row id="row7">
+				<w2:column width="744" inputType="text" id="column56" value="설문 대상 정보" displayMode="label" colSpan="7"
+					rowSpan="" sortable="false">
+				</w2:column>
+				<w2:column width="140" inputType="text" id="column49" value="설문결과" displayMode="label" colSpan="2" rowSpan="" sortable="false">
+				</w2:column>
+				</w2:row>
+				<w2:row id="row2">
+				<w2:column displayMode="label" id="column16" inputType="text" style="height:44px;width:0em;"
+					value="순번" width="100" sortable="true">
+				</w2:column>
+				<w2:column displayMode="label" id="column11" inputType="text" style="height:44px;" value="소속"
+					width="150" sortable="true">
+				</w2:column>
+				<w2:column displayMode="label" id="column19" inputType="text" style="height:44px;width:30%;"
+					textAlign="center" value="마스터코드" width="100" sortable="true">
+				</w2:column>
+				<w2:column id="column26" inputType="text" style="height:44px;width:30%;" value="행사수" width="100"
+					sortable="true">
+				</w2:column>
+				<w2:column width="100" inputType="text" style="height:44px;" id="column34" value="출발인원" displayMode="label"
+					sortable="true">
+				</w2:column>
+				<w2:column width="100" inputType="text" style="height:44px;" id="column36" value="응답인원" displayMode="label" sortable="true"></w2:column>
+				<w2:column width="100" inputType="text" style="height:44px;" id="column39" value="응답률" displayMode="label" sortable="true"></w2:column>
+				<w2:column width="100" inputType="text" style="height:44px;" id="column42" value="상품 만족도&lt;br/&gt;(5점만점)"
+					displayMode="label" sortable="true">
+				</w2:column>
+				<w2:column width="100" inputType="text" style="height:44px;" id="column45" value="상품 추천&lt;br/&gt;(10점만점)"
+					displayMode="label" sortable="true">
+				</w2:column>
+				</w2:row>
+				<w2:row id="row6">
+				<w2:column width="100" inputType="text" id="column30" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="150" inputType="text" id="column29" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="100" inputType="text" id="column28" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="100" inputType="text" id="column27" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="100" inputType="text" id="column35" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="100" inputType="text" id="column37" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="100" inputType="text" id="column40" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="100" inputType="text" id="column43" displayMode="label" sortable="false"></w2:column>
+				<w2:column width="100" inputType="text" id="column46" displayMode="label" sortable="false"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+				<w2:column id="rownum" inputType="text" width="100"></w2:column>
+				<w2:column id="teamName" inputType="text" width="100"></w2:column>
+				<w2:column id="masterCode" inputType="link" width="100"></w2:column>
+				<w2:column id="proCount" inputType="text" width="100" displayFormat="###,###,###,###"></w2:column>
+				<w2:column width="100" inputType="text" id="resCount" displayMode="label" displayFormat="###,###,###,###"></w2:column>
+				<w2:column width="100" inputType="text" id="answerCount" displayMode="label" displayFormat="###,###,###,###"></w2:column>
+				<w2:column width="100" inputType="text" id="answerRate" displayMode="label" displayFormat="0.0%" dataType="number"></w2:column>
+				<w2:column width="100" inputType="text" id="answerSatisfaction" displayMode="label" displayFormat="0.0" dataType="float"></w2:column>
+				<w2:column width="100" inputType="text" id="answerRecommend" displayMode="label" displayFormat="0.0" dataType="float"></w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:subTotal targetColumnID="teamName" id="subTotal1">
+				<w2:row id="row8">
+				<w2:column width="350" inputType="text" id="column65" value="소계" displayMode="label" colSpan="3"
+					rowSpan="">
+				</w2:column>
+				<w2:column width="100" inputType="expression" id="column62" displayMode="label" expression="sum('proCount')" displayFormat="###,###,###,###" dataType="float"></w2:column>
+				<w2:column width="100" inputType="expression" id="column61" displayMode="label" expression="sum('resCount')" dataType="number" displayFormat="###,###,###,###"></w2:column>
+				<w2:column width="100" inputType="expression" id="column60" displayMode="label" expression="sum('answerCount')" dataType="number" displayFormat="###,###,###,###"></w2:column>
+				<w2:column width="100" inputType="expression" id="column59" displayMode="label" expression="avg('answerRate')" displayFormat="0.0%" dataType="number"></w2:column>
+				<w2:column width="100" inputType="expression" id="column58" displayMode="label" expression="sum('sumSatisfaction')/sum('answerCount')" dataType="float" displayFormat="0.0"></w2:column>
+				<w2:column width="100" inputType="expression" id="column57" displayMode="label" expression="sum('sumRecommend')/sum('answerCount')" dataType="float" displayFormat="0.0"></w2:column>
+				</w2:row>
+			</w2:subTotal>
+			<w2:footer id="footer2">
+				<w2:row id="row9">
+				<w2:column width="350" inputType="text" id="column69" value="계" displayMode="label" colSpan="3" rowSpan="">
+				</w2:column>
+				<w2:column width="100" inputType="expression" id="column63" displayMode="label" expression="sum('proCount')" dataType="number" displayFormat="###,###,###,###"></w2:column>
+				<w2:column width="100" inputType="expression" id="column64" displayMode="label" expression="sum('resCount')" dataType="number" displayFormat="###,###,###,###"></w2:column>
+				<w2:column width="100" inputType="expression" id="column65" displayMode="label" expression="sum('answerCount')" displayFormat="###,###,###,###" dataType="number"></w2:column>
+				<w2:column width="100" inputType="expression" id="column66" displayMode="label" expression="scwin.userExpZero(avg('answerRate'))" displayFormat="0.0%" dataType="float" defaultValue="0"></w2:column>
+				<w2:column width="100" inputType="expression" id="column67" displayMode="label" expression="scwin.userExpCol(sum('sumSatisfaction'), sum('answerCount'))" dataType="float" displayFormat="0.0"></w2:column>
+				<w2:column width="100" inputType="expression" id="column68" displayMode="label" expression="scwin.userExpCol(sum('sumRecommend'), sum('answerCount'))" dataType="float" displayFormat="0.0"></w2:column>
+				</w2:row>
+			</w2:footer>
+			</w2:gridView>
+		</xf:group>
+		<xf:group class="gvwbox list view" id="" style="display:block;">
+			<w2:gridView autoFit="allColumn" autoFitMinWidth="1240" class="wq_gvw" dataList="data:dlt_rawExcel" defaultCellHeight="50"
+			fixedColumnWithHidden="true" id="grd_rawExcel" keepDefaultColumnWidth="true"
+			readOnly="true" rowStatusHeaderValue="상태" rowStatusWidth="50"
+			selectedCellColor="#f2f8ff" sortable="true" style="height:585px;" useShiftKey="true" showSortableImage="true"
+			sortHeaderDiv="true" showSortableUseFilter="true" sortEvent="onclick"
+			visibleRowNum="10" useFilterList="true">
+			<w2:header id="header1">
+				<w2:row id="row7">
+				<w2:column width="650" inputType="text" id="column56" value="설문 대상 정보" displayMode="label" colSpan="6" rowSpan=""
+					sortable="false">
+				</w2:column>
+				<w2:column hidden="false" width="440" inputType="text" id="column62" value="응답자 정보" displayMode="label"
+					colSpan="5" rowSpan="">
+				</w2:column>
+				<w2:column width="980" inputType="text" id="column100" value="설문 결과" displayMode="label" colSpan="14"
+					rowSpan="">
+				</w2:column>
+				</w2:row>
+				<w2:row id="row2">
+				<w2:column displayMode="label" id="column16" inputType="text" style="height:44px;width:0em;"
+					value="소속" width="50" sortable="true">
+				</w2:column>
+				<w2:column displayMode="label" id="column11" inputType="text" style="height:44px;"
+					value="담당자" width="50" sortable="true">
+				</w2:column>
+				<w2:column displayMode="label" id="column19" inputType="text" style="height:44px;width:30%;"
+					textAlign="center" value="행사명" width="50" sortable="true">
+				</w2:column>
+				<w2:column id="column26" inputType="text" style="height:44px;width:30%;" value="출발일" width="50"
+					sortable="true">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column34" value="행사코드" displayMode="label"
+					sortable="true">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column36" value="항공사" displayMode="label"
+					sortable="true">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column39" value="예약코드" displayMode="label"
+					sortable="true">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column42" value="고객명" displayMode="label"
+					sortable="true">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column45" value="성별" displayMode="label"
+					sortable="true">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column109" value="연령" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column105" value="판매가" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column101" value="상품만족도&lt;br/&gt;(1~5)"
+					displayMode="label">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column97" value="숙소" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column93" value="차량" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column89" value="식사" displayMode="label"></w2:column>
+				<w2:column width="70" inputType="text" style="height:44px;" id="column133" value="가이드" displayMode="label"></w2:column>
+				<w2:column width="70" inputType="text" style="height:44px;" id="column129" value="인솔자" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column85" value="관광&lt;br/&gt;코스" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column81" value="쇼핑" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column77" value="선택관광" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column73" value="세부평균" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column69" value="상품 추천&lt;br/&gt;(1~10)"
+					displayMode="label">
+				</w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column65" value="유의&lt;br/&gt;사항Y" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column125" value="유의&lt;br/&gt;사항N" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" style="height:44px;" id="column121" value="의견" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+				<w2:column id="teamName" inputType="text" width="50"></w2:column>
+				<w2:column id="managerName" inputType="text" width="50"></w2:column>
+				<w2:column id="proName" inputType="text" width="50"></w2:column>
+				<w2:column id="depDate" inputType="text" width="50" ></w2:column>
+				<w2:column width="50" inputType="text" id="proCode" displayMode="label" ></w2:column>
+				<w2:column width="50" inputType="text" id="depTransCode" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" id="resCode" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" id="cusName" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" id="gender" displayMode="label"></w2:column>
+				<w2:column width="50" inputType="text" id="age" displayMode="label"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="totalPrice" displayMode="label"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerSatisfaction" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerRoom" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerCar" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerFood" displayMode="label" excelCellType="number" dataType="number"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerGuide" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerLeader" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerSchedule" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerShopping" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerOption" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="detailAvg" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="answerRecommend" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="expynY" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" displayFormat="###,###,###,###" inputType="text" id="expynN" displayMode="label" excelCellType="text"></w2:column>
+				<w2:column width="50" inputType="text" id="answerOpinion" displayMode="label"></w2:column>
+				</w2:row>
+				</w2:gBody>
+				<w2:subTotal targetColumnID="teamName" id="subTotal1">
+				<w2:row id="row9">
+					<w2:column width="550" inputType="text" style="height:0px;" id="column185" value="소계" displayMode="label" colSpan="11"
+					rowSpan="">
+					</w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column174" displayMode="label" expression="avg('answerSatisfaction')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column173" displayMode="label" expression="avg('answerRoom')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column172" displayMode="label" expression="avg('answerCar')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column171" displayMode="label" expression="avg('answerFood')" dataType="number"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column170" displayMode="label" expression="avg('answerGuide')" dataType="number"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column169" displayMode="label" expression="avg('answerLeader')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column168" displayMode="label" expression="avg('answerSchedule')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column167" displayMode="label" expression="avg('answerShopping')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column166" displayMode="label" expression="avg('answerOption')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column165" displayMode="label" expression="avg('detailAvg')" dataType="float"></w2:column>
+					<w2:column width="50" displayFormat="0.0"  inputType="expression" id="column164" displayMode="label" expression="avg('answerRecommend')" dataType="float"></w2:column>
+					<w2:column width="50" inputType="expression" id="column163" displayMode="label" expression="scwin.userExpZero(sum('expynY'))" displayFormat="###,###,###,###" excelCellType="text"></w2:column>
+					<w2:column width="50" displayFormat="###,###,###,###"  inputType="expression" id="column162" displayMode="label" expression="scwin.userExpZero(sum('expynN'))" excelCellType="text"></w2:column>
+					<w2:column width="50" inputType="text" id="column161" displayMode="label"></w2:column>
+				</w2:row>
+				</w2:subTotal>
+				<w2:footer id="footer2">
+				<w2:row id="row10">
+					<w2:column width="550" inputType="text" id="column189" value="계" displayMode="label" colSpan="11" rowSpan=""></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column188" displayMode="label" dataType="float" expression="avg('answerSatisfaction')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column187" displayMode="label" dataType="float" expression="avg('answerRoom')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column186" displayMode="label" dataType="float" expression="avg('answerCar')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column184" displayMode="label" dataType="float" expression="avg('answerFood')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column183" displayMode="label" dataType="float" expression="avg('answerGuide')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column182" displayMode="label" dataType="float" expression="avg('answerLeader')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column181" displayMode="label" dataType="float" expression="avg('answerSchedule')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column180" displayMode="label" dataType="float" expression="avg('answerShopping')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column179" displayMode="label" dataType="float" expression="avg('answerOption')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column178" displayMode="label" dataType="float" expression="avg('detailAvg')"></w2:column>
+					<w2:column width="50" displayFormat="0.0" inputType="expression" id="column177" displayMode="label" dataType="float" expression="avg('answerRecommend')"></w2:column>
+					<w2:column width="50" displayFormat="###,###,###,###" inputType="expression" id="column176" displayMode="label" dataType="number" expression="sum('expynY')" excelCellType="text"></w2:column>
+					<w2:column width="50" displayFormat="###,###,###,###" inputType="expression" id="column175" displayMode="label" dataType="number" expression="sum('expynN')" excelCellType="text"></w2:column>
+					<w2:column width="50" inputType="text" id="column161" displayMode="label"></w2:column>
+				</w2:row>
+				</w2:footer>
+			</w2:gridView>
+		</xf:group>
+		</xf:group>
+	</xf:group>
+	</body>
+</html>

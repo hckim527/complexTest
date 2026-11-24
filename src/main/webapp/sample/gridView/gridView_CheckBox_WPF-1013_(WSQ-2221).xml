@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.checkLabel = function () {
+	var dataCheckboxLabel = WebSquare.util.getDataPrefix("checkboxLabel");
+	if (scwin.__getDom($p.id+'grid1_column7').textContent == scwin.__getDom($p.id+'grid1_column7').getAttribute(dataCheckboxLabel)) {
+		return true;
+	}
+	return false;
+};
+scwin.onpageload = function() {
+	grid1.setData(["가", 5, "서울", 12,
+		"나", 4, "인천", 34,
+		"다", 8, "대구", 64,
+		"라", 1, "부산", 23
+	]);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:grid baseNode="vector" repeatNode="data/INFO" id="grid1" sortable="true"
+			style="position: absolute ;left:23px;top:18px;width:307px;height:189px">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column7" style="height:20px" inputType="checkbox" width="70" value="name1" checkboxLabel="가나다"></w2:column>
+					<w2:column id="column5" style="height:20px" inputType="checkbox" width="70" value="name2" checkboxLabel="숫자"></w2:column>
+					<w2:column id="column3" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column1" style="height:20px" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="column8" style="height:20px" inputType="checkbox" width="70"></w2:column>
+					<w2:column id="column6" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column4" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column2" style="height:20px" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:grid>
+	</body>
+</html>
+ 

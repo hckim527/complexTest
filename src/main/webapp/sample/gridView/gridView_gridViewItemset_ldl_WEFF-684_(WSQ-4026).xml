@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlGrid" saveRemovedData="true" initRowPosition="">
+					<w2:columnInfo>
+						<w2:column id="lv1" name="lv1" dataType="text"></w2:column>
+						<w2:column id="lv2" name="lv2" dataType="text"></w2:column>
+						<w2:column id="lv2_2" name="lv2_2" dataType="text"></w2:column>
+						<w2:column id="lv2_3" name="lv2_3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList baseNode="list" id="dlCode" repeatNode="map" initRowPosition="">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="lv1" name="lv1"></w2:column>
+						<w2:column dataType="text" id="lv2" name="lv2"></w2:column>
+						<w2:column dataType="text" id="label" name="label"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:linkedDataList bind="dlCode" id="ldlCode">
+					<w2:condition type="filter"><![CDATA[lv1==ref('dlGrid.lv1')]]></w2:condition>
+					<w2:condition type="sort"><![CDATA[]]>
+					</w2:condition>
+				</w2:linkedDataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
+	scwin.dlGridData = [{
+			"lv1": "1",
+		},
+		{
+			"lv1": "2",
+		}
+	];
+	scwin.dlCodeData = [{
+			"lv1": "1",
+			"lv2": "1-1",
+			"label": "일-일"
+		},
+		{
+			"lv1": "1",
+			"lv2": "1-2",
+			"label": "일-이"
+		},
+		{
+			"lv1": "1",
+			"lv2": "1-3",
+			"label": "일-삼"
+		},
+		{
+			"lv1": "2",
+			"lv2": "2-1",
+			"label": "이-일"
+		},
+		{
+			"lv1": "2",
+			"lv2": "2-2",
+			"label": "이-이"
+		},
+		{
+			"lv1": "2",
+			"lv2": "2-3",
+			"label": "이-삼"
+		},
+		{
+			"lv1": "3",
+			"lv2": "3-1",
+			"label": "삼-일"
+		},
+		{
+			"lv1": "3",
+			"lv2": "3-2",
+			"label": "삼-이"
+		},
+		{
+			"lv1": "3",
+			"lv2": "3-3",
+			"label": "삼-삼"
+		}
+	];
+	dlCode.setJSON(scwin.dlCodeData);
+	dlGrid.setJSON(scwin.dlGridData);
+};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+}
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group class="wrap" id="">
+			<w2:gridView id="gvGridList1" style="width: 100%;height: 200px;" dataList="data:dlGrid" autoFit="none" rowStatusVisible="true" class="cm_grid edit" setCellInputTypeCustom="true" dynamic="true">
+				<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+				<w2:header id="header1">
+					<w2:row id="row3">
+						<w2:column removeBorderStyle="false" width="150" inputType="text" style="height:20px;" id="column1" value="lv1" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="200" inputType="text" style="height:20px;" id="column2" value="lv2&lt;br/&gt;(selectBox &gt; itmeSet)" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="200" inputType="text" style="height:20px;" id="column4" value="lv2&lt;br/&gt;(selectBox &gt; gridViewItmeSet)" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="200" inputType="text" style="height:20px;" id="column6" value="lv2&lt;br/&gt;(autoComplete &gt; gridViewItmeSet)" displayMode="label"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody style="height:20px" id="gBody1">
+					<w2:row id="row2">
+						<w2:column removeBorderStyle="false" width="150" inputType="text" id="lv1" displayMode="label"></w2:column>
+						<w2:column removeBorderStyle="false" width="150" inputType="select" id="lv2" displayMode="label" allOption="" chooseOption="true" ref="" chooseOptionLabel="- 선택 -">
+							<w2:choices>
+								<w2:itemset nodeset="data:ldlCode">
+									<w2:label ref="lv2"></w2:label>
+									<w2:value ref="lv2"></w2:value>
+								</w2:itemset>
+							</w2:choices></w2:column>
+						<w2:column removeBorderStyle="false" width="150" inputType="select" id="lv2_2" displayMode="label" chooseOption="true" chooseOptionLabel="- 선택 -">
+							<w2:choices>
+								<w2:gridViewItemset hideHeader="" rowNumVisible="" nodeset="data:ldlCode" selectedRowColor="" label="lv2" rowStatusVislble="" rowMouseOver="" width="300px;" visibleRowNum="" autoFit="" value="lv2" rowMouseOverColor="" height="200px;">
+									<w2:item ref="lv1" hidden="" header="lv1" headerStyle=""></w2:item>
+									<w2:item ref="lv2" hidden="" header="lv2" headerStyle=""></w2:item>
+									<w2:item ref="label" hidden="" header="label" headerStyle=""></w2:item>
+								</w2:gridViewItemset>
+							</w2:choices></w2:column>
+						<w2:column removeBorderStyle="false" width="200" inputType="autoComplete" id="lv2_3" displayMode="label" chooseOptionLabel="- 선택 -" chooseOption="true">
+							<w2:choices>
+								<w2:gridViewItemset hideHeader="" rowNumVisible="" nodeset="data:ldlCode" selectedRowColor="" label="lv2" rowStatusVislble="" rowMouseOver="" width="300" visibleRowNum="" value="lv2" rowMouseOverColor="" height="200">
+									<w2:item ref="lv1" hidden="" header="lv1" headerStyle=""></w2:item>
+									<w2:item ref="lv2" hidden="" header="lv2" headerStyle=""></w2:item>
+									<w2:item ref="label" hidden="" header="label" headerStyle=""></w2:item>
+								</w2:gridViewItemset>
+							</w2:choices></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+		</xf:group>
+	</body>
+</html>

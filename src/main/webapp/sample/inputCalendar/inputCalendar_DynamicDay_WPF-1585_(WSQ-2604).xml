@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// jQuery 조회 순서(받은 선택자 → 없으면 mf_ 접두사). 2026-11
+scwin.__getJq = function(q) {
+	var j = $(q); if (j.length) return j;
+	var P = 'mf_', t = q.trim(), r = t.slice(1);
+	if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+	return $(t.slice(0, 1) + r);
+};
+scwin.onpageload = function() {
+	window.showAlertCal13 = false;
+};
+scwin.inputCalendar13_ondateselect = function(dateStr, dateObj) {
+	if (dateStr) {
+		inputCalendar13.disableBeforeDate(dateStr);
+	}
+};
+scwin.inputCalendar14_ondateselect = function(dateStr, dateObj) {
+	if (dateStr) {
+		inputCalendar14.disableAfterDate(dateStr);
+	}
+};
+scwin.trigger1_onclick = function(e) {
+	inputCalendar13.enableAllDate();
+	showAlertCal13 = true;
+};
+scwin.__isBeforeDisabled = function() {
+	var count = 0;
+	var el = ((j) => j.length ? j : $('#mf_inputCalendar13_calendar_cell_2_2'))($('#inputCalendar13_calendar_cell_2_2')).prevAll();
+	var length = el.length;
+	el.each(function() {
+		if (scwin.__getJq(this).hasClass("w2calendar_date_disable")) {
+			count++;
+		}
+	});
+	((j) => j.length ? j : $('#mf_inputCalendar13_calendar_cell_2_2'))($('#inputCalendar13_calendar_cell_2_2')).parent().prevAll().each(function() {
+		scwin.__getJq(this).find("td").each(function() {
+			if (scwin.__getJq(this).hasClass("w2calendar_date_disable")) {
+				count++;
+			}
+			length++;
+		});
+	});
+	return length == count;
+};
+scwin.__isAfterDisabled = function() {
+	var count = 0;
+	var el = ((j) => j.length ? j : $('#mf_inputCalendar14_calendar_cell_2_2'))($('#inputCalendar14_calendar_cell_2_2')).nextAll();
+	var length = el.length;
+	el.each(function() {
+		if (scwin.__getJq(this).hasClass("w2calendar_date_disable")) {
+			count++;
+		}
+	});
+	((j) => j.length ? j : $('#mf_inputCalendar14_calendar_cell_2_2'))($('#inputCalendar14_calendar_cell_2_2')).parent().nextAll().each(function() {
+		scwin.__getJq(this).find("td").each(function() {
+			if (scwin.__getJq(this).hasClass("w2calendar_date_disable")) {
+				count++;
+			}
+			length++;
+		});
+	});
+	return length == count;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group id="" style="position:absolute;top:19px;left:26px;width:837px;height:239px;">
+			<xf:group id="" style="position:absolute;top:77px;left:0px;width:818px;height:162px;">
+				<w2:inputCalendar id="inputCalendar13" ev:ondateselect="scwin.inputCalendar13_ondateselect"
+					style="position: absolute;width:369px;height:84px;left:0px;top:78px;">
+				</w2:inputCalendar>
+				<w2:inputCalendar id="inputCalendar14" ev:ondateselect="scwin.inputCalendar14_ondateselect"
+					style="position: absolute;width:369px;height:84px;left:449px;top:78px;">
+				</w2:inputCalendar>
+				<xf:trigger id="trigger1" style="position: absolute;width:280px;height:47px;left:1px;top:0px;font-size:12pt;" ev:onclick="scwin.trigger1_onclick"
+					type="button">
+					<xf:label><![CDATA[inputCalendar13.enableAllDate()]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

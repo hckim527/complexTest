@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_doc" saveRemovedData="true" ev:ondataload="scwin.dlt_ondataload">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text"></w2:column>
+						<w2:column id="atrzDmndYmd" name="atrzDmndYmd" dataType="text"></w2:column>
+						<w2:column id="csNo" name="csNo" dataType="text"></w2:column>
+						<w2:column id="intgDocCdNm" name="intgDocCdNm" dataType="text"></w2:column>
+						<w2:column id="jdcpcOfcwkTaskTypCd" name="jdcpcOfcwkTaskTypCd" dataType="text"></w2:column>
+						<w2:column id="jdbnNm" name="jdbnNm" dataType="text"></w2:column>
+						<w2:column id="ecazDocSrno" name="ecazDocSrno" dataType="text"></w2:column>
+						<w2:column id="lastAtrzStatCdNm" name="lastAtrzStatCdNm" dataType="text"></w2:column>
+						<w2:column id="opinion" name="opinion" dataType="text"></w2:column>
+						<w2:column id="atfl" name="atfl" dataType="text"></w2:column>
+						<w2:column id="atrzRjctCtt" name="atrzRjctCtt" dataType="text"></w2:column>
+						<w2:column id="atrzReqpNm" name="atrzReqpNm" dataType="text"></w2:column>
+						<w2:column id="schdDxdyYmd" name="schdDxdyYmd" dataType="text"></w2:column>
+						<w2:column id="atrzOponCttYn" name="atrzOponCttYn" dataType="text"></w2:column>
+						<w2:column id="ecazAtflYn" name="ecazAtflYn" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	dlt_doc.setJSON([
+		{"ecazDocSrno": "20250002100000186947", "csNo": "20240040000001", "intgDocCdNm": "준비권고(일반)-3", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "제11민사부", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "N", "ecazAtflYn": "Y"},
+		{"ecazDocSrno": "20250002100000186939", "csNo": "20240040000001", "intgDocCdNm": "피항소인용 준비서면 제출 촉구", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "제11민사부", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "N", "ecazAtflYn": "N"},
+		{"ecazDocSrno": "20250002100000186932", "csNo": "20250011000103", "intgDocCdNm": "준비서면 제출 촉구", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "민사1단독", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "N", "ecazAtflYn": "N"},
+		{"ecazDocSrno": "20250002100000186659", "csNo": "20250011000103", "intgDocCdNm": "준비권고(일반)-1", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "민사1단독", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "Y", "ecazAtflYn": "Y"},
+		{"ecazDocSrno": "20250002100000186654", "csNo": "20250011000103", "intgDocCdNm": "준비권고(일반)", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "민사1단독", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "N", "ecazAtflYn": "Y"},
+		{"ecazDocSrno": "20250002100000186649", "csNo": "20250011000103", "intgDocCdNm": "참여관용 촉구서(1심)-2", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "민사1단독", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "N", "ecazAtflYn": "N"},
+		{"ecazDocSrno": "20250002100000186643", "csNo": "20240040000001", "intgDocCdNm": "준비권고(일반)-1", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "제11민사부", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "N", "ecazAtflYn": "Y"},
+		{"ecazDocSrno": "20250002100000186628", "csNo": "20250011000103", "intgDocCdNm": "준비명령(도과기간확인)-6", "jdcpcOfcwkTaskTypCd": "CV", "jdbnNm": "민사1단독", "lastAtrzStatCdNm": "편집중", "atrzOponCttYn": "N", "ecazAtflYn": "Y"}
+	]);
+};
+
+// 의견·첨부 둘 다 Y 가 아니면 opinion Column 을 colSpan 2 로 mergeCell
+scwin.dlt_ondataload = function() {
+	setTimeout(() => {
+		const opinionColumnIndex = grd_doc.getColumnIndex('opinion');
+		$.each(dlt_doc.getAllJSON(), function (index, item) {
+			const atrzOponCttYn = dlt_doc.getCellData(index, "atrzOponCttYn");
+			const ecazAtflYn = dlt_doc.getCellData(index, "ecazAtflYn");
+			if (atrzOponCttYn === "Y" && ecazAtflYn === "Y") {
+				dlt_doc.setCellData(index, "opinion", "/pmb/cm/images/contents/skj_opinion.png");
+				dlt_doc.setCellData(index, "atfl", "/pmb/cm/images/contents/skj_attach.png");
+			} else if (atrzOponCttYn === "Y" && ecazAtflYn !== "Y") {
+				grd_doc.mergeCell({rowIndex: index, colIndex: opinionColumnIndex, colSpan: 2});
+				dlt_doc.setCellData(index, "opinion", "/pmb/cm/images/contents/skj_opinion.png");
+			} else if (atrzOponCttYn !== "Y" && ecazAtflYn === "Y") {
+				grd_doc.mergeCell({rowIndex: index, colIndex: opinionColumnIndex, colSpan: 2});
+				dlt_doc.setCellData(index, "opinion", "/pmb/cm/images/contents/skj_attach.png");
+			} else {
+				grd_doc.mergeCell({rowIndex: index, colIndex: opinionColumnIndex, colSpan: 2});
+				dlt_doc.setCellData(index, "opinion", "");
+				dlt_doc.setCellData(index, "atfl", "");
+			}
+		});
+	}, 0);
+};
+
+scwin.checkVal1 = function() {
+	return document.getElementById('mf_grd_doc_cell_5_8').getAttribute('colspan') == 2;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView
+			keepDefaultColumnWidth="true"
+			useFilterSearch="true" rowNumWidth="50" fixedColumn="2" autoFit="allColumn" id="grd_doc" class="grid"
+			fixedColumnNoMove="false" readOnly="true"
+			sortable="true" overflowY="hidden" tooltipDisplay="false" visibleRowNumFix="false" dataList="data:dlt_doc"
+			columnMove="false"
+			style="height:316px;word-break:keep-all;word-wrap:normal;" useFilterList="true" visibleRowNum=""
+			setCellInputTypeCustom="true">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="30" inputType="checkbox" style="height:36px;" id="col0" displayMode="label"
+						title="전체">
+					</w2:column>
+					<w2:column textAlign="left" width="70" inputType="text" style="height:36px;" id="col2"
+						value="결재요청일" displayMode="label">
+					</w2:column>
+					<w2:column width="120" inputType="text" style="height:36px;" id="col4" value="사건번호"
+						displayMode="label">
+					</w2:column>
+					<w2:column width="150" inputType="text" style="height:36px;" id="col6" value="문서명"
+						displayMode="label">
+					</w2:column>
+					<w2:column width="80" inputType="text" style="height:36px;" id="col3" value="업무"
+						displayMode="label">
+					</w2:column>
+					<w2:column width="75" inputType="text" style="height:36px;" id="col17" value="재판부"
+						displayMode="label">
+					</w2:column>
+					<w2:column width="150" inputType="text" style="height:36px;" id="col8" value="문서일련번호"
+						displayMode="label" hidden="true">
+					</w2:column>
+					<w2:column width="80" inputType="text" style="height:36px;" id="col9" value="서명상태"
+						displayMode="label">
+					</w2:column>
+					<w2:column width="80" inputType="text" style="height:36px;" id="col5" value="의견"
+						displayMode="label" colSpan="2">
+					</w2:column>
+					<w2:column width="150" inputType="text" style="height:36px;" id="col29" value="반려/보류"
+						displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="70" inputType="text" style="height:36px;" id="col7"
+						value="결재요청자" displayMode="label">
+					</w2:column>
+					<w2:column width="60" inputType="text" style="height:36px;" id="col16" value="예정기일"
+						displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="30" inputType="checkbox" style="height:36px;" readOnly="true" id="chk"
+						displayMode="label">
+					</w2:column>
+					<w2:column width="70" inputType="link"
+						style="height:36px;text-decoration:underline;" id="atrzDmndYmd" displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="120" inputType="text"
+						style="height:36px;" id="csNo" displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="150" inputType="custom"
+						style="height:36px;" id="intgDocCdNm" displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="80"
+						hiddenClass="nowrapHeader" inputType="text" style="height:36px;" id="jdcpcOfcwkTaskTypCd"
+						displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="75" hiddenClass="nowrapHeader" inputType="text"
+						style="height:36px;" id="jdbnNm" displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="150" inputType="text" style="height:36px;" id="ecazDocSrno"
+						displayMode="label">
+					</w2:column>
+					<w2:column textAlign="center" width="80" inputType="link" style="height:36px;"
+						id="lastAtrzStatCdNm" displayMode="label">
+					</w2:column>
+					<w2:column width="80" inputType="image" style="height:36px;" id="opinion" displayMode="label">
+					</w2:column>
+					<w2:column width="80" inputType="image" style="height:36px;" id="atfl" displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="100" inputType="link"
+						style="height:36px;text-decoration:underline;" id="atrzRjctCtt" displayMode="label">
+					</w2:column>
+					<w2:column textAlign="left" width="70" inputType="text" style="height:36px;" id="atrzReqpNm"
+						displayMode="label">
+					</w2:column>
+					<w2:column width="60" inputType="text" style="height:36px;" id="schdDxdyYmd" displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

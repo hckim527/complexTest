@@ -377,20 +377,20 @@
 			<w2:workflowCollection></w2:workflowCollection>
 		</xf:model>
 		<script type="text/javascript" lazy="false"><![CDATA[
-scwin.checkVal = function() {
-	return window.getComputedStyle(document.getElementsByClassName('type7 pvtRowLabel')[0]).getPropertyValue('text-Align') == 'left';
-}
 scwin.onpageload2 = function() {
 	dl_resultList.setXML(WebSquare.ModelUtil.findInstanceNode("list"));
-	pivotTable1.setFieldOption([{
-		"id": "ratYear",
-		"sortOrder": "2016년(총괄),2016년02월(A) (누계),2017년02월(B) (누계),증감(B-A)"
-	}]);
-	pivotTable1.setOption({
-		"rows": "tacFicdCode",
-		"cols": "ratYear",
-		"vals": "reduRate,totReduAmt,totRatAmt",
-		"valuesAxis": "col"
+	// pivotTable2(headerTextAlign=center)·pivotTable3(right) 도 같은 구성
+	[pivotTable1, pivotTable2, pivotTable3].forEach(function(p) {
+		p.setFieldOption([{
+			"id": "ratYear",
+			"sortOrder": "2016년(총괄),2016년02월(A) (누계),2017년02월(B) (누계),증감(B-A)"
+		}]);
+		p.setOption({
+			"rows": "tacFicdCode",
+			"cols": "ratYear",
+			"vals": "reduRate,totReduAmt,totRatAmt",
+			"valuesAxis": "col"
+		});
 	});
 }
 ]]></script>
@@ -399,11 +399,39 @@ scwin.onpageload2 = function() {
 		]]></style>
 	</head>
 	<body ev:onpageload="scwin.onpageload2">
-		<xf:group id="group_1" style="position: relative; height:600px;left:-1px;top:106px;">
+		<xf:group id="group_1" style="position: relative; height:320px;">
 			<w2:pivot noResultMessage="데이터가 없습니다." autoFit="allColumn" autoFitMinWidth="50"
 				editablePivotMode="false" id="pivotTable1" dataList="dl_resultList" hiddenHeaderList="hidden,row,col,val"
 				grandTotalName="구분" style="position: relative;height:300px;width:100%;" showZero="true" bodyTextAlign="left"
 				noColumnMove="true" noResultMessageVisible="true" showGrandTotal="true" headerTextAlign="left" textAlign="left" totalTextAlign="left">
+				<w2:fieldInfo>
+					<w2:field id="ratYear" dragToHidden="false" name="해당년도"></w2:field>
+					<w2:field id="tacFicdCode" dragToHidden="false" name="어종"></w2:field>
+					<w2:field id="totRatAmt" dragToHidden="false" name="할당량"></w2:field>
+					<w2:field id="reduRate" dragToHidden="false" name="(%)"></w2:field>
+					<w2:field id="totReduAmt" dragToHidden="false" name="어획량"></w2:field>
+				</w2:fieldInfo>
+			</w2:pivot>
+		</xf:group>
+		<xf:group id="group_2" style="position: relative; height:320px;">
+			<w2:pivot noResultMessage="데이터가 없습니다." autoFit="allColumn" autoFitMinWidth="50"
+				editablePivotMode="false" id="pivotTable2" dataList="dl_resultList" hiddenHeaderList="hidden,row,col,val"
+				grandTotalName="구분" style="position: relative;height:300px;width:100%;" showZero="true" bodyTextAlign="left"
+				noColumnMove="true" noResultMessageVisible="true" showGrandTotal="true" headerTextAlign="center" textAlign="left" totalTextAlign="left">
+				<w2:fieldInfo>
+					<w2:field id="ratYear" dragToHidden="false" name="해당년도"></w2:field>
+					<w2:field id="tacFicdCode" dragToHidden="false" name="어종"></w2:field>
+					<w2:field id="totRatAmt" dragToHidden="false" name="할당량"></w2:field>
+					<w2:field id="reduRate" dragToHidden="false" name="(%)"></w2:field>
+					<w2:field id="totReduAmt" dragToHidden="false" name="어획량"></w2:field>
+				</w2:fieldInfo>
+			</w2:pivot>
+		</xf:group>
+		<xf:group id="group_3" style="position: relative; height:320px;">
+			<w2:pivot noResultMessage="데이터가 없습니다." autoFit="allColumn" autoFitMinWidth="50"
+				editablePivotMode="false" id="pivotTable3" dataList="dl_resultList" hiddenHeaderList="hidden,row,col,val"
+				grandTotalName="구분" style="position: relative;height:300px;width:100%;" showZero="true" bodyTextAlign="left"
+				noColumnMove="true" noResultMessageVisible="true" showGrandTotal="true" headerTextAlign="right" textAlign="left" totalTextAlign="left">
 				<w2:fieldInfo>
 					<w2:field id="ratYear" dragToHidden="false" name="해당년도"></w2:field>
 					<w2:field id="tacFicdCode" dragToHidden="false" name="어종"></w2:field>

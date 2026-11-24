@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_sample" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="type01" name="type01" dataType="text"/>
+						<w2:column id="type02" name="type02" dataType="text"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.jsonData1 = [
+	{ "type01" : "12345678", "type02" : "12345678.12345" },
+	{ "type01" : "12345678", "type02" : "12345678.12" },
+	{ "type01" : "12345678", "type02" : "12345678.123" },
+	{ "type01" : "12345678", "type02" : "12345678.1234" }
+];
+scwin.onpageload = function() {
+	// 컬럼별 euro 포맷: gridView euroMask(#.###,##)와 다른 포맷을 컬럼마다 지정
+	grd_sample.changeCurrency({
+		colID : "type01",
+		type : "euro",
+		format : "#.###,#"
+	});
+	grd_sample.changeCurrency({
+		colID : "type02",
+		type : "euro",
+		delimiter : ".",
+		decimalDelimiter : ",",
+		customModelFormatter : "scwin.inputCustomFormat",
+		customModelUnformatter : "scwin.inputCustomUnFormat",
+		format : "#.###,###"
+	});
+};
+scwin.btn_search_onclick = function() {
+	dlt_sample.setJSON(scwin.jsonData1);
+};
+scwin.inputCustomFormat = function(realData, formattedData) {
+	return realData.replace(",", ".");
+};
+scwin.inputCustomUnFormat = function(realData, formattedData) {
+	return realData.replace(".", ",");
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:anchor id="btn_search" outerDiv="false" ev:onclick="scwin.btn_search_onclick">
+			<xf:label><![CDATA[Search : ]]></xf:label>
+		</w2:anchor>
+		<w2:gridView id="grd_sample" autoFit="allColumn" autoFitMinWidth="800" dataList="data:dlt_sample" defaultCellHeight="24" editModeEvent="ondblclick" keyMoveEditMode="true" rowStatusVisible="true" useShiftKey="true" euroMask="#.###,##" style="width:800px;height: 150px">
+			<w2:header id="header1">
+				<w2:row id="row2">
+					<w2:column displayMode="label" id="column7" inputType="text" style="height:20px;" value="정수" width="90"/>
+					<w2:column displayMode="label" id="column7_" inputType="text" style="height:20px;" value="실수" width="90"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody4">
+				<w2:row id="row5">
+					<w2:column id="type01" displayMode="label" inputType="text" width="90" dataType="number"/>
+					<w2:column id="type02" displayMode="label" inputType="text" width="90" dataType="float"/>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

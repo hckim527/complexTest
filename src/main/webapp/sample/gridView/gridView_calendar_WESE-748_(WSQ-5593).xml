@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="key2" name="name2" dataType="text"></w2:key>
+					</w2:keyInfo>
+				</w2:dataMap>
+				<w2:dataList baseNode="list" repeatNode="map" id="dataList1z" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="날짜" dataType="text"></w2:column>
+						<w2:column id="col2" name="텍스트" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[20230629]]></col1>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[20230630]]></col1>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[20230701]]></col1>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+var com = {};
+
+// 변경사항 1. com.initFrame 함수 수정 : onkeyup 대신 onbeforepaste 이벤트를 사용하도록 수정
+com.initFrame = function($p) {
+	var tmpArr= com.getChildren(WebSquare.getBody(), {includePlugin : "inputCalendar gridView ", recursive:true});
+	tmpArr.forEach(function(obj) {
+		 if(obj.getPluginName()=="inputCalendar"){
+			obj.bind("onbeforepaste", function(data){
+				return com.input_validation(obj, data);  // 처리된 data를  return하면 해당 값이 input에 세팅된다.
+			});
+		} else if(obj.getPluginName()=="gridView"){
+			obj.bind("onbeforepaste", function(info) {
+				var retData = com.gridInput_validation(info.data[0][0]);    // gridView에서의 붙여넣기는 하위호환을 위해 data가 이중 array로 감싸여 있다.
+				if (obj.editedCell) {  // 편집 모드인 경우
+					return retData;   // 마찬가지로 처리된 데이터를 리턴하면 해당 값이 input에 세팅된다.
+				} else {  // 편집 모드가 아닌 경우에 붙여넣기
+					obj.dataList.setCellData(info.rowIndex, info.colIndex, retData);   // 이 경우엔 dataList에 값을 세팅하고 return false를 하여 엔진 처리를 막는다.
+					return false;
+				}
+			});
+		}
+	});
+};
+
+com.getChildren = function(comObj, options) {
+	return WebSquare.util.getChildren(comObj, options);
+};
+
+// inputCalendar 붙여넣기 값 보정 = gridView 와 동일 규칙
+com.input_validation = function(obj, pastedValue) {
+	return com.gridInput_validation(pastedValue);
+};
+
+/**
+ * Grid Calender 이벤트 validation
+ * @param     obj:  그리드 ,eventInfo :{
+						    "rowIndex": 2,
+						    "colIndex": 4,
+						    "colID": "stngRgstYmd",
+						    "oldValue": "ㅇ1",
+						    "newValue": "ㅇ12",
+						    "inputType": "calendar",
+						    "keyCode": 50
+						}
+ */
+com.gridInput_validation = function(elValue) {
+	var value=elValue;
+	//붙여넣기시 월1~9월 0 입력 추가
+	//년월일 체크
+	if(value.length > 8 && /[년|월|일]/.test(value)){
+		var yearIndex = value.indexOf("년");
+		var monthIndex = value.indexOf("월");
+		var dayIndex = value.indexOf("일");
+		var year = "";
+		var month = "";
+		var day = "";
+
+		if(yearIndex == 4){
+			year = value.substring(0,yearIndex);
+		}
+		if(monthIndex == 6 ){
+			month = "0"+value.substring(yearIndex+1,monthIndex);
+		}else if(monthIndex == 7 ){
+			month = value.substring(yearIndex+1,monthIndex);
+		}
+		if(dayIndex == 8 ){
+			day = "0"+value.substring(monthIndex+1,dayIndex);
+		}else if(dayIndex == 9 ){
+			if(monthIndex == 7){
+				day ="0" +value.substring(monthIndex+1,dayIndex);
+			}else{
+				day =value.substring(monthIndex+1,dayIndex);
+			}
+		}else if (dayIndex == 10){
+			day = value.substring(monthIndex+1,dayIndex);
+		}
+
+		value = year+month+day;
+	}
+
+	//yyyy-mm-dd 브라우저 저장형식
+	if(value.length > 8 && /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]])/.test(value)){
+		var year = value.substring(0,4);
+		var month = value.substring(5,7);
+		var day = value.substring(8,10);
+
+		value = year+month+day;
+	}
+
+	var rtn=com.fn_RegTest(value);
+
+	if(rtn==false)
+	{
+		value = value.substring(0,value.length-1);
+	}
+
+	return value;
+};
+
+/**
+ * 년월일 정규식 체크
+ */
+com.fn_RegTest = function(value) {
+	var dateRegex="";
+	var testValue="";
+
+	if(value.length==5){
+		dateRegex = /^[01]$/;
+		testValue=value.substring(value.length - 1);
+	} else if(value.length==6){
+		dateRegex = /^(0[1-9]|1[0-2])$/;
+		testValue=value.substring(4, 6)
+	} else if(value.length==7){
+		dateRegex = /^[0-3]$/;
+		testValue=value.substring(6, 7)
+	} else if(value.length==8){
+		dateRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
+		testValue=value.substring(6, 8)
+	} else if (value.length > 8){
+		dateRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
+		testValue=value.replace(/[^0-9]/gi,"");
+
+	}
+
+	if (value.length > 4 && !dateRegex.test(testValue)) {
+		return false;
+	} else {
+		return true;
+	}
+};
+
+	scwin.onpageload = function() {
+		com.initFrame($p);
+		dataMap1.setJSON({"key1":"20240101"});  //2019-12-30 09:10
+	};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:inputCalendar calendarValueType="yearMonthDate" renderType="component" id="inputCalendar1"
+			renderDiv="true" style="position: relative;width:260px;height:58px;" focusOnDateSelect="false" footerDiv="false"
+			dateValidCheck="false" ref="data:dataMap1.key1" keepInvalidDate="true" unformatOnPaste="true">
+		</w2:inputCalendar>
+		<w2:gridView defaultCellHeight="20" id="grd1"
+			style="height: 150px;margin-top: 10px" dataList="data:dataList1z" editModeEvent="onclick" keyMoveEditMode="true">
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column width="120" inputType="text" id="column4" value="날짜" displayMode="label"></w2:column>
+					<w2:column width="100" inputType="text" id="column3" value="텍스트" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column width="120" inputType="calendar" id="col1" displayMode="label" dataType="date"
+						viewTypeIconImage="true" viewType="icon" dateValidSet="true" dateValidCheck="true" validCheck="true" displaymessage="true" unformatOnPaste="true"></w2:column>
+					<w2:column width="100" inputType="text" id="col2" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

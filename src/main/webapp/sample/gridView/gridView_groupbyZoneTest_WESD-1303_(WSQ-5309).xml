@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" id="dataList1" repeatNode="map" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column dataType="text" id="col1" name="Continent"></w2:column>
+						<w2:column dataType="text" id="col2" name="Country"></w2:column>
+						<w2:column dataType="text" id="col3" name="Item"></w2:column>
+						<w2:column dataType="number" id="col4" name="Quantity"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+		// 대륙별 3개 나라 × 품목 3개를 2번씩, 전체를 다시 2번 = 108 Row
+		var CONT = [["Asia", ["Korea", "China", "Japan"]], ["Europe", ["Germany", "France", "Denmark"]], ["Americas", ["Canada", "USA", "Mexico"]]];
+		var QTY = { "TV": "823", "Freezer": "288", "Washer": "325" };
+		var json = [];
+		for (var r = 0; r < 2; r++) {
+			CONT.forEach(function(ct) {
+				for (var k = 0; k < 2; k++) {
+					ct[1].forEach(function(c) {
+						["TV", "Freezer", "Washer"].forEach(function(it) {
+							json.push({ "col1": ct[0], "col2": c, "col3": it, "col4": (c == "Korea" || c == "China") ? "400" : QTY[it] });
+						});
+					});
+				}
+			});
+		}
+		dataList1.setJSON(json);
+	};
+	scwin.gridView1_ongroupby = function(options) {
+		options.groupbyHeader = [{ inputType: 'expression', expression: 'toggle() + depthStr() + "    [ " + count() + " Cases ]  "', align: 'left', colSpan:4 }];
+		options.closeGroup = true;
+		options.groupbyFooter = {
+			depth_0 : [ {colSpan:3, value: "(1) Maximum Value", align: "right"}, { inputType: 'expression', expression:'MAX("col4")'} ],
+			depth_1: [ {colSpan:3, value: "(2) Maximum Value", align: "right"}, { inputType: 'expression', expression:'MAX("col4")'} ],
+			depth_2: [ {colSpan:3, value: "(3) Maximum Value", align: "right"}, { inputType: 'expression', expression:'MAX("col4")'} ]
+		};
+		gridView1.groupby(options);
+	};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView groupbyDisplayRowIndex="true" id="gridView1" style="width: 500px;height: 600px;margin: 50px;margin-top: 40px;margin-left: 200px;" checkAllType="false" defaultCellHeight="20" dataList="data:dataList1" autoFit="allColumn" visibleRowNum="15" groupbyZone="true" ev:ongroupby="scwin.gridView1_ongroupby" groupbyZoneMessage="" senseReader="true" focusMove="false" keyMoveEditMode="true" captionTitle="그리드 제목" captionAuto="true" autoResizeEmbeddedInput="true" sortHeaderDiv="true" scrollFocus="true" titleAuto="true" useStartEndDiv="true" useFilterList="true">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="70" inputType="text" style="height:20px" id="column4" value="Continent" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="column3" value="Country" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="column2" value="Item" displayMode="label"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="column1" value="Quantity" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="70" inputType="text" style="height:20px" id="col1" displayMode="label" embeddedInput="true"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="col2" displayMode="label" embeddedInput="true"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="col3" displayMode="label" embeddedInput="true"></w2:column>
+					<w2:column width="70" inputType="text" style="height:20px" id="col4" displayMode="label" embeddedInput="true"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

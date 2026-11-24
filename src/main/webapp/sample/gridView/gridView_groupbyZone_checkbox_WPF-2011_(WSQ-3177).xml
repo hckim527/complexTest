@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" keepFilter="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="분류1" dataType="text"></w2:column>
+						<w2:column id="col2" name="분류2" dataType="text"></w2:column>
+						<w2:column id="col3" name="금액" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	scwin.data4 = [
+		"", "sample1", "1",
+		"", "sample1", "2",
+		"", "sample1", "3",
+		"", "sample1", "4",
+		"", "sample1", "5",
+		"", "sample2", "6",
+		"", "sample2", "7",
+		"", "sample2", "8",
+		"", "sample3", "9",
+		"", "sample3", "10",
+		"", "sample3", "11",
+		"", "sample4", "12",
+		"", "sample5", "13",
+		"", "sample4", "14",
+		"", "sample5", "15",
+		"", "sample5", "16",
+		"", "sample2", "17",
+		"", "sample3", "18",
+		"", "sample1", "19"
+	];
+	dataList1.setData(scwin.data4.slice(0));
+};
+scwin.grid1_ongroupby = function(options) {
+	options.rowNumHeader = {
+		inputType: 'expression',
+		expression: 'toggle() + depthStr() + "    [ " + count() + " 건 ]  "',
+		align: 'left',
+		colSpan: 5
+	};
+	options.rowNumFooter = {
+		colSpan: 3
+	};
+	options.rowStatusFooter = {
+		value: '합계'
+	};
+	options.groupbyFooter = [{
+		inputType: 'expression',
+		expression: 'SUM("col3")'
+	}];
+	this.groupby(options);
+	return true;
+};
+// 화면의 checkbox 중 체크된 개수가 3개인지
+scwin.checkCheckBox = function() {
+	var inputs = document.getElementsByTagName("input");
+	var checked = [];
+	for (var i = 0; i < inputs.length; i++) {
+		if (inputs[i].type == "checkbox" && inputs[i].checked) {
+			checked.push(inputs[i]);
+		}
+	}
+	return checked.length == 3;
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView style="position:relative;width:402px;height:400px;border:1px solid black;" groupbyZone="true" customFilter="true" closeGroup="true" rowNumWidth="" rowStatusWidth="" id="grid1" baseNode="base" repeatNode="repeat" valueNode="value" class="grd_cm resize h_small" focusMode="cell" sortable="true" dataList="dataList1" useFilterList="true" ev:ongroupby="scwin.grid1_ongroupby" groupbyFilterBox="true" customFilterBox="true" fixedColumn="1">
+			<w2:header style="height:20px;" id="header1" width="490">
+				<w2:row>
+					<w2:column inputType="text" valueType="binary" style="height:10px;" id="header2" width="100" value="분류1" useFilter="true"></w2:column>
+					<w2:column inputType="text" valueType="binary" style="height:10px;" id="header3" width="100" value="분류2" useFilter="true"></w2:column>
+					<w2:column inputType="text" valueType="binary" style="height:10px;" id="header4" width="100" value="금액" useFilter="true"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody style="height:20px" id="gBody1" width="490">
+				<w2:row>
+					<w2:column valueType="binary" style="height:10px" width="100" id="col1" dataType="text" inputType="checkbox"></w2:column>
+					<w2:column inputType="text" valueType="binary" style="height:10px" width="100" id="col2"></w2:column>
+					<w2:column inputType="text" dataType="text" valueType="binary" style="height:10px" width="100" id="col3"></w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:footer style="height:20px" id="footer1" width="768">
+				<w2:row>
+					<w2:column inputType="text" valueType="binary" style="height:10px" id="footer1" width="100"></w2:column>
+					<w2:column inputType="text" valueType="binary" style="height:10px" id="footer2" width="100"></w2:column>
+					<w2:column inputType="expression" valueType="binary" expression="SUM('col3')" style="height:10px" id="footer3" width="100"></w2:column>
+				</w2:row>
+			</w2:footer>
+		</w2:gridView>
+	</body>
+</html>

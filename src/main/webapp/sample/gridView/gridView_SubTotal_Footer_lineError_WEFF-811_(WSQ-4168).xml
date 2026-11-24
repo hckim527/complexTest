@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+						<w2:column id="col5" name="name5" dataType="text"></w2:column>
+						<w2:column id="col6" name="name6" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	// col1·col2(0~), col4·col5(100~), col6(200~) 를 묶음 단위 값으로 만들어 colMerge 가 생기게 한다(col3 은 Row 마다 다른 값)
+	scwin.group = 5;
+	var data = [];
+	for (var i = 0; i < 100; i++) {
+		for (var j = 0; j < 6; j++) {
+			if (j === 2) {
+				data.push(i + "_" + j);
+			} else {
+				data.push(Math.floor(j / 2) * 100 + Math.floor(i / (j + scwin.group)));
+			}
+		}
+	}
+	dataList1.setData(data);
+};
+scwin.trigger1_onclick = function() {
+	gridView1.setSubtotalVisible(false);
+};
+scwin.trigger2_onclick = function() {
+	gridView1.setSubtotalVisible(true);
+};
+scwin.checkVal = function() {
+	localStorage.setItem("log", $("#mf_gridView1_body_table").height());
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:textbox id="textbox1" style="position:relative;width:800px;height:30px;font-size:12px;" label="WEFF811 - gridView.setSubtotalVisible(true/false)"/>
+		<w2:textbox id="textbox2" style="position:relative;width:800px;height:30px;font-size:12px;" label="subtotal을 보이거나(true) 감추는 기능에 대한 예제"/>
+		<w2:gridView dataList="data:dataList1" defaultCellHeight="20" id="gridView1"
+			style="position:relative;width:550px;height:400px;" rowNumVisible="true">
+			<w2:caption id="caption2" value="this is a grid caption."></w2:caption>
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column id="column13" inputType="text" width="130"
+						value="클릭(toggle)" displayMode="label">
+					</w2:column>
+					<w2:column id="column11" inputType="text" width="70"
+						displayMode="label">
+					</w2:column>
+					<w2:column id="column9" inputType="text" width="70" value="cellIdx"
+						displayMode="label">
+					</w2:column>
+					<w2:column id="column7" inputType="text" width="70" value="name4"
+						displayMode="label">
+					</w2:column>
+					<w2:column id="column5" inputType="text" width="70" value="name5"
+						displayMode="label">
+					</w2:column>
+					<w2:column id="column3" width="70" inputType="text" value="name6"
+						displayMode="label">
+					</w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column id="col1" inputType="text" width="70"
+						displayMode="label" colMerge="true">
+					</w2:column>
+					<w2:column id="col2" inputType="text" width="70"
+						displayMode="label" colMerge="true">
+					</w2:column>
+					<w2:column id="col3" inputType="text" width="70"
+						displayMode="label" colMerge="true">
+					</w2:column>
+					<w2:column id="col4" inputType="text" width="70"
+						displayMode="label" colMerge="true">
+					</w2:column>
+					<w2:column id="col5" inputType="text" width="70"
+						displayMode="label" colMerge="true">
+					</w2:column>
+					<w2:column id="col6" width="70" inputType="text"
+						displayMode="label" colMerge="true">
+					</w2:column>
+				</w2:row>
+			</w2:gBody>
+			<w2:subTotal id="subTotal1" targetColumnID="col1">
+				<w2:row id="row5">
+					<w2:column id="column20" width="70" inputType="expression"
+						displayMode="label" expression="SUM('col1')">
+					</w2:column>
+					<w2:column id="column19" width="70" inputType="expression"
+						displayMode="label" expression="SUM('col2')">
+					</w2:column>
+					<w2:column id="column18" width="70" inputType="expression"
+						displayMode="label">
+					</w2:column>
+					<w2:column id="column17" width="70" inputType="expression"
+						displayMode="label" expression="SUM('col4')">
+					</w2:column>
+					<w2:column id="column16" width="70" inputType="expression"
+						displayMode="label" expression="SUM('col5')">
+					</w2:column>
+					<w2:column id="column15" width="70" inputType="expression"
+						displayMode="label" expression="SUM('col6')">
+					</w2:column>
+				</w2:row>
+			</w2:subTotal>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="width:300px;height:36px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[setSubtotalVisible(false)]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="width:300px;height:36px;" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[setSubtotalVisible(true)]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

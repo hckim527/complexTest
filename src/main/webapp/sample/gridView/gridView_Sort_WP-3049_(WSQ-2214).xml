@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.createMouseEvent = function(ev, type) {
+	if (ev.initMouseEvent) {
+		if (WebSquare.util.isIE(9) || WebSquare.util.isIE(10)) {
+			if (type.slice(0, 2) != "on") {
+				type = "on" + type;
+			}
+			if (document.createEventObject) {
+				var mouseEvent = document.createEventObject();
+				mouseEvent.button = 0;
+				ev.target.fireEvent(type, mouseEvent);
+			}
+		} else {
+			var mouseEvent = document.createEvent("MouseEvent");
+			if (type.slice(0, 2) == "on") {
+				type = type.slice(2);
+			}
+			mouseEvent.initMouseEvent(type, true, true, window, 0,
+				ev.screenX, ev.screenY, ev.clientX, ev.clientY,
+				ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey,
+				0, null);
+			ev.target.dispatchEvent(mouseEvent);
+		}
+	} else {
+		if (type.slice(0, 2) != "on") {
+			type = "on" + type;
+		}
+		if (document.createEventObject) {
+			var mouseEvent = document.createEventObject();
+			mouseEvent.button = 0;
+			scwin.__getDom($p.id + ev).fireEvent(type, mouseEvent);
+		}
+	}
+}
+scwin.createDblClickEvent = function(ev) {
+	scwin.createMouseEvent(ev, "onmousedown");
+	scwin.createMouseEvent(ev, "onmouseup");
+	scwin.createMouseEvent(ev, "onclick");
+	scwin.createMouseEvent(ev, "onmousedown");
+	scwin.createMouseEvent(ev, "onmouseup");
+	scwin.createMouseEvent(ev, "onclick");
+	scwin.createMouseEvent(ev, "ondblclick");
+}
+scwin.setVal = function() {
+	scwin.createDblClickEvent(evtObj['grid1_column3']);
+}
+scwin.checkVal = function() {
+	return grid1.getCellData(0, 2) == '제주도';
+}
+scwin.initTest = function() {
+	var target = 'grid1_column3';
+	window.evtObj = {};
+	scwin.__getDom($p.id + target).onclick = function(ev) {
+		evtObj[target] = ev;
+	};
+}
+scwin.onpageload = function() {
+	grid1.setData(["가", 5, "서울", 12,
+		"나", 4, "인천", 34,
+		"다", 8, "대구", 64,
+		"라", 1, "부산", 23
+	]);
+	if (typeof scwin.initTest === "function") {
+		scwin.initTest();
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:grid baseNode="vector" repeatNode="data/INFO" id="grid1" sortable="true"
+			style="position: absolute ;left:23px;top:18px;width:307px;height:189px">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column7" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column5" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column3" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column1" style="height:20px" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="column8" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column6" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column4" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="column2" style="height:20px" width="70" inputType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:grid>
+		<xf:trigger type="button" id="trigger1" style="position: absolute ;left:345px;top:29px;width:201px;height:21px">
+			<xf:label>grid1.setCellData(0,2, &quot;제주도&quot;);</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+
+			grid1.setCellData(0,2, "제주도");
+
+			 ]]></script>
+		</xf:trigger>
+	</body>
+</html>
+ 

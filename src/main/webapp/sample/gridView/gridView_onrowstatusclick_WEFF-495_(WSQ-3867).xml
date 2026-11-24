@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlTemplate" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="chk" dataType="text" ignoreStatus="true"></w2:column>
+						<w2:column id="brdId" name="brdId" dataType="text"></w2:column>
+						<w2:column id="prntId" name="prntId" dataType="text"></w2:column>
+						<w2:column id="brdCtnt" name="brdCtnt" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	dlTemplate.setJSON([{ "chk": "", "brdId": "aaa", "prntId": "", "brdCtnt": "" }, { "chk": "", "brdId": "bbb", "prntId": "", "brdCtnt": "" }, { "chk": "", "brdId": "ccc", "prntId": "", "brdCtnt": "" }]);
+};
+scwin.gvTemplate_onrowstatusclick = function(row) {
+	// 0번째 인덱스 removeRow 시 오류발생(WEFF-495)
+	console.log("onrowstatusclick ", row);
+	dlTemplate.removeRow(row);
+};
+scwin.trigger1_onclick = function(e) {
+	dlTemplate.insertRow();
+};
+scwin.checkLog = function() {
+	return WebSquare.logger.getErrorLog();
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView class="cm_grid" id="gvTemplate" rowStatusVisible="true" style="height: 150px;" dataList="data:dlTemplate" ev:onrowstatusclick="scwin.gvTemplate_onrowstatusclick" focusDefaultColumn="true">
+			<w2:caption id="caption1" value="this is a grid caption."></w2:caption>
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column width="30" inputType="checkbox" id="column25" value="chk" fixColumnWidth="true"></w2:column>
+					<w2:column width="70" inputType="text" id="column23" value="brdId" class="req"></w2:column>
+					<w2:column width="70" inputType="text" id="column21" value="prntId"></w2:column>
+					<w2:column width="70" inputType="text" id="column19" value="brdCtnt" class="req"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column width="30" inputType="checkbox" id="chk" fixColumnWidth="true"></w2:column>
+					<w2:column width="70" inputType="text" id="brdId" class="req"></w2:column>
+					<w2:column width="70" inputType="text" id="prntId"></w2:column>
+					<w2:column width="70" inputType="text" id="brdCtnt" class="req"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" style="width:123px;height:64px;" id="trigger1" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[insertRow]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

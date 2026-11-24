@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="region" name="지역" dataType="text"/>
+						<w2:column id="industry" name="업종" dataType="text"/>
+						<w2:column id="amount" name="금액" dataType="text"/>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	dataList1.setJSON([
+		{ region:"서울", industry:"제조",   amount:100 },
+		{ region:"서울", industry:"서비스", amount:30  },
+		{ region:"부산", industry:"제조",   amount:200 },
+		{ region:"부산", industry:"서비스", amount:70  }
+	]);
+};
+
+scwin.downloadObjectForm = function() {
+	gridView1.advancedExcelDownload({
+		fileName: "WAEA_950_headerFooter.xlsx",
+		extension: "xlsx",
+		printSet: {
+			header: { left: "농협은행", center: "월별 실적 집계", right: "대외비" },
+			footer: { center: "출력용 - 재배포 금지" }
+		}
+	});
+};
+
+scwin.downloadStringForm = function() {
+	gridView1.advancedExcelDownload({
+		fileName: "WAEA_950_headerCenter.xlsx",
+		extension: "xlsx",
+		printSet: {
+			header: "월별 실적 집계"
+		}
+	});
+};
+
+scwin.downloadCombined = function() {
+	gridView1.advancedExcelDownload({
+		fileName: "WAEA_950_combined.xlsx",
+		extension: "xlsx",
+		printSet: {
+			fitToPage: "true",
+			landScape: "true",
+			header: { center: "월별 실적 집계" },
+			footer: { right: "대외비" }
+		}
+	});
+};
+
+scwin.downloadDefault = function() {
+	gridView1.advancedExcelDownload({
+		fileName: "WAEA_950_default.xlsx",
+		extension: "xlsx"
+	});
+};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView id="gridView1" dataList="data:dataList1" style="position:relative;width:500px;height:200px;" defaultCellHeight="20" autoFit="allColumn">
+			<w2:header id="header1">
+				<w2:row id="hrow1">
+					<w2:column id="hcol1" width="120" inputType="text" value="지역" displayMode="label"/>
+					<w2:column id="hcol2" width="120" inputType="text" value="업종" displayMode="label"/>
+					<w2:column id="hcol3" width="120" inputType="text" value="금액" displayMode="label"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="brow1">
+					<w2:column id="region" width="120" inputType="text" displayMode="label"/>
+					<w2:column id="industry" width="120" inputType="text" displayMode="label"/>
+					<w2:column id="amount" width="120" inputType="text" displayMode="label"/>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger id="btnObj" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadObjectForm">
+			<xf:label>1) 머리글/바닥글 객체(left/center/right) 지정</xf:label>
+		</xf:trigger>
+		<xf:trigger id="btnStr" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadStringForm">
+			<xf:label>2) 머리글 문자열 지정 (중앙 처리)</xf:label>
+		</xf:trigger>
+		<xf:trigger id="btnCombined" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadCombined">
+			<xf:label>3) fitToPage/landScape 등 기존 옵션과 조합</xf:label>
+		</xf:trigger>
+		<xf:trigger id="btnDefault" type="button" style="width:300px;height:25px;" ev:onclick="scwin.downloadDefault">
+			<xf:label>4) 미지정 (기존 동작 확인)</xf:label>
+		</xf:trigger>
+	</body>
+</html>

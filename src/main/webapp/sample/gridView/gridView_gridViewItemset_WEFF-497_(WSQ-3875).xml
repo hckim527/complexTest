@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dl_combo" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="chk" name="name3" dataType="text"></w2:column>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="value" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거). 2026-11
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.onpageload = function() {
+	dataList1.insertRow();
+	var comboJSON = [{
+		"label": "라벨1",
+		"value": "value1",
+		"chk": "0"
+	}, {
+		"label": "라벨2",
+		"value": "value2",
+		"chk": "1"
+	}, {
+		"label": "라벨3",
+		"value": "value3",
+		"chk": "1"
+	}, {
+		"label": "라벨4",
+		"value": "value4",
+		"chk": "0"
+	}];
+	dl_combo.setJSON(comboJSON);
+};
+scwin.fireDbClick = function(node) {
+	if (document.createEventObject) {
+		node.fireEvent('ondblclick');
+	} else if (document.createEvent) {
+		var evt = document.createEvent('MouseEvents');
+		evt.initEvent('dblclick', true, false);
+		node.dispatchEvent(evt);
+	} else if (typeof node.ondblclick == 'function') {
+		node.ondblclick();
+	}
+}
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+}
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView dataList="data:dataList1" scrollByColumn="false" defaultCellHeight="20" scrollByColumnAdaptive="false" id="gridView1" style="width:799px;height:150px;">
+			<w2:caption id="caption2" value="this is a grid caption."></w2:caption>
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column id="column7" removeBorderStyle="false" inputType="text" width="141" value="selectbox" displayMode="label"></w2:column>
+					<w2:column id="column5" removeBorderStyle="false" inputType="text" width="141" value="autoComplete" displayMode="label"></w2:column>
+					<w2:column id="column3" removeBorderStyle="false" width="141" inputType="text" value="checkcombobox" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column id="col1" removeBorderStyle="false" inputType="select" width="141" displayMode="label">
+						<w2:choices>
+							<w2:gridViewItemset autoFit="allColumn" selectedRowColor="" height="250" visibleRowNum="" rowMouseOver="" rowNumVisible="true" width="400" nodeset="data:dl_combo" value="value" rowMouseOverColor="" label="label" hideHeader="">
+								<w2:item ref="label" hidden="" headerStyle="" header="라벨"></w2:item>
+								<w2:item ref="value" hidden="" headerStyle="" header="값"></w2:item>
+							</w2:gridViewItemset>
+						</w2:choices></w2:column>
+					<w2:column id="col2" removeBorderStyle="false" inputType="autoComplete" width="141" displayMode="label" allOption="" chooseOption="" ref="">
+						<w2:choices>
+							<w2:gridViewItemset autoFit="" selectedRowColor="" height="240" visibleRowNum="" rowMouseOver="" checkColumn="0" width="300" nodeset="data:dl_combo" value="value" rowMouseOverColor="" label="label" hideHeader="" navBtn="true">
+								<w2:item ref="chk" inputType="checkbox" hidden="" headerStyle="" header="체크박스"></w2:item>
+								<w2:item ref="label" hidden="" headerStyle="" header="라벨"></w2:item>
+								<w2:item ref="value" hidden="" headerStyle="" header="값"></w2:item>
+							</w2:gridViewItemset>
+						</w2:choices></w2:column>
+					<w2:column id="col3" removeBorderStyle="false" width="141" inputType="checkcombobox" displayMode="label">
+						<w2:choices>
+							<w2:gridViewItemset autoFit="" selectedRowColor="" height="240" visibleRowNum="" rowMouseOver="" checkColumn="0" width="300" nodeset="data:dl_combo" value="value" rowMouseOverColor="" label="label" hideHeader="" navBtn="true">
+								<w2:item ref="chk" inputType="checkbox" hidden="" headerStyle="" header="체크박스"></w2:item>
+								<w2:item ref="label" hidden="" headerStyle="" header="라벨"></w2:item>
+								<w2:item ref="value" hidden="" headerStyle="" header="값"></w2:item>
+							</w2:gridViewItemset>
+						</w2:choices></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

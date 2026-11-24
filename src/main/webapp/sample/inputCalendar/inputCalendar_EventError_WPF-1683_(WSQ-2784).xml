@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map"></w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 활성화시킬 날짜(Jira 첨부 cal_enable_shb.xml 시나리오)
+scwin.dateEnabled = ["20170608", "20170621", "20170629", "20170713", "20170721"];
+scwin.cur = { y: "2017", m: 7 };
+scwin.log = [];
+scwin.enableDate = function() {
+	var cells = document.querySelectorAll("[id$='inputCal1_calendar'] .w2calendar_col_date");
+	for (var i = 0; i < cells.length; i++) {
+		cells[i].classList.add("date_diabled");
+	}
+	for (var j = 0; j < scwin.dateEnabled.length; j++) {
+		var d = scwin.dateEnabled[j];
+		if (d.substr(0, 4) == scwin.cur.y && Number(d.substr(4, 2)) == Number(scwin.cur.m)) {
+			var t = document.querySelectorAll("[id$='inputCal1_calendar'] .w2calendar_date_" + Number(d.substr(6, 2)));
+			for (var k = 0; k < t.length; k++) {
+				t[k].classList.remove("date_diabled");
+			}
+		}
+	}
+};
+scwin.inputCal1_oniconclick = function(e) {
+	scwin.log.push("oniconclick");
+	setTimeout(scwin.enableDate, 10);
+};
+scwin.inputCal1_onmonthselect = function(info) {
+	scwin.log.push("onmonthselect:" + info.oldValue + ">" + info.newValue);
+	scwin.cur.m = info.newValue;
+	setTimeout(scwin.enableDate, 10);
+};
+scwin.inputCal1_onyearselect = function(info) {
+	scwin.log.push("onyearselect:" + info.oldValue + ">" + info.newValue);
+	scwin.cur.y = String(info.newValue);
+	setTimeout(scwin.enableDate, 10);
+};
+scwin.onpageload = function() {
+	inputCal1.setValue("20170715");
+};
+]]></script>
+		<style type="text/css"><![CDATA[
+.date_diabled {
+	pointer-events: none;
+	cursor: default;
+	opacity: 0.2;
+}
+]]></style>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:inputCalendar renderType="native" id="inputCal1" style="position:absolute;left:20px;top:20px;width:150px;height:23px;"
+			ev:oniconclick="scwin.inputCal1_oniconclick" ev:onmonthselect="scwin.inputCal1_onmonthselect" ev:onyearselect="scwin.inputCal1_onyearselect">
+		</w2:inputCalendar>
+	</body>
+</html>

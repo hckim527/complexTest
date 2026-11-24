@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<w2:MSA/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<!-- DrillDown 계층: depth 1=본부, 2=팀, 3=사원 -->
+				<w2:dataList baseNode="list" id="dlt_bind" repeatNode="map" useStatusValue="true">
+					<w2:columnInfo>
+						<w2:column id="name" name="name" dataType="text"></w2:column>
+						<w2:column id="dept" name="dept" dataType="text"></w2:column>
+						<w2:column id="depth" name="depth" dataType="number"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row><name><![CDATA[영업본부]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[1]]></depth></w2:row>
+						<w2:row><name><![CDATA[  영업1팀]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[2]]></depth></w2:row>
+						<w2:row><name><![CDATA[    김영업]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[3]]></depth></w2:row>
+						<w2:row><name><![CDATA[    이영업]]></name><dept><![CDATA[Sales]]></dept><depth><![CDATA[3]]></depth></w2:row>
+						<w2:row><name><![CDATA[개발본부]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[1]]></depth></w2:row>
+						<w2:row><name><![CDATA[  개발1팀]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[2]]></depth></w2:row>
+						<w2:row><name><![CDATA[    박개발]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[3]]></depth></w2:row>
+						<w2:row><name><![CDATA[    최개발]]></name><dept><![CDATA[Dev]]></dept><depth><![CDATA[3]]></depth></w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+			<w2:workflowCollection/>
+		</xf:model>
+		<w2:layoutInfo/>
+		<w2:publicInfo method=""/>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function () {
+	// DrillDown Drag&Drop 활성화(속성 미제공 → 메소드로만 활성). 동일 그리드 내 이동은 dataDragDropSelf=true.
+	target1.setDrillDownDragDrop(true);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="padding: 10px;" id="grp_root">
+			<w2:gridView id="target1" style="width:520px; height:300px; margin-top:10px; border:1px solid black;" dataList="data:dlt_bind"
+				dataDragDrop="true" dataDragDropSelf="true">
+				<w2:caption id="cap1" value="DrillDown 그리드 (setDrillDownDragDrop true 적용)"></w2:caption>
+				<w2:header id="hdr1">
+					<w2:row id="hrow1">
+						<w2:column width="220" inputType="text" id="hcol1" value="이름(DrillDown)"></w2:column>
+						<w2:column width="120" inputType="text" id="hcol2" value="부서"></w2:column>
+						<w2:column width="*" inputType="text" id="hcol3" value="depth"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody id="gbody1">
+					<w2:row id="brow1">
+						<w2:column width="220" inputType="drilldown" depthColumn="depth" showDepth="1" depthStartIndex="1" id="name" dataList="name"></w2:column>
+						<w2:column width="120" inputType="text" id="dept" dataList="dept"></w2:column>
+						<w2:column width="*" inputType="text" id="depth" dataList="depth"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+		</xf:group>
+	</body>
+</html>

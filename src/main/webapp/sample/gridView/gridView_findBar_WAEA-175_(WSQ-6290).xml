@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+	<xf:model>
+		<w2:dataCollection>
+			<w2:dataList id="dataList1">
+				<w2:columnInfo>
+					<w2:column id="empNo" name="사번" dataType="text"/>
+					<w2:column id="empName" name="이름" dataType="text"/>
+					<w2:column id="dept" name="부서" dataType="text"/>
+					<w2:column id="position" name="직급" dataType="text"/>
+					<w2:column id="email" name="이메일" dataType="text"/>
+					<w2:column id="phone" name="전화번호" dataType="text"/>
+					<w2:column id="salary" name="급여" dataType="number"/>
+				</w2:columnInfo>
+			</w2:dataList>
+		</w2:dataCollection>
+	</xf:model>
+	<script lazy="false" type="text/javascript"><![CDATA[
+	scwin.onpageload = function() {
+		// 200건 테스트 데이터 생성
+		var depts = ["개발팀","기획팀","디자인팀","QA팀","영업팀","인사팀","경영지원팀","마케팅팀"];
+		var positions = ["사원","대리","과장","차장","부장"];
+		var lastNames = ["김","이","박","최","정","강","조","윤","장","임","한","오","서","신","권","황","안","송","전","홍"];
+		var midNames = ["서","민","지","현","승","태","상","동","우","진","경","수","영","혁","광","성","정","하","은","인"];
+		var endNames = ["철","경","정","석","승","태","훈","율","원","준","현","연","도","웅","찬","호","빈","아","솔","림"];
+		var data = [];
+		for (var i = 0; i < 200; i++) {
+			var no = String(i + 1).padStart(3, "0");
+			var name = lastNames[i % 20] + midNames[Math.floor(i / 20) % 20] + endNames[Math.floor(i / 10) % 20];
+			var dept = depts[i % 8];
+			var pos = positions[i % 5];
+			data.push({
+				empNo: "E" + no,
+				empName: name,
+				dept: dept,
+				position: pos,
+				email: name.toLowerCase() + no + "@inswave.com",
+				phone: "010-" + String(1000 + (i * 37) % 9000).padStart(4, "0") + "-" + String(1000 + (i * 53) % 9000).padStart(4, "0"),
+				salary: 3000 + Math.floor(Math.random() * 7000)
+			});
+		}
+		dataList1.setJSON(data);
+	};
+
+	scwin.btn_openFindBar = function() {
+		grd_employee.openFindBar();
+	};
+
+	scwin.btn_openFindBarSplit = function() {
+		grd_employee.openFindBar({
+			splitSearchRowCount: 50,
+			autoSearchDelay: 500
+		});
+	};
+	]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+	<xf:group style="padding:10px;">
+		<xf:group style="margin-bottom:10px;">
+			<w2:anchor id="btn1" ev:onclick="scwin.btn_openFindBar" style="margin-right:6px;padding:4px 12px;"><xf:label>FindBar 열기</xf:label></w2:anchor>
+			<w2:anchor id="btn3" ev:onclick="scwin.btn_openFindBarSplit" style="margin-right:6px;padding:4px 12px;"><xf:label>FindBar 열기 (분할검색)</xf:label></w2:anchor>
+		</xf:group>
+
+		<w2:gridView id="grd_employee" dataList="data:dataList1" style="height:400px;width:100%;" autoFit="allColumn" focusMode="both" findBar="true">
+			<w2:caption id="caption1" value="직원 목록 (200건)"/>
+			<w2:header id="header1">
+				<w2:row id="row_h1">
+					<w2:column id="h_empNo" inputType="text" value="사번" width="70"/>
+					<w2:column id="h_empName" inputType="text" value="이름" width="80"/>
+					<w2:column id="h_dept" inputType="text" value="부서" width="100"/>
+					<w2:column id="h_position" inputType="text" value="직급" width="70"/>
+					<w2:column id="h_email" inputType="text" value="이메일" width="200"/>
+					<w2:column id="h_phone" inputType="text" value="전화번호" width="130"/>
+					<w2:column id="h_salary" inputType="text" value="급여" width="80"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row_b1">
+					<w2:column id="empNo" inputType="text" width="70" readOnly="true"/>
+					<w2:column id="empName" inputType="text" width="80"/>
+					<w2:column id="dept" inputType="text" width="100"/>
+					<w2:column id="position" inputType="text" width="70"/>
+					<w2:column id="email" inputType="text" width="200"/>
+					<w2:column id="phone" inputType="text" width="130"/>
+					<w2:column id="salary" inputType="text" width="80" textAlign="right"/>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</xf:group>
+</body>
+</html>

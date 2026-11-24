@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// DOM 조회 순서(받은 id → mf_ 접두사 → G_ 뒤 접두사 → 접두사 제거)
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.fireDbClick = function(node) {
+	var evt = document.createEvent('MouseEvents');
+	evt.initEvent('dblclick', true, false);
+	node.dispatchEvent(evt);
+};
+scwin.Dbclick = function(id) {
+	var el = scwin.__getDom($p.id + id);
+	scwin.fireDbClick(el);
+};
+scwin.checkValue = function(id, value) {
+	return scwin.__getDom($p.id + id).textContent == value;
+};
+scwin.onpageload = function() {
+	grid1.setRef({
+		ref: "vector",
+		baseNode: "vector",
+		repeatNode: "data"
+	});
+	grid1.insertRow();
+	// 0번 Column: 속성(maxlength="7.2"), 1번: setCellInputType options, 2번: setCellMaxLength API
+	grid1.setCellInputType(0, 1, {
+		inputType: "text",
+		options: {
+			dataType: "float",
+			maxlength: "7.2",
+			displayFormat: "#,###.#0",
+			applyFormat: "all"
+		}
+	});
+	grid1.setCellInputType(0, 2, {
+		inputType: "text",
+		options: {
+			dataType: "float",
+			applyFormat: "all"
+		}
+	});
+	grid1.setCellMaxLength(0, 2, "7.2");
+	grid1.setCellDisplayFormat(0, 2, "#,###.#0");
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:grid ref="vector" baseNode="vector" repeatNode="data" id="grid1" style="width:553px;height:150px;" useShiftKey="true" setCellInputTypeCustom="true">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column1" style="height:20px;" width="120" inputType="text" displayMode="label" value="property"></w2:column>
+					<w2:column id="column3" style="height:20px;" width="120" inputType="text" displayMode="label" value="setCellInputType"></w2:column>
+					<w2:column id="column5" style="height:20px" inputType="text" width="120" displayMode="label" value="api"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="column2" width="120" inputType="text" dataType="float" maxlength="7.2" displayFormat="#,###.#0" applyFormat="all" displayMode="label"></w2:column>
+					<w2:column id="column4" width="120" inputType="custom" displayMode="label"></w2:column>
+					<w2:column id="column6" style="height:20px" inputType="custom" width="70" displayMode="label"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:grid>
+	</body>
+</html>

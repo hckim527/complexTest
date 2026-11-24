@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dma_person">
+					<w2:keyInfo>
+						<w2:key id="name" name="이름" dataType="text"></w2:key>
+						<w2:key id="deptCd" name="부서" dataType="text"></w2:key>
+						<w2:key id="joinedDate" name="입사일자" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<name><![CDATA[홍길동]]></name>
+						<deptCd><![CDATA[D002]]></deptCd>
+						<joinedDate><![CDATA[55]]></joinedDate>
+					</w2:data>
+				</w2:dataMap>
+			</w2:dataCollection>
+			<w2:workflowCollection></w2:workflowCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	window.com = {};
+	// config.js 의 inputCalendar invalidMessageFunc="com.validateMsg"
+	com.validateMsg = function() {
+		window.msg = "";
+		window.invalidType = this.getType();
+		window.invalidValue = this.getValue();
+		switch (invalidType) {
+			case "mandatory":
+				msg = "필수 입력 항목 입니다.";
+				break;
+			case "minLength":
+				msg = "최소 길이 " + invalidValue + "자리 이상으로 입력해야 합니다.";
+				break;
+			case "minByteLength":
+				msg = "최소 길이 " + invalidValue + "바이트 이상으로 입력해야 합니다.";
+				break;
+			default:
+				msg = "유효하지 않은 값이 입력 되었습니다.";
+				break;
+		}
+		alert(msg);
+		return msg;
+	};
+};
+scwin.btn_validation_onclick = function(e) {
+	var objArr = WebSquare.util.getChildren(tbl_content, {
+		excludePlugin: "group trigger textbox output calendar image span anchor pageInherit wframe itemTable",
+		recursive: true
+	});
+	for (var objIdx in objArr) {
+		if (objArr[objIdx].validate() === false) {
+			return false;
+		}
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger style="width:142px;height:29px;" id="btn_validation" type="button" ev:onclick="scwin.btn_validation_onclick">
+			<xf:label><![CDATA[유효성 검사]]></xf:label>
+		</xf:trigger>
+		<xf:group id="tbl_content">
+			<xf:input id="ibx_name10" mandatory="true" ref="data:dma_person.name" style="width:144px;height:21px;"></xf:input>
+			<xf:select1 appearance="minimal" id="sbx_deptCd10" mandatory="true" ref="data:dma_person.deptCd" style="width:148px;height:21px;">
+				<xf:choices>
+					<xf:item>
+						<xf:label><![CDATA[총무과]]></xf:label>
+						<xf:value><![CDATA[D001]]></xf:value>
+					</xf:item>
+					<xf:item>
+						<xf:label><![CDATA[인사과]]></xf:label>
+						<xf:value><![CDATA[D002]]></xf:value>
+					</xf:item>
+				</xf:choices>
+			</xf:select1>
+			<w2:inputCalendar id="ica_joinedDate" mandatory="true" ref="data:dma_person.joinedDate" style="width:150px;height:23px;" dateValidCheck="true">
+			</w2:inputCalendar>
+		</xf:group>
+	</body>
+</html>

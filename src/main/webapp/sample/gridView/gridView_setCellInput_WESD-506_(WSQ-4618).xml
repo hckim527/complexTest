@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dlt_select" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="label" name="name1" dataType="text"></w2:column>
+						<w2:column id="code" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="sel_sample" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="codeLB" name="name1" dataType="text"></w2:column>
+						<w2:column id="codeVL" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="sel_sample2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="codeLB" name="name1" dataType="text"></w2:column>
+						<w2:column id="codeVL" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="sel_sample3" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="codeLB" name="name1" dataType="text"></w2:column>
+						<w2:column id="codeVL" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 항목 데이터(호출마다 새 배열)
+scwin.getItems = function(n) {
+	var lb = [["축구", "농구", "야구", "배구"], ["피자", "치킨", "햄버거", "양꼬치"], ["모니터", "키보드", "마우스", "노트북"]][n];
+	var arr = [];
+	for (var i = 0; i < lb.length; i++) {
+		arr.push({ "codeLB": lb[i], "codeVL": "" + (i + 1) });
+	}
+	return arr;
+};
+scwin.onpageload = function() {
+	var types = ["input", "calendar", "checkbox", "select", "autoComplete", "radio", "button", "link"];
+	var jsonData = [];
+	for (var i = 0; i < types.length; i++) {
+		jsonData.push({ "label": types[i], "code": types[i] });
+	}
+	dlt_select.setJSON(jsonData);
+	sel_sample.setJSON(scwin.getItems(0));
+	sel_sample2.setJSON(scwin.getItems(1));
+	sel_sample3.setJSON(scwin.getItems(2));
+	dataList1.setJSON([{
+		"col1": "select",
+		"col2": "7",
+		"col3": "yearMonthDate"
+	}, {
+		"col1": "select",
+		"col2": "6",
+		"col3": "yearMonthDateTime"
+	}]);
+};
+scwin.grd_oncellindexchange = function(row, col, oldRow, oldCol) {
+	// 해당 컬럼의 nodeset 에 맞는 데이터를 동적으로 조회(데이터 변경)
+	sel_sample2.setJSON(scwin.getItems(0));
+	sel_sample3.setJSON(scwin.getItems(1));
+	sel_sample.setJSON(scwin.getItems(2));
+	if (col == 1) {
+		var obj = {
+			inputType: "autoComplete",
+			itemTableType: "gridViewItemset",
+			options: {
+				viewType: "icon",
+				displayMode: "label",
+				noResult: "useData",
+				selectedData: "false",
+				search: "contain",
+				searchtarget: "label",
+				chooseOptionLabel: "-- 선택 --",
+				chooseOptionValue: "",
+			},
+			visibleRowNum: 10,
+			width: 330,
+			hideHeader: true,
+			nodeset: row % 3 === 0 ? "data:sel_sample" : row % 2 === 0 ? "data:sel_sample2" : "data:sel_sample3",
+			label: "codeLB",
+			value: "codeVL",
+			item: [{
+					ref: "codeLB",
+					header: "label"
+				},
+				{
+					ref: "codeVL",
+					header: "value"
+				},
+			],
+		};
+		grd.setCellInputType(row, col, obj);
+	}
+};
+scwin.trigger1_onclick = function(e) {
+	dataList1.insertRow(0);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger id="trigger1" style="width: 80px;height: 23px;" ev:onclick="scwin.trigger1_onclick" type="button">
+			<xf:label><![CDATA[ 행 추가 ]]></xf:label>
+		</xf:trigger>
+		<w2:gridView dataList="data:dataList1" defaultCellHeight="20" id="grd" style="width: 500px;height: 150px;" setCellInputTypeCustom="true"
+			useShiftKey="true" ev:oncellindexchange="scwin.grd_oncellindexchange">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column5" inputType="text" width="70" value="name1"></w2:column>
+					<w2:column id="column3" inputType="text" width="270" value="name2"></w2:column>
+					<w2:column id="column1" width="110" inputType="text" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="col1" inputType="select" width="70">
+						<w2:choices>
+							<w2:itemset nodeset="data:dlt_select">
+								<w2:label ref="label"></w2:label>
+								<w2:value ref="code"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column id="col2" readOnly="false" inputType="custom" width="70"></w2:column>
+					<w2:column id="col3" width="70" inputType="text" dataType="text"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

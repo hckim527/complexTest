@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="list1" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="ID" name="ID" dataType="text"></w2:column>
+						<w2:column id="NAME" name="Name" dataType="text"></w2:column>
+						<w2:column id="VALUE" name="Value" dataType="number"></w2:column>
+						<w2:column id="STATUS" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.btn_perfOn_onclick = function() {
+	WebSquare.util.setPerformanceUse(true);
+};
+
+scwin.btn_load_init_onclick = function() {
+	var arr = [];
+	for (var i = 0; i < 100; i++) {
+		arr.push({ ID: "ID_" + i, NAME: "Name_" + i, VALUE: i, STATUS: (i % 2 === 0 ? "Y" : "N") });
+	}
+	list1.setJSON(arr);
+};
+
+// A: setBroadcast(false) → setCellData × 100 → setBroadcast(true)
+scwin.btn_scenarioA_onclick = function() {
+	if (list1.getRowCount() === 0) {
+		return;
+	}
+	var rowCnt = list1.getRowCount();
+	list1.setBroadcast(false);
+	for (var i = 0; i < 100; i++) {
+		list1.setCellData(i % rowCnt, "VALUE", i * 10);
+	}
+	list1.setBroadcast(true, true);
+};
+
+// B: insertRow × 50 → setData reset
+scwin.btn_scenarioB_onclick = function() {
+	list1.setBroadcast(false);
+	for (var i = 0; i < 50; i++) {
+		var ridx = list1.insertRow(0);
+		list1.setCellData(ridx, "ID", "NEW_" + i);
+		list1.setCellData(ridx, "NAME", "Inserted_" + i);
+	}
+	list1.setBroadcast(true, true);
+	var resetArr = [];
+	for (var k = 0; k < 10; k++) {
+		resetArr.push({ ID: "RST_" + k, NAME: "Reset_" + k, VALUE: k, STATUS: "R" });
+	}
+	list1.setJSON(resetArr);
+};
+
+// C: 단건 setCellData 5회 + 명시 flush
+scwin.btn_scenarioC_onclick = function() {
+	if (list1.getRowCount() === 0) {
+		return;
+	}
+	for (var i = 0; i < 5; i++) {
+		list1.setCellData(i, "STATUS", "C" + i);
+	}
+	list1.flushHotPathStats();
+};
+
+// D: removeRows 20건(행 부족 시 보충)
+scwin.btn_scenarioD_onclick = function() {
+	var n = 20;
+	if (list1.getRowCount() < n) {
+		var need = n - list1.getRowCount();
+		var arr = [];
+		for (var k = 0; k < need; k++) {
+			arr.push({ ID: "FILL_" + k, NAME: "Fill_" + k, VALUE: k, STATUS: "F" });
+		}
+		list1.setJSON(arr, true);
+	}
+	var idxArr = [];
+	for (var i = 0; i < n; i++) idxArr.push(i);
+	list1.setBroadcast(false);
+	list1.removeRows(idxArr);
+	list1.setBroadcast(true, true);
+};
+
+scwin.btn_report_onclick = function() {
+	WebSquare._performance.getReport();
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group id="grp_main" style="width:1100px; padding:10px;">
+			<xf:group style="margin-bottom:8px; padding:6px; border:1px solid #888; background:#f5f5f5;">
+				<xf:trigger type="button" id="btn_perfOn" ev:onclick="scwin.btn_perfOn_onclick" style="width:110px; height:28px;">
+					<xf:label><![CDATA[성능수집 ON]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="btn_report" ev:onclick="scwin.btn_report_onclick" style="width:140px; height:28px;">
+					<xf:label><![CDATA[Report 조회]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+			<xf:group style="margin-bottom:8px; padding:6px; border:1px solid #4caf50; background:#f0f8f0;">
+				<xf:trigger type="button" id="btn_load_init" ev:onclick="scwin.btn_load_init_onclick" style="width:160px; height:30px;">
+					<xf:label><![CDATA[① 초기 데이터 로드]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="btn_scenarioA" ev:onclick="scwin.btn_scenarioA_onclick" style="width:230px; height:30px;">
+					<xf:label><![CDATA[② A: setBroadcast → setCellData × N]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="btn_scenarioB" ev:onclick="scwin.btn_scenarioB_onclick" style="width:200px; height:30px;">
+					<xf:label><![CDATA[③ B: insertRow × N → reset]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="btn_scenarioC" ev:onclick="scwin.btn_scenarioC_onclick" style="width:230px; height:30px;">
+					<xf:label><![CDATA[④ C: 단건 setCellData + 명시 flush]]></xf:label>
+				</xf:trigger>
+				<xf:trigger type="button" id="btn_scenarioD" ev:onclick="scwin.btn_scenarioD_onclick" style="width:200px; height:30px;">
+					<xf:label><![CDATA[⑤ D: removeRows 다건]]></xf:label>
+				</xf:trigger>
+			</xf:group>
+			<w2:gridView id="grd_main" dataList="data:list1" defaultCellHeight="20" style="width:1080px; height:280px;">
+				<w2:header>
+					<w2:row>
+						<w2:column id="hd_ID" value="ID" width="240"></w2:column>
+						<w2:column id="hd_NAME" value="Name" width="280"></w2:column>
+						<w2:column id="hd_VALUE" value="Value" width="240"></w2:column>
+						<w2:column id="hd_STATUS" value="Status" width="280"></w2:column>
+					</w2:row>
+				</w2:header>
+				<w2:gBody>
+					<w2:row>
+						<w2:column id="ID" width="240"></w2:column>
+						<w2:column id="NAME" width="280"></w2:column>
+						<w2:column id="VALUE" width="240" displayMode="label"></w2:column>
+						<w2:column id="STATUS" width="280"></w2:column>
+					</w2:row>
+				</w2:gBody>
+			</w2:gridView>
+		</xf:group>
+	</body>
+</html>

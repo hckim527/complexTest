@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+<head>
+	<w2:type>DEFAULT</w2:type>
+	<w2:buildDate/>
+	<xf:model>
+		<w2:dataCollection>
+			<w2:dataList id="dataList1" baseNode="list" repeatNode="map">
+				<w2:columnInfo>
+					<w2:column id="status" name="Status" dataType="text"></w2:column>
+					<w2:column id="amount" name="Amount" dataType="number"></w2:column>
+					<w2:column id="balance" name="Balance" dataType="number"></w2:column>
+					<w2:column id="name" name="Name" dataType="text"></w2:column>
+				</w2:columnInfo>
+			</w2:dataList>
+		</w2:dataCollection>
+	</xf:model>
+	<script type="text/javascript" lazy="false"><![CDATA[
+	scwin.onpageload = function() {
+		var arr = [];
+		for (var i = 0; i < 30; i++) {
+			arr.push({
+				status: i % 3 === 0 ? "A" : (i % 3 === 1 ? "R" : "P"),
+				amount: i % 4 === 0 ? 20000 : 1000 + i * 100,
+				balance: i % 2 === 0 ? -((i + 1) * 50) : (i + 1) * 50,
+				name: "Item " + (i + 1)
+			});
+		}
+		dataList1.setJSON(arr);
+	};
+	]]></script>
+</head>
+<body ev:onpageload="scwin.onpageload">
+	<xf:group id="grp_main" style="padding:10px;">
+		<w2:gridView id="grd1" dataList="data:dataList1" defaultCellHeight="20" style="width:100%;height:300px;margin-top:10px;">
+			<w2:header>
+				<w2:row>
+					<w2:column id="hd_status" inputType="text" displayMode="label" value="Status" width="80"></w2:column>
+					<w2:column id="hd_amount" inputType="text" displayMode="label" value="Amount" width="120"></w2:column>
+					<w2:column id="hd_balance" inputType="text" displayMode="label" value="Balance" width="100"></w2:column>
+					<w2:column id="hd_name" inputType="text" displayMode="label" value="Name" width="120"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody>
+				<w2:row>
+					<w2:column id="status" width="80"></w2:column>
+					<w2:column id="amount" width="120" exprColor="iif(balance &lt; 0, '#FF0000', '#000000')" exprBackground="iif(amount > 10000, '#FFCCCC', '#FFFFFF')"></w2:column>
+					<w2:column id="balance" width="100"></w2:column>
+					<w2:column id="name" width="120"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</xf:group>
+</body>
+</html>
