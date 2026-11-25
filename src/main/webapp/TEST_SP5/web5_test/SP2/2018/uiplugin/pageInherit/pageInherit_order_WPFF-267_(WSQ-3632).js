@@ -1,1 +1,0 @@
-﻿WebSquare.logger.printLog("external script");

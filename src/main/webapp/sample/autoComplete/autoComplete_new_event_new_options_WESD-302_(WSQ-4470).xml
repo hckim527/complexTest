@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="codeList1" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="code" name="name1" dataType="text"></w2:column>
+						<w2:column id="label" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.keyupLog = [];
+scwin.enterLog = [];
+scwin.formatterLog = [];
+scwin.onpageload = function() {
+	codeList1.setData(["value1", "label1", "value2", "label2", "value3", "label3", "value4", "label4"]);
+};
+scwin.selectLabelCustom = function(label, value, isOpen) {
+	scwin.formatterLog.push([label, value, isOpen].join("|"));
+	if (isOpen) {
+		return label + " " + value;
+	} else {
+		return value;
+	}
+};
+scwin.autoComplete1_oneditkeyup = function(info) {
+	scwin.keyupLog.push({ id: this.id, oldValue: info.oldValue, newValue: info.newValue, keyCode: info.keyCode });
+};
+scwin.autoComplete1_oneditenter = function(e) {
+	scwin.enterLog.push(this.id + " " + e.type);
+	// 반환값(boolean)으로 nextTabID 이동 여부 결정 (기본은 반환 없음)
+	return scwin.enterReturn;
+};
+scwin.trigger1_onclick = function(e) {
+	var autoComplete1Obj = $p.dynamicCreate("autoComplete1", "autoComplete", {
+		style: "position: relative;width: 148px;height: 21px;",
+		autoFocus: "true",
+		searchTarget: "label",
+		displayMode: "label delim value",
+		customLabelFormatter: "scwin.selectLabelCustom",
+		nextTabID: "input1",
+		nextTabByEnter: "true",
+		autocomplete: "off"
+	}, group1);
+	autoComplete1Obj.bind("oneditkeyup", "scwin.autoComplete1_oneditkeyup");
+	autoComplete1Obj.bind("oneditenter", "scwin.autoComplete1_oneditenter");
+	autoComplete1Obj.setNodeSet('data:codeList1', 'label', 'code');
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger id="trigger1" style="width:140px;height:30px;margin-left:5px" type="button" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[autoComplete create]]></xf:label>
+		</xf:trigger>
+		<xf:group id="group1"></xf:group>
+		<xf:input adjustMaxLength="false" id="input1" initValue="input1" style="width: 144px;height: 21px;"></xf:input>
+		<xf:input adjustMaxLength="false" id="input2" initValue="input2" style="width: 144px;height: 21px;"></xf:input>
+	</body>
+</html>
