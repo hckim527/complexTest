@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="dl_budgetStateList" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="TOTAL" name="엑셀에 필요한 임의의값" dataType="text"/>
+						<w2:column id="FCLTCD" name="시설코드" dataType="text"/>
+						<w2:column id="AREA_NM" name="지역" dataType="text"/>
+						<w2:column id="FCLTY_TY_NM" name="원 구분" dataType="text"/>
+						<w2:column id="FCLT_NM" name="어린이집명" dataType="text"/>
+						<w2:column id="FRL_BUDGET_REV" name="정규세입예산" dataType="text"/>
+						<w2:column id="FRL_BUDGET_EXP" name="정규세출예산" dataType="text"/>
+						<w2:column id="FRL_BUDGET_DIFF" name="정규예산차액" dataType="text"/>
+						<w2:column id="LAST_BUDGET_REV" name="최종세입예산" dataType="text"/>
+						<w2:column id="LAST_BUDGET_EXP" name="최종세출예산" dataType="text"/>
+						<w2:column id="LAST_BUDGET_DIFF" name="최종예산차액" dataType="text"/>
+						<w2:column id="PUBLIC_TY_AT" name="공공형" dataType="text"/>
+						<w2:column id="CTRD_TY_AT" name="경기형" dataType="text"/>
+						<w2:column id="KID_PRVUSE_AT" name="0세아전용" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR1" name="일반" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR2" name="영아전담(구분)" dataType="text"/>
+						<w2:column id="CO1" name="영아전담(인원)" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR3" name="장애아전담(구분)" dataType="text"/>
+						<w2:column id="CO2" name="장애아전담(인원)" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR4" name="장애아통합(구분)" dataType="text"/>
+						<w2:column id="CO3" name="장애아통합(인원)" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR5" name="방과후전담(구분)" dataType="text"/>
+						<w2:column id="CO4" name="방과후전담(인원)" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR6" name="방과후통합(구분)" dataType="text"/>
+						<w2:column id="CO5" name="방과후통합(인원)" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR7" name="시간연장형(구분)" dataType="text"/>
+						<w2:column id="CO6" name="시간연장형(인원)" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR8" name="휴일보육(구분)" dataType="text"/>
+						<w2:column id="CO7" name="휴일보육(인원)" dataType="text"/>
+						<w2:column id="CHILD_HOUSE_CHARTR9" name="24시간(구분)" dataType="text"/>
+						<w2:column id="CO8" name="24시간(인원)" dataType="text"/>
+					</w2:columnInfo>
+					<w2:data use="true"/>
+				</w2:dataList>
+			</w2:dataCollection>
+			<xf:submission id="submission1" target="data:json,dl_budgetStateList" action="/data/gridView_download_BudgetState_WPF-1597_(WSQ-2726).json" method="post" mediatype="application/json" encoding="UTF-8" mode="asynchronous" ev:submitdone="scwin.callback"/>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.fn_filter = function(cellData, tmpParam, rowIdx) {
+	var FRL_BUDGET_EXP = dl_budgetStateList.getCellData(rowIdx, "FRL_BUDGET_EXP");
+	if (tmpParam == "O") {
+		if (cellData == "" && FRL_BUDGET_EXP == "") {
+			return false;
+		}
+	} else if (tmpParam == "X") {
+		if (cellData == "" && FRL_BUDGET_EXP == "") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	return true;
+};
+scwin.setAreaTitle = function(data, formattedData, row, col) {
+	var fcltcd = parseInt(data);
+	formattedData = dl_budgetStateList.getMatchedColumnData("FCLTCD", fcltcd, "AREA_NM", true);
+	formattedData = formattedData + "계";
+	return formattedData;
+};
+scwin.setFcltTyTitle = function(data, formattedData, row, col) {
+	var fcltcd = parseInt(data);
+	formattedData = dl_budgetStateList.getMatchedColumnData("FCLTCD", fcltcd, "FCLTY_TY_NM", true);
+	formattedData = formattedData + "계";
+	return formattedData;
+};
+scwin.callback = function() {
+	dl_budgetStateList.setColumnFilter({
+		type: 'func',
+		colIndex: 'FRL_BUDGET_REV',
+		key: scwin.fn_filter,
+		condition: 'and',
+		param: "O"
+	});
+};
+scwin.group111_onclick = function(e) {
+	var options = {};
+	options.fileName = "BudgetState.xls";
+	options.type = "1";
+	options.removeColumns = "";
+	options.startRowIndex = 0;
+	options.startColumnIndex = 0;
+	options.headerColor = "#DBEEF3";
+	options.footerColor = "#92CDDC";
+	options.showProcess = true;
+	options.useSubTotal = true;
+	options.useSubTotalData = true;
+	grd_BudgetState.advancedExcelDownload(options);
+};
+scwin.onpageload = function() {
+	$p.executeSubmission("submission1");
+};
+		]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group tagname="em" id="group111" ev:onclick="scwin.group111_onclick">엑셀다운로드</xf:group>
+		<w2:gridView id="grd_BudgetState" dataList="dl_budgetStateList" fixedColumnWithHidden="true" readOnly="true" rowNumVisible="true" rowNumHeaderValue="번호" fixedColumn="3" autoFit="" focusMode="cell" class="grdView" style="width:100%;height:400px;">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column1" inputType="text" width="100" displayMode="label" value="지역" colSpan="" rowSpan="2"/>
+					<w2:column id="column2" inputType="text" width="87" displayMode="label" value="유형" colSpan="" rowSpan="2"/>
+					<w2:column id="column3" inputType="text" width="180" displayMode="label" value="어린이집명" colSpan="" rowSpan="2"/>
+					<w2:column id="column4" inputType="text" width="100" displayMode="label" value="정규예산" colSpan="3" rowSpan=""/>
+					<w2:column id="column5" inputType="text" width="100" displayMode="label" value="최종예산" colSpan="3" rowSpan=""/>
+					<w2:column id="column6" inputType="text" width="45" displayMode="label" value="공공형" colSpan="" rowSpan="2" class="grdView_bg01"/>
+					<w2:column id="column7" inputType="text" width="45" displayMode="label" value="경기형" colSpan="" rowSpan="2" class="grdView_bg01"/>
+					<w2:column id="column8" inputType="text" width="45" displayMode="label" value="0세아&lt;br/&gt;전용" colSpan="" rowSpan="2" class="grdView_bg01"/>
+					<w2:column id="column9" inputType="text" width="45" displayMode="label" value="일반" colSpan="" rowSpan="2" class="grdView_bg01"/>
+					<w2:column id="column10" inputType="text" width="45" displayMode="label" value="영아전담" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column11" inputType="text" width="45" displayMode="label" value="장애아전담" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column12" inputType="text" width="45" displayMode="label" value="장애아통합" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column13" inputType="text" width="45" displayMode="label" value="방과후전담" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column14" inputType="text" width="45" displayMode="label" value="방과후통합" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column15" inputType="text" width="45" displayMode="label" value="시간연장형" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column16" inputType="text" width="45" displayMode="label" value="휴일보육" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column17" inputType="text" width="45" displayMode="label" value="24시간" colSpan="2" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column17_total" inputType="text" width="45" displayMode="label" value="" colSpan="" rowSpan="" class="grdView_bg01"/>
+				</w2:row>
+				<w2:row id="row2">
+					<w2:column id="column18" inputType="text" width="100" displayMode="label" value="세입예산" colSpan="" rowSpan=""/>
+					<w2:column id="column19" inputType="text" width="100" displayMode="label" value="세출예산" colSpan="" rowSpan=""/>
+					<w2:column id="column20" inputType="text" width="100" displayMode="label" value="차액" colSpan="" rowSpan=""/>
+					<w2:column id="column21" inputType="text" width="100" displayMode="label" value="세입예산" colSpan="" rowSpan=""/>
+					<w2:column id="column22" inputType="text" width="100" displayMode="label" value="세출예산" colSpan="" rowSpan=""/>
+					<w2:column id="column23" inputType="text" width="100" displayMode="label" value="차액" colSpan="" rowSpan=""/>
+					<w2:column id="column24" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column25" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column26" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column27" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column28" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column29" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column30" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column31" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column32" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column33" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column34" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column35" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column36" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column37" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column38" inputType="text" width="45" displayMode="label" value="구분" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column39" inputType="text" width="45" displayMode="label" value="인원" colSpan="" rowSpan="" class="grdView_bg01"/>
+					<w2:column id="column39_total" inputType="text" width="45" displayMode="label" value="total" colSpan="" rowSpan="" class="grdView_bg01"/>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row5">
+					<w2:column id="AREA_NM" inputType="text" textAlign="left"/>
+					<w2:column id="FCLTY_TY_NM" inputType="text" displayMode="label"/>
+					<w2:column id="FCLT_NM" inputType="text" displayMode="label" textAlign="left"/>
+					<w2:column id="FRL_BUDGET_REV" inputType="text" displayMode="label" dataType="number" displayFormat="#,###,###,###" textAlign="right"/>
+					<w2:column id="FRL_BUDGET_EXP" inputType="text" displayMode="label" dataType="number" displayFormat="#,###,###,###" textAlign="right"/>
+					<w2:column id="FRL_BUDGET_DIFF" inputType="text" displayMode="label" dataType="number" displayFormat="#,###,###,###" textAlign="right"/>
+					<w2:column id="LAST_BUDGET_REV" inputType="text" displayMode="label" dataType="number" displayFormat="#,###,###,###" textAlign="right"/>
+					<w2:column id="LAST_BUDGET_EXP" inputType="text" displayMode="label" dataType="number" displayFormat="#,###,###,###" textAlign="right"/>
+					<w2:column id="LAST_BUDGET_DIFF" inputType="text" displayMode="label" dataType="number" displayFormat="#,###,###,###" textAlign="right"/>
+					<w2:column id="PUBLIC_TY_AT" inputType="text" displayMode="label"/>
+					<w2:column id="CTRD_TY_AT" inputType="text" displayMode="label"/>
+					<w2:column id="KID_PRVUSE_AT" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR1" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR2" inputType="text" displayMode="label"/>
+					<w2:column id="CO1" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR3" inputType="text" displayMode="label"/>
+					<w2:column id="CO2" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR4" inputType="text" displayMode="label"/>
+					<w2:column id="CO3" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR5" inputType="text" displayMode="label"/>
+					<w2:column id="CO4" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR6" inputType="text" displayMode="label"/>
+					<w2:column id="CO5" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR7" inputType="text" displayMode="label"/>
+					<w2:column id="CO6" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR8" inputType="text" displayMode="label"/>
+					<w2:column id="CO7" inputType="text" displayMode="label"/>
+					<w2:column id="CHILD_HOUSE_CHARTR9" inputType="text" displayMode="label"/>
+					<w2:column id="CO8" inputType="text" displayMode="label"/>
+					<w2:column id="TOTAL" style="height:0px" inputType="text" displayMode="label"/>
+				</w2:row>
+			</w2:gBody>
+			<w2:subTotal id="subTotal1" targetColumnID="FCLTY_TY_NM">
+				<w2:row id="row1">
+					<w2:column id="column_1_1" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_2" inputType="expression" displayMode="label" expression="MAX('FCLTCD')" displayFormatter="scwin.setFcltTyTitle"/>
+					<w2:column id="column_1_3" inputType="expression" displayMode="label" expression="'어린이집 수('+count('FCLT_NM')+')'"/>
+					<w2:column id="column_1_4" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_REV')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_1_5" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_EXP')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_1_6" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_DIFF')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_1_7" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_REV')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_1_8" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_EXP')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_1_9" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_DIFF')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_1_10" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_11" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_12" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_13" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_14" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_15" inputType="expression" displayMode="label" expression="SUM('CO1')" dataType="number"/>
+					<w2:column id="column_1_16" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_17" inputType="expression" displayMode="label" expression="SUM('CO2')" dataType="number"/>
+					<w2:column id="column_1_18" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_19" inputType="expression" displayMode="label" expression="SUM('CO3')" dataType="number"/>
+					<w2:column id="column_1_20" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_21" inputType="expression" displayMode="label" expression="SUM('CO4')" dataType="number"/>
+					<w2:column id="column_1_22" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_23" inputType="expression" displayMode="label" expression="SUM('CO5')" dataType="number"/>
+					<w2:column id="column_1_24" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_25" inputType="expression" displayMode="label" expression="SUM('CO6')" dataType="number"/>
+					<w2:column id="column_1_26" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_27" inputType="expression" displayMode="label" expression="SUM('CO7')" dataType="number"/>
+					<w2:column id="column_1_28" inputType="text" displayMode="label"/>
+					<w2:column id="column_1_29" inputType="expression" displayMode="label" expression="SUM('CO8')" dataType="number"/>
+					<w2:column id="column_1_182" style="height:0px" inputType="text" displayMode="label"/>
+				</w2:row>
+			</w2:subTotal>
+			<w2:subTotal id="subTotal2" targetColumnID="AREA_NM">
+				<w2:row id="row1">
+					<w2:column id="column_2_1" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_2" inputType="expression" displayMode="label" expression="MAX('FCLTCD')" displayFormatter="scwin.setAreaTitle"/>
+					<w2:column id="column_2_3" inputType="expression" displayMode="label" expression="'어린이집 수('+count('FCLT_NM')+')'"/>
+					<w2:column id="column_2_4" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_REV')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_2_5" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_EXP')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_2_6" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_DIFF')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_2_7" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_REV')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_2_8" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_EXP')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_2_9" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_DIFF')" dataType="number" displayFormat="#,###" textAlign="right"/>
+					<w2:column id="column_2_10" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_11" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_12" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_13" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_14" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_15" inputType="expression" displayMode="label" expression="SUM('CO1')" dataType="number"/>
+					<w2:column id="column_2_16" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_17" inputType="expression" displayMode="label" expression="SUM('CO2')" dataType="number"/>
+					<w2:column id="column_2_18" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_19" inputType="expression" displayMode="label" expression="SUM('CO3')" dataType="number"/>
+					<w2:column id="column_2_20" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_21" inputType="expression" displayMode="label" expression="SUM('CO4')" dataType="number"/>
+					<w2:column id="column_2_22" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_23" inputType="expression" displayMode="label" expression="SUM('CO5')" dataType="number"/>
+					<w2:column id="column_2_24" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_25" inputType="expression" displayMode="label" expression="SUM('CO6')" dataType="number"/>
+					<w2:column id="column_2_26" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_27" inputType="expression" displayMode="label" expression="SUM('CO7')" dataType="number"/>
+					<w2:column id="column_2_28" inputType="text" displayMode="label"/>
+					<w2:column id="column_2_29" inputType="expression" displayMode="label" expression="SUM('CO8')" dataType="number"/>
+					<w2:column id="column_2_182" style="height:0px" inputType="text" displayMode="label"/>
+				</w2:row>
+			</w2:subTotal>
+			<w2:subTotal id="subTotal3" targetColumnID="TOTAL">
+				<w2:row id="row1">
+					<w2:column id="column_3_1" style="height:22px;" inputType="text" displayMode="label" colSpan="2" value="합계" rowSpan="" width="187"/>
+					<w2:column id="column_3_3" inputType="expression" displayMode="label" expression="'어린이집 수('+count('FCLT_NM')+')'" style="height:22px;"/>
+					<w2:column id="column_3_4" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_REV')" dataType="number" displayFormat="#,###" textAlign="right" style="height:22px;"/>
+					<w2:column id="column_3_5" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_EXP')" dataType="number" displayFormat="#,###" textAlign="right" style="height:22px;"/>
+					<w2:column id="column_3_6" inputType="expression" displayMode="label" expression="SUM('FRL_BUDGET_DIFF')" dataType="number" displayFormat="#,###" textAlign="right" style="height:22px;"/>
+					<w2:column id="column_3_7" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_REV')" dataType="number" displayFormat="#,###" textAlign="right" style="height:22px;"/>
+					<w2:column id="column_3_8" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_EXP')" dataType="number" displayFormat="#,###" textAlign="right" style="height:22px;"/>
+					<w2:column id="column_3_9" inputType="expression" displayMode="label" expression="SUM('LAST_BUDGET_DIFF')" dataType="number" displayFormat="#,###" textAlign="right" style="height:22px;"/>
+					<w2:column id="column_3_10" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_11" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_12" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_13" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_14" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_15" inputType="expression" displayMode="label" expression="SUM('CO1')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_16" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_17" inputType="expression" displayMode="label" expression="SUM('CO2')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_18" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_19" inputType="expression" displayMode="label" expression="SUM('CO3')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_20" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_21" inputType="expression" displayMode="label" expression="SUM('CO4')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_22" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_23" inputType="expression" displayMode="label" expression="SUM('CO5')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_24" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_25" inputType="expression" displayMode="label" expression="SUM('CO6')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_26" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_27" inputType="expression" displayMode="label" expression="SUM('CO7')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_28" inputType="text" displayMode="label" style="height:22px;"/>
+					<w2:column id="column_3_29" inputType="expression" displayMode="label" expression="SUM('CO8')" dataType="number" style="height:22px;"/>
+					<w2:column id="column_3_182" style="height:22px;" inputType="text" displayMode="label"/>
+				</w2:row>
+			</w2:subTotal>
+		</w2:gridView>
+	</body>
+</html>

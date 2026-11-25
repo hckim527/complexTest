@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ev="http://www.w3.org/2001/xml-events"
+	xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dl_listMain" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="rec_no" name="순번" dataType="text"></w2:column>
+						<w2:column id="cliCode" name="광고주코드" dataType="text"></w2:column>
+						<w2:column id="cliName" name="광고주" dataType="text"></w2:column>
+						<w2:column id="opCnt" name="횟수" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// 광고주 A1~A15 + B 50건(GridView 높이보다 많은 65건)
+scwin.makeLongData = function() {
+	var rows = [];
+	for (var i = 1; i <= 15; i++) {
+		rows.push({"rec_no": String(i), "cliCode": "C" + i, "cliName": "A" + i, "opCnt": "1"});
+	}
+	for (var j = 16; j <= 65; j++) {
+		rows.push({"rec_no": String(j), "cliCode": "C" + j, "cliName": "B", "opCnt": "1"});
+	}
+	return rows;
+};
+scwin.grd_TrdStat_ongroupby = function(options) {
+	options.groupbyHeader = [{
+		colSpan: "4",
+		inputType: "expression",
+		expression: " toggle() + depthStr() + ' [ ' + count() + ' 건 ] ' ",
+		align: "left"
+	}];
+	options.groupbyFooter = [{
+		colSpan: "3"
+	}, {
+		colSpan: "1",
+		inputType: "expression",
+		expression: "SUM('opCnt')",
+		align: "right"
+	}];
+	grd_TrdStat.groupby(options);
+};
+scwin.trigger1_onclick = function(e) {
+	dl_listMain.setJSON(scwin.makeLongData());
+};
+// GridView 높이보다 적은 4건
+scwin.trigger2_onclick = function(e) {
+	dl_listMain.setJSON([
+		{"rec_no": "1", "cliCode": "C1", "cliName": "A1", "opCnt": "1"},
+		{"rec_no": "2", "cliCode": "C2", "cliName": "A2", "opCnt": "1"},
+		{"rec_no": "3", "cliCode": "C3", "cliName": "A3", "opCnt": "1"},
+		{"rec_no": "4", "cliCode": "C4", "cliName": "B", "opCnt": "1"}
+	]);
+};
+scwin.trigger3_onclick = function(e) {
+	dl_listMain.setJSON(scwin.makeLongData());
+};
+]]></script>
+	</head>
+	<body>
+		<w2:gridView groupbyZone="true" foldAll="true" id="grd_TrdStat" dataList="dl_listMain" readOnly="true" style="width:600px;height:360px;" ev:ongroupby="scwin.grd_TrdStat_ongroupby">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="col_rec_no" inputType="text" style="height:20px;" value="순번" width="70"></w2:column>
+					<w2:column id="col_cliCode" inputType="text" style="height:20px;" value="광고주코드" width="120"></w2:column>
+					<w2:column id="col_cliName" inputType="text" style="height:20px;" value="광고주" width="150"></w2:column>
+					<w2:column id="col_opCnt" inputType="text" style="height:20px;" value="횟수" width="100"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="rec_no" inputType="text" style="height:20px;" width="70"></w2:column>
+					<w2:column id="cliCode" inputType="text" style="height:20px;" width="120"></w2:column>
+					<w2:column id="cliName" inputType="text" style="height:20px;" width="150"></w2:column>
+					<w2:column id="opCnt" inputType="text" style="height:20px;" width="100"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+		<xf:trigger type="button" id="trigger1" style="width:80px;height:23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[1]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="width:80px;height:23px;" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[2]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger3" style="width:80px;height:23px;" ev:onclick="scwin.trigger3_onclick">
+			<xf:label><![CDATA[3]]></xf:label>
+		</xf:trigger>
+	</body>
+</html>

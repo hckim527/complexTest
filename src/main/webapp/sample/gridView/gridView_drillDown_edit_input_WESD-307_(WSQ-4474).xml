@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="PsnFuncMyMenuVO" saveRemovedData="true" rowNumData="true">
+					<w2:columnInfo>
+						<w2:column id="fvrtFldrNm" name="즐겨찾기폴더명" dataType="text" />
+						<w2:column id="menuId" name="메뉴ID" dataType="text" />
+						<w2:column id="printSeq" name="출력순번" dataType="number" defaultValue="0" />
+						<w2:column id="menuNm" name="메뉴명" dataType="text" />
+						<w2:column id="useYn" name="사용여부" dataType="text"></w2:column>
+						<w2:column id="pathNm" name="경로명" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	// [printSeq(1=폴더 단계, 2=하위), menuId(빈값=폴더), menuNm, useYn, pathNm]
+	var rows = [
+		[1, "", "자주자용하는폴더", "", ""],
+		[2, "0003080455", "메뉴관리^0003080455", "Y", "업무계시스템 > 고객지원 > 고객관리 > 메뉴관리"],
+		[2, "0000220052", "환변동 등록마감^0000220052", "N", "업무계시스템 > 인수(파생/기타) > 헷지 > 환변동 등록마감 > 환변동 등록마감"],
+		[2, "0000030007", "국가기본정보^0000030007", "N", "업무계시스템 > 신용정보 > 국가정보 > 국가기본정보"],
+		[2, "0000124372", "재무이상치모형검토^0000124372", "N", "업무계시스템 > 신용정보 > 국내기업 > 재무이상치 점검시스템 > 재무이상치모형검토"],
+		[2, "0000020016", "보험료지원기관관리^0000020016", "N", "업무계시스템 > 고객지원 > 보험료지원 > 보험료지원기관관리"],
+		[2, "0000020012", "고객정보관리^0000020012", "N", "업무계시스템 > 고객지원 > 고객관리 > 고객정보관리"],
+		[1, "", "화요일폴더", "", ""],
+		[2, "0000020013", "고객계좌관리^0000020013", "N", "업무계시스템 > 고객지원 > 고객관리 > 고객계좌관리"],
+		[2, "0000123322", "재보험^0000123322", "Y", ""]
+	];
+	var json = [];
+	for (var i = 0; i < rows.length; i++) {
+		json.push({
+			"fvrtFldrNm": rows[i][1] == "" ? rows[i][2] : "",
+			"menuId": rows[i][1],
+			"printSeq": rows[i][0],
+			"menuNm": rows[i][2],
+			"useYn": rows[i][3],
+			"pathNm": rows[i][4]
+		});
+	}
+	PsnFuncMyMenuVO.setJSON(json);
+};
+scwin.grdMyMenuInfo_onbeforeedit = function(row, col, value) {
+	var rowData = PsnFuncMyMenuVO.getDataRow(row);
+	if (rowData.printSeq == 1 && rowData.menuId.length == 0) {
+		return true;
+	}
+	return false;
+};
+scwin.displayFomatter = function(value) {
+	var rowData = PsnFuncMyMenuVO.getMatchedJSON("menuNm", value);
+	if (rowData.length == 0) {
+		return value;
+	}
+	var delVal = "";
+	if (rowData[0].menuId != "") {
+		if (rowData[0].useYn == 'N') {
+			delVal = "<a class=\"btn btn_del\"></a>";
+		}
+		value = value.split('^')[0];
+		value = delVal + value + "<w2:anchor class=\"btn_leftarea path\" outerDiv=\"false\" title=\"" + rowData[0].pathNm + "\">\"";
+	} else {
+		value = delVal + "<strong>" + value + "</strong>";
+	}
+	return value;
+};
+scwin.grdMyMenuInfo_onafteredit = function(row, col, value) {
+	if (value == "") {
+		console.error("폴더명을 입력하세요.");
+		return false;
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView autoFit="allColumn" autoFitMinWidth="0" columnMove="true" dataDragDrop="true" dataDragSelect="true"
+			dataDragSelectAutoScrollLevel="0" dataDragSelectAutoScrollPeriod="0" dataList="data:PsnFuncMyMenuVO" defaultCellHeight="20"
+			ev:onafteredit="scwin.grdMyMenuInfo_onafteredit" ev:onbeforeedit="scwin.grdMyMenuInfo_onbeforeedit" fixedColumn="1" fixedRow="0"
+			focusMode="row" id="grdMyMenuInfo" keyMoveEditMode="true" moveKeyEditMode="true" moveKeyEditModeAll="true" rowStatusHeaderValue="상태"
+			rowStatusVisible="true" style="height: 323px;" syncScroll="true" wheelRows="1" editModeEvent="ondblclick" fixedColumnWithHidden="true"
+			filterFocusMode="infocus">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column hidden="false" id="column17" inputType="text" style="height:27px;" value="depth" width="40"></w2:column>
+					<w2:column id="column9" inputType="text" style="height:27px;" value="메뉴" width="200"></w2:column>
+					<w2:column hidden="true" id="column18" inputType="text" style="height:27px;" value="폴더명" width="70"></w2:column>
+					<w2:column hidden="true" id="column19" inputType="text" style="height:27px;" value="메뉴ID" width="70"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column hidden="true" id="printSeq" inputType="text" style="height:20px" width="40"></w2:column>
+					<w2:column depthColumn="printSeq" depthType="line" editModeEvent="onclick" id="menuNm" inputType="drilldown" maxByteLength="100"
+						showDepth="2" textAlign="left" width="200" hidden="false" displayFormatter="scwin.displayFomatter">
+					</w2:column>
+					<w2:column id="fvrtFldrNm" inputType="text" style="height:20px" width="70"></w2:column>
+					<w2:column hidden="true" id="menuId" inputType="text" style="height:20px" width="70"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

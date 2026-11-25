@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="key2" name="name2" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<key1><![CDATA[test]]></key1>
+					</w2:data>
+				</w2:dataMap>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+	dataList1.setJSON([
+		{ "col1": "1", "col2": "2", "col3": "3" },
+		{ "col1": "4", "col2": "5", "col3": "6" }
+	]);
+};
+
+// UDC oncreated 에서 호출
+scwin.test1 = function() {
+	console.log("call test1");
+};
+
+scwin.getData = function() {
+	return { key1: dataMap1.get("key1"), col1: [dataList1.getCellData(0, "col1"), dataList1.getCellData(1, "col1")] };
+};
+]]></script>
+		<w2:require src="/sample/common_link/etc_udc_ref_WPFF-107_(WSQ-3424)_sub.xml"></w2:require>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:group style="height:80px;">
+			<w2:textbox label="data:dataMap1.key1" id="textbox1" style="position: relative;width: 150px;height: 23px;float: left;"></w2:textbox>
+			<w2:udc_test1 style="position: relative;width:200px;height:72px;float:left;" ref="data:dataMap1.key1" id="test2"></w2:udc_test1>
+			<w2:textbox label="data:dataList1.col1" id="textbox2" style="position: relative;width: 150px;height: 23px;float:left;"></w2:textbox>
+			<w2:udc_test1 id="udc_test11" style="position: relative;width:200px;height:57px;float:left;" ref="data:dataList1.col1"></w2:udc_test1>
+		</xf:group>
+		<w2:gridView dataList="dataList1" id="gridView1" style="position: relative;width: 500px;height: 150px;">
+			<w2:header id="header1">
+				<w2:row id="row1">
+					<w2:column id="column5" style="height:20px" inputType="text" width="70" value="name1"></w2:column>
+					<w2:column id="column3" style="height:20px" inputType="text" width="70" value="name2"></w2:column>
+					<w2:column id="column1" style="height:20px" inputType="text" width="70" value="name3"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody1">
+				<w2:row id="row2">
+					<w2:column id="col1" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="col2" style="height:20px" inputType="text" width="70"></w2:column>
+					<w2:column id="col3" style="height:20px" inputType="text" width="70"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

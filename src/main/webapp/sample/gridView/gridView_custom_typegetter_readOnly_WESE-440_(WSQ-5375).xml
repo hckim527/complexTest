@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<w2:MSA/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_list" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+						<w2:column id="col3" name="name3" dataType="text"></w2:column>
+						<w2:column id="col4" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[a]]></col1>
+							<col3><![CDATA[11]]></col3>
+							<col4><![CDATA[222]]></col4>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[b]]></col1>
+							<col3><![CDATA[33]]></col3>
+							<col4><![CDATA[444]]></col4>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+				<w2:dataList baseNode="list" repeatNode="map" id="dlt_code" saveRemovedData="true">
+					<w2:columnInfo>
+						<w2:column id="code" name="코드" dataType="text"></w2:column>
+						<w2:column id="name" name="코드명" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<code><![CDATA[a]]></code>
+							<name><![CDATA[readOnly]]></name>
+						</w2:row>
+						<w2:row>
+							<code><![CDATA[b]]></code>
+							<name><![CDATA[disabled]]></name>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+};
+scwin.getCustomType = function(info){
+	var rowIndex = info.rowIndex;
+	var colIndex = info.colIndex;
+	var returnInfo ;
+	var _col1 = dlt_list.getCellData( rowIndex ,'col1' );
+	if( _col1 == 'a' ){
+		returnInfo = {
+			id : "dynamic_text_readOnly_" + rowIndex + "_" + colIndex,
+			inputType : "text",
+			options : {
+				readOnly: true
+			}
+		}
+	}else {
+		returnInfo = {
+			id : "dynamic_text_disabled_" + rowIndex + "_" + colIndex,
+			inputType : "text",
+			options : {
+				disabled: true
+			}
+		}
+	}
+	return returnInfo;
+};
+scwin.grd1_onafteredit = function(row,col,value) {
+	var colId = this.getColumnID( col );
+	if (colId == "col1"){
+		this.refreshCell( row , "col2" );
+		dlt_list.setCellData( row , "col2" , "" );
+	}
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<w2:gridView checkAllType="false" dataList="data:dlt_list" scrollByColumn="false" style="height: 150px;" id="grd1" defaultCellHeight="20" ev:onafteredit="scwin.grd1_onafteredit">
+			<w2:header id="header2">
+				<w2:row id="row3">
+					<w2:column width="93" inputType="text" id="column6" value="값 변경"></w2:column>
+					<w2:column width="120" inputType="text" id="column5" value="custom"></w2:column>
+					<w2:column width="100" inputType="text" id="column4" value="readOnly"></w2:column>
+					<w2:column width="100" inputType="text" id="column3" value="disabled"></w2:column>
+				</w2:row>
+			</w2:header>
+			<w2:gBody id="gBody2">
+				<w2:row id="row4">
+					<w2:column width="93" inputType="select" id="col1" viewType="icon">
+						<w2:choices>
+							<w2:itemset nodeset="data:dlt_code">
+								<w2:label ref="name"></w2:label>
+								<w2:value ref="code"></w2:value>
+							</w2:itemset>
+						</w2:choices>
+					</w2:column>
+					<w2:column width="120" inputType="custom" id="col2" typeGetter="scwin.getCustomType"></w2:column>
+					<w2:column width="100" inputType="text" id="col3" readOnly="true"></w2:column>
+					<w2:column width="100" inputType="text" disabled="true" id="col4"></w2:column>
+				</w2:row>
+			</w2:gBody>
+		</w2:gridView>
+	</body>
+</html>

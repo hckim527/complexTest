@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+		</xf:model>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.onpageload = function() {
+	scwin.checkStatus();
+};
+scwin.checkStatus = function() {
+	var lines = [];
+	var conf = WebSquare.core.getConfiguration("/WebSquare/jquerySupport/@defaultLoad");
+	var src = WebSquare.core.getConfiguration("/WebSquare/jquerySupport/@src");
+	lines.push("config jquerySupport/@defaultLoad : " + (conf === "" ? "(미지정)" : conf));
+	lines.push("config jquerySupport/@src         : " + (src === "" ? "(미지정)" : src));
+	lines.push("window.jQuery 존재 여부            : " + (window.jQuery ? "true" : "false"));
+	lines.push("jQuery 버전                        : " + (window.jQuery ? window.jQuery.fn.jquery : "-"));
+	var scripts = document.querySelectorAll("script[src*='jquery']");
+	var srcList = [];
+	for (var i = 0; i < scripts.length; i++) {
+		srcList.push(scripts[i].getAttribute("src"));
+	}
+	lines.push("문서 내 jQuery script 태그          : " + (srcList.length ? srcList.join(", ") : "(없음)"));
+	textarea1.setValue(lines.join("\n"));
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger id="btnCheck" type="button" style="width:200px;height:25px;" ev:onclick="scwin.checkStatus">
+			<xf:label><![CDATA[상태 확인]]></xf:label>
+		</xf:trigger>
+		<w2:textarea id="textarea1" readOnly="true" style="width:900px;height:160px;"></w2:textarea>
+	</body>
+</html>

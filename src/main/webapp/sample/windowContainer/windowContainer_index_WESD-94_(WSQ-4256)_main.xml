@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate/>
+		<xf:model>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_menu" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="MENU_CD" name="메뉴코드" dataType="text"></w2:column>
+						<w2:column id="MENU_NM" name="메뉴명" dataType="text"></w2:column>
+						<w2:column id="SRC_PATH" name="메뉴경로" dataType="text"></w2:column>
+						<w2:column id="MENU_LEVEL" name="메뉴레벨" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<MENU_CD><![CDATA[001000000]]></MENU_CD>
+							<MENU_NM><![CDATA[샘플]]></MENU_NM>
+							<SRC_PATH><![CDATA[]]></SRC_PATH>
+							<MENU_LEVEL><![CDATA[1]]></MENU_LEVEL>
+						</w2:row>
+						<w2:row>
+							<MENU_CD><![CDATA[001002000]]></MENU_CD>
+							<MENU_NM><![CDATA[샘플2]]></MENU_NM>
+							<SRC_PATH><![CDATA[/sample/common_link/windowContainer_index_WESD-94_(WSQ-4256)_sub2.xml]]></SRC_PATH>
+							<MENU_LEVEL><![CDATA[2]]></MENU_LEVEL>
+						</w2:row>
+						<w2:row>
+							<MENU_CD><![CDATA[001003000]]></MENU_CD>
+							<MENU_NM><![CDATA[샘플3]]></MENU_NM>
+							<SRC_PATH><![CDATA[/sample/common_link/windowContainer_index_WESD-94_(WSQ-4256)_sub3.xml]]></SRC_PATH>
+							<MENU_LEVEL><![CDATA[2]]></MENU_LEVEL>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+// treeview 의 leaf 클릭 시 windowContainer 에 화면을 엶(이미 있으면 그 창으로 이동)
+scwin.trv_menu_onclick = function () {
+	if (trv_menu.isLeaf()) {
+		var idx = trv_menu.getSelectedIndex() - 1;
+		var label = trv_menu.getSelectedLabel();
+		wdc_main.createWindow({
+			title: label,
+			src: dlt_menu.getCellData(idx, "SRC_PATH"),
+			windowTitle: label,
+			windowId: trv_menu.getSelectedValue(),
+			openAction: "existWindow",
+			frameMode: "wframe"
+		});
+	}
+};
+]]></script>
+	</head>
+	<body>
+		<w2:treeview id="trv_menu" dataType="listed" tooltipGroupClass="false" style="width:200px;height:395px;float:left;" showTreeDepth="2" ev:onclick="scwin.trv_menu_onclick" toggleEvent="onclick">
+			<w2:itemset nodeset="data:dlt_menu">
+				<w2:label ref="MENU_NM"></w2:label>
+				<w2:value ref="MENU_CD"></w2:value>
+				<w2:depth ref="MENU_LEVEL"></w2:depth>
+			</w2:itemset>
+		</w2:treeview>
+		<w2:windowContainer controlIconPosition="left" windowMaximizeAll="false" id="wdc_main" useNameContainer="false" style="position: relative;width:828px;height:397px;" useFixButton="false" windowAutoResize="false" windowMaxNum="5" useCloseButton="false" toolbarPosition="top" nameLayerMove="true">
+			<w2:windowToolbar>
+				<w2:selectedNameLayer></w2:selectedNameLayer>
+				<w2:controlIconLayer>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+					<w2:controlIcon></w2:controlIcon>
+				</w2:controlIconLayer>
+				<w2:nameLayer></w2:nameLayer>
+			</w2:windowToolbar>
+		</w2:windowContainer>
+	</body>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.XSL_URL = "/data/exception_transform_WPF-1197_(WSQ-1191)_oz.xsl";
+
+scwin.onpageload = function() {
+};
+
+// xsl: 각 요소를 같은 이름으로 다시 만들고 id 속성은 유지, value 속성은 요소 내용으로 출력
+scwin.transform = function(xmlStr) {
+	var result = WebSquare.xml.transform(xmlStr, location.protocol + "//" + location.host + scwin.XSL_URL);
+	if (result && typeof result.then === "function") {
+		result.then(function(res) {
+			txa_result.setValue(res);
+		});
+	} else {
+		txa_result.setValue(result);
+	}
+};
+
+scwin.btn_simple_onclick = function(e) {
+	scwin.transform("<root>test1</root>");
+};
+
+scwin.btn_attr_onclick = function(e) {
+	scwin.transform('<root id="r1" value="v1"><item id="a" value="x">skip</item><item value="y"/></root>');
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" id="btn_simple" style="width: 150px;height: 23px;" ev:onclick="scwin.btn_simple_onclick">
+			<xf:label><![CDATA[transform(내용만)]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="btn_attr" style="width: 150px;height: 23px;" ev:onclick="scwin.btn_attr_onclick">
+			<xf:label><![CDATA[transform(id·value)]]></xf:label>
+		</xf:trigger>
+		<xf:textarea id="txa_result" style="width: 500px;height: 100px;"></xf:textarea>
+	</body>
+</html>

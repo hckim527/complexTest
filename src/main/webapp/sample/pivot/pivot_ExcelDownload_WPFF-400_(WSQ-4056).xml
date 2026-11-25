@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate/>
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+			<w2:dataCollection>
+				<w2:dataList id="dataList2" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="col1" name="시도별" dataType="text"></w2:column>
+						<w2:column id="col2" name="산업별" dataType="text"></w2:column>
+						<w2:column id="col3" name="시점" dataType="text"></w2:column>
+						<w2:column id="col4" name="사업체수_개" dataType="number"></w2:column>
+						<w2:column id="col5" name="월평균종사자수" dataType="number"></w2:column>
+						<w2:column id="col6" name="연간급여_백만원" dataType="number"></w2:column>
+						<w2:column id="col7" name="생산액_백만원" dataType="number"></w2:column>
+						<w2:column id="col8" name="출하액_백만원" dataType="number"></w2:column>
+						<w2:column id="col9" name="재고액_연초_백만원" dataType="number"></w2:column>
+						<w2:column id="col10" name="재고액_연말_백만원" dataType="number"></w2:column>
+						<w2:column id="col11" name="주요생산비_백만원" dataType="number"></w2:column>
+						<w2:column id="col12" name="부가가치_백만원" dataType="number"></w2:column>
+						<w2:column id="col13" name="유형자산연말잔액_백만원" dataType="number"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.trigger1_onclick = function(e) {
+	pivotTable1.pivotExcelDownload({
+		"fileName": "test.xlsx",
+		"sheetName": "testsheet",
+		"bodyTextAlign": "right",
+		"useDataFormat": "true",
+		"bodyFormat": "#,##0.00"
+	});
+};
+scwin.onpageload = function() {
+	var jsonData = [];
+	var groups = [["2012", "1996년"], ["2013", "1996년"], ["2013", "1995년"], ["2012", "1995년"]];
+	for (var g = 0; g < groups.length; g++) {
+		for (var i = 0; i < 200; i++) {
+			jsonData.push({
+				"col1": groups[g][0], "col2": "광업 및 제조업" + i + "(C~D)", "col3": groups[g][1], "col4": "97284" + i,
+				"col5": "2981813", "col6": "38257253", "col7": "366561783", "col8": "360579069", "col9": "20745462",
+				"col10": "26728176", "col11": "205868890", "col12": "160692893", "col13": "166527384", "rowStatus": "R"
+			});
+		}
+	}
+	dataList2.setJSON(jsonData);
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" id="trigger1" style="position: relative;border: 1px solid black;left:0px;width: 80px;height: 23px;float:left;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[엑셀다운로드]]></xf:label>
+		</xf:trigger>
+		<w2:pivot id="pivotTable1" dataList="dataList2" showGrandTotal="true" style="position: relative;height:647px;width:100%;border: 1px solid black;left:0px;float:left;" headerListMouseOverColor="#FF0000" cols="col1,col3,col6" rows="col2" vals="sDate,col4" excludeHiddenList="col7,col8" hiddenHeaderList="hidden,row,col,val" headerListOrder="col,row,val,hidden">
+			<w2:fieldInfo>
+				<w2:field id="col1" name="시도별"></w2:field>
+				<w2:field id="col2" name="산업별"></w2:field>
+				<w2:field id="col3" name="시점"></w2:field>
+				<w2:field id="col4" name="사업체수_개"></w2:field>
+				<w2:field id="col5" name="월평균종사자수"></w2:field>
+				<w2:field id="col6" name="연간급여_백만원"></w2:field>
+				<w2:field id="col7" name="생산액_백만원"></w2:field>
+				<w2:field id="col8" name="출하액_백만원"></w2:field>
+				<w2:field id="col9" name="재고액_연초_백만원"></w2:field>
+				<w2:field id="col10" name="재고액_연말_백만원"></w2:field>
+				<w2:field id="col11" name="주요생산비_백만원"></w2:field>
+				<w2:field id="col12" name="부가가치_백만원"></w2:field>
+				<w2:field id="col13" name="유형자산연말잔액_백만원"></w2:field>
+			</w2:fieldInfo>
+		</w2:pivot>
+	</body>
+</html>

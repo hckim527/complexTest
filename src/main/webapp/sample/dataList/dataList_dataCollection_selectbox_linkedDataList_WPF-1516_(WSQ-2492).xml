@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare"
+	xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataList id="dlt_code" baseNode="list" saveRemovedData="true" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="cls_cd" name="name1" dataType="text"></w2:column>
+						<w2:column id="detl_cd" name="name2" dataType="text"></w2:column>
+						<w2:column id="detl_cd_nm" name="name4" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.checkDataSel = function() {
+	var arr = select1.itemArr,
+		bool1,
+		bool2;
+	(arr.length) ? bool1 = true: bool1 = false;
+	(arr[0].label == 'label_test1' && arr[1].label == 'label_test2') ?
+	bool2 = true: bool2 = false;
+	return bool1 && bool2;
+};
+scwin.onpageload = function() {
+	dlt_code.setJSON([{
+		"cls_cd": "O0003",
+		"detl_cd": "test1",
+		"detl_cd_nm": "label_test1"
+	}, {
+		"cls_cd": "O0003",
+		"detl_cd": "test2",
+		"detl_cd_nm": "label_test2"
+	}, {
+		"cls_cd": "O0004",
+		"detl_cd": "test4",
+		"detl_cd_nm": "label_test4"
+	}]);
+	// selectbox 가 바인딩한 linkedDataList 를 화면 로드 뒤에 생성
+	$p.data.create({
+		"id": "ldt_code_O0003",
+		"type": "linkedDataList",
+		"option": {
+			"valueAttribute": "",
+			"bind": "dlt_code",
+			"filterCondition": "cls_cd == 'O0003'",
+			"sortCondition": ""
+		}
+	});
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:select1 disabledClass="w2selectbox_disabled" appearance="minimal" direction="auto" id="select1"
+			style="position: absolute ;left: 52px;top: 68px;width: 186px;height: 49px;" displayMode="label" selectedData="true" optionOrder="false" disabled="false"
+			submenuSize="auto">
+			<xf:choices>
+				<xf:itemset nodeset="data:ldt_code_O0003">
+					<xf:label ref="detl_cd_nm"></xf:label>
+					<xf:value ref="detl_cd"></xf:value>
+				</xf:itemset>
+			</xf:choices>
+		</xf:select1>
+	</body>
+</html>

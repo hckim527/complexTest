@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head meta_screenName="calender">
+		<w2:type>COMPONENT</w2:type>
+		<w2:buildDate/>
+		<w2:MSA/>
+		<xf:model>
+			<w2:dataCollection baseNode="map"/>
+		</xf:model>
+		<w2:layoutInfo/>
+		<w2:publicInfo method=""/>
+		<script lazy="false" type="text/javascript"><![CDATA[
+scwin.trigger1_onclick = function (e) {
+	scheduleCalendar1.gotoCalendar("20250501", { noSelectable: true });
+};
+
+scwin.headerBtnLog = [];
+scwin.scheduleCalendar1_onheaderbtnclick = function (buttonInfo) {
+	scwin.headerBtnLog.push({ buttonType: buttonInfo.buttonType, viewType: buttonInfo.viewType, date: buttonInfo.date });
+	window.buttonType = buttonInfo.buttonType;
+	window.viewType = buttonInfo.viewType;
+	if (buttonInfo.buttonType == "next" || buttonInfo.buttonType == "prev" || buttonInfo.buttonType == "today") {
+		window.date = buttonInfo.date;
+	}
+};
+
+scwin.getCurrentDate = function () {
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = String(today.getMonth() + 1).padStart(2, '0');
+	const day = String(today.getDate()).padStart(2, '0');
+	return `${year}${month}${day}`;
+};
+
+scwin.checkVal1 = function () {
+	const check1 = document.querySelectorAll('.fc-toolbar-title')[0].innerText == '2025년 5월';
+	const check2 = document.querySelectorAll('.fc-highlight')[0].parentElement.parentElement.parentElement.innerText == '1일';
+	return check1 && check2;
+};
+
+scwin.checkVal2 = function () {
+	const check1 = window.buttonType == 'today';
+	const check2 = window.viewType == 'dayGridMonth';
+	const check3 = window.date == scwin.getCurrentDate();
+	return check1 && check2 && check3;
+};
+]]></script>
+	</head>
+	<body>
+		<xf:group class="sub_contents" id="">
+			<xf:group class="etcbox" id="">
+				<w2:scheduleCalendar dataList="" defaultDate="" editable="true" endColumn="end" eventLimit="true" eventOrderColumn="" headerLeftBtn="true" headerRightBtn="true" headerTitle="true" id="scheduleCalendar1" idColumn="id" includeScheduleEnd="false" ioFormat="yyyyMMdd" lang="ko" locale="ko" nextDayThreshold="" selectable="true" startColumn="start" style="width: 50%;height: 400px;" themeColumn="" timeFormat="CalendarTest" titleColumn="" tooltipDisplay="" version="6.1.11" ev:onheaderbtnclick="scwin.scheduleCalendar1_onheaderbtnclick">
+				</w2:scheduleCalendar>
+			</xf:group>
+			<xf:group class="btnbox" id="">
+				<xf:group class="rt" id="" style="padding-top:100px;">
+					<xf:trigger class="btn_cm" id="trigger1" type="button" ev:onclick="scwin.trigger1_onclick">
+						<xf:label><![CDATA[2025-05-01로 이동]]></xf:label>
+					</xf:trigger>
+				</xf:group>
+			</xf:group>
+		</xf:group>
+	</body>
+</html>

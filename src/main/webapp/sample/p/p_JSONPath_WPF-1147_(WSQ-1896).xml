@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:type>DEFAULT</w2:type>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns="" />
+			</xf:instance>
+			<w2:dataCollection baseNode="map">
+				<w2:dataMap baseNode="map" id="dataMap1">
+					<w2:keyInfo>
+						<w2:key id="dataMpa1_key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="dataMap1_key2" name="name2" dataType="text"></w2:key>
+						<w2:key id="dataMap1_key3" name="name3" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<dataMpa1_key1><![CDATA[a]]></dataMpa1_key1>
+						<dataMap1_key2><![CDATA[b]]></dataMap1_key2>
+						<dataMap1_key3><![CDATA[c]]></dataMap1_key3>
+					</w2:data>
+				</w2:dataMap>
+				<w2:dataMap baseNode="map" id="dataMap2" JSONPath="messageBody">
+					<w2:keyInfo>
+						<w2:key id="dataMpa2_key1" name="name1" dataType="text"></w2:key>
+						<w2:key id="dataMap2_key2" name="name2" dataType="text"></w2:key>
+						<w2:key id="dataMap2_key3" name="name3" dataType="text"></w2:key>
+					</w2:keyInfo>
+					<w2:data use="true">
+						<dataMpa2_key1><![CDATA[1]]></dataMpa2_key1>
+						<dataMap2_key2><![CDATA[2]]></dataMap2_key2>
+						<dataMap2_key3><![CDATA[3]]></dataMap2_key3>
+					</w2:data>
+				</w2:dataMap>
+				<w2:dataList id="dataList1" baseNode="list" saveRemovedData="true" repeatNode="map" JSONPath="messageBody">
+					<w2:columnInfo>
+						<w2:column id="col1" name="name1" dataType="text"></w2:column>
+						<w2:column id="col2" name="name2" dataType="text"></w2:column>
+					</w2:columnInfo>
+					<w2:data use="true">
+						<w2:row>
+							<col1><![CDATA[AA]]></col1>
+							<col2><![CDATA[BB]]></col2>
+						</w2:row>
+						<w2:row>
+							<col1><![CDATA[CC]]></col1>
+							<col2><![CDATA[DD]]></col2>
+						</w2:row>
+					</w2:data>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.onpageload = function() {
+};
+
+// JSONPath 없는 dataMap1(key=messageBody)을 먼저 지정
+scwin.trigger1_onclick = function(e) {
+	var jsonObj = $p.data.get("json", [{ "id": "dataMap1", "key": "messageBody" }, "dataList1", "dataMap2"]);
+	txa_result.setValue(JSON.stringify(jsonObj, null, 2));
+};
+
+// JSONPath 없는 dataMap1(key=messageBody)을 나중에 지정 (수정 전: 앞의 dataList1·dataMap2 를 덮어씀)
+scwin.trigger2_onclick = function(e) {
+	var jsonObj = $p.data.get("json", ["dataList1", "dataMap2", { "id": "dataMap1", "key": "messageBody" }]);
+	txa_result.setValue(JSON.stringify(jsonObj, null, 2));
+};
+]]></script>
+	</head>
+	<body ev:onpageload="scwin.onpageload">
+		<xf:trigger type="button" id="trigger1" style="width: 300px;height: 23px;" ev:onclick="scwin.trigger1_onclick">
+			<xf:label><![CDATA[dataMap1(key) → dataList1 → dataMap2]]></xf:label>
+		</xf:trigger>
+		<xf:trigger type="button" id="trigger2" style="width: 300px;height: 23px;" ev:onclick="scwin.trigger2_onclick">
+			<xf:label><![CDATA[dataList1 → dataMap2 → dataMap1(key)]]></xf:label>
+		</xf:trigger>
+		<xf:textarea id="txa_result" style="width: 500px;height: 400px;"></xf:textarea>
+	</body>
+</html>

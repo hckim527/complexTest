@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<w2:buildDate />
+		<xf:model>
+			<xf:instance>
+				<data xmlns=""/>
+			</xf:instance>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+scwin.__getDom = function(id) {
+	var P = 'mf_', d = function(k) { return document.getElementById(k); }, dd = function(k) { return k.replace(/(mf_){2,}/g, P); };
+	var r = d(id); if (r) return r;
+	var s = dd(P + id); r = d(s); if (r) return r;
+	var g = s.indexOf('G_');
+	if (g >= 0) { s = dd(s.slice(0, g + 2) + P + s.slice(g + 2)); r = d(s); if (r) return r; s = dd(P + s); r = d(s); if (r) return r; }
+	return d(s.replace(P, ''));
+};
+scwin.__getJq = function(q) {
+	var j = $(q); if (j.length) return j;
+	var P = 'mf_', t = q.trim(), r = t.slice(1);
+	if (r.slice(0, 2) === 'G_') r = 'G_' + P + r.slice(2); else if (r.slice(0, P.length) !== P) r = P + r;
+	return $(t.slice(0, 1) + r);
+};
+scwin.__isCreatedPop = function(selector) {
+	return scwin.__getJq(selector).find(selector + "_header_title").text() == "TestPage1" && (scwin.__getJq(selector).length > 0);
+}
+scwin.__isDisabled = function(selector) {
+	return scwin.__getJq(selector).css("z-index") < 4000;
+}
+scwin.__clickButton = function(fid, selector) {
+	var iframe = scwin.__getDom(fid);
+	var innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;
+	var button = innerDoc.getElementById(selector);
+	button.click();
+}
+scwin.setVal = function() {
+	scwin.__clickButton('popup1_iframe', $p.id+'trigger4');
+}
+]]></script>
+	</head>
+	<body>
+		<xf:trigger id="trigger2" style="position:absolute;word-wrap:break-word;top:30px;left:256px;width:170px;height:21px;text-align:center;" type="button">
+			<xf:label>openPopup2</xf:label>
+			<script ev:event="onclick" type="javascript"><![CDATA[
+			requires("uiplugin.popup");
+			var options = {
+			id : "popup1",
+			type : "window",
+			width: "300px",
+			height: "300px",
+			popupName : "TestPage1",
+			modal : true,
+			useIFrame : true,
+			resizable : false,
+			status : false,
+			menubar : false,
+			scrollbars : false,
+			title : true
+			,useModalStack : true
+			};
+			pop = $w.openPopup("/sample/common_link/p_openPopup_WEF-1630_(WSQ-2715)_main_sub1.xml",  options );
+]]></script>
+		</xf:trigger>
+	</body>
+</html>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:w2="http://www.inswave.com/websquare" xmlns:xf="http://www.w3.org/2002/xforms">
+	<head>
+		<xf:model>
+			<w2:dataCollection>
+				<w2:dataList id="dataList_grid" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="ID" name="ID" dataType="text"></w2:column>
+						<w2:column id="NAME" name="Name" dataType="text"></w2:column>
+						<w2:column id="VALUE" name="Value" dataType="number"></w2:column>
+						<w2:column id="STATUS" name="Status" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+				<w2:dataList id="dataList_tree" baseNode="list" repeatNode="map">
+					<w2:columnInfo>
+						<w2:column id="value" name="value" dataType="text"></w2:column>
+						<w2:column id="label" name="label" dataType="text"></w2:column>
+						<w2:column id="depth" name="depth" dataType="text"></w2:column>
+					</w2:columnInfo>
+				</w2:dataList>
+			</w2:dataCollection>
+		</xf:model>
+		<script type="text/javascript" lazy="false"><![CDATA[
+	scwin.btn_perfOn_onclick = function() {
+		WebSquare.util.setPerformanceUse(true);
+	};
+
+	scwin.btn_grid_load_onclick = function() {
+		var arr = [];
+		for (var i = 0; i < 1000; i++) {
+			arr.push({ ID: "ID_" + i, NAME: "Name_" + i, VALUE: i * 10, STATUS: (i % 2 === 0 ? "Y" : "N") });
+		}
+		dataList_grid.setJSON(arr);
+	};
+	scwin.btn_grid_direct_onclick = function() {
+		var flat = [];
+		for (var i = 0; i < 1000; i++) {
+			flat.push("ID_" + i, "Name_" + i, i * 5, (i % 3 === 0 ? "A" : "B"));
+		}
+		grd_main.dataList.setData(flat, false, ["ID","NAME","VALUE","STATUS"]);
+	};
+
+	scwin.btn_tree_load_onclick = function() {
+		var arr = [];
+		var idx = 0;
+		for (var a = 0; a < 5; a++) {
+			arr.push({ value: "v_" + idx, label: "root_" + a, depth: "1" });
+			idx++;
+			for (var b = 0; b < 4; b++) {
+				arr.push({ value: "v_" + idx, label: "child_" + a + "_" + b, depth: "2" });
+				idx++;
+			}
+		}
+		dataList_tree.setJSON(arr);
+	};
+
+	scwin.btn_chart_load_onclick = function() {
+		var data = { data: [] };
+		for (var i = 0; i < 10; i++) {
+			data.data.push({ label: "Cat" + i, value: (i + 1) * 7 });
+		}
+		chart_fc.setJSONData(data);
+	};
+
+	scwin.btn_fw_bullet_onclick = function() {
+		chart_bullet.setJSONData({
+			chart: { caption: "Revenue", lowerLimit: "0", upperLimit: "100" },
+			colorRange: { color: [{ minValue: "0", maxValue: "50", code: "f54336" }, { minValue: "50", maxValue: "100", code: "4caf50" }] },
+			value: "70"
+		});
+	};
+	scwin.btn_fw_gauge_onclick = function() {
+		chart_gauge.setJSONData({
+			chart: { caption: "Pressure", lowerLimit: "0", upperLimit: "100" },
+			colorRange: { color: [{ minValue: "0", maxValue: "100", code: "4caf50" }] },
+			dials: { dial: [{ value: "65" }] }
+		});
+	};
+	]]></script>
+	</head>
+	<body>
+		<xf:group id="grp_main" style="width:1040px; padding:10px;">
+			<xf:trigger type="button" id="btn_perfOn" ev:onclick="scwin.btn_perfOn_onclick" style="width:110px; height:28px;">
+				<xf:label><![CDATA[성능수집 ON]]></xf:label>
+			</xf:trigger>
+			<w2:tabControl id="tab_main" alwaysDraw="true" confirmTrueAction="exist" confirmFalseAction="new" style="width:1020px; height:500px;">
+				<w2:tabs id="tab_grid" label="gridView + dataList" style="width:180px; height:30px;"></w2:tabs>
+				<w2:tabs id="tab_tree" label="treeview" style="width:120px; height:30px;"></w2:tabs>
+				<w2:tabs id="tab_chart" label="fusionchart" style="width:120px; height:30px;"></w2:tabs>
+				<w2:tabs id="tab_fw" label="fw차트" style="width:120px; height:30px;"></w2:tabs>
+				<w2:content id="cnt_grid" style="padding:8px;">
+					<xf:group style="margin-bottom:8px;">
+						<xf:trigger type="button" id="btn_grid_load" ev:onclick="scwin.btn_grid_load_onclick" style="width:180px; height:28px;">
+							<xf:label><![CDATA[dataList.setJSON 로드]]></xf:label>
+						</xf:trigger>
+						<xf:trigger type="button" id="btn_grid_direct" ev:onclick="scwin.btn_grid_direct_onclick" style="width:200px; height:28px;">
+							<xf:label><![CDATA[gridView.setData 직접]]></xf:label>
+						</xf:trigger>
+					</xf:group>
+					<w2:gridView id="grd_main" dataList="data:dataList_grid" style="width:990px; height:380px;">
+						<w2:header>
+							<w2:row>
+								<w2:column id="hd_ID" value="ID" width="230"></w2:column>
+								<w2:column id="hd_NAME" value="Name" width="260"></w2:column>
+								<w2:column id="hd_VALUE" value="Value" width="200"></w2:column>
+								<w2:column id="hd_STATUS" value="Status" width="280"></w2:column>
+							</w2:row>
+						</w2:header>
+						<w2:gBody>
+							<w2:row>
+								<w2:column id="ID" width="230"></w2:column>
+								<w2:column id="NAME" width="260"></w2:column>
+								<w2:column id="VALUE" width="200" displayMode="label"></w2:column>
+								<w2:column id="STATUS" width="280"></w2:column>
+							</w2:row>
+						</w2:gBody>
+					</w2:gridView>
+				</w2:content>
+				<w2:content id="cnt_tree" style="padding:8px;">
+					<xf:group style="margin-bottom:8px;">
+						<xf:trigger type="button" id="btn_tree_load" ev:onclick="scwin.btn_tree_load_onclick" style="width:200px; height:28px;">
+							<xf:label><![CDATA[treeview 25노드 로드]]></xf:label>
+						</xf:trigger>
+					</xf:group>
+					<w2:treeview id="tree_main" dataType="listed" modelBinding="false" style="width:990px; height:380px; border:1px solid #ccc;">
+						<w2:itemset nodeset="data:dataList_tree">
+							<w2:label ref="label"></w2:label>
+							<w2:value ref="value"></w2:value>
+							<w2:depth ref="depth"></w2:depth>
+						</w2:itemset>
+					</w2:treeview>
+				</w2:content>
+				<w2:content id="cnt_chart" style="padding:8px;">
+					<xf:group style="margin-bottom:8px;">
+						<xf:trigger type="button" id="btn_chart_load" ev:onclick="scwin.btn_chart_load_onclick" style="width:200px; height:28px;">
+							<xf:label><![CDATA[fusionchart 데이터 로드]]></xf:label>
+						</xf:trigger>
+					</xf:group>
+					<w2:fusionchart id="chart_fc" chartType="Column2D" style="width:990px; height:380px;"></w2:fusionchart>
+				</w2:content>
+				<w2:content id="cnt_fw" style="padding:8px;">
+					<xf:group style="margin-bottom:8px;">
+						<xf:trigger type="button" id="btn_fw_bullet" ev:onclick="scwin.btn_fw_bullet_onclick" style="width:180px; height:28px;">
+							<xf:label><![CDATA[fwBullet 로드]]></xf:label>
+						</xf:trigger>
+						<xf:trigger type="button" id="btn_fw_gauge" ev:onclick="scwin.btn_fw_gauge_onclick" style="width:180px; height:28px;">
+							<xf:label><![CDATA[fwGauge 로드]]></xf:label>
+						</xf:trigger>
+					</xf:group>
+					<xf:group style="display:flex; gap:10px;">
+						<w2:fwBulletChart id="chart_bullet" chartType="hbullet" style="width:490px; height:200px;"></w2:fwBulletChart>
+						<w2:fwGaugeChart id="chart_gauge" chartType="angulargauge" style="width:490px; height:200px;"></w2:fwGaugeChart>
+					</xf:group>
+				</w2:content>
+			</w2:tabControl>
+		</xf:group>
+	</body>
+</html>
